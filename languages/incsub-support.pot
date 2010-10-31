@@ -1,0 +1,704 @@
+# Translation of the WordPress plugin MU Support System 1.5.5a2 by S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub).
+# Copyright (C) 2010 S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)
+# This file is distributed under the same license as the MU Support System package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: MU Support System 1.5.5a2\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/incsub-support\n"
+"POT-Creation-Date: 2010-10-24 07:43+0530\n"
+"PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#. #-#-#-#-#  incsub-support.pot (MU Support System 1.5.5a2)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
+#: incsub-support.php:190
+msgid "MU Support System"
+msgstr ""
+
+#: incsub-support.php:192 incsub-support.php:195 incsub-support.php:1891
+msgid "Frequently Asked Questions"
+msgstr ""
+
+#: incsub-support.php:192
+msgid "FAQ"
+msgstr ""
+
+#: incsub-support.php:193
+msgid "Support Tickets"
+msgstr ""
+
+#: incsub-support.php:195 incsub-support.php:286 incsub-support.php:487
+#: incsub-support.php:639
+msgid "FAQ Manager"
+msgstr ""
+
+#: incsub-support.php:196
+msgid "Support Ticket Management System"
+msgstr ""
+
+#: incsub-support.php:196
+msgid "Support Ticket Manager"
+msgstr ""
+
+#: incsub-support.php:197
+msgid "Support System Options"
+msgstr ""
+
+#: incsub-support.php:197
+msgid "Support Options"
+msgstr ""
+
+#: incsub-support.php:220
+msgid "Support options saved."
+msgstr ""
+
+#: incsub-support.php:224
+msgid "Support System Settings"
+msgstr ""
+
+#: incsub-support.php:229
+msgid "Support menu name"
+msgstr ""
+
+#: incsub-support.php:230
+msgid "Support"
+msgstr ""
+
+#: incsub-support.php:231
+msgid "Change the text of the 'Support' menu item to anything you need."
+msgstr ""
+
+#: incsub-support.php:235
+msgid "Save Changes"
+msgstr ""
+
+#: incsub-support.php:270 incsub-support.php:1903
+#, php-format
+msgid "%s question"
+msgid_plural "%s questions"
+msgstr[0] ""
+msgstr[1] ""
+
+#: incsub-support.php:271
+#, php-format
+msgid "%s category"
+msgid_plural "%s categories"
+msgstr[0] ""
+msgstr[1] ""
+
+#: incsub-support.php:272
+#, php-format
+msgid "You have %1$s contained within %2$s."
+msgstr ""
+
+#: incsub-support.php:276
+#, php-format
+msgid "%s user"
+msgid_plural "%s users"
+msgstr[0] ""
+msgstr[1] ""
+
+#: incsub-support.php:277
+#, php-format
+msgid ""
+"%1$s out of %2$s have been helped, for an overall success rate of %3$s&#37;"
+msgstr ""
+
+#: incsub-support.php:289
+msgid "FAQ Stats/Info"
+msgstr ""
+
+#: incsub-support.php:290 incsub-support.php:491
+msgid "Manage FAQ Categories"
+msgstr ""
+
+#: incsub-support.php:291 incsub-support.php:644
+msgid "Manage Questions"
+msgstr ""
+
+#: incsub-support.php:299
+msgid "Top 5: Most Helpful"
+msgstr ""
+
+#: incsub-support.php:318 incsub-support.php:338
+msgid "There have not been any ratings for any questions/answers."
+msgstr ""
+
+#: incsub-support.php:322
+msgid "Top 5: Least Helpful"
+msgstr ""
+
+#: incsub-support.php:370
+#, php-format
+msgid "%s question was"
+msgid_plural "%s questions were"
+msgstr[0] ""
+msgstr[1] ""
+
+#: incsub-support.php:371 incsub-support.php:591 incsub-support.php:2398
+#, php-format
+msgid "%1$s removed"
+msgstr ""
+
+#: incsub-support.php:374
+msgid "There wasn't anything to delete."
+msgstr ""
+
+#: incsub-support.php:384 incsub-support.php:410
+msgid "The question field is empty."
+msgstr ""
+
+#: incsub-support.php:387 incsub-support.php:413
+msgid "The answer field is empty."
+msgstr ""
+
+#: incsub-support.php:400
+msgid "New Q&amp;A inserted successfully."
+msgstr ""
+
+#: incsub-support.php:403
+msgid "Something happened, and nothing was inserted. Check your error logs."
+msgstr ""
+
+#: incsub-support.php:416
+msgid "Invalid identification for the question being updated."
+msgstr ""
+
+#: incsub-support.php:429
+msgid "Question/Answer updated successfully."
+msgstr ""
+
+#: incsub-support.php:437
+msgid "Something happened, and nothing was updated. Check your error logs."
+msgstr ""
+
+#: incsub-support.php:460
+msgid "That question does not exist."
+msgstr ""
+
+#: incsub-support.php:465
+msgid "Editing: "
+msgstr ""
+
+#: incsub-support.php:490
+msgid "Manage Questions/Answers"
+msgstr ""
+
+#: incsub-support.php:492 incsub-support.php:548 incsub-support.php:554
+msgid "Add New Question"
+msgstr ""
+
+#: incsub-support.php:511
+msgid "FAQ Category: "
+msgstr ""
+
+#: incsub-support.php:511
+msgid "view questions"
+msgstr ""
+
+#: incsub-support.php:516 incsub-support.php:736
+msgid "Question"
+msgstr ""
+
+#: incsub-support.php:517 incsub-support.php:756
+msgid "Answer"
+msgstr ""
+
+#: incsub-support.php:518
+msgid "Option(s)"
+msgstr ""
+
+#: incsub-support.php:535
+msgid "Edit This"
+msgstr ""
+
+#: incsub-support.php:544
+msgid "Delete Questions"
+msgstr ""
+
+#: incsub-support.php:590 incsub-support.php:611 incsub-support.php:2397
+#: incsub-support.php:2418
+#, php-format
+msgid "%s category was"
+msgid_plural "%s categories were"
+msgstr[0] ""
+msgstr[1] ""
+
+#: incsub-support.php:599 incsub-support.php:2406
+msgid "There was not anything to delete."
+msgstr ""
+
+#: incsub-support.php:612 incsub-support.php:2419
+#, php-format
+msgid "%1$s updated"
+msgstr ""
+
+#: incsub-support.php:618 incsub-support.php:2425
+msgid "There was not anything to update."
+msgstr ""
+
+#: incsub-support.php:630 incsub-support.php:2437
+msgid "New category added successfully."
+msgstr ""
+
+#: incsub-support.php:642
+msgid "Manage Categories"
+msgstr ""
+
+#: incsub-support.php:643 incsub-support.php:694 incsub-support.php:2085
+#: incsub-support.php:2091 incsub-support.php:2454 incsub-support.php:2503
+msgid "Add New Category"
+msgstr ""
+
+#: incsub-support.php:655 incsub-support.php:2466
+msgid "Name"
+msgstr ""
+
+#: incsub-support.php:656
+msgid "Questions"
+msgstr ""
+
+#: incsub-support.php:664 incsub-support.php:2474
+msgid "Default category, cannot be removed."
+msgstr ""
+
+#: incsub-support.php:688 incsub-support.php:2497
+msgid "Update Categories"
+msgstr ""
+
+#: incsub-support.php:688 incsub-support.php:2461 incsub-support.php:2497
+msgid "Delete"
+msgstr ""
+
+#: incsub-support.php:699 incsub-support.php:2508
+msgid "Category Name"
+msgstr ""
+
+#: incsub-support.php:702
+msgid "The name is used to identify the category to which questions relate."
+msgstr ""
+
+#: incsub-support.php:706 incsub-support.php:2515
+msgid "Add Category"
+msgstr ""
+
+#: incsub-support.php:713
+msgid "FAQ Edit"
+msgstr ""
+
+#: incsub-support.php:740
+msgid "FAQ Category"
+msgstr ""
+
+#: incsub-support.php:740
+msgid "Add new FAQ Category?"
+msgstr ""
+
+#: incsub-support.php:785
+msgid "Support System"
+msgstr ""
+
+#: incsub-support.php:787 incsub-support.php:1238 incsub-support.php:1744
+msgid "Recent Support Tickets"
+msgstr ""
+
+#: incsub-support.php:794
+msgid "Ticket Subject"
+msgstr ""
+
+#: incsub-support.php:795 incsub-support.php:1248 incsub-support.php:1754
+#: incsub-support.php:2328
+msgid "Last Updated"
+msgstr ""
+
+#: incsub-support.php:796
+msgid "Details"
+msgstr ""
+
+#: incsub-support.php:808 incsub-support.php:1199 incsub-support.php:1246
+#: incsub-support.php:1318 incsub-support.php:1705 incsub-support.php:1752
+#: incsub-support.php:1824 incsub-support.php:2257 incsub-support.php:2326
+msgid "Priority"
+msgstr ""
+
+#: incsub-support.php:809 incsub-support.php:1245 incsub-support.php:1339
+#: incsub-support.php:1751 incsub-support.php:1845 incsub-support.php:2325
+msgid "Status"
+msgstr ""
+
+#: incsub-support.php:810
+msgid "Last Reply From"
+msgstr ""
+
+#: incsub-support.php:821
+msgid "You're in luck today, as you don't have any unanswered support tickets."
+msgstr ""
+
+#: incsub-support.php:828
+msgid "Popular FAQ's"
+msgstr ""
+
+#: incsub-support.php:841 incsub-support.php:1917
+#, php-format
+msgid "%1$s of %2$s users found this to be helpful."
+msgstr ""
+
+#: incsub-support.php:848 incsub-support.php:1924
+msgid "Was this solution helpful? "
+msgstr ""
+
+#: incsub-support.php:849 incsub-support.php:1925
+msgid "Yes"
+msgstr ""
+
+#: incsub-support.php:849 incsub-support.php:1925
+msgid "No"
+msgstr ""
+
+#: incsub-support.php:858
+msgid ""
+"We're currently updating and collecting new stats on our FAQ. Please visit"
+msgstr ""
+
+#: incsub-support.php:858
+msgid "our FAQ"
+msgstr ""
+
+#: incsub-support.php:858
+msgid "for a full listing."
+msgstr ""
+
+#: incsub-support.php:872 incsub-support.php:948 incsub-support.php:1377
+#: incsub-support.php:1453 incsub-support.php:1967
+msgid "Ticket Error: All fields are required."
+msgstr ""
+
+#: incsub-support.php:894 incsub-support.php:1399
+msgid ""
+"Thank you. Your ticket has been submitted. You will be notified by email of "
+"any responses to this ticket."
+msgstr ""
+
+#: incsub-support.php:899 incsub-support.php:1404
+msgid "New Support Ticket: "
+msgstr ""
+
+#: incsub-support.php:900 incsub-support.php:1405
+msgid ""
+"\n"
+"\t***  DO NOT REPLY TO THIS EMAIL  ***\n"
+"\n"
+"\tSubject: "
+msgstr ""
+
+#: incsub-support.php:934 incsub-support.php:938 incsub-support.php:1439
+#: incsub-support.php:1443
+msgid ""
+"Ticket Error: There was an error submitting your ticket. Please try again in "
+"a few minutes."
+msgstr ""
+
+#: incsub-support.php:972 incsub-support.php:1477
+msgid ""
+"Thank you. Your ticket has been updated. You will be notified by email of "
+"any responses to this ticket."
+msgstr ""
+
+#: incsub-support.php:977 incsub-support.php:1482
+msgid "Support Ticket Update: "
+msgstr ""
+
+#: incsub-support.php:978 incsub-support.php:1483 incsub-support.php:2010
+msgid ""
+"\n"
+"\n"
+"\t***  DO NOT REPLY TO THIS EMAIL  ***\n"
+"\n"
+"\tSubject: "
+msgstr ""
+
+#: incsub-support.php:1015 incsub-support.php:1520 incsub-support.php:2043
+msgid ""
+"Ticket Error: There was an error updating your ticket. Please try again in a "
+"few minutes."
+msgstr ""
+
+#: incsub-support.php:1019 incsub-support.php:1524 incsub-support.php:2047
+msgid ""
+"Ticket Error: There was an error adding your reply. Please try again in a "
+"few minutes."
+msgstr ""
+
+#: incsub-support.php:1065 incsub-support.php:1570 incsub-support.php:2122
+msgid "Error: Invalid Ticket Selected"
+msgstr ""
+
+#: incsub-support.php:1070 incsub-support.php:1575 incsub-support.php:2127
+msgid "Not yet assigned"
+msgstr ""
+
+#: incsub-support.php:1072 incsub-support.php:1577 incsub-support.php:2129
+msgid "Ticket Details"
+msgstr ""
+
+#: incsub-support.php:1076 incsub-support.php:1581 incsub-support.php:2133
+msgid "Ticket Subject:"
+msgstr ""
+
+#: incsub-support.php:1082 incsub-support.php:1587 incsub-support.php:2139
+msgid "Current Date/Time:"
+msgstr ""
+
+#: incsub-support.php:1086 incsub-support.php:1591 incsub-support.php:2143
+msgid "Reporting User:"
+msgstr ""
+
+#: incsub-support.php:1088 incsub-support.php:1593 incsub-support.php:2145
+msgid "Staff Representative:"
+msgstr ""
+
+#: incsub-support.php:1092 incsub-support.php:1597 incsub-support.php:2149
+msgid "Last Reply From:"
+msgstr ""
+
+#: incsub-support.php:1094 incsub-support.php:1599 incsub-support.php:2151
+msgid "Current Status:"
+msgstr ""
+
+#: incsub-support.php:1101 incsub-support.php:1606 incsub-support.php:2158
+msgid "Last Updated:"
+msgstr ""
+
+#: incsub-support.php:1103 incsub-support.php:1608 incsub-support.php:2160
+msgid "Created On:"
+msgstr ""
+
+#: incsub-support.php:1108 incsub-support.php:1238 incsub-support.php:1613
+#: incsub-support.php:1744 incsub-support.php:2165
+msgid "Ticket History"
+msgstr ""
+
+#: incsub-support.php:1112 incsub-support.php:1617 incsub-support.php:2169
+msgid "Author"
+msgstr ""
+
+#: incsub-support.php:1113 incsub-support.php:1618 incsub-support.php:2170
+msgid "Ticket Message/Reply"
+msgstr ""
+
+#: incsub-support.php:1114 incsub-support.php:1619 incsub-support.php:2171
+msgid "Date/Time"
+msgstr ""
+
+#: incsub-support.php:1133 incsub-support.php:1638 incsub-support.php:2190
+msgid "User"
+msgstr ""
+
+#: incsub-support.php:1165 incsub-support.php:1671 incsub-support.php:2223
+msgid "Update This Ticket"
+msgstr ""
+
+#: incsub-support.php:1166 incsub-support.php:1284 incsub-support.php:1672
+#: incsub-support.php:1790 incsub-support.php:2224
+msgid "* All fields are required."
+msgstr ""
+
+#: incsub-support.php:1169 incsub-support.php:1244 incsub-support.php:1288
+#: incsub-support.php:1675 incsub-support.php:1750 incsub-support.php:1794
+#: incsub-support.php:2227 incsub-support.php:2324
+msgid "Subject"
+msgstr ""
+
+#: incsub-support.php:1170 incsub-support.php:1289 incsub-support.php:1676
+#: incsub-support.php:1795 incsub-support.php:2228
+msgid "max: 100 characters"
+msgstr ""
+
+#: incsub-support.php:1173 incsub-support.php:1292 incsub-support.php:1679
+#: incsub-support.php:1798
+msgid "Category"
+msgstr ""
+
+#: incsub-support.php:1218 incsub-support.php:1724 incsub-support.php:2299
+msgid "Add A Reply"
+msgstr ""
+
+#: incsub-support.php:1219 incsub-support.php:1344 incsub-support.php:1725
+#: incsub-support.php:1850
+msgid ""
+"Please provide as much information as possible, so that we may better help "
+"you."
+msgstr ""
+
+#: incsub-support.php:1222 incsub-support.php:1728 incsub-support.php:2303
+msgid "Close Ticket?"
+msgstr ""
+
+#: incsub-support.php:1223 incsub-support.php:1729
+msgid "Yes, please close this ticket."
+msgstr ""
+
+#: incsub-support.php:1223 incsub-support.php:1729
+msgid "Once a ticket is closed, you can no longer reply to (or update) it."
+msgstr ""
+
+#: incsub-support.php:1228 incsub-support.php:1734 incsub-support.php:2309
+msgid "Update Ticket"
+msgstr ""
+
+#: incsub-support.php:1228 incsub-support.php:1734 incsub-support.php:2309
+msgid "Cancel"
+msgstr ""
+
+#: incsub-support.php:1243 incsub-support.php:1749 incsub-support.php:2323
+msgid "Ticket ID"
+msgstr ""
+
+#: incsub-support.php:1247 incsub-support.php:1753 incsub-support.php:2327
+msgid "Staff Member"
+msgstr ""
+
+#: incsub-support.php:1258 incsub-support.php:1764 incsub-support.php:2338
+msgid "There aren't any tickets to view at this time."
+msgstr ""
+
+#: incsub-support.php:1265 incsub-support.php:1771 incsub-support.php:2345
+msgid "Unassigned"
+msgstr ""
+
+#: incsub-support.php:1283 incsub-support.php:1789
+msgid "Add Ticket"
+msgstr ""
+
+#: incsub-support.php:1340 incsub-support.php:1846
+msgid "New Ticket"
+msgstr ""
+
+#: incsub-support.php:1343 incsub-support.php:1849
+msgid "Problem Description"
+msgstr ""
+
+#: incsub-support.php:1349 incsub-support.php:1855
+msgid "Submit New Ticket"
+msgstr ""
+
+#: incsub-support.php:1904
+#, php-format
+msgid "%1$s available"
+msgstr ""
+
+#: incsub-support.php:2004
+msgid ""
+"Ticket has been updated successfully, and the user notified of your "
+"response. You will be notified by email of any responses to this ticket."
+msgstr ""
+
+#: incsub-support.php:2009
+msgid "Support Ticket Updated: "
+msgstr ""
+
+#: incsub-support.php:2070 incsub-support.php:2450
+msgid "Support Ticket Management"
+msgstr ""
+
+#: incsub-support.php:2077 incsub-support.php:2092
+msgid "Archived Tickets"
+msgstr ""
+
+#: incsub-support.php:2081
+msgid "Managing Ticket"
+msgstr ""
+
+#: incsub-support.php:2086
+msgid "Ticket Main"
+msgstr ""
+
+#: incsub-support.php:2090
+msgid "Active Tickets"
+msgstr ""
+
+#: incsub-support.php:2276
+msgid "Ticket Responsibility"
+msgstr ""
+
+#: incsub-support.php:2282
+msgid "Keep Responsibility For This Ticket"
+msgstr ""
+
+#: incsub-support.php:2283
+msgid "Give Up Responsibility To Allow Another Admin To Accept"
+msgstr ""
+
+#: incsub-support.php:2287
+msgid "Accept Responsibility For This Ticket"
+msgstr ""
+
+#: incsub-support.php:2291
+msgid "Keep Current Admin, And Just Help Out With A Reply"
+msgstr ""
+
+#: incsub-support.php:2300
+msgid ""
+"Please provide as much information as possible, so that the user can "
+"understand the solution/request."
+msgstr ""
+
+#: incsub-support.php:2304
+msgid "Yes, close this ticket."
+msgstr ""
+
+#: incsub-support.php:2304
+msgid "Once a ticket is closed, users can no longer reply to (or update) it."
+msgstr ""
+
+#: incsub-support.php:2453
+msgid "Ticket Categories"
+msgstr ""
+
+#: incsub-support.php:2455
+msgid "Ticket Manager"
+msgstr ""
+
+#: incsub-support.php:2511
+msgid "The name is used to identify the category to which tickets relate."
+msgstr ""
+
+#: incsub-support.php:2530
+msgid "Once a minutes"
+msgstr ""
+
+#: incsub-support.php:2531
+msgid "Once every five minutes"
+msgstr ""
+
+#: incsub-support.php:2532
+msgid "Once every fifteen minutes"
+msgstr ""
+
+#: incsub-support.php:2533
+msgid "Once every half an hour"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://premium.wpmudev.org/project/support-system"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Support System for WordPress multi site"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://premium.wpmudev.org"
+msgstr ""
