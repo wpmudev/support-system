@@ -231,6 +231,8 @@ function incsub_support_options() {
 	
 	if (isset($_POST['incsub_support_menu_name'])) {
 		update_site_option('incsub_support_menu_name', $_POST['incsub_support_menu_name']);
+		update_site_option('incsub_support_from_name', $_POST['incsub_support_from_name']);
+		update_site_option('incsub_support_from_mail', $_POST['incsub_support_from_mail']);
 		update_site_option('incsub_support_fetch_imap', $_POST['incsub_support_fetch_imap']);
 		
 		if (get_site_option('incsub_support_imap_frequency', '') != $_POST['incsub_support_imap_frequency']) {
@@ -264,6 +266,16 @@ function incsub_support_options() {
 					<td><label for="incsub_support_menu_name"><?php _e('Support menu name', INCSUB_SUPPORT_LANG_DOMAIN); ?></label> </td>
 					<td><input type="text" id="incsub_support_menu_name" name="incsub_support_menu_name" value="<?php print get_site_option('incsub_support_menu_name', __('Support', INCSUB_SUPPORT_LANG_DOMAIN)); ?>" class="incsub_support_menu_name" size="30" /></td>
 					<td class="info"> <?php _e("Change the text of the 'Support' menu item to anything you need.", INCSUB_SUPPORT_LANG_DOMAIN); ?></td>
+				</tr>
+				<tr>
+					<td><label for="incsub_support_from_name"><?php _e('Support from name', INCSUB_SUPPORT_LANG_DOMAIN); ?></label> </td>
+					<td><input type="text" id="incsub_support_from_name" name="incsub_support_from_name" value="<?php print get_site_option('incsub_support_from_name', get_bloginfo('blogname')); ?>" class="incsub_support_from_name" size="30" /></td>
+					<td class="info"> <?php _e("Support mail from name.", INCSUB_SUPPORT_LANG_DOMAIN); ?></td>
+				</tr>
+				<tr>
+					<td><label for="incsub_support_from_mail"><?php _e('Support from e-mail', INCSUB_SUPPORT_LANG_DOMAIN); ?></label> </td>
+					<td><input type="text" id="incsub_support_from_mail" name="incsub_support_from_mail" value="<?php print get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')); ?>" class="incsub_support_from_mail" size="30" /></td>
+					<td class="info"> <?php _e("Support mail from address.", INCSUB_SUPPORT_LANG_DOMAIN); ?></td>
 				</tr>
 				<tr>
 					<td><label for="incsub_support_fetch_imap"><?php _e('Fetch responses via IMAP', INCSUB_SUPPORT_LANG_DOMAIN); ?></label> </td>
@@ -982,7 +994,7 @@ function incsub_support_tickets_output() {
 						"to"		=> incsub_support_notification_admin_email(),
 						"subject"	=> __("New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN) . $title,
 						"message"	=> _("
-	***  DO NOT REPLY TO THIS EMAIL  ***
+	".((get_site_option('incsub_support_fetch_imap', 'disabled') == 'enabled')?"***  DO NOT WRITE BELLOW THIS LINE  ***":"***  DO NOT REPLY TO THIS EMAIL  ***")."
 
 	Subject: ". $title ."
 	Status: ". $ticket_status[$status] ."
@@ -1012,7 +1024,7 @@ function incsub_support_tickets_output() {
 	Ticket URL:
 		http://". $current_site->domain . $current_site->path ."wp-admin/ms-admin.php?page=ticket-manager&tid={$ticket_id}"), // ends lang string
 
-	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option("site_name") ."\" <". get_site_option("admin_email") .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
+	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
 					); // ends array.
 				} else {
 				$notification = __("Ticket Error: There was an error submitting your ticket. Please try again in a few minutes.", INCSUB_SUPPORT_LANG_DOMAIN);
@@ -1061,7 +1073,7 @@ function incsub_support_tickets_output() {
 						"subject"	=> __("[#{$ticket_id}] ", INCSUB_SUPPORT_LANG_DOMAIN) . $title,
 						"message"	=> _("
 
-	***  DO NOT REPLY TO THIS EMAIL  ***
+	".((get_site_option('incsub_support_fetch_imap', 'disabled') == 'enabled')?"***  DO NOT WRITE BELLOW THIS LINE  ***":"***  DO NOT REPLY TO THIS EMAIL  ***")."
 
 	Subject: ". $title ."
 	Status: ". $ticket_status[$status] ."
@@ -1091,7 +1103,7 @@ function incsub_support_tickets_output() {
 	Ticket URL:
 		http://". $current_site->domain . $current_site->path ."wp-admin/ms-admin.php?page=ticket-manager&tid={$ticket_id}"), // ends lang string
 
-	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option("site_name") ."\" <". get_site_option("admin_email") .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
+	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
 
 					); // ends array.
 
@@ -1493,7 +1505,7 @@ function incsub_support_process_reply($curr_user = null) {
 						"to"		=> incsub_support_notification_admin_email(),
 						"subject"	=> __("New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN) . $title,
 						"message"	=> _("
-	***  DO NOT REPLY TO THIS EMAIL  ***
+	".((get_site_option('incsub_support_fetch_imap', 'disabled') == 'enabled')?"***  DO NOT WRITE BELLOW THIS LINE  ***":"***  DO NOT REPLY TO THIS EMAIL  ***")."
 
 	Subject: ". $title ."
 	Status: ". $ticket_status[$status] ."
@@ -1523,7 +1535,7 @@ function incsub_support_process_reply($curr_user = null) {
 	Ticket URL:
 		http://". $current_site->domain . $current_site->path ."wp-admin/ms-admin.php?page=ticket-manager&tid={$ticket_id}"), // ends lang string
 
-	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option("site_name") ."\" <". get_site_option("admin_email") .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
+	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
 					); // ends array.
 				} else {
 				$notification = __("Ticket Error: There was an error submitting your ticket. Please try again in a few minutes.", INCSUB_SUPPORT_LANG_DOMAIN);
@@ -1572,7 +1584,7 @@ function incsub_support_process_reply($curr_user = null) {
 						"subject"	=> __("[#{$ticket_id}] ", INCSUB_SUPPORT_LANG_DOMAIN) . $title,
 						"message"	=> _("
 
-	***  DO NOT REPLY TO THIS EMAIL  ***
+	".((get_site_option('incsub_support_fetch_imap', 'disabled') == 'enabled')?"***  DO NOT WRITE BELLOW THIS LINE  ***":"***  DO NOT REPLY TO THIS EMAIL  ***")."
 
 	Subject: ". $title ."
 	Status: ". $ticket_status[$status] ."
@@ -1602,7 +1614,7 @@ function incsub_support_process_reply($curr_user = null) {
 	Ticket URL:
 		http://". $current_site->domain . $current_site->path ."wp-admin/ms-admin.php?page=ticket-manager&tid={$ticket_id}"), // ends lang string
 
-	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option("site_name") ."\" <". get_site_option("admin_email") .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
+	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
 
 					); // ends array.
 
@@ -2139,7 +2151,7 @@ function incsub_support_ticketadmin_main() {
 	". $wpdb->get_var("SELECT user_nicename FROM {$wpdb->users} WHERE ID = '{$current_user->id}'") .",
 	". get_site_option("site_name") ."\r\n\r\n"), // ends lang string
 
-						"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option("site_name") ."\" <". get_site_option("admin_email") .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
+						"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
 					); // ends array.
 				} else {
 					$notification = __("Ticket Error: There was an error updating your ticket. Please try again in a few minutes.", INCSUB_SUPPORT_LANG_DOMAIN);
@@ -2665,9 +2677,18 @@ function incsub_support_fetch_imap() {
 				continue;
 			}
 			
-			$_POST['message'] = imap_fetchbody($inbox, $email_number, 1);
+			$message = quoted_printable_decode(imap_fetchbody($inbox, $email_number, 1));
+			
+			$tlines = preg_split("/(\r\n|\n|\r)>/", $message);
+			
+			$lines = preg_split("/\r\n|\n\r|\n|\r/", trim($tlines[0]));
+			
+			array_pop($lines);
+			
+			$_POST['message'] = trim(join("\r\n", $lines));
 			$_POST['category'] = 1;
 			$_POST['priority'] = 1;
+			$_POST['status'] = 3;
 			
 			if (preg_match('/R.+\[#[0-9]+\]/i', $overview[0]->subject) >= 1) {
 				$_POST['modifyticket'] = 1;	
