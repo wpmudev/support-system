@@ -20,6 +20,7 @@ Support System for WordPress multi site.
 * Switch the main menu text option to a site option
 * Localization
 * Use css classes to hide faq (not inline styles)
+* Reply to tickets via mail (Needs access to mailbox via IMAP)
 
 = 1.5.4 =
 

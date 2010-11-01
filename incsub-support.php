@@ -254,8 +254,6 @@ function incsub_support_options() {
 		echo '<div class="updated fade"><p>'.__('Support options saved.', INCSUB_SUPPORT_LANG_DOMAIN).'</p></div>';
 	}
 	
-	incsub_support_fetch_imap();
-	
 	?>
 	<div class="wrap">
 		<h2><?php _e('Support System Settings', INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
