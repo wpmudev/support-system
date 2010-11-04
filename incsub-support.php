@@ -5,11 +5,11 @@
  Description: Support System for WordPress multi site 
  Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)
  WDP ID: 119
- Version: 1.5.5a3
+ Version: 1.5.5a4
  Author URI: http://premium.wpmudev.org
 */
 
-define('INCSUB_SUPPORT_VERSION', '1.5.5a3');
+define('INCSUB_SUPPORT_VERSION', '1.5.5a4');
 define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
 
 global $ticket_status, $ticket_priority;
@@ -74,6 +74,38 @@ function incsub_support_init() {
 		5	=>	"Closed"
 	);
 	
+	$incsub_support_imap = get_site_option('incsub_support_imap',
+		array(
+		      'host' => 'imap.gmail.com',
+		      'port' => '993',
+		      'ssl' => '/ssl',
+		      'mailbox' => 'INBOX',
+		      'username' => '',
+		      'password' => ''
+		)
+	);
+	
+	if (isset($_POST['incsub_support_menu_name']) && isset($_POST['incsub_support_from_name'])
+	    && isset($_POST['incsub_support_from_mail']) && isset($_POST['incsub_support_fetch_imap'])) {
+		update_site_option('incsub_support_menu_name', $_POST['incsub_support_menu_name']);
+		update_site_option('incsub_support_from_name', $_POST['incsub_support_from_name']);
+		update_site_option('incsub_support_from_mail', $_POST['incsub_support_from_mail']);
+		update_site_option('incsub_support_fetch_imap', $_POST['incsub_support_fetch_imap']);
+		
+		if (get_site_option('incsub_support_imap_frequency', '') != $_POST['incsub_support_imap_frequency']) {
+			if (wp_reschedule_event(0, $_POST['incsub_support_imap_frequency'], 'incsub_support_fetch_imap') === false) {
+				wp_schedule_event(0, $_POST['incsub_support_imap_frequency'], 'incsub_support_fetch_imap');
+			}
+			update_site_option('incsub_support_imap_frequency', $_POST['incsub_support_imap_frequency']);
+		}
+		
+		if (empty($_POST['incsub_support_imap']['password'])) {
+			$_POST['incsub_support_imap']['password'] = $incsub_support_imap['password'];
+		}
+		
+		update_site_option('incsub_support_imap', $_POST['incsub_support_imap']);
+		wp_redirect("ms-admin.php?page=support-options&updated=true");
+	}
 }
 
 function incsub_support_admin_styles() {
@@ -228,27 +260,6 @@ function incsub_support_options() {
 		      'password' => ''
 		)
 	);
-	
-	if (isset($_POST['incsub_support_menu_name'])) {
-		update_site_option('incsub_support_menu_name', $_POST['incsub_support_menu_name']);
-		update_site_option('incsub_support_from_name', $_POST['incsub_support_from_name']);
-		update_site_option('incsub_support_from_mail', $_POST['incsub_support_from_mail']);
-		update_site_option('incsub_support_fetch_imap', $_POST['incsub_support_fetch_imap']);
-		
-		if (get_site_option('incsub_support_imap_frequency', '') != $_POST['incsub_support_imap_frequency']) {
-			if (wp_reschedule_event(0, $_POST['incsub_support_imap_frequency'], 'incsub_support_fetch_imap') === false) {
-				wp_schedule_event(0, $_POST['incsub_support_imap_frequency'], 'incsub_support_fetch_imap');
-			}
-			update_site_option('incsub_support_imap_frequency', $_POST['incsub_support_imap_frequency']);
-		}
-		
-		if (empty($_POST['incsub_support_imap']['password'])) {
-			$_POST['incsub_support_imap']['password'] = $incsub_support_imap['password'];
-		}
-		
-		update_site_option('incsub_support_imap', $_POST['incsub_support_imap']);
-		wp_redirect("ms-admin.php?page=support-options&updated=true");
-	}
 	
 	if (isset($_GET['updated'])) {
 		echo '<div class="updated fade"><p>'.__('Support options saved.', INCSUB_SUPPORT_LANG_DOMAIN).'</p></div>';

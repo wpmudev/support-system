@@ -21,6 +21,7 @@ Support System for WordPress multi site.
 * Localization
 * Use css classes to hide faq (not inline styles)
 * Reply to tickets via mail (Needs access to mailbox via IMAP)
+* Fixed redirect after saving Support options
 
 = 1.5.4 =
 
