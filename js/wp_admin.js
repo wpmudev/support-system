@@ -26,9 +26,9 @@
         
         $('#incsub_support_fetch_imap').change(function() {
             if ($('#incsub_support_fetch_imap').val() == 'enabled') {
-                $('tr.imap_details').show();
+                $('.imap_details').show();
             } else {
-                $('tr.imap_details').hide();   
+                $('.imap_details').hide();   
             }
         });
         $('#incsub_support_fetch_imap').change();

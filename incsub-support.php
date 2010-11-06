@@ -104,7 +104,16 @@ function incsub_support_init() {
 		}
 		
 		update_site_option('incsub_support_imap', $_POST['incsub_support_imap']);
-		wp_redirect("ms-admin.php?page=support-options&updated=true");
+		
+		if (isset($_POST['test']) && $_POST['incsub_support_fetch_imap'] == "enabled") {
+			if (incsub_support_fetch_imap()) {
+				wp_redirect("ms-admin.php?page=support-options&updated=true&tested=true");
+			} else {
+				wp_redirect("ms-admin.php?page=support-options&updated=true&tested=false");
+			}
+		} else {
+			wp_redirect("ms-admin.php?page=support-options&updated=true");
+		}
 	}
 }
 
@@ -261,10 +270,13 @@ function incsub_support_options() {
 		)
 	);
 	
-	if (isset($_GET['updated'])) {
+	if (isset($_GET['updated']) && $_GET['updated']) {
 		echo '<div class="updated fade"><p>'.__('Support options saved.', INCSUB_SUPPORT_LANG_DOMAIN).'</p></div>';
 	}
 	
+	if (isset($_GET['tested']) && $_GET['tested']) {
+		echo '<div class="updated fade"><p>'.__('IMAP settings successfully tested.', INCSUB_SUPPORT_LANG_DOMAIN).'</p></div>';
+	}
 	?>
 	<div class="wrap">
 		<h2><?php _e('Support System Settings', INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
@@ -338,7 +350,10 @@ function incsub_support_options() {
 				</tr>
 			</table>
 			
-			<p class="submit"><input type="submit" name="Submit" value="<?php _e('Save Changes', INCSUB_SUPPORT_LANG_DOMAIN) ?>" /></p>
+			<p class="submit">
+				<input type="submit" name="submit" value="<?php _e('Save Changes', INCSUB_SUPPORT_LANG_DOMAIN) ?>" />
+				<input type="submit" name="test" class="imap_details" value="<?php _e('Test IMAP settings', INCSUB_SUPPORT_LANG_DOMAIN) ?>" />
+			</p>
 		</form>
 	</div>
 	<?php
@@ -2648,7 +2663,7 @@ function incsub_support_notification_user_email($user_id) {
 /**
  * Fetch mails via IMAP
  *
- * @todo fetch mails via IMAP and add responses
+ * @return	boolean		Successfully connected to IMAP
  */
 function incsub_support_fetch_imap() {
 	$imap_settings = get_site_option('incsub_support_imap',
@@ -2669,6 +2684,10 @@ function incsub_support_fetch_imap() {
 	
 	/* try to connect */
 	$inbox = imap_open($hostname,$username,$password) or die('Cannot connect to Gmail: ' . imap_last_error());
+	
+	if (!$inbox) {
+		return false;
+	}
 	
 	/* grab emails */
 	$emails = imap_search($inbox,'UNSEEN');
@@ -2714,6 +2733,7 @@ function incsub_support_fetch_imap() {
 	}
 	
 	imap_close($inbox);
+	return true;
 }
 
 function incsub_support_cron_schedules($schedules) {
