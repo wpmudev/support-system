@@ -23,6 +23,7 @@ Support System for WordPress multi site.
 * Reply to tickets via mail (Needs access to mailbox via IMAP)
 * Fixed redirect after saving Support options
 * Test IMAP settings
+* Possible fix for "Support System Invalid Ticket message"
 
 = 1.5.4 =
 

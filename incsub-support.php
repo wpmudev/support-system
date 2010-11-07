@@ -992,8 +992,8 @@ function incsub_support_tickets_output() {
 			$notification = __("Ticket Error: All fields are required.", INCSUB_SUPPORT_LANG_DOMAIN);
 			$nclass = "error";
 		} else {
-			$title = strip_tags($_POST['subject']);
-			$message = strip_tags($_POST['message']);
+			$title = $wpdb->escape(incsub_support_stripslashes(strip_tags($_POST['subject'])));
+			$message = $wpdb->escape(incsub_support_stripslashes(strip_tags($_POST['message'])));
 			$category = $_POST['category'];
 			$priority = $_POST['priority'];
 			$email_message = false;
@@ -1068,8 +1068,8 @@ function incsub_support_tickets_output() {
 			$notification = __("Ticket Error: All fields are required.", INCSUB_SUPPORT_LANG_DOMAIN);
 			$nclass = "error";
 		} else {
-			$title = strip_tags($_POST['subject']);
-			$message = strip_tags($_POST['message']);
+			$title = $wpdb->escape(incsub_support_stripslashes(strip_tags($_POST['subject'])));
+			$message = $wpdb->escape(incsub_support_stripslashes(strip_tags($_POST['message'])));
 			$category = $_POST['category'];
 			$priority = $_POST['priority'];
 			$ticket_id = $_POST['ticket_id'];
@@ -1503,8 +1503,8 @@ function incsub_support_process_reply($curr_user = null) {
 			$notification = __("Ticket Error: All fields are required.", INCSUB_SUPPORT_LANG_DOMAIN);
 			$nclass = "error";
 		} else {
-			$title = strip_tags($_POST['subject']);
-			$message = strip_tags($_POST['message']);
+			$title = $wpdb->escape(incsub_support_stripslashes(strip_tags($_POST['subject'])));
+			$message = $wpdb->escape(incsub_support_stripslashes(strip_tags($_POST['message'])));
 			$category = $_POST['category'];
 			$priority = $_POST['priority'];
 			$email_message = false;
@@ -1579,8 +1579,8 @@ function incsub_support_process_reply($curr_user = null) {
 			$notification = __("Ticket Error: All fields are required.", INCSUB_SUPPORT_LANG_DOMAIN);
 			$nclass = "error";
 		} else {
-			$title = strip_tags($_POST['subject']);
-			$message = strip_tags($_POST['message']);
+			$title = $wpdb->escape(incsub_support_stripslashes(strip_tags($_POST['subject'])));
+			$message = $wpdb->escape(incsub_support_stripslashes(strip_tags($_POST['message'])));
 			$category = $_POST['category'];
 			$priority = $_POST['priority'];
 			$ticket_id = $_POST['ticket_id'];
@@ -2105,8 +2105,8 @@ function incsub_support_ticketadmin_main() {
 			$notification = __("Ticket Error: All fields are required.", INCSUB_SUPPORT_LANG_DOMAIN);
 			$nclass = "error";
 		} else {
-			$title = strip_tags($_POST['subject']);
-			$message = strip_tags($_POST['message']);
+			$title = $wpdb->escape(incsub_support_stripslashes(strip_tags($_POST['subject'])));
+			$message = $wpdb->escape(incsub_support_stripslashes(strip_tags($_POST['message'])));
 			$category = $_POST['category'];
 			$priority = $_POST['priority'];
 			$ticket_id = $_POST['ticket_id'];
@@ -2743,6 +2743,13 @@ function incsub_support_cron_schedules($schedules) {
 	$schedules['thirtyminutes'] = array( 'interval' => 1800, 'display' => __('Once every half an hour', INCSUB_SUPPORT_LANG_DOMAIN) );
 	
 	return $schedules;
+}
+
+function incsub_support_stripslashes($str) {
+	if (get_magic_quotes_gpc()) {
+		return stripcslashes($str);
+	}
+	return $str;
 }
 
 incsub_support();
