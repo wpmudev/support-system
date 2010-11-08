@@ -1,5 +1,5 @@
 /**
- * Chat plugin javascript
+ * Support System plugin javascript
  * 
  * @author	S H Mohanjith <moha@mohanjith.net>
  * @since	1.5.4
