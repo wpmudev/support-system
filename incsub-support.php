@@ -338,7 +338,7 @@ function incsub_support_options() {
 						<label for="incsub_support_imap_ssl"><?php _e('SSL', INCSUB_SUPPORT_LANG_DOMAIN); ?></label><br/>
 						<select name="incsub_support_imap[ssl]" id="incsub_support_imap_ssl">
 							<option value="/ssl"<?php if ( $incsub_support_imap['ssl'] == '/ssl' ) { echo ' selected="selected" '; } ?>><?php _e('Yes', INCSUB_SUPPORT_LANG_DOMAIN); ?></option>
-							<option value=""<?php if ( $incsub_support_imap['ssl'] == '' ) { echo ' selected="selected" '; } ?>><?php _e('No', INCSUB_SUPPORT_LANG_DOMAIN); ?></option>
+							<option value="/notls"<?php if ( $incsub_support_imap['ssl'] == '/notls' ) { echo ' selected="selected" '; } ?>><?php _e('No', INCSUB_SUPPORT_LANG_DOMAIN); ?></option>
 						</select>
 						<br/>
 						<label for="incsub_support_imap_mailbox"><?php _e('IMAP mailbox', INCSUB_SUPPORT_LANG_DOMAIN); ?></label><br/>

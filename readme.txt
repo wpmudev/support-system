@@ -16,6 +16,7 @@ Support System for WordPress multi site.
 = 1.5.6 =
 
 * Do not show WoD when IMAP settings are wrong
+* IMAP with no SSL issue
 
 = 1.5.5 =
 
