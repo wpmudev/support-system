@@ -13,6 +13,10 @@ Support System for WordPress multi site.
 
 == ChangeLog ==
 
+= 1.5.6 =
+
+* Do not show WoD when IMAP settings are wrong
+
 = 1.5.5 =
 
 * Notify user when admin replies a ticket while awaiting user reply

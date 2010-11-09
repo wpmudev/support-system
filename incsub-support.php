@@ -274,8 +274,12 @@ function incsub_support_options() {
 		echo '<div class="updated fade"><p>'.__('Support options saved.', INCSUB_SUPPORT_LANG_DOMAIN).'</p></div>';
 	}
 	
-	if (isset($_GET['tested']) && $_GET['tested']) {
-		echo '<div class="updated fade"><p>'.__('IMAP settings successfully tested.', INCSUB_SUPPORT_LANG_DOMAIN).'</p></div>';
+	if (isset($_GET['tested'])) {
+		if ($_GET['tested'] == 'true') {
+			echo '<div class="updated fade"><p>'.__('IMAP settings successfully tested.', INCSUB_SUPPORT_LANG_DOMAIN).'</p></div>';
+		} else {
+			echo '<div class="updated fade"><p>'.__('Failed to connect to the IMAP server.', INCSUB_SUPPORT_LANG_DOMAIN).'</p></div>';
+		}
 	}
 	?>
 	<div class="wrap">
@@ -2683,9 +2687,9 @@ function incsub_support_fetch_imap() {
 	$password = $imap_settings['password'];
 	
 	/* try to connect */
-	$inbox = imap_open($hostname,$username,$password) or die('Cannot connect to Gmail: ' . imap_last_error());
+	$inbox = imap_open($hostname,$username,$password);
 	
-	if (!$inbox) {
+	if ($inbox == false) {
 		return false;
 	}
 	
