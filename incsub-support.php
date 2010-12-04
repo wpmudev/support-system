@@ -5,11 +5,11 @@
  Description: Support System for WordPress multi site 
  Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)
  WDP ID: 119
- Version: 1.5.5
+ Version: 1.5.6
  Author URI: http://premium.wpmudev.org
 */
 
-define('INCSUB_SUPPORT_VERSION', '1.5.5');
+define('INCSUB_SUPPORT_VERSION', '1.5.6');
 define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
 
 global $ticket_status, $ticket_priority;
