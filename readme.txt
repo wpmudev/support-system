@@ -15,8 +15,9 @@ Support System for WordPress multi site.
 
 = 1.5.6 =
 
-* Do not show WoD when IMAP settings are wrong
+* Do not show WPD when IMAP settings are wrong
 * IMAP with no SSL issue
+* Fixed: Duplicate default categories
 
 = 1.5.5 =
 

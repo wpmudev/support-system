@@ -126,7 +126,7 @@ function incsub_support_admin_script() {
 }
 
 function incsub_support_install() {
-	global $wpdb, $current_site;
+	global $wpdb;
 	
 	/**
 	 * WordPress database upgrade/creation functions
@@ -161,7 +161,8 @@ function incsub_support_install() {
 			qcount smallint(3) unsigned NOT NULL,
 			defcat enum('0','1') NOT NULL default '0',
 			PRIMARY KEY  (cat_id),
-			KEY site_id (site_id)
+			KEY site_id (site_id),
+			UNIQUE KEY cat_name
 		      ) ENGINE=MyISAM $charset_collate;";
 	dbDelta($sql_main);
 	
@@ -196,7 +197,8 @@ function incsub_support_install() {
 			cat_name varchar(100) NOT NULL,
 			defcat enum('0','1') NOT NULL default '0',
 			PRIMARY KEY  (cat_id),
-			KEY site_id (site_id)
+			KEY site_id (site_id),
+			UNIQUE KEY cat_name
 		      ) ENGINE=MyISAM $charset_collate;";
 	dbDelta($sql_main);
 	
@@ -214,8 +216,31 @@ function incsub_support_install() {
 		      ) ENGINE=MyISAM $charset_collate;";
 	dbDelta($sql_main);
 	
-	$wpdb->query("INSERT IGNORE INTO ".incsub_support_tablename('faq_cats')." (site_id, cat_name, defcat) VALUES ('{$current_site->id}', 'General Questions', '1')");
-	$wpdb->query("INSERT IGNORE INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name, defcat) VALUES ('{$current_site->id}', 'General Questions', '1')");
+	$current_site = get_current_site();
+	
+	$default_faq_cat_count = $wpdb->get_var("SELECT COUNT(*) FROM ".incsub_support_tablename('faq_cats')." WHERE site_id = '{$current_site->id}' AND cat_name = 'General Questions' AND defcat = '1'");
+	if ($default_faq_cat_count == 0) {
+		$wpdb->query("INSERT IGNORE INTO ".incsub_support_tablename('faq_cats')." (site_id, cat_name, defcat) VALUES ('{$current_site->id}', 'General Questions', '1')");
+	} else if ($default_faq_cat_count > 1) {
+		$wpdb->query("DELETE FROM ".incsub_support_tablename('faq_cats')." WHERE site_id = '{$current_site->id}' AND cat_name = 'General Questions' AND defcat = '1' LIMIT ".($default_faq_cat_count-1));
+	}
+	
+	$default_ticket_cat_count = $wpdb->get_var("SELECT COUNT(*) FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' AND cat_name = 'General Questions' AND defcat = '1'");
+	if ($default_ticket_cat_count == 0) {
+		$wpdb->query("INSERT IGNORE INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name, defcat) VALUES ('{$current_site->id}', 'General Questions', '1')");
+	} else if ($default_ticket_cat_count > 1) {
+		$wpdb->query("DELETE FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' AND cat_name = 'General Questions' AND defcat = '1' LIMIT ".($default_ticket_cat_count-1));
+	}
+	
+	$faq_column_info = $wpdb->get_row("SHOW COLUMNS FROM ".incsub_support_tablename('faq_cats')." WHERE Field = 'cat_name'");
+	if ($faq_column_info->Key == '') {
+		$wpdb->query("ALTER TABLE ".incsub_support_tablename('faq_cats')." ADD UNIQUE (cat_name)");
+	}
+	
+	$ticket_column_info = $wpdb->get_row("SHOW COLUMNS FROM ".incsub_support_tablename('tickets_cats')." WHERE Field = 'cat_name'");
+	if ($ticket_column_info->Key == '') {
+		$wpdb->query("ALTER TABLE ".incsub_support_tablename('tickets_cats')." ADD UNIQUE (cat_name)");
+	}
 	
 	add_site_option('incsub_support_version', INCSUB_SUPPORT_VERSION);
 	add_site_option('incsub_support_menu_name', 'Support');
@@ -233,8 +258,10 @@ function incsub_support_tablename($table) {
 }
 
 function incsub_support_menu() {
-	global $menu, $submenu;
-
+	global $menu, $submenu, $wpdb;
+	
+	$current_site = get_current_site();
+	
 	add_menu_page(__('MU Support System', INCSUB_SUPPORT_LANG_DOMAIN), __(get_site_option('incsub_support_menu_name', 'Support'), INCSUB_SUPPORT_LANG_DOMAIN),  8, 'incsub_support', 'incsub_support_output_main', null, 30);
 	
 	add_submenu_page('incsub_support', __('Frequently Asked Questions', INCSUB_SUPPORT_LANG_DOMAIN), __('FAQ', INCSUB_SUPPORT_LANG_DOMAIN), 'read', 'incsub_support_faq', 'incsub_support_output_faq' );
