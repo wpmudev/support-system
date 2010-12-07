@@ -343,7 +343,7 @@ function incsub_support_options() {
 					<td><label for="incsub_support_imap_frequency"><?php _e('Fetch responses via IMAP', INCSUB_SUPPORT_LANG_DOMAIN); ?></label> </td>
 					<td>
 						<select name="incsub_support_imap_frequency" id="incsub_support_imap_frequency">
-							<option value=""<?php if ( get_site_option('incsub_support_imap_frequency', '') == '' ) { echo ' selected="selected" '; } ?>><?php _e('', INCSUB_SUPPORT_LANG_DOMAIN); ?></option>
+							<option value=""<?php if ( get_site_option('incsub_support_imap_frequency', '') == '' ) { echo ' selected="selected" '; } ?>></option>
 							<?php
 							foreach (wp_get_schedules() as $recurrence => $schedule) { ?>
 							<option value="<?php print $recurrence; ?>"<?php if ( get_site_option('incsub_support_imap_frequency', '') == $recurrence ) { echo ' selected="selected" '; } ?>><?php _e($schedule['display'], INCSUB_SUPPORT_LANG_DOMAIN); ?></option>
