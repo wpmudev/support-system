@@ -1,6 +1,6 @@
 <?php
 /*
- ﻿Plugin Name: MU Support System
+ Plugin Name: MU Support System
  Plugin URI: http://premium.wpmudev.org/project/support-system
  Description: Support System for WordPress multi site 
  Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)
@@ -162,7 +162,7 @@ function incsub_support_install() {
 			defcat enum('0','1') NOT NULL default '0',
 			PRIMARY KEY  (cat_id),
 			KEY site_id (site_id),
-			UNIQUE KEY cat_name
+			UNIQUE KEY cat_name (cat_name)
 		      ) ENGINE=MyISAM $charset_collate;";
 	dbDelta($sql_main);
 	
@@ -198,7 +198,7 @@ function incsub_support_install() {
 			defcat enum('0','1') NOT NULL default '0',
 			PRIMARY KEY  (cat_id),
 			KEY site_id (site_id),
-			UNIQUE KEY cat_name
+			UNIQUE KEY cat_name (cat_name)
 		      ) ENGINE=MyISAM $charset_collate;";
 	dbDelta($sql_main);
 	

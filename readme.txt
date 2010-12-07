@@ -13,6 +13,11 @@ Support System for WordPress multi site.
 
 == ChangeLog ==
 
+= 1.5.7 =
+
+* Fixed: Issue with creating FAQ and support categories
+* Fixed: Plugin not appearing (due to zero width no-break space)
+
 = 1.5.6 =
 
 * Do not show WPD when IMAP settings are wrong
