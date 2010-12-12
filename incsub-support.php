@@ -58,20 +58,20 @@ function incsub_support_init() {
 	$wpdb->faq_cats = incsub_support_tablename('faq_cats');
 	
 	$ticket_priority = array(
-		0	=>	"Low",
-		1	=>	"Normal",
-		2	=>	"Elevated",
-		3	=>	"High",
-		4	=>	"Critical"
+		0	=>	__("Low", INCSUB_SUPPORT_LANG_DOMAIN),
+		1	=>	__("Normal", INCSUB_SUPPORT_LANG_DOMAIN),
+		2	=>	__("Elevated", INCSUB_SUPPORT_LANG_DOMAIN),
+		3	=>	__("High", INCSUB_SUPPORT_LANG_DOMAIN),
+		4	=>	__("Critical", INCSUB_SUPPORT_LANG_DOMAIN)
 	);
 
 	$ticket_status = array(
-		0	=>	"New",
-		1	=>	"In progress",
-		2	=>	"Waiting on User to reply",
-		3	=>	"Waiting on Admin to reply",
-		4	=>	"Stalled",
-		5	=>	"Closed"
+		0	=>	__("New", INCSUB_SUPPORT_LANG_DOMAIN),
+		1	=>	__("In progress", INCSUB_SUPPORT_LANG_DOMAIN),
+		2	=>	__("Waiting on User to reply", INCSUB_SUPPORT_LANG_DOMAIN),
+		3	=>	__("Waiting on Admin to reply", INCSUB_SUPPORT_LANG_DOMAIN),
+		4	=>	__("Stalled", INCSUB_SUPPORT_LANG_DOMAIN),
+		5	=>	__("Closed", INCSUB_SUPPORT_LANG_DOMAIN)
 	);
 	
 	$incsub_support_imap = get_site_option('incsub_support_imap',
