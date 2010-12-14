@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MU Support System 1.5.6\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/incsub-support\n"
-"POT-Creation-Date: 2010-12-13 03:18+0530\n"
+"POT-Creation-Date: 2010-12-14 07:06+0530\n"
 "PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,51 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: incsub-support.php:61
+msgid "Low"
+msgstr ""
+
+#: incsub-support.php:62
+msgid "Normal"
+msgstr ""
+
+#: incsub-support.php:63
+msgid "Elevated"
+msgstr ""
+
+#: incsub-support.php:64
+msgid "High"
+msgstr ""
+
+#: incsub-support.php:65
+msgid "Critical"
+msgstr ""
+
+#: incsub-support.php:69
+msgid "New"
+msgstr ""
+
+#: incsub-support.php:70
+msgid "In progress"
+msgstr ""
+
+#: incsub-support.php:71
+msgid "Waiting on User to reply"
+msgstr ""
+
+#: incsub-support.php:72
+msgid "Waiting on Admin to reply"
+msgstr ""
+
+#: incsub-support.php:73
+msgid "Stalled"
+msgstr ""
+
+#: incsub-support.php:74
+msgid "Closed"
+msgstr ""
 
 #. #-#-#-#-#  incsub-support.pot (MU Support System 1.5.6)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
