@@ -13,6 +13,10 @@ Support System for WordPress multi site.
 
 == ChangeLog ==
 
+= 1.5.8 =
+
+* Fixed: Localizations don't load
+
 = 1.5.7 =
 
 * Fixed: Issue with creating FAQ and support categories
