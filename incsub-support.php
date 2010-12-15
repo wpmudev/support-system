@@ -46,7 +46,7 @@ function incsub_support_init() {
 	global $wpdb, $ticket_status, $ticket_priority;
 	
 	if (preg_match('/mu\-plugin/', __FILE__) > 0) {
-		load_muplugin_textdomain(INCSUB_SUPPORT_LANG_DOMAIN, false, dirname(plugin_basename(__FILE__)).'/languages');
+		load_muplugin_textdomain(INCSUB_SUPPORT_LANG_DOMAIN, dirname(plugin_basename(__FILE__)).'/languages');
 	} else {
 		load_plugin_textdomain(INCSUB_SUPPORT_LANG_DOMAIN, false, dirname(plugin_basename(__FILE__)).'/languages');
 	}
