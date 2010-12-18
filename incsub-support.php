@@ -435,12 +435,12 @@ function incsub_support_faqadmin_main() {
 	$bot5help = $wpdb->get_results("SELECT faq_id, question, help_yes, help_no, (help_yes/help_count)*100 AS help_percent FROM ".incsub_support_tablename('faq')." WHERE site_id = '{$current_site->id}' AND ((help_yes/help_count)*100) > '0' ORDER BY help_percent ASC LIMIT 0, 5");
 
 ?>
-	<h2><?php _e('FAQ Manager'); ?></h2>
+	<h2><?php _e('FAQ Manager', INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
 	<div class="handlediv">
 		<h3 class='hndle'>
-			<span><?php _e('FAQ Stats/Info'); ?></span>
-			<a href="ms-admin.php?page=faq-manager&amp;action=categories" class="rbutton"><strong><?php _e('Manage FAQ Categories'); ?></strong></a>
-			<a href="ms-admin.php?page=faq-manager&amp;action=questions" class="rbutton"><strong><?php _e('Manage Questions'); ?></strong></a>
+			<span><?php _e('FAQ Stats/Info', INCSUB_SUPPORT_LANG_DOMAIN); ?></span>
+			<a href="ms-admin.php?page=faq-manager&amp;action=categories" class="rbutton"><strong><?php _e('Manage FAQ Categories', INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
+			<a href="ms-admin.php?page=faq-manager&amp;action=questions" class="rbutton"><strong><?php _e('Manage Questions', INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
 			<br class="clear" />
 		</h3>
 		<div class="youhave">
@@ -448,7 +448,8 @@ function incsub_support_faqadmin_main() {
 				<li><?php echo $sentence; ?></li>
 				<?php echo $users_helped; ?>
 			</ul>
-			<h4><?php _e("Top 5: Most Helpful"); ?></h4>
+			<h4><?php _e("Top 5: Most Helpful", INCSUB_SUPPORT_LANG_DOMAIN
+				     ); ?></h4>
 <?php
 	if ( !empty($top5help) ) {
 		echo "
@@ -640,7 +641,7 @@ function incsub_support_faqadmin_questions() {
 		<h3 class='hndle'>
 			<span><?php _e("Manage Questions/Answers", INCSUB_SUPPORT_LANG_DOMAIN); ?></span>
 			<a href="ms-admin.php?page=faq-manager&amp;action=categories" class="rbutton"><strong><?php _e('Manage FAQ Categories'); ?></strong></a>
- 			<a href="#addquestion" class="rbutton"><strong><?php _e("Add New Question"); ?></strong></a>
+ 			<a href="#addquestion" class="rbutton"><strong><?php _e("Add New Question", INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
 			<br class="clear" />
 		</h3>
 		<div class="youhave">
@@ -659,7 +660,7 @@ function incsub_support_faqadmin_questions() {
 <?php
 			}
 ?>
-				<h3 style="font-size: 140%; text-align: left; padding: 0; margin: 0;"><a href="#" style="text-decoration: none;" onclick="javascript:FAQReverseDisplay('catbody-<?php echo $question->cat_id; ?>')"><?php _e("FAQ Category: "); echo $question->cat_name; ?> <small style="font-size: 12px;">(<?php _e("view questions"); ?>)</small></a></h3>
+				<h3 style="font-size: 140%; text-align: left; padding: 0; margin: 0;"><a href="#" style="text-decoration: none;" onclick="javascript:FAQReverseDisplay('catbody-<?php echo $question->cat_id; ?>')"><?php _e("FAQ Category: ", INCSUB_SUPPORT_LANG_DOMAIN); echo $question->cat_name; ?> <small style="font-size: 12px;">(<?php _e("view questions", INCSUB_SUPPORT_LANG_DOMAIN); ?>)</small></a></h3>
 				<table class="widefat" id="catbody-<?php echo $question->cat_id; ?>" style="width: 100%;" width="100%" class="invisible">
 					<thead>
 						<tr>
@@ -792,7 +793,7 @@ function incsub_support_faqadmin_categories() {
 		<h3 class='hndle'>
 			<span><?php _e("Manage Categories", INCSUB_SUPPORT_LANG_DOMAIN); ?></span>
  			<a href="#addcat" class="rbutton"><strong><?php _e("Add New Category", INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
-			<a href="ms-admin.php?page=faq-manager&amp;action=questions" class="rbutton"><strong><?php _e('Manage Questions'); ?></strong></a>
+			<a href="ms-admin.php?page=faq-manager&amp;action=questions" class="rbutton"><strong><?php _e('Manage Questions', INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
 			<br class="clear" />
 		</h3>
 		<div class="youhave">
@@ -1005,7 +1006,7 @@ function incsub_support_output_main() {
 			}
 		} else {
 ?>
-		<p><?php _e("We're currently updating and collecting new stats on our FAQ. Please visit", INCSUB_SUPPORT_LANG_DOMAIN); ?> <a href="admin.php?page=incsub_support_faq"><?php _e("our FAQ"); ?></a> <?php _e("for a full listing."); ?></p>
+		<p><?php _e("We're currently updating and collecting new stats on our FAQ. Please visit", INCSUB_SUPPORT_LANG_DOMAIN); ?> <a href="admin.php?page=incsub_support_faq"><?php _e("our FAQ", INCSUB_SUPPORT_LANG_DOMAIN); ?></a> <?php _e("for a full listing.", INCSUB_SUPPORT_LANG_DOMAIN); ?></p>
 <?php
 		}
 ?>
@@ -1742,7 +1743,7 @@ function incsub_support_output_tickets() {
 		} else {
 		$message_list = $current_ticket;
 		$current_ticket = $current_ticket[0];
-		$current_ticket->admin_name = !empty($current_ticket->admin_name) ? $current_ticket->admin_name : __("Not yet assigned");
+		$current_ticket->admin_name = !empty($current_ticket->admin_name) ? $current_ticket->admin_name : __("Not yet assigned", INCSUB_SUPPORT_LANG_DOMAIN);
 ?>
 	<h2><?php _e("Ticket Details", INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
 		<form action="admin.php?page=incsub_support_tickets" method="post" name="updateticket" id="updateticket">
@@ -1843,7 +1844,7 @@ function incsub_support_output_tickets() {
 			<table class="form-table">
 				<tr class="form-field form-required">
 					<th scope="row"><label for="subject"><?php _e("Subject", INCSUB_SUPPORT_LANG_DOMAIN); ?></label></th>
-					<td><input type="text" name="subject" id="subject" maxlength="100" size="60" value="Re: <?php echo $current_ticket->title; ?>" />&nbsp;<small>(<?php _e("max: 100 characters"); ?>)</small></td>
+					<td><input type="text" name="subject" id="subject" maxlength="100" size="60" value="Re: <?php echo $current_ticket->title; ?>" />&nbsp;<small>(<?php _e("max: 100 characters", INCSUB_SUPPORT_LANG_DOMAIN); ?>)</small></td>
 				</tr>
 				<tr class="form-field form-required">
 					<th scope="row"><?php _e('Category', INCSUB_SUPPORT_LANG_DOMAIN); ?>:</th>
@@ -1901,7 +1902,7 @@ function incsub_support_output_tickets() {
 			</table>
 			<p class="submit">
 				<input type="hidden" name="modifyticket" value="1" />
-				<input name="updateticket" type="submit" id="updateticket" value="<?php _e("Update Ticket", INCSUB_SUPPORT_LANG_DOMAIN); ?>" />&nbsp;&nbsp;&nbsp;&nbsp;<input name="canelsubmit" type="submit" id="cancelsubmit" value="<?php _e("Cancel"); ?>" />
+				<input name="updateticket" type="submit" id="updateticket" value="<?php _e("Update Ticket", INCSUB_SUPPORT_LANG_DOMAIN); ?>" />&nbsp;&nbsp;&nbsp;&nbsp;<input name="canelsubmit" type="submit" id="cancelsubmit" value="<?php _e("Cancel", INCSUB_SUPPORT_LANG_DOMAIN); ?>" />
 			</p>
 		</form>
 <?php
@@ -1962,7 +1963,7 @@ function incsub_support_output_tickets() {
 			<table class="form-table">
 				<tr class="form-field form-required">
 					<th scope="row"><label for="subject"><?php _e("Subject", INCSUB_SUPPORT_LANG_DOMAIN); ?></label></th>
-					<td><input type="text" name="subject" id="subject" maxlength="100" size="60" />&nbsp;<small>(<?php _e("max: 100 characters"); ?>)</small></td>
+					<td><input type="text" name="subject" id="subject" maxlength="100" size="60" />&nbsp;<small>(<?php _e("max: 100 characters", INCSUB_SUPPORT_LANG_DOMAIN); ?>)</small></td>
 				</tr>
 				<tr class="form-field form-required">
 					<th scope="row"><?php _e('Category', INCSUB_SUPPORT_LANG_DOMAIN); ?>:</th>
@@ -2057,7 +2058,7 @@ function incsub_support_output_faq() {
 		}
 		//-->
 	</script>
-	<h2><?php _e("Frequently Asked Questions"); ?></h2>
+	<h2><?php _e("Frequently Asked Questions", INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
 	<ul>
 	<?php
 	$current_cat = '';
@@ -2326,7 +2327,7 @@ function incsub_support_ticketadmin_main() {
 				<tr class="form-field form-required">
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Last Updated:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 					<td style="border-bottom:0;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($current_ticket->ticket_updated)); ?></td>
-					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Created On:"); ?></th>
+					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Created On:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 					<td style="border-bottom:0;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($current_ticket->ticket_opened)); ?></td>
 				</tr>
 			</table>
@@ -2394,7 +2395,7 @@ function incsub_support_ticketadmin_main() {
 			<table class="form-table">
 				<tr class="form-field form-required">
 					<th scope="row"><label for="subject"><?php _e("Subject", INCSUB_SUPPORT_LANG_DOMAIN); ?></label></th>
-					<td><input type="text" name="subject" id="subject" maxlength="100" size="60" value="Re: <?php echo $current_ticket->title; ?>" />&nbsp;<small>(<?php _e("max: 100 characters"); ?>)</small></td>
+					<td><input type="text" name="subject" id="subject" maxlength="100" size="60" value="Re: <?php echo $current_ticket->title; ?>" />&nbsp;<small>(<?php _e("max: 100 characters", INCSUB_SUPPORT_LANG_DOMAIN); ?>)</small></td>
 				</tr>
 				<tr class="form-field form-required">
 					<th scope="row">Category:</th>
