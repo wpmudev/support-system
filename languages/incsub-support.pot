@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MU Support System 1.5.8\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/incsub-support\n"
-"POT-Creation-Date: 2010-12-19 03:19+0530\n"
+"POT-Creation-Date: 2010-12-19 23:16+0530\n"
 "PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,6 +60,11 @@ msgstr ""
 
 #: incsub-support.php:74
 msgid "Closed"
+msgstr ""
+
+#: incsub-support.php:221 incsub-support.php:223 incsub-support.php:225
+#: incsub-support.php:228 incsub-support.php:230 incsub-support.php:232
+msgid "General Questions"
 msgstr ""
 
 #. #-#-#-#-#  incsub-support.pot (MU Support System 1.5.8)  #-#-#-#-#
