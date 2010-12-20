@@ -16,6 +16,7 @@ Support System for WordPress multi site.
 = 1.5.8 =
 
 * Fixed: Localizations don't load
+* Finalized localizing
 
 = 1.5.7 =
 
