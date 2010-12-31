@@ -5,11 +5,11 @@
  Description: Support System for WordPress multi site 
  Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)
  WDP ID: 119
- Version: 1.5.8
+ Version: 1.5.9
  Author URI: http://premium.wpmudev.org
 */
 
-define('INCSUB_SUPPORT_VERSION', '1.5.8');
+define('INCSUB_SUPPORT_VERSION', '1.5.9');
 define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
 
 global $ticket_status, $ticket_priority;
@@ -1215,7 +1215,7 @@ function incsub_support_tickets_output() {
 			$ticket_error = 1;
 ?>
 	<h2 class="error"><?php _e("Error: Invalid Ticket Selected", INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
-<?
+<?php
 		} else {
 		$message_list = $current_ticket;
 		$current_ticket = $current_ticket[0];
@@ -1739,7 +1739,7 @@ function incsub_support_output_tickets() {
 			$ticket_error = 1;
 ?>
 	<h2 class="error"><?php _e("Error: Invalid Ticket Selected", INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
-<?
+<?php
 		} else {
 		$message_list = $current_ticket;
 		$current_ticket = $current_ticket[0];
@@ -2290,7 +2290,7 @@ function incsub_support_ticketadmin_main() {
 			$ticket_error = 1;
 ?>
 	<h2 class="error"><?php _e("Error: Invalid Ticket Selected", INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
-<?
+<?php
 		} else {
 		$message_list = $current_ticket;
 		$current_ticket = $current_ticket[0];

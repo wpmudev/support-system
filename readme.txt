@@ -13,6 +13,10 @@ Support System for WordPress multi site.
 
 == ChangeLog ==
 
+= 1.5.9 =
+
+* Fixed: Blank screen in ticket details page
+
 = 1.5.8 =
 
 * Fixed: Localizations don't load
