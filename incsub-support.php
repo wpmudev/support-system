@@ -16,6 +16,7 @@ define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
 global $ticket_status, $ticket_priority;
 
 function incsub_support() {
+	global $wp_version;
 	// We only need a single set of databases for the whole network
 	register_activation_hook(__FILE__, 'incsub_support_install');
 	register_deactivation_hook(__FILE__, 'incsub_support_uninstall');
@@ -24,7 +25,7 @@ function incsub_support() {
 	add_action('admin_menu', 'incsub_support_menu');
 	add_action('network_admin_menu', 'incsub_support_network_menu');
 	
-	if ( version_compare($wp_version, '3.1.0', '>=') ) {
+	if ( version_compare($wp_version, '3.0.9', '>') ) {
 		add_action('admin_print_styles-settings_page_support-options', 'incsub_support_admin_styles');
 	} else {
 		add_action('admin_print_styles-ms-admin_page_support-options', 'incsub_support_admin_styles');
@@ -34,7 +35,7 @@ function incsub_support() {
 	add_action('admin_print_styles-'.sanitize_title_with_dashes(__(get_site_option('incsub_support_menu_name', 'Support'), INCSUB_SUPPORT_LANG_DOMAIN)).'_page_incsub_support_tickets', 'incsub_support_admin_styles');
 	add_action('admin_print_styles-'.sanitize_title_with_dashes(__(get_site_option('incsub_support_menu_name', 'Support'), INCSUB_SUPPORT_LANG_DOMAIN)).'_page_incsub_support_faq', 'incsub_support_admin_styles');
 	
-	if ( version_compare($wp_version, '3.1.0', '>=') ) {
+	if ( version_compare($wp_version, '3.0.9', '>') ) {
 		add_action('admin_print_scripts-settings_page_support-options', 'incsub_support_admin_script');
 	} else {
 		add_action('admin_print_scripts-ms-admin_page_support-options', 'incsub_support_admin_script');
@@ -280,7 +281,7 @@ function incsub_support_menu() {
 	add_submenu_page('incsub_support', __('Frequently Asked Questions', INCSUB_SUPPORT_LANG_DOMAIN), __('FAQ', INCSUB_SUPPORT_LANG_DOMAIN), 'read', 'incsub_support_faq', 'incsub_support_output_faq' );
 	add_submenu_page('incsub_support', __('Support Tickets', INCSUB_SUPPORT_LANG_DOMAIN), __('Support Tickets', INCSUB_SUPPORT_LANG_DOMAIN), 'edit_posts', 'incsub_support_tickets', 'incsub_support_output_tickets' );
 
-	if ( version_compare($wp_version, '3.1.0', '<') ) {
+	if ( version_compare($wp_version, '3.1', '<') ) {
 		add_submenu_page('ms-admin.php', __('Frequently Asked Questions', INCSUB_SUPPORT_LANG_DOMAIN), __('FAQ Manager', INCSUB_SUPPORT_LANG_DOMAIN), 'manage_options', 'faq-manager', 'incsub_support_faqadmin' );
 		add_submenu_page('ms-admin.php', __('Support Ticket Management System', INCSUB_SUPPORT_LANG_DOMAIN), __('Support Ticket Manager', INCSUB_SUPPORT_LANG_DOMAIN), 'manage_options', 'ticket-manager', 'incsub_support_ticketadmin' );
 		add_submenu_page('ms-admin.php', __('Support System Options', INCSUB_SUPPORT_LANG_DOMAIN), __('Support Options', INCSUB_SUPPORT_LANG_DOMAIN), 'manage_options', 'support-options', 'incsub_support_options' );
@@ -290,7 +291,7 @@ function incsub_support_menu() {
 function incsub_support_network_menu() {
 	global $wp_version;
 	
-	if ( version_compare($wp_version, '3.1.0', '>=') ) {
+	if ( version_compare($wp_version, '3.0.9', '>') ) {
 		add_submenu_page('settings.php', __('Frequently Asked Questions', INCSUB_SUPPORT_LANG_DOMAIN), __('FAQ Manager', INCSUB_SUPPORT_LANG_DOMAIN), 'manage_options', 'faq-manager', 'incsub_support_faqadmin' );
 		add_submenu_page('settings.php', __('Support Ticket Management System', INCSUB_SUPPORT_LANG_DOMAIN), __('Support Ticket Manager', INCSUB_SUPPORT_LANG_DOMAIN), 'manage_options', 'ticket-manager', 'incsub_support_ticketadmin' );
 		add_submenu_page('settings.php', __('Support System Options', INCSUB_SUPPORT_LANG_DOMAIN), __('Support Options', INCSUB_SUPPORT_LANG_DOMAIN), 'manage_options', 'support-options', 'incsub_support_options' );
