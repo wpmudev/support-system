@@ -13,7 +13,15 @@
 define('INCSUB_SUPPORT_VERSION', '1.6.0');
 define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
 
-global $ticket_status, $ticket_priority;
+global $ticket_status, $ticket_priority, $incsub_support_settings_page, $incsub_support_settings_page_long;
+
+if ( version_compare($wp_version, '3.0.9', '>') ) {
+	$incsub_support_settings_page = 'settings.php';
+	$incsub_support_settings_page_long = 'network/settings.php';
+} else {
+	$incsub_support_settings_page = 'ms-admin.php';
+	$incsub_support_settings_page_long = 'ms-admin.php';
+}
 
 function incsub_support() {
 	global $wp_version;
@@ -57,7 +65,7 @@ function incsub_support() {
 }
 
 function incsub_support_init() {
-	global $wpdb, $ticket_status, $ticket_priority;
+	global $wpdb, $ticket_status, $ticket_priority, $incsub_support_settings_page, $incsub_support_settings_page_long;
 	
 	if (preg_match('/mu\-plugin/', __FILE__) > 0) {
 		load_muplugin_textdomain(INCSUB_SUPPORT_LANG_DOMAIN, dirname(plugin_basename(__FILE__)).'/languages');
@@ -121,12 +129,12 @@ function incsub_support_init() {
 		
 		if (isset($_POST['test']) && $_POST['incsub_support_fetch_imap'] == "enabled") {
 			if (incsub_support_fetch_imap()) {
-				wp_redirect("settings.php?page=support-options&updated=true&tested=true");
+				wp_redirect("{$incsub_support_settings_page}?page=support-options&updated=true&tested=true");
 			} else {
-				wp_redirect("settings.php?page=support-options&updated=true&tested=false");
+				wp_redirect("{$incsub_support_settings_page}?page=support-options&updated=true&tested=false");
 			}
 		} else {
-			wp_redirect("settings.php?page=support-options&updated=true");
+			wp_redirect("{$incsub_support_settings_page}?page=support-options&updated=true");
 		}
 	}
 }
@@ -272,7 +280,7 @@ function incsub_support_tablename($table) {
 }
 
 function incsub_support_menu() {
-	global $menu, $submenu, $wpdb;
+	global $menu, $submenu, $wpdb, $incsub_support_settings_page, $incsub_support_settings_page_long;
 	
 	$current_site = get_current_site();
 	
@@ -282,19 +290,19 @@ function incsub_support_menu() {
 	add_submenu_page('incsub_support', __('Support Tickets', INCSUB_SUPPORT_LANG_DOMAIN), __('Support Tickets', INCSUB_SUPPORT_LANG_DOMAIN), 'edit_posts', 'incsub_support_tickets', 'incsub_support_output_tickets' );
 
 	if ( version_compare($wp_version, '3.1', '<') ) {
-		add_submenu_page('ms-admin.php', __('Frequently Asked Questions', INCSUB_SUPPORT_LANG_DOMAIN), __('FAQ Manager', INCSUB_SUPPORT_LANG_DOMAIN), 'manage_options', 'faq-manager', 'incsub_support_faqadmin' );
-		add_submenu_page('ms-admin.php', __('Support Ticket Management System', INCSUB_SUPPORT_LANG_DOMAIN), __('Support Ticket Manager', INCSUB_SUPPORT_LANG_DOMAIN), 'manage_options', 'ticket-manager', 'incsub_support_ticketadmin' );
-		add_submenu_page('ms-admin.php', __('Support System Options', INCSUB_SUPPORT_LANG_DOMAIN), __('Support Options', INCSUB_SUPPORT_LANG_DOMAIN), 'manage_options', 'support-options', 'incsub_support_options' );
+		add_submenu_page($incsub_support_settings_page, __('Frequently Asked Questions', INCSUB_SUPPORT_LANG_DOMAIN), __('FAQ Manager', INCSUB_SUPPORT_LANG_DOMAIN), 'manage_options', 'faq-manager', 'incsub_support_faqadmin' );
+		add_submenu_page($incsub_support_settings_page, __('Support Ticket Management System', INCSUB_SUPPORT_LANG_DOMAIN), __('Support Ticket Manager', INCSUB_SUPPORT_LANG_DOMAIN), 'manage_options', 'ticket-manager', 'incsub_support_ticketadmin' );
+		add_submenu_page($incsub_support_settings_page, __('Support System Options', INCSUB_SUPPORT_LANG_DOMAIN), __('Support Options', INCSUB_SUPPORT_LANG_DOMAIN), 'manage_options', 'support-options', 'incsub_support_options' );
 	}
 }
 
 function incsub_support_network_menu() {
-	global $wp_version;
+	global $wp_version, $incsub_support_settings_page, $incsub_support_settings_page_long;
 	
 	if ( version_compare($wp_version, '3.0.9', '>') ) {
-		add_submenu_page('settings.php', __('Frequently Asked Questions', INCSUB_SUPPORT_LANG_DOMAIN), __('FAQ Manager', INCSUB_SUPPORT_LANG_DOMAIN), 'manage_options', 'faq-manager', 'incsub_support_faqadmin' );
-		add_submenu_page('settings.php', __('Support Ticket Management System', INCSUB_SUPPORT_LANG_DOMAIN), __('Support Ticket Manager', INCSUB_SUPPORT_LANG_DOMAIN), 'manage_options', 'ticket-manager', 'incsub_support_ticketadmin' );
-		add_submenu_page('settings.php', __('Support System Options', INCSUB_SUPPORT_LANG_DOMAIN), __('Support Options', INCSUB_SUPPORT_LANG_DOMAIN), 'manage_options', 'support-options', 'incsub_support_options' );
+		add_submenu_page($incsub_support_settings_page, __('Frequently Asked Questions', INCSUB_SUPPORT_LANG_DOMAIN), __('FAQ Manager', INCSUB_SUPPORT_LANG_DOMAIN), 'manage_options', 'faq-manager', 'incsub_support_faqadmin' );
+		add_submenu_page($incsub_support_settings_page, __('Support Ticket Management System', INCSUB_SUPPORT_LANG_DOMAIN), __('Support Ticket Manager', INCSUB_SUPPORT_LANG_DOMAIN), 'manage_options', 'ticket-manager', 'incsub_support_ticketadmin' );
+		add_submenu_page($incsub_support_settings_page, __('Support System Options', INCSUB_SUPPORT_LANG_DOMAIN), __('Support Options', INCSUB_SUPPORT_LANG_DOMAIN), 'manage_options', 'support-options', 'incsub_support_options' );
 	}
 }
 
@@ -441,7 +449,8 @@ function incsub_support_faqadmin() {
 }
 
 function incsub_support_faqadmin_main() {
-	global $wpdb, $current_site;
+	global $wpdb, $current_site, $incsub_support_settings_page, $incsub_support_settings_page_long;
+	
 	$questions = $wpdb->get_var("SELECT COUNT(faq_id) FROM ".incsub_support_tablename('faq')." WHERE site_id = '{$current_site->id}'");
 	$cats = $wpdb->get_var("SELECT COUNT(cat_id) FROM ".incsub_support_tablename('faq_cats')." WHERE site_id = '{$current_site->id}'");
 	$sum_help_yes = $wpdb->get_var("SELECT SUM(help_yes) FROM ".incsub_support_tablename('faq')." WHERE site_id = '{$current_site->id}'");
@@ -465,8 +474,8 @@ function incsub_support_faqadmin_main() {
 	<div class="handlediv">
 		<h3 class='hndle'>
 			<span><?php _e('FAQ Stats/Info', INCSUB_SUPPORT_LANG_DOMAIN); ?></span>
-			<a href="settings.php?page=faq-manager&amp;action=categories" class="rbutton"><strong><?php _e('Manage FAQ Categories', INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
-			<a href="settings.php?page=faq-manager&amp;action=questions" class="rbutton"><strong><?php _e('Manage Questions', INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
+			<a href="<?php print $incsub_support_settings_page; ?>?page=faq-manager&amp;action=categories" class="rbutton"><strong><?php _e('Manage FAQ Categories', INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
+			<a href="<?php print $incsub_support_settings_page; ?>?page=faq-manager&amp;action=questions" class="rbutton"><strong><?php _e('Manage Questions', INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
 			<br class="clear" />
 		</h3>
 		<div class="youhave">
@@ -524,7 +533,7 @@ function incsub_support_faqadmin_main() {
 }
 
 function incsub_support_faqadmin_questions() {
-	global $wpdb, $current_site;
+	global $wpdb, $current_site, $incsub_support_settings_page, $incsub_support_settings_page_long;
 	if ( !empty($_POST) ) {
 		// post data received...
 		if ( !empty($_POST['deleteq']) and $_POST['deleteq'] == 1 ) {
@@ -642,7 +651,7 @@ function incsub_support_faqadmin_questions() {
 			$editq = $editq[0];
 ?>			
 		<h2><?php _e("Editing: ", INCSUB_SUPPORT_LANG_DOMAIN); echo $editq->question; ?></h2>
-			<form id="addquestion" action="settings.php?page=faq-manager&action=questions" method="post">
+			<form id="addquestion" action="<?php print $incsub_support_settings_page; ?>?page=faq-manager&action=questions" method="post">
 		<?php wp_nonce_field("incsub_faqmanagement_managequestions"); ?>
 <?php incsub_support_faqadmin_postbox($editq); ?>
 				<p class="submit" style="padding: 10px;">
@@ -666,12 +675,12 @@ function incsub_support_faqadmin_questions() {
 	<div class="handlediv">
 		<h3 class='hndle'>
 			<span><?php _e("Manage Questions/Answers", INCSUB_SUPPORT_LANG_DOMAIN); ?></span>
-			<a href="settings.php?page=faq-manager&amp;action=categories" class="rbutton"><strong><?php _e('Manage FAQ Categories'); ?></strong></a>
+			<a href="<?php print $incsub_support_settings_page; ?>?page=faq-manager&amp;action=categories" class="rbutton"><strong><?php _e('Manage FAQ Categories'); ?></strong></a>
  			<a href="#addquestion" class="rbutton"><strong><?php _e("Add New Question", INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
 			<br class="clear" />
 		</h3>
 		<div class="youhave">
-			<form id="managecats" action="settings.php?page=faq-manager&action=questions" method="post">
+			<form id="managecats" action="<?php print $incsub_support_settings_page; ?>?page=faq-manager&action=questions" method="post">
 				<?php wp_nonce_field("incsub_faqmanagement_managequestions"); ?>
 
 <?php
@@ -710,7 +719,7 @@ function incsub_support_faqadmin_questions() {
 							<td valign="top">
 								<?php echo html_entity_decode($question->answer); ?>
 							</td>
-							<td valign="middle" style="vertical-align: middle;"><a href="settings.php?page=faq-manager&amp;action=questions&amp;qid=<?php echo $question->faq_id; ?>" class="button" title="edit this"><?php _e("Edit This", INCSUB_SUPPORT_LANG_DOMAIN); ?></a></td>
+							<td valign="middle" style="vertical-align: middle;"><a href="<?php print $incsub_support_settings_page; ?>?page=faq-manager&amp;action=questions&amp;qid=<?php echo $question->faq_id; ?>" class="button" title="edit this"><?php _e("Edit This", INCSUB_SUPPORT_LANG_DOMAIN); ?></a></td>
 						</tr>
 <?php
 	}
@@ -724,7 +733,7 @@ function incsub_support_faqadmin_questions() {
 			</form>
 			<br /><br />
 			<h2><?php _e('Add New Question', INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
-			<form id="addquestion" action="settings.php?page=faq-manager&action=questions" method="post">
+			<form id="addquestion" action="<?php print $incsub_support_settings_page; ?>?page=faq-manager&action=questions" method="post">
 		<?php wp_nonce_field("incsub_faqmanagement_managequestions"); ?>
 <?php incsub_support_faqadmin_postbox(); ?>
 				<p class="submit" style="padding: 10px;">
@@ -738,7 +747,7 @@ function incsub_support_faqadmin_questions() {
 }
 
 function incsub_support_faqadmin_categories() {
-	global $wpdb, $current_site;
+	global $wpdb, $current_site, $incsub_support_settings_page, $incsub_support_settings_page_long;
 	if ( !empty($_POST['updateq']) ) {
 		check_admin_referer("incsub_faqmanagement_managecats");
 		if ( !empty($_POST['deleteme']) ) {
@@ -819,11 +828,11 @@ function incsub_support_faqadmin_categories() {
 		<h3 class='hndle'>
 			<span><?php _e("Manage Categories", INCSUB_SUPPORT_LANG_DOMAIN); ?></span>
  			<a href="#addcat" class="rbutton"><strong><?php _e("Add New Category", INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
-			<a href="settings.php?page=faq-manager&amp;action=questions" class="rbutton"><strong><?php _e('Manage Questions', INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
+			<a href="<?php print $incsub_support_settings_page; ?>?page=faq-manager&amp;action=questions" class="rbutton"><strong><?php _e('Manage Questions', INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
 			<br class="clear" />
 		</h3>
 		<div class="youhave">
-			<form id="managecats" action="settings.php?page=faq-manager&action=categories" method="post">
+			<form id="managecats" action="<?php print $incsub_support_settings_page; ?>?page=faq-manager&action=categories" method="post">
 <?php wp_nonce_field("incsub_faqmanagement_managecats"); ?>
 				<?php if ( count($cats) > 1 ) { ?><p class="submit" style="border-top: none;"><input type="submit" class="button" name="deleteme" value="Delete" /></p><?php } ?>
 				<table class="widefat">
@@ -870,7 +879,7 @@ function incsub_support_faqadmin_categories() {
 	</div>
 	<br />
 	<h2><?php _e('Add New Category', INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
-	<form name="addcat" id="addcat" method="post" action="settings.php?page=faq-manager&amp;action=categories">
+	<form name="addcat" id="addcat" method="post" action="<?php print $incsub_support_settings_page; ?>?page=faq-manager&amp;action=categories">
 	<?php wp_nonce_field("incsub_faqmanagement_addcat"); ?>
 	<table class="form-table">
 		<tr class="form-field form-required">
@@ -915,7 +924,7 @@ function incsub_support_faqadmin_postbox($data = '') {
 		<div id="titlewrap">
 			<input type="text" name="question" tabindex="1" value="<?php if ( !empty($data->question) ) { echo $data->question; }?>" id="title" autocomplete="off" style="width: 68.7%;" />
 		</div>
-		<h3><label for="category"><?php _e('FAQ Category', INCSUB_SUPPORT_LANG_DOMAIN); ?></label>&nbsp;&nbsp;<small style="font-size: 60%">( <a href="settings.php?page=faq-manager&amp;action=newcat"><?php _e('Add new FAQ Category?', INCSUB_SUPPORT_LANG_DOMAIN); ?></a> )</small></h3>
+		<h3><label for="category"><?php _e('FAQ Category', INCSUB_SUPPORT_LANG_DOMAIN); ?></label>&nbsp;&nbsp;<small style="font-size: 60%">( <a href="<?php print $incsub_support_settings_page; ?>?page=faq-manager&amp;action=newcat"><?php _e('Add new FAQ Category?', INCSUB_SUPPORT_LANG_DOMAIN); ?></a> )</small></h3>
 		<div id="content">
 			<select name="category" id="category">
 <?php
@@ -1042,7 +1051,7 @@ function incsub_support_output_main() {
 }
 
 function incsub_support_tickets_output() {
-	global $current_site, $current_user, $blog_id, $wpdb, $ticket_status, $ticket_priority;
+	global $current_site, $current_user, $blog_id, $wpdb, $ticket_status, $ticket_priority, $incsub_support_settings_page, $incsub_support_settings_page_long;
 	
 	// post routine.
 	if ( !empty($_POST['addticket']) and $_POST['addticket'] == 1 ) {
@@ -1084,7 +1093,7 @@ function incsub_support_tickets_output() {
 
 	Visit:
 
-		http://". $current_site->domain . $current_site->path ."wp-admin/settings.php?page=ticket-manager&tid={$ticket_id}
+		http://". $current_site->domain . $current_site->path ."wp-admin/{$incsub_support_settings_page_long}?page=ticket-manager&tid={$ticket_id}
 
 	to reply to view the new ticket.
 
@@ -1104,7 +1113,7 @@ function incsub_support_tickets_output() {
 
 
 	Ticket URL:
-		http://". $current_site->domain . $current_site->path ."wp-admin/settings.php?page=ticket-manager&tid={$ticket_id}"), // ends lang string
+		http://". $current_site->domain . $current_site->path ."wp-admin/{$incsub_support_settings_page_long}?page=ticket-manager&tid={$ticket_id}"), // ends lang string
 
 	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
 					); // ends array.
@@ -1163,7 +1172,7 @@ function incsub_support_tickets_output() {
 
 	Visit:
 
-		http://". $current_site->domain . $current_site->path ."wp-admin/settings.php?page=ticket-manager&tid={$ticket_id}
+		http://". $current_site->domain . $current_site->path ."wp-admin/{$incsub_support_settings_page_long}?page=ticket-manager&tid={$ticket_id}
 
 	to respond to this ticket update.
 
@@ -1183,7 +1192,7 @@ function incsub_support_tickets_output() {
 
 
 	Ticket URL:
-		http://". $current_site->domain . $current_site->path ."wp-admin/settings.php?page=ticket-manager&tid={$ticket_id}"), // ends lang string
+		http://". $current_site->domain . $current_site->path ."wp-admin/{$incsub_support_settings_page_long}?page=ticket-manager&tid={$ticket_id}"), // ends lang string
 
 	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
 
@@ -1548,7 +1557,7 @@ function incsub_support_notification_admin_email() {
 }
 
 function incsub_support_process_reply($curr_user = null) {
-	global $current_site, $current_user, $blog_id, $wpdb, $ticket_status, $ticket_priority;
+	global $current_site, $current_user, $blog_id, $wpdb, $ticket_status, $ticket_priority, $incsub_support_settings_page, $incsub_support_settings_page_long;
 	
 	if ($curr_user !=  null) {
 		$current_user = $curr_user;
@@ -1595,7 +1604,7 @@ function incsub_support_process_reply($curr_user = null) {
 
 	Visit:
 
-		http://". $current_site->domain . $current_site->path ."wp-admin/settings.php?page=ticket-manager&tid={$ticket_id}
+		http://". $current_site->domain . $current_site->path ."wp-admin/{$incsub_support_settings_page_long}?page=ticket-manager&tid={$ticket_id}
 
 	to reply to view the new ticket.
 
@@ -1615,7 +1624,7 @@ function incsub_support_process_reply($curr_user = null) {
 
 
 	Ticket URL:
-		http://". $current_site->domain . $current_site->path ."wp-admin/settings.php?page=ticket-manager&tid={$ticket_id}"), // ends lang string
+		http://". $current_site->domain . $current_site->path ."wp-admin/{$incsub_support_settings_page_long}?page=ticket-manager&tid={$ticket_id}"), // ends lang string
 
 	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
 					); // ends array.
@@ -1674,7 +1683,7 @@ function incsub_support_process_reply($curr_user = null) {
 
 	Visit:
 
-		http://". $current_site->domain . $current_site->path ."wp-admin/settings.php?page=ticket-manager&tid={$ticket_id}
+		http://". $current_site->domain . $current_site->path ."wp-admin/{$incsub_support_settings_page_long}?page=ticket-manager&tid={$ticket_id}
 
 	to respond to this ticket update.
 
@@ -1694,7 +1703,7 @@ function incsub_support_process_reply($curr_user = null) {
 
 
 	Ticket URL:
-		http://". $current_site->domain . $current_site->path ."wp-admin/settings.php?page=ticket-manager&tid={$ticket_id}"), // ends lang string
+		http://". $current_site->domain . $current_site->path ."wp-admin/{$incsub_support_settings_page_long}?page=ticket-manager&tid={$ticket_id}"), // ends lang string
 
 	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
 
@@ -2153,10 +2162,10 @@ function incsub_support_ticketadmin() {
 }
 
 function incsub_support_ticketadmin_main() {
-	global $wpdb, $current_site, $current_user, $ticket_status, $ticket_priority;
+	global $wpdb, $current_site, $current_user, $ticket_status, $ticket_priority, $incsub_support_settings_page, $incsub_support_settings_page_long;
 	if ( !empty($_POST['modifyticket']) and $_POST['modifyticket'] == 1 ) {
 		if ( !empty($_POST['canelsubmit']) ) {
-			wp_redirect("settings.php?page=ticket-manager");
+			wp_redirect("{$incsub_support_settings_page}?page=ticket-manager");
 			exit();
 		}
 		if ( empty($_POST['subject']) or !is_numeric($_POST['category']) or !is_numeric($_POST['priority']) or !is_numeric($_POST['status']) or !is_numeric($_POST['ticket_id']) or empty($_POST['message']) ) {
@@ -2278,14 +2287,14 @@ function incsub_support_ticketadmin_main() {
 <?php
 		}
 ?>
- 			<a href="settings.php?page=ticket-manager&amp;action=categories#addcat" class="rbutton"><strong><?php _e("Add New Category", INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
-			<a href="settings.php?page=ticket-manager" class="rbutton"><strong><?php _e('Ticket Main', INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
+ 			<a href="<?php print $incsub_support_settings_page; ?>?page=ticket-manager&amp;action=categories#addcat" class="rbutton"><strong><?php _e("Add New Category", INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
+			<a href="<?php print $incsub_support_settings_page; ?>?page=ticket-manager" class="rbutton"><strong><?php _e('Ticket Main', INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
 <?php
 	} else {
 ?>
 			<span><?php _e("Active Tickets", INCSUB_SUPPORT_LANG_DOMAIN); ?></span>
- 			<a href="settings.php?page=ticket-manager&amp;action=categories#addcat" class="rbutton"><strong><?php _e("Add New Category", INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
-			<a href="settings.php?page=ticket-manager&amp;action=history" class="rbutton"><strong><?php _e('Archived Tickets', INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
+ 			<a href="<?php print $incsub_support_settings_page; ?>?page=ticket-manager&amp;action=categories#addcat" class="rbutton"><strong><?php _e("Add New Category", INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
+			<a href="<?php print $incsub_support_settings_page; ?>?page=ticket-manager&amp;action=history" class="rbutton"><strong><?php _e('Archived Tickets', INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
 <?php
 	}
 ?>
@@ -2323,7 +2332,7 @@ function incsub_support_ticketadmin_main() {
 		$current_ticket->admin_name = !empty($current_ticket->admin_name) ? $current_ticket->admin_name : __("Not yet assigned");
 ?>
 	<h2><?php _e("Ticket Details", INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
-		<form action="settings.php?page=ticket-manager" method="post" name="updateticket" id="updateticket">
+		<form action="<?php print $incsub_support_settings_page; ?>?page=ticket-manager" method="post" name="updateticket" id="updateticket">
 			<table class="form-table" border="1">
 				<tr class="form-field form-required">
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Ticket Subject:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
@@ -2542,7 +2551,7 @@ function incsub_support_ticketadmin_main() {
 ?>
 				<tr class='<?php echo $class; ?>'>
 					<th scope="row"><?php echo $ticket->ticket_id; ?></th>
-					<td valign="top"><a href="settings.php?page=ticket-manager&amp;tid=<?php echo $ticket->ticket_id; ?>"><?php echo $ticket->title; ?></a></td>
+					<td valign="top"><a href="<?php print $incsub_support_settings_page; ?>?page=ticket-manager&amp;tid=<?php echo $ticket->ticket_id; ?>"><?php echo $ticket->title; ?></a></td>
 					<td valign="top"><?php echo $ticket_status[$ticket->ticket_status]; ?></td>
 					<td valign="top"><?php echo $ticket_priority[$ticket->ticket_priority]; ?></td>
 					<td valign="top"><?php echo $ticket->display_name; ?></td>
@@ -2563,7 +2572,7 @@ function incsub_support_ticketadmin_main() {
 }
 
 function incsub_support_ticketadmin_categories() {
-	global $wpdb, $current_site;
+	global $wpdb, $current_site, $incsub_support_settings_page, $incsub_support_settings_page_long;
 	if ( !empty($_POST['updateq']) ) {
 		check_admin_referer("incsub_ticketmanagement_managecats");
 		if ( !empty($_POST['deleteme']) ) {
@@ -2648,11 +2657,11 @@ function incsub_support_ticketadmin_categories() {
 		<h3 class='hndle'>
 			<span><?php _e("Ticket Categories", INCSUB_SUPPORT_LANG_DOMAIN); ?></span>
  			<a href="#addcat" class="rbutton"><strong><?php _e("Add New Category", INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
-			<a href="settings.php?page=ticket-manager" class="rbutton"><strong><?php _e('Ticket Manager', INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
+			<a href="<?php print $incsub_support_settings_page; ?>?page=ticket-manager" class="rbutton"><strong><?php _e('Ticket Manager', INCSUB_SUPPORT_LANG_DOMAIN); ?></strong></a>
 			<br class="clear" />
 		</h3>
 		<div class="youhave">
-			<form id="managecats" action="settings.php?page=ticket-manager&action=categories" method="post">
+			<form id="managecats" action="<?php print $incsub_support_settings_page; ?>?page=ticket-manager&action=categories" method="post">
 <?php wp_nonce_field("incsub_ticketmanagement_managecats"); ?>
 				<?php if ( count($cats) > 1 ) { ?><p class="submit" style="border-top: none;"><input type="submit" class="button" name="deleteme" value="<?php _e('Delete', INCSUB_SUPPORT_LANG_DOMAIN); ?>" /></p><?php } ?>
 				<table class="widefat">
@@ -2697,7 +2706,7 @@ function incsub_support_ticketadmin_categories() {
 	</div>
 	<br />
 	<h2><?php _e('Add New Category', INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
-	<form name="addcat" id="addcat" method="post" action="settings.php?page=ticket-manager&amp;action=categories">
+	<form name="addcat" id="addcat" method="post" action="<?php print $incsub_support_settings_page; ?>?page=ticket-manager&amp;action=categories">
 	<?php wp_nonce_field("incsub_faqmanagement_addcat"); ?>
 	<table class="form-table">
 		<tr class="form-field form-required">
