@@ -1,13 +1,13 @@
 <?php
 /*
- Plugin Name: MU Support System
- Plugin URI: http://premium.wpmudev.org/project/support-system
- Description: Support System for WordPress multi site 
- Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)
- WDP ID: 36
- Network: true
- Version: 1.6.0
- Author URI: http://premium.wpmudev.org
+Plugin Name: MU Support System
+Plugin URI: http://premium.wpmudev.org/project/support-system
+Description: Support System for WordPress multi site 
+Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)
+WDP ID: 36
+Network: true
+Version: 1.6.0
+Author URI: http://premium.wpmudev.org
 */
 
 define('INCSUB_SUPPORT_VERSION', '1.6.0');
