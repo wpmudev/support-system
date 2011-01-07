@@ -4,7 +4,7 @@
  Plugin URI: http://premium.wpmudev.org/project/support-system
  Description: Support System for WordPress multi site 
  Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)
- WDP ID: 119
+ WDP ID: 36
  Network: true
  Version: 1.6.0
  Author URI: http://premium.wpmudev.org
