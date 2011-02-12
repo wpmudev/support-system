@@ -13,6 +13,10 @@ Support System for WordPress multi site.
 
 == ChangeLog ==
 
+= 1.6.1 =
+
+* Add styles to categories
+
 = 1.6.0 =
 
 * Tested with WordPress 3.1

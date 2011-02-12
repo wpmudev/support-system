@@ -6,7 +6,7 @@ Description: Support System for WordPress multi site
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)
 WDP ID: 36
 Network: true
-Version: 1.6.0
+Version: 1.6.1
 Author URI: http://premium.wpmudev.org
 */
 
@@ -1020,7 +1020,7 @@ function incsub_support_output_main() {
 			foreach ( $top5help AS $faq ) {
 ?>
 			<li>
-				<a href="javascript:FAQReverseDisplay('answer-<?php echo $faq->faq_id; ?>')"><?php echo $faq->question; ?></a><br />
+				<a href="javascript:FAQReverseDisplay('answer-<?php echo $faq->faq_id; ?>')" class="question qc-<?php print $faq->cat_id; ?>"><?php echo $faq->question; ?></a><br />
 				<div id="answer-<?php echo $faq->faq_id; ?>" style="padding: 15px; border: 1px solid #464646; width: 90%;" class="invisible answer">
 <?php
 				if ( !empty($faq->help_count) and $faq->help_yes > 0 ) {
@@ -2108,14 +2108,14 @@ function incsub_support_output_faq() {
 			$available_text = sprintf( __ngettext( '%s question', '%s questions', $faq->qcount , INCSUB_SUPPORT_LANG_DOMAIN), number_format_i18n( $faq->qcount ) );
 			$sentence = sprintf( __( '%1$s available' , INCSUB_SUPPORT_LANG_DOMAIN), $available_text );
 			?>
-			<li><a href="javascript:FAQReverseDisplay('category-<?php echo $faq->cat_id; ?>')"><?php echo $faq->cat_name; ?> <?php echo "<small>({$sentence})</small>"; ?></a>
+			<li><a href="javascript:FAQReverseDisplay('category-<?php echo $faq->cat_id; ?>')" class="category category-<?php echo $faq->cat_id; ?>"><?php echo $faq->cat_name; ?> <?php echo "<small>({$sentence})</small>"; ?></a>
 			<ul id="category-<?php echo $faq->cat_id; ?>" class="invisible category">
 		<?php
 			$current_cat = $faq->cat_name;
 		}
 		?>
 			<li>
-				<a href="javascript:FAQReverseDisplay('answer-<?php echo $faq->faq_id; ?>')"><?php echo $faq->question; ?></a><br />
+				<a href="javascript:FAQReverseDisplay('answer-<?php echo $faq->faq_id; ?>')" class="question qcategory-<?php echo $faq->cat_id; ?>"><?php echo $faq->question; ?></a><br />
 				<div id="answer-<?php echo $faq->faq_id; ?>" style="padding: 15px; border: 1px solid #464646; width: 60%;" class="invisible answer">
 					<?php
 					if ( !empty($faq->help_count) and $faq->help_yes > 0 ) {

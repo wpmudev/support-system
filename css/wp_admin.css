@@ -52,3 +52,12 @@ p.info {
 	display: none;
 }
 
+a.category {
+	font-size: 1.2em;
+}
+
+ul.category {
+	margin-left: 10px;
+	font-size: 1em;
+}
+
