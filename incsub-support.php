@@ -546,13 +546,14 @@ function incsub_support_faqadmin_questions() {
 					if ( $key == 0 ) {
 						$wh .= "WHERE ((faq_id = '". $val['faq_id'] ."'";
 					} else {
-						$wh .= " OR faq_id = '". $val['faq_id'] ."'";
+						$wh .= "WHERE faq_id = '". $val['faq_id'] ."'";
 					}
 				}
 			}
 			if ( !empty($wh) ) {
 				// if $wh is empty, there wouldn't be anything to delete.
-				$wh .= ") AND site_id = '{$current_site->id}')";
+				$wh .= " AND site_id = '{$current_site->id}'";
+				
 				$wpdb->query("DELETE FROM ".incsub_support_tablename('faq')." ". $wh);
 				if ( !empty($wpdb->rows_affected) ) {
 					$delete_text = sprintf( __ngettext( '%s question was', '%s questions were', $wpdb->rows_affected, INCSUB_SUPPORT_LANG_DOMAIN ), number_format_i18n( $wpdb->rows_affected ) );

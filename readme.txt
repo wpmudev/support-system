@@ -13,6 +13,10 @@ Support System for WordPress multi site.
 
 == ChangeLog ==
 
+= 1.6.2 =
+
+* Fixed: 65,535 questions available
+
 = 1.6.1 =
 
 * Add styles to categories
