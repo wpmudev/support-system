@@ -6,11 +6,11 @@ Description: Support System for WordPress multi site
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)
 WDP ID: 36
 Network: true
-Version: 1.6.1
+Version: 1.6.2
 Author URI: http://premium.wpmudev.org
 */
 
-define('INCSUB_SUPPORT_VERSION', '1.6.1');
+define('INCSUB_SUPPORT_VERSION', '1.6.2');
 define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
 
 global $ticket_status, $ticket_priority, $incsub_support_settings_page, $incsub_support_settings_page_long;
@@ -24,10 +24,19 @@ if ( version_compare($wp_version, '3.0.9', '>') ) {
 }
 
 function incsub_support() {
-	global $wp_version;
+	global $wp_version, $wpdb;
+	
 	// We only need a single set of databases for the whole network
 	register_activation_hook(__FILE__, 'incsub_support_install');
 	register_deactivation_hook(__FILE__, 'incsub_support_uninstall');
+	
+	if ( version_compare(INCSUB_SUPPORT_VERSION, get_site_option('incsub_support_version', INCSUB_SUPPORT_VERSION), '>') ) {
+		$faq_cats = $wpdb->get_results("SELECT cat_id, site_id FROM ".incsub_support_tablename('faq_cats').";");
+		foreach ($faq_cats as $faq_cat) {
+			$wpdb->query("UPDATE ".incsub_support_tablename('faq_cats')." SET qcount = (SELECT COUNT(*) FROM ".incsub_support_tablename('faq')." WHERE cat_id = '{$faq_cat->cat_id}' AND site_id = '{$faq_cat->site_id}') WHERE cat_id = '{$faq_cat->cat_id}' AND site_id = '{$faq_cat->site_id}';");
+		}
+		update_site_option('incsub_support_version', INCSUB_SUPPORT_VERSION);
+	}
 	
 	add_action('init', 'incsub_support_init');
 	add_action('admin_menu', 'incsub_support_menu');
@@ -715,7 +724,6 @@ function incsub_support_faqadmin_questions() {
 							<th scope='row' class='check-column'><input type='checkbox' name='delete[][faq_id]' value='<?php echo $question->faq_id; ?>' /><input type="hidden" name="delete[][cat_id]" value="<?php echo $question->cat_id; ?>" /></th>
 							<td valign="top">
 								<?php echo $question->question; ?>
-
 							</td>
 							<td valign="top">
 								<?php echo html_entity_decode($question->answer); ?>
@@ -923,7 +931,7 @@ function incsub_support_faqadmin_postbox($data = '') {
 	<div id="post-body">
 		<h3><label for="question"><?php _e('Question', INCSUB_SUPPORT_LANG_DOMAIN); ?></label></h3>
 		<div id="titlewrap">
-			<input type="text" name="question" tabindex="1" value="<?php if ( !empty($data->question) ) { echo $data->question; }?>" id="title" autocomplete="off" style="width: 68.7%;" />
+			<input type="text" name="question" tabindex="1" value="<?php if ( !empty($data->question) ) { echo $data->question; } else if ( isset($_REQUEST['question']) && !empty($_REQUEST['question']) ) { echo $_REQUEST['question']; } ?>" id="title" autocomplete="off" style="width: 68.7%;" />
 		</div>
 		<h3><label for="category"><?php _e('FAQ Category', INCSUB_SUPPORT_LANG_DOMAIN); ?></label>&nbsp;&nbsp;<small style="font-size: 60%">( <a href="<?php print $incsub_support_settings_page; ?>?page=faq-manager&amp;action=newcat"><?php _e('Add new FAQ Category?', INCSUB_SUPPORT_LANG_DOMAIN); ?></a> )</small></h3>
 		<div id="content">
@@ -942,7 +950,7 @@ function incsub_support_faqadmin_postbox($data = '') {
 			</select>
 		</div>
 		<h3><label for="answer"><?php _e('Answer', INCSUB_SUPPORT_LANG_DOMAIN); ?></label></h3>
-		<textarea <?php echo $rows; ?> class="answer" name="answer" tabindex="3" id="answer"><?php if ( !empty($data->answer) ) { echo $data->answer; } else { echo ""; }?></textarea>
+		<textarea <?php echo $rows; ?> class="answer" name="answer" tabindex="3" id="answer"><?php if ( !empty($data->answer) ) { echo $data->answer; } else if ( isset($_REQUEST['answer']) && !empty($_REQUEST['answer']) ) { echo $_REQUEST['answer']; } ?></textarea>
 	</div>
 <?php
 
@@ -2375,6 +2383,7 @@ function incsub_support_ticketadmin_main() {
 						<th scope="col"><?php _e("Author", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 						<th scope="col"><?php _e("Ticket Message/Reply", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 						<th scope="col"><?php _e("Date/Time", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -2410,7 +2419,11 @@ function incsub_support_ticketadmin_main() {
 								<?php echo wpautop(html_entity_decode($message->message)); ?>
 							</div>
 						</td>
-						<td><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($message->message_date)); ?></td>
+						<td style="width: 250px;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($message->message_date)); ?></td>
+						<td>
+							<a title="<?php _e('Create a FAQ from this response',INCSUB_SUPPORT_LANG_DOMAIN); ?>"
+								href="<?php echo "{$incsub_support_settings_page}?page=faq-manager&amp;action=questions&amp;question={$message->subject}&amp;answer={$message->message}#addquestion"; ?>" ><?php _e('Create a FAQ',INCSUB_SUPPORT_LANG_DOMAIN); ?></a>
+						</td>
 					</tr>
 <?php
 				}
