@@ -6,11 +6,11 @@ Description: Support System for WordPress multi site
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)
 WDP ID: 36
 Network: true
-Version: 1.6.2
+Version: 1.6.3
 Author URI: http://premium.wpmudev.org
 */
 
-define('INCSUB_SUPPORT_VERSION', '1.6.2');
+define('INCSUB_SUPPORT_VERSION', '1.6.3');
 define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
 
 global $ticket_status, $ticket_priority, $incsub_support_settings_page, $incsub_support_settings_page_long;
@@ -289,7 +289,7 @@ function incsub_support_tablename($table) {
 }
 
 function incsub_support_menu() {
-	global $menu, $submenu, $wpdb, $incsub_support_settings_page, $incsub_support_settings_page_long;
+	global $menu, $submenu, $wpdb, $incsub_support_settings_page, $incsub_support_settings_page_long, $wp_version;
 	
 	$current_site = get_current_site();
 	
@@ -553,7 +553,7 @@ function incsub_support_faqadmin_questions() {
 				$count[$val['cat_id']] = (!empty($count[$val['cat_id']])) ? $count[$val['cat_id']]+1 : 1;
 				if ( is_numeric($val['faq_id']) and is_numeric($key) ) {
 					if ( $key == 0 ) {
-						$wh .= "WHERE ((faq_id = '". $val['faq_id'] ."'";
+						$wh .= "WHERE faq_id = '". $val['faq_id'] ."'";
 					} else {
 						$wh .= "WHERE faq_id = '". $val['faq_id'] ."'";
 					}
@@ -564,6 +564,7 @@ function incsub_support_faqadmin_questions() {
 				$wh .= " AND site_id = '{$current_site->id}'";
 				
 				$wpdb->query("DELETE FROM ".incsub_support_tablename('faq')." ". $wh);
+				
 				if ( !empty($wpdb->rows_affected) ) {
 					$delete_text = sprintf( __ngettext( '%s question was', '%s questions were', $wpdb->rows_affected, INCSUB_SUPPORT_LANG_DOMAIN ), number_format_i18n( $wpdb->rows_affected ) );
 					$sentence = sprintf( __( '%1$s removed', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_text );
@@ -672,6 +673,20 @@ function incsub_support_faqadmin_questions() {
 				</p>
 			</form>
 <?php
+			wp_tiny_mce( false , // true makes the editor "teeny"
+				array(
+					"editor_selector" => "answer",
+				)
+			);
+			
+			wp_print_scripts( array( 'wpdialogs-popup' ) );
+			wp_print_styles('wp-jquery-ui-dialog');
+			
+			require_once ABSPATH . 'wp-admin/includes/template.php';
+			require_once ABSPATH . 'wp-admin/includes/internal-linking.php';
+			?><div style="display:none;"><?php wp_link_dialog(); ?></div><?php
+			wp_print_scripts('wplink');
+			wp_print_styles('wplink');
 		}
 	}
 ?>
@@ -750,6 +765,22 @@ function incsub_support_faqadmin_questions() {
 					<input type="submit" class="button" value="<?php _e('Add New Question', INCSUB_SUPPORT_LANG_DOMAIN); ?>" />
 				</p>
 			</form>
+			<?php
+			wp_tiny_mce( false , // true makes the editor "teeny"
+				array(
+					"editor_selector" => "answer",
+				)
+			);
+			
+			wp_print_scripts( array( 'wpdialogs-popup' ) );
+			wp_print_styles('wp-jquery-ui-dialog');
+			
+			require_once ABSPATH . 'wp-admin/includes/template.php';
+			require_once ABSPATH . 'wp-admin/includes/internal-linking.php';
+			?><div style="display:none;"><?php wp_link_dialog(); ?></div><?php
+			wp_print_scripts('wplink');
+			wp_print_styles('wplink');
+			?>
 		</div>
 	</div>
 <?php
@@ -921,12 +952,6 @@ function incsub_support_faqadmin_postbox($data = '') {
 	if ( user_can_richedit() ) {
 		add_filter('the_editor_content', 'wp_richedit_pre');
 	}
-	
-	wp_tiny_mce( false , // true makes the editor "teeny"
-		array(
-			"editor_selector" => "answer"
-		)
-	);
 ?>
 	<div id="post-body">
 		<h3><label for="question"><?php _e('Question', INCSUB_SUPPORT_LANG_DOMAIN); ?></label></h3>
@@ -953,7 +978,6 @@ function incsub_support_faqadmin_postbox($data = '') {
 		<textarea <?php echo $rows; ?> class="answer" name="answer" tabindex="3" id="answer"><?php if ( !empty($data->answer) ) { echo $data->answer; } else if ( isset($_REQUEST['answer']) && !empty($_REQUEST['answer']) ) { echo $_REQUEST['answer']; } ?></textarea>
 	</div>
 <?php
-
 }
 
 function incsub_support_output_main() {
@@ -965,9 +989,6 @@ function incsub_support_output_main() {
 			ORDER BY ticket_priority DESC, ticket_updated DESC LIMIT 5");
 
 	$top5help = $wpdb->get_results("SELECT faq_id, question, answer, help_yes, help_no, (help_yes/help_count)*100 AS help_percent FROM ".incsub_support_tablename('faq')." WHERE site_id = '{$current_site->id}' ORDER BY help_percent DESC LIMIT 0, 5");
-
-
-
 ?>
 <br />
 <div class="wrap">

@@ -13,6 +13,10 @@ Support System for WordPress multi site.
 
 == ChangeLog ==
 
+= 1.6.3 =
+* Fixed: Saving and adding FAQ questions
+* Fixed: FAQ count issue
+
 = 1.6.2 =
 * On upgrade update faq cat counts
 * Create a new FAQ from a support response
