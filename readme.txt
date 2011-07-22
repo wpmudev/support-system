@@ -13,6 +13,9 @@ Support System for WordPress multi site.
 
 == ChangeLog ==
 
+= 1.6.4 =
+* Fixed: Add menu user level deprecated 
+
 = 1.6.3 =
 * Fixed: Saving and adding FAQ questions
 * Fixed: FAQ count issue

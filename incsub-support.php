@@ -6,11 +6,11 @@ Description: Support System for WordPress multi site
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)
 WDP ID: 36
 Network: true
-Version: 1.6.3
+Version: 1.6.4
 Author URI: http://premium.wpmudev.org
 */
 
-define('INCSUB_SUPPORT_VERSION', '1.6.3');
+define('INCSUB_SUPPORT_VERSION', '1.6.4');
 define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
 
 global $ticket_status, $ticket_priority, $incsub_support_settings_page, $incsub_support_settings_page_long;
@@ -293,7 +293,7 @@ function incsub_support_menu() {
 	
 	$current_site = get_current_site();
 	
-	add_menu_page(__('MU Support System', INCSUB_SUPPORT_LANG_DOMAIN), __(get_site_option('incsub_support_menu_name', 'Support'), INCSUB_SUPPORT_LANG_DOMAIN),  8, 'incsub_support', 'incsub_support_output_main', null, 30);
+	add_menu_page(__('MU Support System', INCSUB_SUPPORT_LANG_DOMAIN), __(get_site_option('incsub_support_menu_name', 'Support'), INCSUB_SUPPORT_LANG_DOMAIN),  'read', 'incsub_support', 'incsub_support_output_main', null, 30);
 	
 	add_submenu_page('incsub_support', __('Frequently Asked Questions', INCSUB_SUPPORT_LANG_DOMAIN), __('FAQ', INCSUB_SUPPORT_LANG_DOMAIN), 'read', 'incsub_support_faq', 'incsub_support_output_faq' );
 	add_submenu_page('incsub_support', __('Support Tickets', INCSUB_SUPPORT_LANG_DOMAIN), __('Support Tickets', INCSUB_SUPPORT_LANG_DOMAIN), 'edit_posts', 'incsub_support_tickets', 'incsub_support_output_tickets' );
