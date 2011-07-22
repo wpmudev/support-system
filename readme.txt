@@ -14,7 +14,8 @@ Support System for WordPress multi site.
 == ChangeLog ==
 
 = 1.6.4 =
-* Fixed: Add menu user level deprecated 
+* Fixed: Add menu user level deprecated
+* HTML input to FAQ editor
 
 = 1.6.3 =
 * Fixed: Saving and adding FAQ questions

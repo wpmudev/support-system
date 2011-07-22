@@ -975,8 +975,60 @@ function incsub_support_faqadmin_postbox($data = '') {
 			</select>
 		</div>
 		<h3><label for="answer"><?php _e('Answer', INCSUB_SUPPORT_LANG_DOMAIN); ?></label></h3>
-		<textarea <?php echo $rows; ?> class="answer" name="answer" tabindex="3" id="answer"><?php if ( !empty($data->answer) ) { echo $data->answer; } else if ( isset($_REQUEST['answer']) && !empty($_REQUEST['answer']) ) { echo $_REQUEST['answer']; } ?></textarea>
+		<div id="editor-toolbar">
+			<div class="zerosize"><input accesskey="e" type="button" onclick="switchEditors.go('answer')" /></div>
+			<a id="edButtonHTML" class="hide-if-no-js" onclick="switchEditors.go('answer', 'html');">HTML</a>
+			<a id="edButtonPreview" class="active hide-if-no-js" onclick="switchEditors.go('answer', 'tinymce');">Visual</a>
+		</div>
+		<div id="quicktags"><?php
+			wp_print_scripts( 'quicktags' ); ?>
+			<script type="text/javascript">edToolbar()</script>
+		</div>
+		<div id="editorcontainer">
+			<textarea <?php echo $rows; ?> class="answer" name="answer" tabindex="3" id="answer"><?php if ( !empty($data->answer) ) { echo $data->answer; } else if ( isset($_REQUEST['answer']) && !empty($_REQUEST['answer']) ) { echo $_REQUEST['answer']; } ?></textarea>
+		</div>
+		<script type="text/javascript">
+		edCanvas = document.getElementById('answer');
+		</script>
 	</div>
+	<style type="text/css">
+	#editor-toolbar {
+	    height: 30px;
+	}
+	
+	#edButtonPreview, #edButtonHTML {
+		background-color: #F1F1F1;
+		border-color: #DFDFDF #DFDFDF #CCCCCC;
+		color: #999999;
+	}
+	
+	#editor-toolbar .active {
+	    background-color: #E9E9E9;
+	    border-color: #CCCCCC #CCCCCC #E9E9E9;
+	    color: #333333;
+	}
+	
+	#editorcontainer  {
+		box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) inset;
+	}
+	
+	#editorcontainer textarea {
+		width: 100%;
+		border: 0 none;
+		margin: 0;
+	}
+	
+	.hide-if-no-js {
+		display: none;
+	}
+	</style>
+	<script type="text/javascript" ><!--
+		jQuery(document).ready(function () {
+			jQuery('.hide-if-no-js').show();
+			jQuery('#quicktags').hide();
+		});
+		//-->
+	</script>
 <?php
 }
 
