@@ -13,6 +13,9 @@ Support System for WordPress multi site.
 
 == ChangeLog ==
 
+= 1.6.6 =
+* Fixed: Deleting multiple FAQ questions
+
 = 1.6.5 =
 * Fixed: Update support options
 

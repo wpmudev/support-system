@@ -278,6 +278,13 @@ function incsub_support_install() {
 		$wpdb->query("ALTER TABLE ".incsub_support_tablename('tickets_cats')." ADD UNIQUE (cat_name)");
 	}
 	
+	$faq_counts = $wpdb->get_results("SELECT cat_id,COUNT(*) as count FROM ".incsub_support_tablename('faq')." WHERE site_id = '{$current_site->id}' GROUP BY cat_id");
+	$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('faq_cats')." SET qcount = %d WHERE site_id = %d", 0, $current_site->id));
+	
+	foreach ($faq_counts as $faq_count) {
+		$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('faq_cats')." SET qcount = %d WHERE site_id = %d AND cat_id = %d", $faq_count->count, $current_site->id, $faq_count->cat_id));
+	}
+	
 	add_site_option('incsub_support_version', INCSUB_SUPPORT_VERSION);
 	add_site_option('incsub_support_menu_name', 'Support');
 	
@@ -553,33 +560,34 @@ function incsub_support_faqadmin_questions() {
 		if ( !empty($_POST['deleteq']) and $_POST['deleteq'] == 1 ) {
 			// deleting
 			check_admin_referer("incsub_faqmanagement_managequestions");
-			$wh = '';
+			$wh = 'WHERE (';
+			$c=0;
 			foreach($_POST['delete'] as $key => $val) {
 				$count[$val['cat_id']] = (!empty($count[$val['cat_id']])) ? $count[$val['cat_id']]+1 : 1;
 				if ( is_numeric($val['faq_id']) and is_numeric($key) ) {
-					if ( $key == 0 ) {
-						$wh .= "WHERE faq_id = '". $val['faq_id'] ."'";
+					if ( $c == 0 ) {
+						$wh .= " faq_id = '". $val['faq_id'] ."'";
 					} else {
-						$wh .= "WHERE faq_id = '". $val['faq_id'] ."'";
+						$wh .= " OR faq_id = '". $val['faq_id'] ."'";
 					}
+					$c++;
 				}
 			}
 			if ( !empty($wh) ) {
 				// if $wh is empty, there wouldn't be anything to delete.
-				$wh .= " AND site_id = '{$current_site->id}'";
-				
+				$wh .= ") AND site_id = '{$current_site->id}'";
 				$wpdb->query("DELETE FROM ".incsub_support_tablename('faq')." ". $wh);
 				
 				if ( !empty($wpdb->rows_affected) ) {
 					$delete_text = sprintf( __ngettext( '%s question was', '%s questions were', $wpdb->rows_affected, INCSUB_SUPPORT_LANG_DOMAIN ), number_format_i18n( $wpdb->rows_affected ) );
 					$sentence = sprintf( __( '%1$s removed', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_text );
 					$mclass = "updated fade";
+					foreach ( $count as $key => $val ) {
+						$wpdb->query("UPDATE ".incsub_support_tablename('faq_cats')." SET qcount = qcount-{$wpdb->rows_affected} WHERE site_id = '{$current_site->id}' AND cat_id = '{$key}'");
+					}
 				} else {
 					$sentence = __( "There wasn't anything to delete." , INCSUB_SUPPORT_LANG_DOMAIN);
 					$mclass = "error";
-				}
-				foreach ( $count as $key => $val ) {
-					$wpdb->query("UPDATE ".incsub_support_tablename('faq_cats')." SET qcount = qcount-{$val} WHERE site_id = '{$current_site->id}' AND cat_id = '{$key}'");
 				}
 			}
 		} elseif ( !empty($_POST['addq']) and $_POST['addq'] == 1 ) {
@@ -715,6 +723,7 @@ function incsub_support_faqadmin_questions() {
 
 <?php
 	$cat_name = '';
+	$c=0;
 	foreach ($questions as $question) {
 		if ( $cat_name != $question->cat_name ) {
 			if ( !empty($cat_name) and $cat_name != $question->cat_name ) {
@@ -741,7 +750,7 @@ function incsub_support_faqadmin_questions() {
 		}
 ?>
 						<tr id='question-4' class='alternate'>
-							<th scope='row' class='check-column'><input type='checkbox' name='delete[][faq_id]' value='<?php echo $question->faq_id; ?>' /><input type="hidden" name="delete[][cat_id]" value="<?php echo $question->cat_id; ?>" /></th>
+							<th scope='row' class='check-column'><input type='checkbox' name='delete[<?php print $c;?>][faq_id]' value='<?php echo $question->faq_id; ?>' /><input type="hidden" name="delete[<?php print $c;?>][cat_id]" value="<?php echo $question->cat_id; ?>" /></th>
 							<td valign="top">
 								<?php echo $question->question; ?>
 							</td>
@@ -751,6 +760,7 @@ function incsub_support_faqadmin_questions() {
 							<td valign="middle" style="vertical-align: middle;"><a href="<?php print $incsub_support_settings_page; ?>?page=faq-manager&amp;action=questions&amp;qid=<?php echo $question->faq_id; ?>" class="button" title="edit this"><?php _e("Edit This", INCSUB_SUPPORT_LANG_DOMAIN); ?></a></td>
 						</tr>
 <?php
+		$c++;
 	}
 ?>
 					</tbody>
