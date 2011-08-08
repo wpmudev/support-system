@@ -563,6 +563,8 @@ function incsub_support_faqadmin_questions() {
 			$wh = 'WHERE (';
 			$c=0;
 			foreach($_POST['delete'] as $key => $val) {
+				if (!isset($val['faq_id']))
+					continue;
 				$count[$val['cat_id']] = (!empty($count[$val['cat_id']])) ? $count[$val['cat_id']]+1 : 1;
 				if ( is_numeric($val['faq_id']) and is_numeric($key) ) {
 					if ( $c == 0 ) {
