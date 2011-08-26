@@ -6,11 +6,11 @@ Description: Support System for WordPress multi site
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)
 WDP ID: 36
 Network: true
-Version: 1.6.6
+Version: 1.6.7
 Author URI: http://premium.wpmudev.org
 */
 
-define('INCSUB_SUPPORT_VERSION', '1.6.6');
+define('INCSUB_SUPPORT_VERSION', '1.6.7');
 define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
 
 global $ticket_status, $ticket_priority, $incsub_support_settings_page, $incsub_support_settings_page_long;
@@ -33,7 +33,7 @@ function incsub_support() {
 	if ( version_compare(INCSUB_SUPPORT_VERSION, get_site_option('incsub_support_version', INCSUB_SUPPORT_VERSION), '>') ) {
 		$faq_cats = $wpdb->get_results("SELECT cat_id, site_id FROM ".incsub_support_tablename('faq_cats').";");
 		foreach ($faq_cats as $faq_cat) {
-			$wpdb->query("UPDATE ".incsub_support_tablename('faq_cats')." SET qcount = (SELECT COUNT(*) FROM ".incsub_support_tablename('faq')." WHERE cat_id = '{$faq_cat->cat_id}' AND site_id = '{$faq_cat->site_id}') WHERE cat_id = '{$faq_cat->cat_id}' AND site_id = '{$faq_cat->site_id}';");
+			$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('faq_cats')." SET qcount = (SELECT COUNT(*) FROM ".incsub_support_tablename('faq')." WHERE cat_id = '%d' AND site_id = '%d') WHERE cat_id = '%d' AND site_id = '%d';", $faq_cat->cat_id, $faq_cat->site_id, $faq_cat->cat_id, $faq_cat->site_id));
 		}
 		update_site_option('incsub_support_version', INCSUB_SUPPORT_VERSION);
 	}
@@ -254,18 +254,18 @@ function incsub_support_install() {
 	
 	$current_site = get_current_site();
 	
-	$default_faq_cat_count = $wpdb->get_var("SELECT COUNT(*) FROM ".incsub_support_tablename('faq_cats')." WHERE site_id = '{$current_site->id}' AND cat_name = '".__('General Questions', INCSUB_SUPPORT_LANG_DOMAIN)."' AND defcat = '1'");
+	$default_faq_cat_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM ".incsub_support_tablename('faq_cats')." WHERE site_id = '%d' AND cat_name = '%s' AND defcat = '1'", $current_site->id, __('General Questions', INCSUB_SUPPORT_LANG_DOMAIN)));
 	if ($default_faq_cat_count == 0) {
-		$wpdb->query("INSERT IGNORE INTO ".incsub_support_tablename('faq_cats')." (site_id, cat_name, defcat) VALUES ('{$current_site->id}', '".__('General Questions', INCSUB_SUPPORT_LANG_DOMAIN)."', '1')");
+		$wpdb->query($wpdb->prepare("INSERT IGNORE INTO ".incsub_support_tablename('faq_cats')." (site_id, cat_name, defcat) VALUES ('%d', '%s', '1')", $current_site->id, __('General Questions', INCSUB_SUPPORT_LANG_DOMAIN)));
 	} else if ($default_faq_cat_count > 1) {
-		$wpdb->query("DELETE FROM ".incsub_support_tablename('faq_cats')." WHERE site_id = '{$current_site->id}' AND cat_name = '".__('General Questions', INCSUB_SUPPORT_LANG_DOMAIN)."' AND defcat = '1' LIMIT ".($default_faq_cat_count-1));
+		$wpdb->query($wpdb->prepare("DELETE FROM ".incsub_support_tablename('faq_cats')." WHERE site_id = '%d' AND cat_name = '%s' AND defcat = '1' LIMIT %d", $current_site->id, __('General Questions', INCSUB_SUPPORT_LANG_DOMAIN), ($default_faq_cat_count-1)));
 	}
 	
-	$default_ticket_cat_count = $wpdb->get_var("SELECT COUNT(*) FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' AND cat_name = '".__('General Questions', INCSUB_SUPPORT_LANG_DOMAIN)."' AND defcat = '1'");
+	$default_ticket_cat_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '%d' AND cat_name = '%s' AND defcat = '1'", $current_site->id, __('General Questions', INCSUB_SUPPORT_LANG_DOMAIN)));
 	if ($default_ticket_cat_count == 0) {
-		$wpdb->query("INSERT IGNORE INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name, defcat) VALUES ('{$current_site->id}', '".__('General Questions', INCSUB_SUPPORT_LANG_DOMAIN)."', '1')");
+		$wpdb->query($wpdb->prepare("INSERT IGNORE INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name, defcat) VALUES ('%d', '%s', '1')", $current_site->id, __('General Questions', INCSUB_SUPPORT_LANG_DOMAIN)));
 	} else if ($default_ticket_cat_count > 1) {
-		$wpdb->query("DELETE FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' AND cat_name = '".__('General Questions', INCSUB_SUPPORT_LANG_DOMAIN)."' AND defcat = '1' LIMIT ".($default_ticket_cat_count-1));
+		$wpdb->query($wpdb->prepare("DELETE FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '%d' AND cat_name = '%s' AND defcat = '1' LIMIT %d", $current_site->id, __('General Questions', INCSUB_SUPPORT_LANG_DOMAIN), ($default_ticket_cat_count-1)));
 	}
 	
 	$faq_column_info = $wpdb->get_row("SHOW COLUMNS FROM ".incsub_support_tablename('faq_cats')." WHERE Field = 'cat_name'");
@@ -568,16 +568,16 @@ function incsub_support_faqadmin_questions() {
 				$count[$val['cat_id']] = (!empty($count[$val['cat_id']])) ? $count[$val['cat_id']]+1 : 1;
 				if ( is_numeric($val['faq_id']) and is_numeric($key) ) {
 					if ( $c == 0 ) {
-						$wh .= " faq_id = '". $val['faq_id'] ."'";
+						$wh .= $wpdb->prepare(" faq_id = '%s'", $val['faq_id']);
 					} else {
-						$wh .= " OR faq_id = '". $val['faq_id'] ."'";
+						$wh .= $wpdb->prepare(" OR faq_id = '%s'", $val['faq_id']);
 					}
 					$c++;
 				}
 			}
 			if ( !empty($wh) ) {
 				// if $wh is empty, there wouldn't be anything to delete.
-				$wh .= ") AND site_id = '{$current_site->id}'";
+				$wh .= $wpdb->prepare(") AND site_id = '%d'", $current_site->id);
 				$wpdb->query("DELETE FROM ".incsub_support_tablename('faq')." ". $wh);
 				
 				if ( !empty($wpdb->rows_affected) ) {
@@ -585,7 +585,7 @@ function incsub_support_faqadmin_questions() {
 					$sentence = sprintf( __( '%1$s removed', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_text );
 					$mclass = "updated fade";
 					foreach ( $count as $key => $val ) {
-						$wpdb->query("UPDATE ".incsub_support_tablename('faq_cats')." SET qcount = qcount-{$wpdb->rows_affected} WHERE site_id = '{$current_site->id}' AND cat_id = '{$key}'");
+						$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('faq_cats')." SET qcount = qcount-{$wpdb->rows_affected} WHERE site_id = '%d' AND cat_id = '%d'", $current_site->id, $key));
 					}
 				} else {
 					$sentence = __( "There wasn't anything to delete." , INCSUB_SUPPORT_LANG_DOMAIN);
@@ -608,8 +608,8 @@ function incsub_support_faqadmin_questions() {
 				} else {
 					$the_cat = $_POST['category'];
 				}
-				$wpdb->query("INSERT INTO ".incsub_support_tablename('faq')." (site_id, cat_id, question, answer) VALUES ( '{$current_site->id}', '{$the_cat}', '{$question}', '{$answer}')");
-				$wpdb->query("UPDATE ".incsub_support_tablename('faq_cats')." SET qcount = qcount+1 WHERE site_id = '{$current_site->id}' AND cat_id = '{$the_cat}'");
+				$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('faq')." (site_id, cat_id, question, answer) VALUES ( '%d', '%d', '%s', '%s')", $current_site->id, $the_cat, $question, $answer));
+				$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('faq_cats')." SET qcount = qcount+1 WHERE site_id = '%d' AND cat_id = '%d'", $current_site->id, $the_cat));
 				if ( !empty($wpdb->insert_id) ) {
 					$sentence = __( "New Q&amp;A inserted successfully.", INCSUB_SUPPORT_LANG_DOMAIN );
 					$mclass = "updated fade";
@@ -638,14 +638,14 @@ function incsub_support_faqadmin_questions() {
 					$the_cat = $_POST['category'];
 					$the_id = $_POST['faq_id'];
 				}
-				$wpdb->query("UPDATE ".incsub_support_tablename('faq')." SET site_id = '{$current_site->id}', cat_id = '{$the_cat}', question = '{$question}', answer = '{$answer}' WHERE faq_id = '{$the_id}' AND site_id = '{$current_site->id}'");
+				$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('faq')." SET site_id = '%d', cat_id = '%d', question = '%s', answer = '%s' WHERE faq_id = '%d' AND site_id = '%d'", $current_site->id, $the_cat, $question, $answer, $the_id, $current_site->id));
 				if ( !empty($wpdb->rows_affected) ) {
 					$sentence = __( "Question/Answer updated successfully.", INCSUB_SUPPORT_LANG_DOMAIN );
 					$mclass = "updated fade";
 					if ( is_numeric($_POST['old_cat_id']) and $_POST['old_cat_id'] != $the_cat ) {
 						// we changed cats, and the update was a success;
-						$wpdb->query("UPDATE ".incsub_support_tablename('faq_cats')." SET qcount = qcount-1 WHERE cat_id = '". $_POST['old_cat_id'] ."' AND site_id = '{$current_site->id}'");
-						$wpdb->query("UPDATE ".incsub_support_tablename('faq_cats')." SET qcount = qcount+1 WHERE cat_id = '{$the_cat}' AND site_id = '{$current_site->id}'");
+						$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('faq_cats')." SET qcount = qcount-1 WHERE cat_id = '%d' AND site_id = '%d'", $_POST['old_cat_id'], $current_site->id));
+						$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('faq_cats')." SET qcount = qcount+1 WHERE cat_id = '%d' AND site_id = '%d'", $the_cat, $current_site->id));
 					}
 				} else {
 					$sentence = __( "Something happened, and nothing was updated. Check your error logs.", INCSUB_SUPPORT_LANG_DOMAIN );
@@ -711,6 +711,7 @@ function incsub_support_faqadmin_questions() {
 		}
 		//-->
 	</script>
+	
 	<h2><?php _e("FAQ Manager", INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
 	<div class="handlediv">
 		<h3 class='hndle'>
@@ -773,6 +774,7 @@ function incsub_support_faqadmin_questions() {
 				</p>
 			</form>
 			<br /><br />
+	<?php if ( !isset($_GET['qid']) && empty($_GET['qid']) ) { ?>
 			<h2><?php _e('Add New Question', INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
 			<form id="addquestion" action="<?php print $incsub_support_settings_page; ?>?page=faq-manager&action=questions" method="post">
 		<?php wp_nonce_field("incsub_faqmanagement_managequestions"); ?>
@@ -797,6 +799,7 @@ function incsub_support_faqadmin_questions() {
 			?><div style="display:none;"><?php wp_link_dialog(); ?></div><?php
 			wp_print_scripts('wplink');
 			wp_print_styles('wplink');
+			}
 			?>
 		</div>
 	</div>
@@ -809,7 +812,7 @@ function incsub_support_faqadmin_categories() {
 		check_admin_referer("incsub_faqmanagement_managecats");
 		if ( !empty($_POST['deleteme']) ) {
 				if ( !is_numeric($_POST['defcat']) ) {
-					$defcat = $wpdb->get_var("SELECT cat_id FROM ".incsub_support_tablename('faq_cats')." WHERE site_id = '{$current_site->id}' AND defcat = '1'");
+					$defcat = $wpdb->get_var($wpdb->prepare("SELECT cat_id FROM ".incsub_support_tablename('faq_cats')." WHERE site_id = '%d' AND defcat = '1'", $current_site->id));
 				} else {
 					$defcat = $_POST['defcat'];
 				}
@@ -821,20 +824,20 @@ function incsub_support_faqadmin_categories() {
 
 				if ( is_numeric($val) and is_numeric($key) ) {
 					if ( $key == 0 ) {
-						$wh .= "WHERE ( (cat_id = '{$val}'";
+						$wh .= $wpdb->prepare("WHERE ( (cat_id = '%d'", $val);
 					} else {
-						$wh .= " OR cat_id = '{$val}'";
+						$wh .= $wpdb->prepare(" OR cat_id = '%d'", $val);
 					}
 				}
 			}
 			if ( !empty($wh) ) {
 				// if $wh is empty, there wouldn't be anything to delete.
-				$wh .= ") AND site_id = '{$current_site->id}' AND defcat != '1')";
+				$wh .= $wpdb->prepare(") AND site_id = '%d')", $current_site->id);
 				$wpdb->query("DELETE FROM ".incsub_support_tablename('faq_cats')." ". $wh);
 				$delete_text = sprintf( __ngettext( '%s category was', '%s categories were', $wpdb->rows_affected, INCSUB_SUPPORT_LANG_DOMAIN ), number_format_i18n( $wpdb->rows_affected ) );
 				$sentence = sprintf( __( '%1$s removed', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_text );
-				// set any orphaned questions to the default cat.
-				$wpdb->query("UPDATE ".incsub_support_tablename('faq')." SET cat_id = '{$defcat}' ". str_replace(" AND defcat != '1'", "", $wh));
+				// set any orphaned questions to the default cat.;
+				$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('faq')." SET cat_id = '%d' {$wh} AND defcat != '1'", $defcat));
 ?>
 		<div class="updated fade"><p><?php echo $sentence; ?></p></div>
 <?php
@@ -847,7 +850,7 @@ function incsub_support_faqadmin_categories() {
 			$x = 0;
 			foreach ( $_POST['cat'] as $key => $val ) {
 				if ( is_numeric($key) ) {
-					$wpdb->query("UPDATE ".incsub_support_tablename('faq_cats')." SET cat_name = '". attribute_escape(wp_specialchars(strip_tags($val))) ."' WHERE site_id = '{$current_site->id}' AND cat_id = '{$key}'");
+					$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('faq_cats')." SET cat_name = '%s' WHERE site_id = '%d' AND cat_id = '%d'", strip_tags($val), $current_site->id, $key));
 					$x++;
 				}
 			}
@@ -868,7 +871,7 @@ function incsub_support_faqadmin_categories() {
 		check_admin_referer("incsub_faqmanagement_addcat");
 		if ( !empty($_POST['cat_name']) ) {
 			$cat_name = attribute_escape(wp_specialchars($_POST['cat_name']));
-			$wpdb->query("INSERT INTO ".incsub_support_tablename('faq_cats')." (site_id, cat_name, defcat) VALUES ('{$current_site->id}', '{$cat_name}', '0')");
+			$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('faq_cats')." (site_id, cat_name, defcat) VALUES ('%d', '%s', '0')", $current_site->id, $cat_name));
 			if ( !empty($wpdb->insert_id) ) {
 ?>
 		<div class="updated fade"><p><?php _e("New category added successfully.", INCSUB_SUPPORT_LANG_DOMAIN); ?></p></div>
@@ -1163,19 +1166,19 @@ function incsub_support_tickets_output() {
 			$category = $_POST['category'];
 			$priority = $_POST['priority'];
 			$email_message = false;
-			$wpdb->query("INSERT INTO ".incsub_support_tablename('tickets')."
+			$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets')."
 				(site_id, blog_id, cat_id, user_id, ticket_priority, ticket_opened, title)
 			VALUES (	
-				'{$current_site->id}', '{$blog_id}', '{$category}', '{$current_user->id}',
-				'{$priority}', NOW(), '{$title}')
-			");
+				'%d', '%d', '%s', '%d',
+				'%s', NOW(), '%s')
+			", $current_site->id, $blog_id, $category, $current_user->id, $priority, $title));
 			if ( !empty($wpdb->insert_id) ) {
 				$ticket_id = $wpdb->insert_id;
-				$wpdb->query("INSERT INTO ".incsub_support_tablename('tickets_messages')."
+				$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_messages')."
 					(site_id, ticket_id, user_id, subject, message)
 					VALUES (
-						'{$current_site->id}', '{$ticket_id}', '{$current_user->id}', '{$title}', '{$message}')
-				");
+						'%d', '%d', '%d', '%s', '%s')
+				", $current_site->id, $ticket_id, $current_user->id, $title, $message));
 				if ( !empty($wpdb->insert_id) ) {
 					$notification = __("Thank you. Your ticket has been submitted. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
 					$nclass = "updated fade";
@@ -1241,18 +1244,18 @@ function incsub_support_tickets_output() {
 			$ticket_id = $_POST['ticket_id'];
 			$status = ($_POST['closeticket'] == 1) ? 5 : 3;
 			$email_message = false;
-			$wpdb->query("INSERT INTO ".incsub_support_tablename('tickets_messages')."
+			$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_messages')."
 				(site_id, ticket_id, user_id, subject, message)
-				VALUES ('{$current_site->id}', '{$ticket_id}', '{$current_user->id}', '{$title}', '{$message}')
-			");
+				VALUES ('%d', '%d', '%d', '%s', '%s')
+			", $current_site->id, $ticket_id, $current_user->id, $title, $message));
 
 			if ( !empty($wpdb->insert_id) ) {
-				$wpdb->query("UPDATE ".incsub_support_tablename('tickets')."
+				$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('tickets')."
 					SET
-						cat_id = '{$category}', last_reply_id = '{$current_user->id}', ticket_priority = '{$priority}', ticket_status = '{$status}', num_replies = num_replies+1
-					WHERE site_id = '{$current_site->id}' AND blog_id = '{$blog_id}' AND ticket_id = '{$ticket_id}'
+						cat_id = '%d', last_reply_id = '%d', ticket_priority = '%s', ticket_status = '%s', num_replies = num_replies+1
+					WHERE site_id = '%d' AND blog_id = '%d' AND ticket_id = '%d'
 					LIMIT 1
-				");
+				", $category, $current_user->id, $priority, $status, $current_site->id, $blog_id, $ticket_id));
 
 				if ( !empty($wpdb->rows_affected) ) {
 					$notification = __("Thank you. Your ticket has been updated. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
@@ -1462,7 +1465,7 @@ function incsub_support_tickets_output() {
 <?php
 				$get_cats = $wpdb->get_results("SELECT cat_id, cat_name FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' ORDER BY cat_name ASC");
 				if ( empty($get_cats) ) {
-					$wpdb->query("INSERT INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name) VALUES ('{$current_site->id}', 'General')");
+					$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name) VALUES ('%d', 'General')", $current_site->id));
 					$get_cats = $wpdb->get_results("SELECT cat_id, cat_name FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' ORDER BY cat_name ASC");
 				}
 				$x = 0;
@@ -1581,7 +1584,7 @@ function incsub_support_tickets_output() {
 <?php 			
 		$get_cats = $wpdb->get_results("SELECT cat_id, cat_name FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' ORDER BY cat_name ASC");
 		if ( empty($get_cats) ) {
-			$wpdb->query("INSERT INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name) VALUES ('{$current_site->id}', 'General')");
+			$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name) VALUES ('%d', 'General')", $current_site->id));
 			$get_cats = $wpdb->get_results("SELECT cat_id, cat_name FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' ORDER BY cat_name ASC");
 		}
 		$x = 0;
@@ -1674,19 +1677,19 @@ function incsub_support_process_reply($curr_user = null) {
 			$category = $_POST['category'];
 			$priority = $_POST['priority'];
 			$email_message = false;
-			$wpdb->query("INSERT INTO ".incsub_support_tablename('tickets')."
+			$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets')."
 				(site_id, blog_id, cat_id, user_id, ticket_priority, ticket_opened, title)
 			VALUES (	
-				'{$current_site->id}', '{$blog_id}', '{$category}', '{$current_user->id}',
-				'{$priority}', NOW(), '{$title}')
-			");
+				'%d', '%d', '%d', '%d',
+				'%d', NOW(), '%s')
+			", $current_site->id, $blog_id, $category,$current_user->id, $priority, $title));
 			if ( !empty($wpdb->insert_id) ) {
 				$ticket_id = $wpdb->insert_id;
-				$wpdb->query("INSERT INTO ".incsub_support_tablename('tickets_messages')."
+				$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_messages')."
 					(site_id, ticket_id, user_id, subject, message)
 					VALUES (
-						'{$current_site->id}', '{$ticket_id}', '{$current_user->id}', '{$title}', '{$message}')
-				");
+						'%d', '%d', '%d', '%s', '%s')
+				", $current_site->id, $ticket_id, $current_user->id, $title, $message));
 				if ( !empty($wpdb->insert_id) ) {
 					$notification = __("Thank you. Your ticket has been submitted. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
 					$nclass = "updated fade";
@@ -1752,18 +1755,18 @@ function incsub_support_process_reply($curr_user = null) {
 			$ticket_id = $_POST['ticket_id'];
 			$status = ($_POST['closeticket'] == 1) ? 5 : 3;
 			$email_message = false;
-			$wpdb->query("INSERT INTO ".incsub_support_tablename('tickets_messages')."
+			$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_messages')."
 				(site_id, ticket_id, user_id, subject, message)
-				VALUES ('{$current_site->id}', '{$ticket_id}', '{$current_user->id}', '{$title}', '{$message}')
-			");
+				VALUES ('%d', '%d', '%d', '%s', '%s')
+			", $current_site->id, $ticket_id, $current_user->id, $title, $message));
 
 			if ( !empty($wpdb->insert_id) ) {
-				$wpdb->query("UPDATE ".incsub_support_tablename('tickets')."
+				$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('tickets')."
 					SET
-						cat_id = '{$category}', last_reply_id = '{$current_user->id}', ticket_priority = '{$priority}', ticket_status = '{$status}', num_replies = num_replies+1
-					WHERE site_id = '{$current_site->id}' AND blog_id = '{$blog_id}' AND ticket_id = '{$ticket_id}'
+						cat_id = '%d', last_reply_id = '%d', ticket_priority = '%s', ticket_status = '%s', num_replies = num_replies+1
+					WHERE site_id = '%d' AND blog_id = '%d' AND ticket_id = '%d'
 					LIMIT 1
-				");
+				", $category, $current_user->id, $priority, $status, $current_site->id, $blog_id, $ticket_id));
 
 				if ( !empty($wpdb->rows_affected) ) {
 					$notification = __("Thank you. Your ticket has been updated. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
@@ -1987,7 +1990,7 @@ function incsub_support_output_tickets() {
 <?php
 				$get_cats = $wpdb->get_results("SELECT cat_id, cat_name FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' ORDER BY cat_name ASC");
 				if ( empty($get_cats) ) {
-					$wpdb->query("INSERT INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name) VALUES ('{$current_site->id}', 'General')");
+					$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name) VALUES ('%d', 'General')", $current_site->id));
 					$get_cats = $wpdb->get_results("SELECT cat_id, cat_name FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' ORDER BY cat_name ASC");
 				}
 				$x = 0;
@@ -2104,10 +2107,10 @@ function incsub_support_output_tickets() {
 					<td>
 						<select name="category" id="category">
 <?php
-		$get_cats = $wpdb->get_results("SELECT cat_id, cat_name FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' ORDER BY cat_name ASC");
+		$get_cats = $wpdb->get_results($wpdb->prepare("SELECT cat_id, cat_name FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '%d' ORDER BY cat_name ASC", $current_site->id));
 		if ( empty($get_cats) ) {
-			$wpdb->query("INSERT INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name) VALUES ('{$current_site->id}', 'General')");
-			$get_cats = $wpdb->get_results("SELECT cat_id, cat_name FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' ORDER BY cat_name ASC");
+			$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name) VALUES ('%d', 'General')", $current_site->id));
+			$get_cats = $wpdb->get_results($wpdb->prepare("SELECT cat_id, cat_name FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '%d' ORDER BY cat_name ASC", $current_site->id));
 		}
 		$x = 0;
 		foreach ($get_cats as $cat) {
@@ -2174,7 +2177,7 @@ function incsub_support_output_faq() {
 	if ( !empty($_GET['action']) and $_GET['action'] == 'vote' ) {
 		if ( ($_GET['help'] == "yes" or $_GET['help'] == "no") and is_numeric($_GET['qid']) ) {
 			$get_help = ($_GET['help'] == "no") ? "help_no = help_no+1" : "help_yes = help_yes+1";
-			$wpdb->query("UPDATE ".incsub_support_tablename('faq')." SET {$get_help}, help_count = help_count+1 WHERE faq_id = '". $_GET['qid'] ."' AND site_id = '{$current_site->id}'");
+			$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('faq')." SET {$get_help}, help_count = help_count+1 WHERE faq_id = '%d' AND site_id = '%d'", $_GET['qid'], $current_site->id));
 		}
 	}
 	
@@ -2288,21 +2291,21 @@ function incsub_support_ticketadmin_main() {
 				$adding_update_key = $responsibility_options['accept'];
 			}
 
-			$wpdb->query("INSERT INTO ".incsub_support_tablename('tickets_messages')."
+			$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_messages')."
 				(site_id, ticket_id, admin_id, subject, message)
-				VALUES ('{$current_site->id}', '{$ticket_id}', '{$current_user->id}', '{$title}', '{$message}')
-			");
+				VALUES ('%d', '%d', '%d', '%s', '%s')
+			", $current_site->id, $ticket_id, $current_user->id, $title, $message));
 
 			if ( !empty($wpdb->insert_id) ) {
-				$wpdb->query("UPDATE ".incsub_support_tablename('tickets')."
+				$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('tickets')."
 					SET
-						cat_id = '{$category}', last_reply_id = '{$current_user->id}', ticket_priority = '{$priority}', ticket_status = '{$status}', num_replies = num_replies+1{$adding_update_key}
-					WHERE site_id = '{$current_site->id}' AND ticket_id = '{$ticket_id}'
+						cat_id = '%d', last_reply_id = '%d', ticket_priority = '%s', ticket_status = '%s', num_replies = num_replies+1{$adding_update_key}
+					WHERE site_id = '%d' AND ticket_id = '%d'
 					LIMIT 1
-				");
+				", $category, $current_user->id, $priority, $status, $current_site->id, $ticket_id));
 
 				if ( !empty($wpdb->rows_affected) ) {
-					$ticket_blog_id = $wpdb->get_var("SELECT blog_id FROM ".incsub_support_tablename('tickets')." WHERE ticket_id = '{$ticket_id}' LIMIT 1");
+					$ticket_blog_id = $wpdb->get_var($wpdb->prepare("SELECT blog_id FROM ".incsub_support_tablename('tickets')." WHERE ticket_id = '%d' LIMIT 1", $ticket_id));
 			
 					$target_blog = get_blog_details($ticket_blog_id);
 					$notification = __("Ticket has been updated successfully, and the user notified of your response. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
@@ -2338,7 +2341,7 @@ function incsub_support_ticketadmin_main() {
 	------------------------------
 
 	Thanks,
-	". $wpdb->get_var("SELECT user_nicename FROM {$wpdb->users} WHERE ID = '{$current_user->id}'") .",
+	". $wpdb->get_var($wpdb->prepare("SELECT user_nicename FROM {$wpdb->users} WHERE ID = '%d'", $current_user->id)) .",
 	". get_site_option("site_name") ."\r\n\r\n"), // ends lang string
 
 						"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
@@ -2363,13 +2366,13 @@ function incsub_support_ticketadmin_main() {
 	}
 
 	$do_history = ( !empty($_GET['action']) and $_GET['action'] == 'history' ) ? "AND t.ticket_status = '5'" : "AND t.ticket_status != '5'";
-	$tickets = $wpdb->get_results("
+	$tickets = $wpdb->get_results($wpdb->prepare("
 		SELECT t.ticket_id, t.user_id, t.cat_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_updated, t.title, c.cat_name, u.display_name
 		FROM ".incsub_support_tablename('tickets')." AS t
 		LEFT JOIN ".incsub_support_tablename('tickets_cats')." AS c ON (t.cat_id = c.cat_id)
 		LEFT JOIN $wpdb->users AS u ON (t.admin_id = u.ID)
-		WHERE t.site_id = '{$current_site->id}' {$do_history}
-	");
+		WHERE t.site_id = '%d' {$do_history}
+	", $current_site->id));
 ?>
 	<h2><?php _e("Support Ticket Management", INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
 	<div class="handlediv">
@@ -2402,7 +2405,7 @@ function incsub_support_ticketadmin_main() {
 		<div class="youhave">
 <?php
 	if ( !empty($_GET['tid']) and is_numeric($_GET['tid']) ) {
-		$current_ticket = $wpdb->get_results("
+		$current_ticket = $wpdb->get_results($wpdb->prepare("
 		SELECT
 			t.ticket_id, t.cat_id, t.user_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_opened, t.ticket_updated, t.title,
 			c.cat_name, u.display_name AS user_name, a.display_name AS admin_name, l.display_name AS last_user_reply, m.user_id AS user_avatar_id, 
@@ -2415,9 +2418,9 @@ function incsub_support_ticketadmin_main() {
 		LEFT JOIN $wpdb->users AS r ON (m.user_id = r.ID)
 		LEFT JOIN $wpdb->users AS s ON (m.admin_id = s.ID)
 		LEFT JOIN ".incsub_support_tablename('tickets_cats')." AS c ON (t.cat_id = c.cat_id)
-		WHERE (m.ticket_id = '". $_GET['tid'] ."' AND t.site_id = '{$current_site->id}')
+		WHERE (m.ticket_id = '%d' AND t.site_id = '%d')
 		ORDER BY m.message_id ASC
-	");
+	", $_GET['tid'], $current_site->id));
 
 
 		if ( empty($current_ticket) ) {
@@ -2541,10 +2544,10 @@ function incsub_support_ticketadmin_main() {
 					<td>
 						<select name="category" id="category">
 <?php
-				$get_cats = $wpdb->get_results("SELECT cat_id, cat_name FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' ORDER BY cat_name ASC");
+				$get_cats = $wpdb->get_results($wpdb->prepare("SELECT cat_id, cat_name FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '%d' ORDER BY cat_name ASC", $current_site->id));
 				if ( empty($get_cats) ) {
-					$wpdb->query("INSERT INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name) VALUES ('{$current_site->id}', 'General')");
-					$get_cats = $wpdb->get_results("SELECT cat_id, cat_name FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' ORDER BY cat_name ASC");
+					$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name) VALUES ('%d', 'General')", $current_site->id));
+					$get_cats = $wpdb->get_results($wpdb->prepare("SELECT cat_id, cat_name FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '%d' ORDER BY cat_name ASC", $current_site->id));
 				}
 				$x = 0;
 				foreach ($get_cats as $cat) {
@@ -2681,7 +2684,7 @@ function incsub_support_ticketadmin_categories() {
 		check_admin_referer("incsub_ticketmanagement_managecats");
 		if ( !empty($_POST['deleteme']) ) {
 				if ( !is_numeric($_POST['defcat']) ) {
-					$defcat = $wpdb->get_var("SELECT cat_id FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' AND defcat = '1'");
+					$defcat = $wpdb->get_var($wpdb->prepare("SELECT cat_id FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '%d' AND defcat = '1'", $current_site->id));
 				} else {
 					$defcat = $_POST['defcat'];
 				}
@@ -2693,20 +2696,20 @@ function incsub_support_ticketadmin_categories() {
 
 				if ( is_numeric($val) and is_numeric($key) ) {
 					if ( $key == 0 ) {
-						$wh .= "WHERE ( (cat_id = '{$val}'";
+						$wh .= $wpdb->prepare("WHERE ( (cat_id = '%d'", $val);
 					} else {
-						$wh .= " OR cat_id = '{$val}'";
+						$wh .= $wpdb->prepare(" OR cat_id = '%d'", $val);
 					}
 				}
 			}
 			if ( !empty($wh) ) {
 				// if $wh is empty, there wouldn't be anything to delete.
-				$wh .= ") AND site_id = '{$current_site->id}' AND defcat != '1')";
-				$wpdb->query("DELETE FROM ".incsub_support_tablename('tickets_cats')." ". $wh);
+				$wh .= $wpdb->prepare(") AND site_id = '%d' AND defcat != '1')", $current_site->id);
+				$wpdb->query("DELETE FROM ".incsub_support_tablename('tickets_cats')." {$wh}");
 				$delete_text = sprintf( __ngettext( '%s category was', '%s categories were', $wpdb->rows_affected , INCSUB_SUPPORT_LANG_DOMAIN), number_format_i18n( $wpdb->rows_affected ) );
 				$sentence = sprintf( __( '%1$s removed', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_text );
 				// set any orphaned questions to the default cat.
-				$wpdb->query("UPDATE ".incsub_support_tablename('faq')." SET cat_id = '{$defcat}' ". str_replace(" AND defcat != '1'", "", $wh));
+				$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('faq')." SET cat_id = '%d' {$wh} AND defcat != '1'", $defcat));
 ?>
 		<div class="updated fade"><p><?php echo $sentence; ?></p></div>
 <?php
@@ -2719,7 +2722,7 @@ function incsub_support_ticketadmin_categories() {
 			$x = 0;
 			foreach ( $_POST['cat'] as $key => $val ) {
 				if ( is_numeric($key) ) {
-					$wpdb->query("UPDATE ".incsub_support_tablename('tickets_cats')." SET cat_name = '". attribute_escape(wp_specialchars(strip_tags($val))) ."' WHERE site_id = '{$current_site->id}' AND cat_id = '{$key}'");
+					$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('tickets_cats')." SET cat_name = '%s' WHERE site_id = '%d' AND cat_id = '%d'", strip_tags($val)), $current_site->id, $key);
 					$x++;
 				}
 			}
@@ -2740,7 +2743,7 @@ function incsub_support_ticketadmin_categories() {
 		check_admin_referer("incsub_faqmanagement_addcat");
 		if ( !empty($_POST['cat_name']) ) {
 			$cat_name = attribute_escape(wp_specialchars($_POST['cat_name']));
-			$wpdb->query("INSERT INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name, defcat) VALUES ('{$current_site->id}', '{$cat_name}', '0')");
+			$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name, defcat) VALUES ('%d', '%s', '0')", $current_site->id, $cat_name));
 			if ( !empty($wpdb->insert_id) ) {
 ?>
 		<div class="updated fade"><p><?php _e("New category added successfully.", INCSUB_SUPPORT_LANG_DOMAIN); ?></p></div>
@@ -2750,10 +2753,10 @@ function incsub_support_ticketadmin_categories() {
 	}
 
 
-	$cats = $wpdb->get_results("SELECT cat_id, cat_name, defcat FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' ORDER BY defcat DESC, cat_name ASC");
+	$cats = $wpdb->get_results($wpdb->prepare("SELECT cat_id, cat_name, defcat FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '%d' ORDER BY defcat DESC, cat_name ASC", $current_site->id));
 	if ( empty($cats) ) {
-		$wpdb->query("INSERT INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name, defcat) VALUES ('{$current_site->id}', 'General', '1')");
-		$cats = $wpdb->get_results("SELECT cat_id, cat_name, defcat FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' ORDER BY defcat DESC, cat_name ASC");
+		$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name, defcat) VALUES ('%d', 'General', '1')", $current_site->id));
+		$cats = $wpdb->get_results($wpdb->prepare("SELECT cat_id, cat_name, defcat FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '%d' ORDER BY defcat DESC, cat_name ASC", $current_site->id));
 	}
 ?>
 	<h2><?php _e("Support Ticket Management", INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
@@ -2828,7 +2831,7 @@ function incsub_support_ticketadmin_categories() {
 
 function incsub_support_notification_user_email($user_id) {
 	global $wpdb;
-	return $wpdb->get_var("SELECT user_email FROM {$wpdb->users} WHERE ID = '{$user_id}'");
+	return $wpdb->get_var($wpdb->prepare("SELECT user_email FROM {$wpdb->users} WHERE ID = '%d'", $user_id));
 }
 
 /**

@@ -13,6 +13,11 @@ Support System for WordPress multi site.
 
 == ChangeLog ==
 
+= 1.6.7 =
+* Fixed: Editing questions
+* Fixed: Orphaned questions when categories are removed
+* Improved SQL queries
+
 = 1.6.6 =
 * Fixed: Deleting multiple FAQ questions
 
