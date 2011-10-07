@@ -6,11 +6,11 @@ Description: Support System for WordPress multi site
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)
 WDP ID: 36
 Network: true
-Version: 1.6.7
+Version: 1.6.8
 Author URI: http://premium.wpmudev.org
 */
 
-define('INCSUB_SUPPORT_VERSION', '1.6.7');
+define('INCSUB_SUPPORT_VERSION', '1.6.8');
 define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
 
 global $ticket_status, $ticket_priority, $incsub_support_settings_page, $incsub_support_settings_page_long;
@@ -758,7 +758,7 @@ function incsub_support_faqadmin_questions() {
 								<?php echo $question->question; ?>
 							</td>
 							<td valign="top">
-								<?php echo html_entity_decode($question->answer); ?>
+								<?php echo stripcslashes(html_entity_decode($question->answer)); ?>
 							</td>
 							<td valign="middle" style="vertical-align: middle;"><a href="<?php print $incsub_support_settings_page; ?>?page=faq-manager&amp;action=questions&amp;qid=<?php echo $question->faq_id; ?>" class="button" title="edit this"><?php _e("Edit This", INCSUB_SUPPORT_LANG_DOMAIN); ?></a></td>
 						</tr>
@@ -1005,7 +1005,7 @@ function incsub_support_faqadmin_postbox($data = '') {
 			<script type="text/javascript">edToolbar()</script>
 		</div>
 		<div id="editorcontainer">
-			<textarea <?php echo $rows; ?> class="answer" name="answer" tabindex="3" id="answer"><?php if ( !empty($data->answer) ) { echo $data->answer; } else if ( isset($_REQUEST['answer']) && !empty($_REQUEST['answer']) ) { echo $_REQUEST['answer']; } ?></textarea>
+			<textarea <?php echo $rows; ?> class="answer" name="answer" tabindex="3" id="answer"><?php if ( !empty($data->answer) ) { echo stripslashes($data->answer); } else if ( isset($_REQUEST['answer']) && !empty($_REQUEST['answer']) ) { echo stripslashes($_REQUEST['answer']); } ?></textarea>
 		</div>
 		<script type="text/javascript">
 		edCanvas = document.getElementById('answer');
@@ -1131,7 +1131,7 @@ function incsub_support_output_main() {
 					$sentence = "";
 				}
 ?>
-					<?php echo html_entity_decode($faq->answer); ?>
+					<?php echo stripcslashes(html_entity_decode($faq->answer)); ?>
 					<p style="padding: 10px; text-align: right;" class="vote_response" id="vote-response-<?php echo $faq->faq_id; ?>" >
 						<?php _e("Was this solution helpful? ", INCSUB_SUPPORT_LANG_DOMAIN); ?>
 						<a class="vote" href="admin.php?page=incsub_support_faq&amp;action=vote&amp;help=yes&amp;qid=<?php echo $faq->faq_id; ?>"><?php _e("Yes", INCSUB_SUPPORT_LANG_DOMAIN); ?></a> | <a class="vote" href="admin.php?page=incsub_support_faq&amp;action=vote&amp;help=no&amp;qid=<?php echo $faq->faq_id; ?>"><?php _e("No", INCSUB_SUPPORT_LANG_DOMAIN); ?></a><br />
@@ -2226,7 +2226,7 @@ function incsub_support_output_faq() {
 						$sentence = "";
 					}
 					?>
-					<?php echo html_entity_decode($faq->answer); ?>
+					<?php echo stripcslashes(html_entity_decode($faq->answer)); ?>
 					<p style="padding: 10px; text-align: right;" class="vote_response" id="vote-response-<?php echo $faq->faq_id; ?>" >
 						<?php _e("Was this solution helpful? ", INCSUB_SUPPORT_LANG_DOMAIN); ?>
 						<a class="vote" href="admin.php?page=incsub_support_faq&amp;action=vote&amp;help=yes&amp;qid=<?php echo $faq->faq_id; ?>"><?php _e("Yes", INCSUB_SUPPORT_LANG_DOMAIN); ?></a> | <a class="vote" href="admin.php?page=incsub_support_faq&amp;action=vote&amp;help=no&amp;qid=<?php echo $faq->faq_id; ?>"><?php _e("No", INCSUB_SUPPORT_LANG_DOMAIN); ?></a><br />

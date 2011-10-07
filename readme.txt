@@ -13,6 +13,9 @@ Support System for WordPress multi site.
 
 == ChangeLog ==
 
+= 1.6.8 =
+* Fixed: Extra slashes
+
 = 1.6.7 =
 * Fixed: Editing questions
 * Fixed: Orphaned questions when categories are removed
