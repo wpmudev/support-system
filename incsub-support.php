@@ -1053,7 +1053,7 @@ function incsub_support_faqadmin_postbox($data = '') {
 }
 
 function incsub_support_output_main() {
-	global $wpdb, $current_site, $blog_id, $ticket_status, $ticket_priority;
+	global $wpdb, $current_site, $blog_id, $ticket_status, $ticket_priority, $user;
 	$open_tickets = $wpdb->get_results("
 			SELECT t.ticket_id, t.ticket_priority, t.ticket_status, t.ticket_updated, t.title, l.display_name AS last_user_reply 
 			FROM ".incsub_support_tablename('tickets')." AS t LEFT JOIN {$wpdb->users} AS l ON ( t.last_reply_id = l.ID )
@@ -1071,6 +1071,7 @@ function incsub_support_output_main() {
 		//-->
 	</script>
 	<h2><?php _e("Support System", INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
+	<?php if ($user->has_cap('edit_posts')) { ?>
 	<div style="width: 63%; float: left;">
 		<h3><?php _e("Recent Support Tickets", INCSUB_SUPPORT_LANG_DOMAIN); ?></h3>
 <?php
@@ -1113,6 +1114,10 @@ function incsub_support_output_main() {
 	</div>
 
 	<div style="float: right; width: 35%">
+	<?php } else { ?>
+	<div >
+	<?php } ?>
+	
 		<h3><?php _e("Popular FAQ's", INCSUB_SUPPORT_LANG_DOMAIN); ?></h3>
 <?php
 		if ( !empty($top5help) ) {
