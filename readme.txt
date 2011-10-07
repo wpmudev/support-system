@@ -16,6 +16,7 @@ Support System for WordPress multi site.
 = 1.6.8 =
 * Fixed: Extra slashes
 * Don't display recent support tickets if the user doesn't have edit_post capability
+* Fixed: RTL issues
 
 = 1.6.7 =
 * Fixed: Editing questions

@@ -66,11 +66,6 @@ function incsub_support() {
 	
 	add_filter('whitelist_options', 'incsub_support_whitelist_options');
 	add_filter('cron_schedules', 'incsub_support_cron_schedules');
-	
-	if (is_admin()) {
-		wp_register_style('incsub_support_admin_css', plugins_url('incsub-support/css/wp_admin.css'));
-		wp_register_script('incsub_support_admin_js', plugins_url('incsub-support/js/wp_admin.js'), array('jquery'), INCSUB_SUPPORT_VERSION, true);
-	}
 }
 
 function incsub_support_init() {
@@ -80,6 +75,11 @@ function incsub_support_init() {
 		load_muplugin_textdomain(INCSUB_SUPPORT_LANG_DOMAIN, dirname(plugin_basename(__FILE__)).'/languages');
 	} else {
 		load_plugin_textdomain(INCSUB_SUPPORT_LANG_DOMAIN, false, dirname(plugin_basename(__FILE__)).'/languages');
+	}
+	
+	if (is_admin()) {
+		wp_register_style('incsub_support_admin_css', plugins_url('incsub-support/css/wp_admin.css'), array(), INCSUB_SUPPORT_VERSION);
+		wp_register_script('incsub_support_admin_js', plugins_url('incsub-support/js/wp_admin.js'), array('jquery'), INCSUB_SUPPORT_VERSION, true);
 	}
 	
 	$wpdb->tickets = incsub_support_tablename('tickets');
@@ -1005,7 +1005,7 @@ function incsub_support_faqadmin_postbox($data = '') {
 			<script type="text/javascript">edToolbar()</script>
 		</div>
 		<div id="editorcontainer">
-			<textarea <?php echo $rows; ?> class="answer" name="answer" tabindex="3" id="answer"><?php if ( !empty($data->answer) ) { echo stripslashes($data->answer); } else if ( isset($_REQUEST['answer']) && !empty($_REQUEST['answer']) ) { echo stripslashes($_REQUEST['answer']); } ?></textarea>
+			<textarea <?php echo $rows; ?> class="answer" name="answer" tabindex="3" id="answer"><?php if ( !empty($data->answer) ) { echo incsub_support_stripslashes($data->answer); } else if ( isset($_REQUEST['answer']) && !empty($_REQUEST['answer']) ) { echo incsub_support_stripslashes($_REQUEST['answer']); } ?></textarea>
 		</div>
 		<script type="text/javascript">
 		edCanvas = document.getElementById('answer');
@@ -1187,7 +1187,7 @@ function incsub_support_tickets_output() {
 				if ( !empty($wpdb->insert_id) ) {
 					$notification = __("Thank you. Your ticket has been submitted. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
 					$nclass = "updated fade";
-					$title = stripslashes($title);
+					$title = incsub_support_stripslashes($title);
 					$email_message = array(
 						"to"		=> incsub_support_notification_admin_email(),
 						"subject"	=> __("New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN) . $title,
@@ -1265,7 +1265,7 @@ function incsub_support_tickets_output() {
 				if ( !empty($wpdb->rows_affected) ) {
 					$notification = __("Thank you. Your ticket has been updated. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
 					$nclass = "updated fade";
-					$title = stripslashes($title);
+					$title = incsub_support_stripslashes($title);
 					$email_message = array(
 						"to"		=> incsub_support_notification_admin_email(),
 						"subject"	=> __("[#{$ticket_id}] ", INCSUB_SUPPORT_LANG_DOMAIN) . $title,
@@ -1698,7 +1698,7 @@ function incsub_support_process_reply($curr_user = null) {
 				if ( !empty($wpdb->insert_id) ) {
 					$notification = __("Thank you. Your ticket has been submitted. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
 					$nclass = "updated fade";
-					$title = stripslashes($title);
+					$title = incsub_support_stripslashes($title);
 					$email_message = array(
 						"to"		=> incsub_support_notification_admin_email(),
 						"subject"	=> __("New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN) . $title,
@@ -1776,7 +1776,7 @@ function incsub_support_process_reply($curr_user = null) {
 				if ( !empty($wpdb->rows_affected) ) {
 					$notification = __("Thank you. Your ticket has been updated. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
 					$nclass = "updated fade";
-					$title = stripslashes($title);
+					$title = incsub_support_stripslashes($title);
 					$email_message = array(
 						"to"		=> incsub_support_notification_admin_email(),
 						"subject"	=> __("[#{$ticket_id}] ", INCSUB_SUPPORT_LANG_DOMAIN) . $title,
@@ -2315,7 +2315,7 @@ function incsub_support_ticketadmin_main() {
 					$target_blog = get_blog_details($ticket_blog_id);
 					$notification = __("Ticket has been updated successfully, and the user notified of your response. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
 					$nclass = "updated fade";
-					$title = stripslashes($title);
+					$title = incsub_support_stripslashes($title);
 					$email_message = array(
 						"to"		=> incsub_support_notification_user_email($reply_to_id),
 						"subject"	=> __("[#{$ticket_id}] ", INCSUB_SUPPORT_LANG_DOMAIN) . $title,
