@@ -13,6 +13,9 @@ Support System for WordPress multi site.
 
 == ChangeLog ==
 
+= 1.6.9 =
+* Call to a member function has_cap
+
 = 1.6.8 =
 * Fixed: Extra slashes
 * Don't display recent support tickets if the user doesn't have edit_post capability

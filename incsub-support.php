@@ -6,11 +6,11 @@ Description: Support System for WordPress multi site
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)
 WDP ID: 36
 Network: true
-Version: 1.6.8
+Version: 1.6.9
 Author URI: http://premium.wpmudev.org
 */
 
-define('INCSUB_SUPPORT_VERSION', '1.6.8');
+define('INCSUB_SUPPORT_VERSION', '1.6.9');
 define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
 
 global $ticket_status, $ticket_priority, $incsub_support_settings_page, $incsub_support_settings_page_long;
@@ -1071,7 +1071,7 @@ function incsub_support_output_main() {
 		//-->
 	</script>
 	<h2><?php _e("Support System", INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
-	<?php if ($user->has_cap('edit_posts')) { ?>
+	<?php if (isset($user) && $user && $user->has_cap('edit_posts')) { ?>
 	<div style="width: 63%; float: left;">
 		<h3><?php _e("Recent Support Tickets", INCSUB_SUPPORT_LANG_DOMAIN); ?></h3>
 <?php
