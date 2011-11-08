@@ -8,6 +8,7 @@ WDP ID: 36
 Network: true
 Version: 1.6.9
 Author URI: http://premium.wpmudev.org
+Text Domain: incsub-support
 */
 
 define('INCSUB_SUPPORT_VERSION', '1.6.9');
