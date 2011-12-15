@@ -13,6 +13,10 @@ Support System for WordPress multi site.
 
 == ChangeLog ==
 
+= 1.7.0 =
+* Switch WYSIWYG editor to TinyMCE and Quicktags
+* WordPress 3.3 compatibility
+
 = 1.6.9 =
 * Call to a member function has_cap
 

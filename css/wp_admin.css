@@ -45,7 +45,7 @@ p.info {
 }
 
 .form-field input[type="checkbox"] {
-	width: auto;
+	width: 10px;
 }
 
 .invisible {
