@@ -13,6 +13,10 @@ Support System for WordPress multi site.
 
 == ChangeLog ==
 
+= 1.7.1 =
+* Fixed: Not emailing when tickets are submitted
+* Fixed: Extra slashes
+
 = 1.7.0 =
 * Switch WYSIWYG editor to TinyMCE and Quicktags
 * WordPress 3.3 compatibility

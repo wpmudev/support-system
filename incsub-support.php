@@ -6,12 +6,12 @@ Description: Support System for WordPress multi site
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)
 WDP ID: 36
 Network: true
-Version: 1.7.0
+Version: 1.7.1
 Author URI: http://premium.wpmudev.org
 Text Domain: incsub-support
 */
 
-define('INCSUB_SUPPORT_VERSION', '1.7.0');
+define('INCSUB_SUPPORT_VERSION', '1.7.1');
 define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
 
 global $ticket_status, $ticket_priority, $incsub_support_page, $incsub_support_page_long;
@@ -767,7 +767,7 @@ function incsub_support_faqadmin_questions() {
 								<?php echo $question->question; ?>
 							</td>
 							<td valign="top">
-								<?php echo stripcslashes(html_entity_decode($question->answer)); ?>
+								<?php echo incsub_support_stripslashes(html_entity_decode($question->answer)); ?>
 							</td>
 							<td valign="middle" style="vertical-align: middle;"><a href="<?php print $incsub_support_page; ?>?page=faq-manager&amp;action=questions&amp;qid=<?php echo $question->faq_id; ?>" class="button" title="edit this"><?php _e("Edit This", INCSUB_SUPPORT_LANG_DOMAIN); ?></a></td>
 						</tr>
@@ -1010,7 +1010,7 @@ function incsub_support_faqadmin_postbox($data = '') {
 		<?php
 		$answer = '';
 		if ( !empty($data->answer) ) {
-			$answer = $data->answer;
+			$answer =  incsub_support_stripslashes($data->answer);
 		} else if ( isset($_REQUEST['answer']) && !empty($_REQUEST['answer']) ) {
 			$answer = $_REQUEST['answer'];
 		} 
@@ -1116,7 +1116,7 @@ function incsub_support_output_main() {
 				$mclass = ($mclass == "alternate") ? "" : "alternate";
 ?>
 					<tr class="<?php echo $mclass; ?>">
-						<th scope="row"><a href="admin.php?page=incsub_support_tickets&tid=<?php echo $ticket->ticket_id; ?>"><?php echo $ticket->title; ?></a></th>
+						<th scope="row"><a href="admin.php?page=incsub_support_tickets&tid=<?php echo $ticket->ticket_id; ?>"><?php echo incsub_support_stripslashes($ticket->title); ?></a></th>
 						<td><?php echo str_replace(" ... ", "<br />", date(get_option("date_format") ." ... ". get_option("time_format") ." T  (\G\M\T P)", strtotime($ticket->ticket_updated))); ?></td>
 						<td>
 							<strong><?php _e("Priority", INCSUB_SUPPORT_LANG_DOMAIN); ?>:</strong> <?php echo $ticket_priority[$ticket->ticket_priority]; ?><br />
@@ -1161,7 +1161,7 @@ function incsub_support_output_main() {
 					$sentence = "";
 				}
 ?>
-					<?php echo stripcslashes(html_entity_decode($faq->answer)); ?>
+					<?php echo incsub_support_stripslashes(html_entity_decode($faq->answer)); ?>
 					<p style="padding: 10px; text-align: right;" class="vote_response" id="vote-response-<?php echo $faq->faq_id; ?>" >
 						<?php _e("Was this solution helpful? ", INCSUB_SUPPORT_LANG_DOMAIN); ?>
 						<a class="vote" href="admin.php?page=incsub_support_faq&amp;action=vote&amp;help=yes&amp;qid=<?php echo $faq->faq_id; ?>"><?php _e("Yes", INCSUB_SUPPORT_LANG_DOMAIN); ?></a> | <a class="vote" href="admin.php?page=incsub_support_faq&amp;action=vote&amp;help=no&amp;qid=<?php echo $faq->faq_id; ?>"><?php _e("No", INCSUB_SUPPORT_LANG_DOMAIN); ?></a><br />
@@ -1394,8 +1394,8 @@ function incsub_support_tickets_output() {
 				<tr class="form-field form-required">
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Ticket Subject:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 					<td style="border-bottom:0;">
-						<?php echo $current_ticket->title; ?>
-						<input type="hidden" name="tickettitle" value="<?php echo "Re: ".$current_ticket->title; ?>" />
+						<?php echo incsub_support_stripslashes($current_ticket->title); ?>
+						<input type="hidden" name="tickettitle" value="<?php echo "Re: ".incsub_support_stripslashes($current_ticket->title); ?>" />
 						<input type="hidden" name="ticket_id" value="<?php echo $current_ticket->ticket_id; ?>" />
 					</td>
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Current Date/Time:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
@@ -1460,9 +1460,9 @@ function incsub_support_tickets_output() {
 					<tr<?php echo $mclass; ?>>
 						<th scope="row" style="text-align: center;"><?php echo $display_name . $avatar; ?></th>
 						<td style="padding: 0 5px 5px 5px;">
-							<h3 style="margin-top: .5em;"><?php echo $message->subject; ?></h3>
+							<h3 style="margin-top: .5em;"><?php echo incsub_support_stripslashes($message->subject); ?></h3>
 							<div style="padding: 0 20px;">
-								<?php echo wpautop(html_entity_decode($message->message)); ?>
+								<?php echo wpautop(html_entity_decode(incsub_support_stripslashes($message->message))); ?>
 							</div>
 						</td>
 						<td><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($message->message_date)); ?></td>
@@ -1486,7 +1486,7 @@ function incsub_support_tickets_output() {
 			<table class="form-table">
 				<tr class="form-field form-required">
 					<th scope="row"><label for="subject"><?php _e("Subject", INCSUB_SUPPORT_LANG_DOMAIN); ?></label></th>
-					<td><input type="text" name="subject" id="subject" maxlength="100" size="60" value="Re: <?php echo $current_ticket->title; ?>" />&nbsp;<small>(<?php _e("max: 100 characters"); ?>)</small></td>
+					<td><input type="text" name="subject" id="subject" maxlength="100" size="60" value="Re: <?php echo incsub_support_stripslashes($current_ticket->title); ?>" />&nbsp;<small>(<?php _e("max: 100 characters"); ?>)</small></td>
 				</tr>
 				<tr class="form-field form-required">
 					<th scope="row"><?php _e('Category', INCSUB_SUPPORT_LANG_DOMAIN); ?>:</th>
@@ -1585,7 +1585,7 @@ function incsub_support_tickets_output() {
 ?>
 				<tr class='<?php echo $class; ?>'>
 					<th scope="row"><?php echo $ticket->ticket_id; ?></th>
-					<td valign="top"><a href="admin.php?page=incsub_support_tickets&amp;tid=<?php echo $ticket->ticket_id; ?>"><?php echo $ticket->title; ?></a></td>
+					<td valign="top"><a href="admin.php?page=incsub_support_tickets&amp;tid=<?php echo $ticket->ticket_id; ?>"><?php echo incsub_support_stripslashes($ticket->title); ?></a></td>
 					<td valign="top"><?php echo $ticket_status[$ticket->ticket_status]; ?></td>
 					<td valign="top"><?php echo $ticket_priority[$ticket->ticket_priority]; ?></td>
 					<td valign="top"><?php echo $ticket->display_name; ?></td>
@@ -1680,12 +1680,17 @@ function incsub_support_notification_admin_email() {
 	global $wpdb;
 	$admins = get_site_option("site_admins");
 	if ( !empty($admins) ) {
-		// we only need the first one.
-		return $wpdb->get_var("SELECT user_email FROM {$wpdb->users} WHERE user_login = '{$admins[0]}'");
-	} else {
-		// not likely, if so, they have more problems than we can help with. :)
-		return get_site_option("admin_email");
+		foreach($admins as $admin)
+		{
+			if($admin != ""){
+				// we only need the first one.
+				return $wpdb->get_var("SELECT user_email FROM {$wpdb->users} WHERE user_login = '{$admin}'");
+			}
+		}
 	}
+	
+	// not likely, if so, they have more problems than we can help with. :)
+	return get_site_option("admin_email");
 }
 
 function incsub_support_process_reply($curr_user = null) {
@@ -1921,8 +1926,8 @@ function incsub_support_output_tickets() {
 				<tr class="form-field form-required">
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Ticket Subject:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 					<td style="border-bottom:0;">
-						<?php echo $current_ticket->title; ?>
-						<input type="hidden" name="tickettitle" value="<?php echo "Re: ".$current_ticket->title; ?>" />
+						<?php echo incsub_support_stripslashes($current_ticket->title); ?>
+						<input type="hidden" name="tickettitle" value="<?php echo "Re: ".incsub_support_stripslashes($current_ticket->title); ?>" />
 						<input type="hidden" name="ticket_id" value="<?php echo $current_ticket->ticket_id; ?>" />
 					</td>
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Current Date/Time:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
@@ -1988,9 +1993,9 @@ function incsub_support_output_tickets() {
 					<tr<?php echo $mclass; ?>>
 						<th scope="row" style="text-align: center;"><?php echo $display_name . $avatar; ?></th>
 						<td style="padding: 0 5px 5px 5px;">
-							<h3 style="margin-top: .5em;"><?php echo $message->subject; ?></h3>
+							<h3 style="margin-top: .5em;"><?php echo incsub_support_stripslashes($message->subject); ?></h3>
 							<div style="padding: 0 20px;">
-								<?php echo wpautop(html_entity_decode($message->message)); ?>
+								<?php echo wpautop(html_entity_decode(incsub_support_stripslashes($message->message))); ?>
 							</div>
 						</td>
 						<td><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($message->message_date)); ?></td>
@@ -2014,7 +2019,7 @@ function incsub_support_output_tickets() {
 			<table class="form-table">
 				<tr class="form-field form-required">
 					<th scope="row"><label for="subject"><?php _e("Subject", INCSUB_SUPPORT_LANG_DOMAIN); ?></label></th>
-					<td><input type="text" name="subject" id="subject" maxlength="100" size="60" value="Re: <?php echo $current_ticket->title; ?>" />&nbsp;<small>(<?php _e("max: 100 characters", INCSUB_SUPPORT_LANG_DOMAIN); ?>)</small></td>
+					<td><input type="text" name="subject" id="subject" maxlength="100" size="60" value="Re: <?php echo incsub_support_stripslashes($current_ticket->title); ?>" />&nbsp;<small>(<?php _e("max: 100 characters", INCSUB_SUPPORT_LANG_DOMAIN); ?>)</small></td>
 				</tr>
 				<tr class="form-field form-required">
 					<th scope="row"><?php _e('Category', INCSUB_SUPPORT_LANG_DOMAIN); ?>:</th>
@@ -2114,7 +2119,7 @@ function incsub_support_output_tickets() {
 ?>
 				<tr class='<?php echo $class; ?>'>
 					<th scope="row"><?php echo $ticket->ticket_id; ?></th>
-					<td valign="top"><a href="admin.php?page=incsub_support_tickets&amp;tid=<?php echo $ticket->ticket_id; ?>"><?php echo $ticket->title; ?></a></td>
+					<td valign="top"><a href="admin.php?page=incsub_support_tickets&amp;tid=<?php echo $ticket->ticket_id; ?>"><?php echo incsub_support_stripslashes($ticket->title); ?></a></td>
 					<td valign="top"><?php echo $ticket_status[$ticket->ticket_status]; ?></td>
 					<td valign="top"><?php echo $ticket_priority[$ticket->ticket_priority]; ?></td>
 					<td valign="top"><?php echo $ticket->display_name; ?></td>
@@ -2260,7 +2265,7 @@ function incsub_support_output_faq() {
 						$sentence = "";
 					}
 					?>
-					<?php echo stripcslashes(html_entity_decode($faq->answer)); ?>
+					<?php echo incsub_support_stripslashes(html_entity_decode($faq->answer)); ?>
 					<p style="padding: 10px; text-align: right;" class="vote_response" id="vote-response-<?php echo $faq->faq_id; ?>" >
 						<?php _e("Was this solution helpful? ", INCSUB_SUPPORT_LANG_DOMAIN); ?>
 						<a class="vote" href="admin.php?page=incsub_support_faq&amp;action=vote&amp;help=yes&amp;qid=<?php echo $faq->faq_id; ?>"><?php _e("Yes", INCSUB_SUPPORT_LANG_DOMAIN); ?></a> | <a class="vote" href="admin.php?page=incsub_support_faq&amp;action=vote&amp;help=no&amp;qid=<?php echo $faq->faq_id; ?>"><?php _e("No", INCSUB_SUPPORT_LANG_DOMAIN); ?></a><br />
@@ -2474,8 +2479,8 @@ function incsub_support_ticketadmin_main() {
 				<tr class="form-field form-required">
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Ticket Subject:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 					<td style="border-bottom:0;">
-						<?php echo $current_ticket->title; ?>
-						<input type="hidden" name="tickettitle" value="<?php echo "Re: ".$current_ticket->title; ?>" />
+						<?php echo incsub_support_stripslashes($current_ticket->title); ?>
+						<input type="hidden" name="tickettitle" value="<?php echo "Re: ".incsub_support_stripslashes($current_ticket->title); ?>" />
 						<input type="hidden" name="ticket_id" value="<?php echo $current_ticket->ticket_id; ?>" />
 					</td>
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Current Date/Time:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
@@ -2542,9 +2547,9 @@ function incsub_support_ticketadmin_main() {
 					<tr<?php echo $mclass; ?>>
 						<th scope="row" style="text-align: center;"><?php echo $display_name . $avatar; ?></th>
 						<td style="padding: 0 5px 5px 5px;">
-							<h3 style="margin-top: .5em;"><?php echo $message->subject; ?></h3>
+							<h3 style="margin-top: .5em;"><?php echo incsub_support_stripslashes($message->subject); ?></h3>
 							<div style="padding: 0 20px;">
-								<?php echo wpautop(html_entity_decode($message->message)); ?>
+								<?php echo wpautop(html_entity_decode(incsub_support_stripslashes($message->message))); ?>
 							</div>
 						</td>
 						<td style="width: 250px;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($message->message_date)); ?></td>
@@ -2572,7 +2577,7 @@ function incsub_support_ticketadmin_main() {
 			<table class="form-table">
 				<tr class="form-field form-required">
 					<th scope="row"><label for="subject"><?php _e("Subject", INCSUB_SUPPORT_LANG_DOMAIN); ?></label></th>
-					<td><input type="text" name="subject" id="subject" maxlength="100" size="60" value="Re: <?php echo $current_ticket->title; ?>" />&nbsp;<small>(<?php _e("max: 100 characters", INCSUB_SUPPORT_LANG_DOMAIN); ?>)</small></td>
+					<td><input type="text" name="subject" id="subject" maxlength="100" size="60" value="Re: <?php echo incsub_support_stripslashes($current_ticket->title); ?>" />&nbsp;<small>(<?php _e("max: 100 characters", INCSUB_SUPPORT_LANG_DOMAIN); ?>)</small></td>
 				</tr>
 				<tr class="form-field form-required">
 					<th scope="row">Category:</th>
@@ -2694,7 +2699,7 @@ function incsub_support_ticketadmin_main() {
 ?>
 				<tr class='<?php echo $class; ?>'>
 					<th scope="row"><?php echo $ticket->ticket_id; ?></th>
-					<td valign="top"><a href="<?php print $incsub_support_page; ?>?page=ticket-manager&amp;tid=<?php echo $ticket->ticket_id; ?>"><?php echo $ticket->title; ?></a></td>
+					<td valign="top"><a href="<?php print $incsub_support_page; ?>?page=ticket-manager&amp;tid=<?php echo $ticket->ticket_id; ?>"><?php echo incsub_support_stripslashes($ticket->title); ?></a></td>
 					<td valign="top"><?php echo $ticket_status[$ticket->ticket_status]; ?></td>
 					<td valign="top"><?php echo $ticket_priority[$ticket->ticket_priority]; ?></td>
 					<td valign="top"><?php echo $ticket->display_name; ?></td>
@@ -2959,10 +2964,10 @@ function incsub_support_cron_schedules($schedules) {
 }
 
 function incsub_support_stripslashes($str) {
-	if (get_magic_quotes_gpc()) {
+	//if (get_magic_quotes_gpc()) {
 		return stripcslashes($str);
-	}
-	return $str;
+	//}
+	//return $str;
 }
 
 incsub_support();
