@@ -6,12 +6,12 @@ Description: Support System for WordPress multi site
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)
 WDP ID: 36
 Network: true
-Version: 1.7.1
+Version: 1.7.2
 Author URI: http://premium.wpmudev.org
 Text Domain: incsub-support
 */
 
-define('INCSUB_SUPPORT_VERSION', '1.7.1');
+define('INCSUB_SUPPORT_VERSION', '1.7.2');
 define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
 
 global $ticket_status, $ticket_priority, $incsub_support_page, $incsub_support_page_long;
@@ -1351,7 +1351,7 @@ function incsub_support_tickets_output() {
 
 	$do_history = ( !empty($_GET['action']) and $_GET['action'] == 'history' ) ? '' : 'AND t.ticket_updated > DATE_SUB(CURDATE(), INTERVAL 1 MONTH)';
 	$tickets = $wpdb->get_results("
-		SELECT t.ticket_id, t.user_id, t.cat_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_updated, t.title, c.cat_name, u.display_name
+		SELECT t.ticket_id, t.blog_id, t.user_id, t.cat_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_updated, t.title, c.cat_name, u.display_name
 		FROM ".incsub_support_tablename('tickets')." AS t
 		LEFT JOIN ".incsub_support_tablename('tickets_cats')." AS c ON (t.cat_id = c.cat_id)
 		LEFT JOIN $wpdb->users AS u ON (t.admin_id = u.ID)
@@ -1363,7 +1363,7 @@ function incsub_support_tickets_output() {
 	if ( !empty($_GET['tid']) and is_numeric($_GET['tid']) ) {
 		$current_ticket = $wpdb->get_results("
 		SELECT
-			t.ticket_id, t.cat_id, t.user_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_opened, t.ticket_updated, t.title,
+			t.ticket_id, t.blog_id, t.cat_id, t.user_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_opened, t.ticket_updated, t.title,
 			c.cat_name, u.display_name AS user_name, a.display_name AS admin_name, l.display_name AS last_user_reply, m.user_id AS user_avatar_id, 
 			m.admin_id AS admin_avatar_id, m.message_date, m.subject, m.message, r.display_name AS reporting_name, s.display_name AS staff_member
 		FROM ".incsub_support_tablename('tickets')."_messages AS m
@@ -1421,6 +1421,13 @@ function incsub_support_tickets_output() {
 					<td style="border-bottom:0;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($current_ticket->ticket_updated)); ?></td>
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Created On:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 					<td style="border-bottom:0;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($current_ticket->ticket_opened)); ?></td>
+				</tr>
+				<?php $blog_details = get_blog_details($current_ticket->blog_id); ?>
+				<tr class="form-field form-required">
+					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Submitted from:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
+					<td style="border-bottom:0;"><a href="<?php echo get_blogaddress_by_id($current_ticket->blog_id); ?>"><?php echo $blog_details->blogname; ?></a></td>
+					<th scope="row">&nbsp;</th>
+					<td style="border-bottom:0;">&nbsp;</td>
 				</tr>
 			</table>
 			<br /><br />
@@ -1564,6 +1571,7 @@ function incsub_support_tickets_output() {
 					<th scope="col"><?php _e("Status", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 					<th scope="col"><?php _e("Priority", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 					<th scope="col"><?php _e("Staff Member", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
+					<th scope="col"><?php _e("Submitted From", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 					<th scope="col"><?php _e("Last Updated", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 				</tr>
 			</thead>
@@ -1582,13 +1590,13 @@ function incsub_support_tickets_output() {
 			foreach ($tickets as $ticket) {
 			$class = ( $class != "alternate") ? "alternate" : "";
 			if ( empty($ticket->display_name) ) { $ticket->display_name = __("Unassigned", INCSUB_SUPPORT_LANG_DOMAIN); }
-?>
+				$blog_details = get_blog_details($ticket->blog_id); ?>
 				<tr class='<?php echo $class; ?>'>
 					<th scope="row"><?php echo $ticket->ticket_id; ?></th>
 					<td valign="top"><a href="admin.php?page=incsub_support_tickets&amp;tid=<?php echo $ticket->ticket_id; ?>"><?php echo incsub_support_stripslashes($ticket->title); ?></a></td>
 					<td valign="top"><?php echo $ticket_status[$ticket->ticket_status]; ?></td>
 					<td valign="top"><?php echo $ticket_priority[$ticket->ticket_priority]; ?></td>
-					<td valign="top"><?php echo $ticket->display_name; ?></td>
+					<td valign="top"><a href="<?php echo get_blogaddress_by_id($ticket->blog_id); ?>"><?php echo $blog_details->blogname; ?></a></td>
 					<td valign="top"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($ticket->ticket_updated)); ?></td>
 				</tr>
 <?php
@@ -1883,7 +1891,7 @@ function incsub_support_output_tickets() {
 
 	$do_history = ( !empty($_GET['action']) and $_GET['action'] == 'history' ) ? '' : 'AND t.ticket_updated > DATE_SUB(CURDATE(), INTERVAL 1 MONTH)';
 	$tickets = $wpdb->get_results("
-		SELECT t.ticket_id, t.user_id, t.cat_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_updated, t.title, c.cat_name, u.display_name
+		SELECT t.ticket_id, t.blog_id, t.user_id, t.cat_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_updated, t.title, c.cat_name, u.display_name
 		FROM ".incsub_support_tablename('tickets')." AS t
 		LEFT JOIN ".incsub_support_tablename('tickets_cats')." AS c ON (t.cat_id = c.cat_id)
 		LEFT JOIN $wpdb->users AS u ON (t.admin_id = u.ID)
@@ -1895,7 +1903,7 @@ function incsub_support_output_tickets() {
 	if ( !empty($_GET['tid']) and is_numeric($_GET['tid']) ) {
 		$current_ticket = $wpdb->get_results("
 		SELECT
-			t.ticket_id, t.cat_id, t.user_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_opened, t.ticket_updated, t.title,
+			t.ticket_id, t.blog_id, t.cat_id, t.user_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_opened, t.ticket_updated, t.title,
 			c.cat_name, u.display_name AS user_name, a.display_name AS admin_name, l.display_name AS last_user_reply, m.user_id AS user_avatar_id, 
 			m.admin_id AS admin_avatar_id, m.message_date, m.subject, m.message, r.display_name AS reporting_name, s.display_name AS staff_member
 		FROM ".incsub_support_tablename('tickets')."_messages AS m
@@ -1953,6 +1961,13 @@ function incsub_support_output_tickets() {
 					<td style="border-bottom:0;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($current_ticket->ticket_updated)); ?></td>
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Created On:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 					<td style="border-bottom:0;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($current_ticket->ticket_opened)); ?></td>
+				</tr>
+				<?php $blog_details = get_blog_details($current_ticket->blog_id); ?>
+				<tr class="form-field form-required">
+					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Submitted from:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
+					<td style="border-bottom:0;"><a href="<?php echo get_blogaddress_by_id($current_ticket->blog_id); ?>"><?php echo $blog_details->blogname; ?></a></td>
+					<th scope="row">&nbsp;</th>
+					<td style="border-bottom:0;">&nbsp;</td>
 				</tr>
 			</table>
 			<br /><br />
@@ -2097,6 +2112,7 @@ function incsub_support_output_tickets() {
 					<th scope="col"><?php _e("Status", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 					<th scope="col"><?php _e("Priority", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 					<th scope="col"><?php _e("Staff Member", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
+					<th scope="col"><?php _e("Submitted From", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 					<th scope="col"><?php _e("Last Updated", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 				</tr>
 			</thead>
@@ -2116,13 +2132,14 @@ function incsub_support_output_tickets() {
 			foreach ($tickets as $ticket) {
 			$class = ( $class != "alternate") ? "alternate" : "";
 			if ( empty($ticket->display_name) ) { $ticket->display_name = __("Unassigned", INCSUB_SUPPORT_LANG_DOMAIN); }
-?>
+				$blog_details = get_blog_details($ticket->blog_id); ?>
 				<tr class='<?php echo $class; ?>'>
 					<th scope="row"><?php echo $ticket->ticket_id; ?></th>
 					<td valign="top"><a href="admin.php?page=incsub_support_tickets&amp;tid=<?php echo $ticket->ticket_id; ?>"><?php echo incsub_support_stripslashes($ticket->title); ?></a></td>
 					<td valign="top"><?php echo $ticket_status[$ticket->ticket_status]; ?></td>
 					<td valign="top"><?php echo $ticket_priority[$ticket->ticket_priority]; ?></td>
 					<td valign="top"><?php echo $ticket->display_name; ?></td>
+					<td valign="top"><a href="<?php echo get_blogaddress_by_id($ticket->blog_id); ?>"><?php echo $blog_details->blogname; ?></a></td>
 					<td valign="top"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($ticket->ticket_updated)); ?></td>
 				</tr>
 <?php
@@ -2407,7 +2424,7 @@ function incsub_support_ticketadmin_main() {
 
 	$do_history = ( !empty($_GET['action']) and $_GET['action'] == 'history' ) ? "AND t.ticket_status = '5'" : "AND t.ticket_status != '5'";
 	$tickets = $wpdb->get_results($wpdb->prepare("
-		SELECT t.ticket_id, t.user_id, t.cat_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_updated, t.title, c.cat_name, u.display_name
+		SELECT t.ticket_id, t.blog_id, t.user_id, t.cat_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_updated, t.title, c.cat_name, u.display_name
 		FROM ".incsub_support_tablename('tickets')." AS t
 		LEFT JOIN ".incsub_support_tablename('tickets_cats')." AS c ON (t.cat_id = c.cat_id)
 		LEFT JOIN $wpdb->users AS u ON (t.admin_id = u.ID)
@@ -2447,7 +2464,7 @@ function incsub_support_ticketadmin_main() {
 	if ( !empty($_GET['tid']) and is_numeric($_GET['tid']) ) {
 		$current_ticket = $wpdb->get_results($wpdb->prepare("
 		SELECT
-			t.ticket_id, t.cat_id, t.user_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_opened, t.ticket_updated, t.title,
+			t.ticket_id, t.blog_id, t.cat_id, t.user_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_opened, t.ticket_updated, t.title,
 			c.cat_name, u.display_name AS user_name, a.display_name AS admin_name, l.display_name AS last_user_reply, m.user_id AS user_avatar_id, 
 			m.admin_id AS admin_avatar_id, m.message_date, m.subject, m.message, r.display_name AS reporting_name, s.display_name AS staff_member
 		FROM ".incsub_support_tablename('tickets')."_messages AS m
@@ -2506,6 +2523,13 @@ function incsub_support_ticketadmin_main() {
 					<td style="border-bottom:0;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($current_ticket->ticket_updated)); ?></td>
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Created On:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 					<td style="border-bottom:0;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($current_ticket->ticket_opened)); ?></td>
+				</tr>
+				<?php $blog_details = get_blog_details($current_ticket->blog_id); ?>
+				<tr class="form-field form-required">
+					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Submitted from:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
+					<td style="border-bottom:0;"><a href="<?php echo get_blogaddress_by_id($current_ticket->blog_id); ?>"><?php echo $blog_details->blogname; ?></a></td>
+					<th scope="row">&nbsp;</th>
+					<td style="border-bottom:0;">&nbsp;</td>
 				</tr>
 			</table>
 			<br /><br />
@@ -2677,6 +2701,7 @@ function incsub_support_ticketadmin_main() {
 					<th scope="col"><?php _e("Status", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 					<th scope="col"><?php _e("Priority", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 					<th scope="col"><?php _e("Staff Member", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
+					<th scope="col"><?php _e("Submitted From", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 					<th scope="col"><?php _e("Last Updated", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
 				</tr>
 			</thead>
@@ -2696,13 +2721,14 @@ function incsub_support_ticketadmin_main() {
 			foreach ($tickets as $ticket) {
 			$class = ( $class != "alternate") ? "alternate" : "";
 			if ( empty($ticket->display_name) ) { $ticket->display_name = __("Unassigned", INCSUB_SUPPORT_LANG_DOMAIN); }
-?>
+				$blog_details = get_blog_details($ticket->blog_id); ?>
 				<tr class='<?php echo $class; ?>'>
 					<th scope="row"><?php echo $ticket->ticket_id; ?></th>
 					<td valign="top"><a href="<?php print $incsub_support_page; ?>?page=ticket-manager&amp;tid=<?php echo $ticket->ticket_id; ?>"><?php echo incsub_support_stripslashes($ticket->title); ?></a></td>
 					<td valign="top"><?php echo $ticket_status[$ticket->ticket_status]; ?></td>
 					<td valign="top"><?php echo $ticket_priority[$ticket->ticket_priority]; ?></td>
 					<td valign="top"><?php echo $ticket->display_name; ?></td>
+					<td valign="top"><a href="<?php echo get_blogaddress_by_id($ticket->blog_id); ?>"><?php echo $blog_details->blogname; ?></a></td>
 					<td valign="top"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($ticket->ticket_updated)); ?></td>
 				</tr>
 <?php

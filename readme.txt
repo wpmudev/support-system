@@ -13,6 +13,9 @@ Support System for WordPress multi site.
 
 == ChangeLog ==
 
+= 1.7.2 =
+* Added new field 'Submitted From' (Link to users blog)
+
 = 1.7.1 =
 * Fixed: Not emailing when tickets are submitted
 * Fixed: Extra slashes
