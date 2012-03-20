@@ -3,7 +3,7 @@ Contributors: mohanjith
 Tags: support, ticket, faq
 Requires at least: 3.0.0
 Stable tag: trunk
-Tested up to: 3.2.1
+Tested up to: 3.3.1
 
 Support System for WordPress multi site
 
