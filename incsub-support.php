@@ -1161,7 +1161,7 @@ function incsub_support_output_main() {
 					$sentence = "";
 				}
 ?>
-					<?php echo incsub_support_stripslashes(html_entity_decode($faq->answer)); ?>
+					<?php echo do_shortcode(incsub_support_stripslashes(html_entity_decode($faq->answer))); ?>
 					<p style="padding: 10px; text-align: right;" class="vote_response" id="vote-response-<?php echo $faq->faq_id; ?>" >
 						<?php _e("Was this solution helpful? ", INCSUB_SUPPORT_LANG_DOMAIN); ?>
 						<a class="vote" href="admin.php?page=incsub_support_faq&amp;action=vote&amp;help=yes&amp;qid=<?php echo $faq->faq_id; ?>"><?php _e("Yes", INCSUB_SUPPORT_LANG_DOMAIN); ?></a> | <a class="vote" href="admin.php?page=incsub_support_faq&amp;action=vote&amp;help=no&amp;qid=<?php echo $faq->faq_id; ?>"><?php _e("No", INCSUB_SUPPORT_LANG_DOMAIN); ?></a><br />
@@ -1469,7 +1469,7 @@ function incsub_support_tickets_output() {
 						<td style="padding: 0 5px 5px 5px;">
 							<h3 style="margin-top: .5em;"><?php echo incsub_support_stripslashes($message->subject); ?></h3>
 							<div style="padding: 0 20px;">
-								<?php echo wpautop(html_entity_decode(incsub_support_stripslashes($message->message))); ?>
+								<?php echo do_shortcode(wpautop(html_entity_decode(incsub_support_stripslashes($message->message)))); ?>
 							</div>
 						</td>
 						<td><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($message->message_date)); ?></td>
@@ -2010,7 +2010,7 @@ function incsub_support_output_tickets() {
 						<td style="padding: 0 5px 5px 5px;">
 							<h3 style="margin-top: .5em;"><?php echo incsub_support_stripslashes($message->subject); ?></h3>
 							<div style="padding: 0 20px;">
-								<?php echo wpautop(html_entity_decode(incsub_support_stripslashes($message->message))); ?>
+								<?php echo do_shortcode(wpautop(html_entity_decode(incsub_support_stripslashes($message->message)))); ?>
 							</div>
 						</td>
 						<td><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($message->message_date)); ?></td>
@@ -2282,7 +2282,7 @@ function incsub_support_output_faq() {
 						$sentence = "";
 					}
 					?>
-					<?php echo incsub_support_stripslashes(html_entity_decode($faq->answer)); ?>
+					<?php echo do_shortcode(incsub_support_stripslashes(html_entity_decode($faq->answer))); ?>
 					<p style="padding: 10px; text-align: right;" class="vote_response" id="vote-response-<?php echo $faq->faq_id; ?>" >
 						<?php _e("Was this solution helpful? ", INCSUB_SUPPORT_LANG_DOMAIN); ?>
 						<a class="vote" href="admin.php?page=incsub_support_faq&amp;action=vote&amp;help=yes&amp;qid=<?php echo $faq->faq_id; ?>"><?php _e("Yes", INCSUB_SUPPORT_LANG_DOMAIN); ?></a> | <a class="vote" href="admin.php?page=incsub_support_faq&amp;action=vote&amp;help=no&amp;qid=<?php echo $faq->faq_id; ?>"><?php _e("No", INCSUB_SUPPORT_LANG_DOMAIN); ?></a><br />
@@ -2573,7 +2573,7 @@ function incsub_support_ticketadmin_main() {
 						<td style="padding: 0 5px 5px 5px;">
 							<h3 style="margin-top: .5em;"><?php echo incsub_support_stripslashes($message->subject); ?></h3>
 							<div style="padding: 0 20px;">
-								<?php echo wpautop(html_entity_decode(incsub_support_stripslashes($message->message))); ?>
+								<?php echo do_shortcode(wpautop(html_entity_decode(incsub_support_stripslashes($message->message)))); ?>
 							</div>
 						</td>
 						<td style="width: 250px;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($message->message_date)); ?></td>

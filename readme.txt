@@ -15,6 +15,7 @@ Support System for WordPress multi site.
 
 = 1.7.2 =
 * Added new field 'Submitted From' (Link to users blog)
+* Process shortcodes in FAQ content and ticket replies
 
 = 1.7.1 =
 * Fixed: Not emailing when tickets are submitted
