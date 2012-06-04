@@ -15,6 +15,7 @@ Support System for WordPress multi site.
 
 = 1.7.2.1 =
 * Fixed: Slashes in e-mail
+* Fixed: Support System Time stamps are not right
 
 = 1.7.2 =
 * Added new field 'Submitted From' (Link to users blog)

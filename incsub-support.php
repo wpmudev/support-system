@@ -6,12 +6,12 @@ Description: Support System for WordPress multi site
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)
 WDP ID: 36
 Network: true
-Version: 1.7.2
+Version: 1.7.2.1
 Author URI: http://premium.wpmudev.org
 Text Domain: incsub-support
 */
 
-define('INCSUB_SUPPORT_VERSION', '1.7.2');
+define('INCSUB_SUPPORT_VERSION', '1.7.2.1');
 define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
 
 global $ticket_status, $ticket_priority, $incsub_support_page, $incsub_support_page_long;
@@ -1117,7 +1117,7 @@ function incsub_support_output_main() {
 ?>
 					<tr class="<?php echo $mclass; ?>">
 						<th scope="row"><a href="admin.php?page=incsub_support_tickets&tid=<?php echo $ticket->ticket_id; ?>"><?php echo incsub_support_stripslashes($ticket->title); ?></a></th>
-						<td><?php echo str_replace(" ... ", "<br />", date(get_option("date_format") ." ... ". get_option("time_format") ." T  (\G\M\T P)", strtotime($ticket->ticket_updated))); ?></td>
+						<td><?php echo str_replace(" ... ", "<br />", date_i18n(get_option("date_format") ." ... ". get_option("time_format"), strtotime($ticket->ticket_updated), true)); ?></td>
 						<td>
 							<strong><?php _e("Priority", INCSUB_SUPPORT_LANG_DOMAIN); ?>:</strong> <?php echo $ticket_priority[$ticket->ticket_priority]; ?><br />
 							<strong><?php _e("Status", INCSUB_SUPPORT_LANG_DOMAIN); ?>:</strong> <?php echo $ticket_status[$ticket->ticket_status]; ?><br />
@@ -1205,10 +1205,10 @@ function incsub_support_tickets_output() {
 			if ( !empty($wpdb->insert_id) ) {
 				$ticket_id = $wpdb->insert_id;
 				$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_messages')."
-					(site_id, ticket_id, user_id, subject, message)
+					(site_id, ticket_id, user_id, subject, message, message_date)
 					VALUES (
-						'%d', '%d', '%d', '%s', '%s')
-				", $current_site->id, $ticket_id, $current_user->ID, $title, $message));
+						'%d', '%d', '%d', '%s', '%s', '%s')
+				", $current_site->id, $ticket_id, $current_user->ID, $title, $message, gmdate('Y-m-d H:i:s')));
 				if ( !empty($wpdb->insert_id) ) {
 					$notification = __("Thank you. Your ticket has been submitted. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
 					$nclass = "updated fade";
@@ -1275,9 +1275,9 @@ function incsub_support_tickets_output() {
 			$status = ($_POST['closeticket'] == 1) ? 5 : 3;
 			$email_message = false;
 			$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_messages')."
-				(site_id, ticket_id, user_id, subject, message)
-				VALUES ('%d', '%d', '%d', '%s', '%s')
-			", $current_site->id, $ticket_id, $current_user->ID, $title, $message));
+				(site_id, ticket_id, user_id, subject, message, message_date)
+				VALUES ('%d', '%d', '%d', '%s', '%s', '%s')
+			", $current_site->id, $ticket_id, $current_user->ID, $title, $message, gmdate('Y-m-d H:i:s')));
 
 			if ( !empty($wpdb->insert_id) ) {
 				$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('tickets')."
@@ -1399,7 +1399,7 @@ function incsub_support_tickets_output() {
 						<input type="hidden" name="ticket_id" value="<?php echo $current_ticket->ticket_id; ?>" />
 					</td>
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Current Date/Time:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<td style="border-bottom:0;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", time()); ?></td>
+					<td style="border-bottom:0;"><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), time(), true); ?></td>
 				</tr>
 				<tr class="form-field form-required">
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Reporting User:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
@@ -1418,9 +1418,9 @@ function incsub_support_tickets_output() {
 				</tr>
 				<tr class="form-field form-required">
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Last Updated:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<td style="border-bottom:0;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($current_ticket->ticket_updated)); ?></td>
+					<td style="border-bottom:0;"><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), strtotime($current_ticket->ticket_updated), true); ?></td>
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Created On:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<td style="border-bottom:0;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($current_ticket->ticket_opened)); ?></td>
+					<td style="border-bottom:0;"><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), strtotime($current_ticket->ticket_opened), true); ?></td>
 				</tr>
 				<?php $blog_details = get_blog_details($current_ticket->blog_id); ?>
 				<tr class="form-field form-required">
@@ -1472,7 +1472,7 @@ function incsub_support_tickets_output() {
 								<?php echo do_shortcode(wpautop(html_entity_decode(incsub_support_stripslashes($message->message)))); ?>
 							</div>
 						</td>
-						<td><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($message->message_date)); ?></td>
+						<td><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), strtotime($message->message_date), true); ?></td>
 					</tr>
 <?php
 				}
@@ -1597,7 +1597,7 @@ function incsub_support_tickets_output() {
 					<td valign="top"><?php echo $ticket_status[$ticket->ticket_status]; ?></td>
 					<td valign="top"><?php echo $ticket_priority[$ticket->ticket_priority]; ?></td>
 					<td valign="top"><a href="<?php echo get_blogaddress_by_id($ticket->blog_id); ?>"><?php echo $blog_details->blogname; ?></a></td>
-					<td valign="top"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($ticket->ticket_updated)); ?></td>
+					<td valign="top"><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), strtotime($ticket->ticket_updated), true); ?></td>
 				</tr>
 <?php
 			}
@@ -1732,10 +1732,10 @@ function incsub_support_process_reply($curr_user = null) {
 			if ( !empty($wpdb->insert_id) ) {
 				$ticket_id = $wpdb->insert_id;
 				$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_messages')."
-					(site_id, ticket_id, user_id, subject, message)
+					(site_id, ticket_id, user_id, subject, message, message_date)
 					VALUES (
-						'%d', '%d', '%d', '%s', '%s')
-				", $current_site->id, $ticket_id, $current_user->ID, $title, $message));
+						'%d', '%d', '%d', '%s', '%s', '%s')
+				", $current_site->id, $ticket_id, $current_user->ID, $title, $message, gmdate('Y-m-d H:i:s')));
 				if ( !empty($wpdb->insert_id) ) {
 					$notification = __("Thank you. Your ticket has been submitted. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
 					$nclass = "updated fade";
@@ -1802,9 +1802,9 @@ function incsub_support_process_reply($curr_user = null) {
 			$status = ($_POST['closeticket'] == 1) ? 5 : 3;
 			$email_message = false;
 			$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_messages')."
-				(site_id, ticket_id, user_id, subject, message)
-				VALUES ('%d', '%d', '%d', '%s', '%s')
-			", $current_site->id, $ticket_id, $current_user->ID, $title, $message));
+				(site_id, ticket_id, user_id, subject, message, message_date)
+				VALUES ('%d', '%d', '%d', '%s', '%s', '%s')
+			", $current_site->id, $ticket_id, $current_user->ID, $title, $message, gmdate('Y-m-d H:i:s')));
 
 			if ( !empty($wpdb->insert_id) ) {
 				$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('tickets')."
@@ -1939,7 +1939,7 @@ function incsub_support_output_tickets() {
 						<input type="hidden" name="ticket_id" value="<?php echo $current_ticket->ticket_id; ?>" />
 					</td>
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Current Date/Time:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<td style="border-bottom:0;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", time()); ?></td>
+					<td style="border-bottom:0;"><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), time(), true); ?></td>
 				</tr>
 				<tr class="form-field form-required">
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Reporting User:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
@@ -1958,9 +1958,9 @@ function incsub_support_output_tickets() {
 				</tr>
 				<tr class="form-field form-required">
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Last Updated:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<td style="border-bottom:0;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($current_ticket->ticket_updated)); ?></td>
+					<td style="border-bottom:0;"><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), strtotime($current_ticket->ticket_updated), true); ?></td>
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Created On:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<td style="border-bottom:0;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($current_ticket->ticket_opened)); ?></td>
+					<td style="border-bottom:0;"><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), strtotime($current_ticket->ticket_opened), true); ?></td>
 				</tr>
 				<?php $blog_details = get_blog_details($current_ticket->blog_id); ?>
 				<tr class="form-field form-required">
@@ -2013,7 +2013,7 @@ function incsub_support_output_tickets() {
 								<?php echo do_shortcode(wpautop(html_entity_decode(incsub_support_stripslashes($message->message)))); ?>
 							</div>
 						</td>
-						<td><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($message->message_date)); ?></td>
+						<td><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), strtotime($message->message_date), true); ?></td>
 					</tr>
 <?php
 				}
@@ -2140,7 +2140,7 @@ function incsub_support_output_tickets() {
 					<td valign="top"><?php echo $ticket_priority[$ticket->ticket_priority]; ?></td>
 					<td valign="top"><?php echo $ticket->display_name; ?></td>
 					<td valign="top"><a href="<?php echo get_blogaddress_by_id($ticket->blog_id); ?>"><?php echo $blog_details->blogname; ?></a></td>
-					<td valign="top"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($ticket->ticket_updated)); ?></td>
+					<td valign="top"><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), strtotime($ticket->ticket_updated), true); ?></td>
 				</tr>
 <?php
 			}
@@ -2349,9 +2349,9 @@ function incsub_support_ticketadmin_main() {
 			}
 
 			$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_messages')."
-				(site_id, ticket_id, admin_id, subject, message)
-				VALUES ('%d', '%d', '%d', '%s', '%s')
-			", $current_site->id, $ticket_id, $current_user->ID, $title, $message));
+				(site_id, ticket_id, admin_id, subject, message, message_date)
+				VALUES ('%d', '%d', '%d', '%s', '%s', '%s')
+			", $current_site->id, $ticket_id, $current_user->ID, $title, $message, gmdate('Y-m-d H:i:s')));
 
 			if ( !empty($wpdb->insert_id) ) {
 				$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('tickets')."
@@ -2501,7 +2501,7 @@ function incsub_support_ticketadmin_main() {
 						<input type="hidden" name="ticket_id" value="<?php echo $current_ticket->ticket_id; ?>" />
 					</td>
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Current Date/Time:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<td style="border-bottom:0;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", time()); ?></td>
+					<td style="border-bottom:0;"><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), time(), true); ?></td>
 				</tr>
 				<tr class="form-field form-required">
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Reporting User:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
@@ -2520,9 +2520,9 @@ function incsub_support_ticketadmin_main() {
 				</tr>
 				<tr class="form-field form-required">
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Last Updated:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<td style="border-bottom:0;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($current_ticket->ticket_updated)); ?></td>
+					<td style="border-bottom:0;"><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), strtotime($current_ticket->ticket_updated), true); ?></td>
 					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Created On:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<td style="border-bottom:0;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($current_ticket->ticket_opened)); ?></td>
+					<td style="border-bottom:0;"><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), strtotime($current_ticket->ticket_opened), true); ?></td>
 				</tr>
 				<?php $blog_details = get_blog_details($current_ticket->blog_id); ?>
 				<tr class="form-field form-required">
@@ -2576,7 +2576,7 @@ function incsub_support_ticketadmin_main() {
 								<?php echo do_shortcode(wpautop(html_entity_decode(incsub_support_stripslashes($message->message)))); ?>
 							</div>
 						</td>
-						<td style="width: 250px;"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($message->message_date)); ?></td>
+						<td style="width: 250px;"><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), strtotime($message->message_date), true); ?></td>
 						<td>
 							<a title="<?php _e('Create a FAQ from this response',INCSUB_SUPPORT_LANG_DOMAIN); ?>"
 								href="<?php echo "{$incsub_support_page}?page=faq-manager&amp;action=questions&amp;question={$message->subject}&amp;answer={$message->message}#addquestion"; ?>" ><?php _e('Create a FAQ',INCSUB_SUPPORT_LANG_DOMAIN); ?></a>
@@ -2729,7 +2729,7 @@ function incsub_support_ticketadmin_main() {
 					<td valign="top"><?php echo $ticket_priority[$ticket->ticket_priority]; ?></td>
 					<td valign="top"><?php echo $ticket->display_name; ?></td>
 					<td valign="top"><a href="<?php echo get_blogaddress_by_id($ticket->blog_id); ?>"><?php echo $blog_details->blogname; ?></a></td>
-					<td valign="top"><?php echo date(get_option("date_format") ." ". get_option("time_format") ." T  (\G\M\T P)", strtotime($ticket->ticket_updated)); ?></td>
+					<td valign="top"><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), strtotime($ticket->ticket_updated), true); ?></td>
 				</tr>
 <?php
 			}
