@@ -13,6 +13,9 @@ Support System for WordPress multi site.
 
 == ChangeLog ==
 
+= 1.7.2.1 =
+* Fixed: Slashes in e-mail
+
 = 1.7.2 =
 * Added new field 'Submitted From' (Link to users blog)
 * Process shortcodes in FAQ content and ticket replies

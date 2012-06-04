@@ -1237,7 +1237,7 @@ function incsub_support_tickets_output() {
 	". $wpdb->get_var("SELECT user_nicename FROM {$wpdb->users} WHERE ID = '{$current_user->ID}'") ." said:
 
 
-	". $message ."
+	". incsub_support_stripslashes($message) ."
 
 	------------------------------
 	      End Ticket Message
@@ -1316,7 +1316,7 @@ function incsub_support_tickets_output() {
 	". $wpdb->get_var("SELECT user_nicename FROM {$wpdb->users} WHERE ID = '{$current_user->ID}'") ." said:
 
 
-	". $message ."
+	". incsub_support_stripslashes($message) ."
 
 	------------------------------
 	      End Ticket Message
@@ -1764,7 +1764,7 @@ function incsub_support_process_reply($curr_user = null) {
 	". $wpdb->get_var("SELECT user_nicename FROM {$wpdb->users} WHERE ID = '{$current_user->ID}'") ." said:
 
 
-	". $message ."
+	". incsub_support_stripslashes($message) ."
 
 	------------------------------
 	      End Ticket Message
@@ -1843,7 +1843,7 @@ function incsub_support_process_reply($curr_user = null) {
 	". $wpdb->get_var("SELECT user_nicename FROM {$wpdb->users} WHERE ID = '{$current_user->ID}'") ." said:
 
 
-	". $message ."
+	". incsub_support_stripslashes($message) ."
 
 	------------------------------
 	      End Ticket Message
@@ -2391,7 +2391,7 @@ function incsub_support_ticketadmin_main() {
 	     Begin Ticket Message
 	------------------------------
 
-	". $message ."
+	". incsub_support_stripslashes($message) ."
 
 	------------------------------
 	      End Ticket Message
