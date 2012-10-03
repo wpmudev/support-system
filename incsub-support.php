@@ -6,12 +6,12 @@ Description: Support System for WordPress multi site
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub)
 WDP ID: 36
 Network: true
-Version: 1.7.2.1
+Version: 1.7.2.2
 Author URI: http://premium.wpmudev.org
 Text Domain: incsub-support
 */
 
-define('INCSUB_SUPPORT_VERSION', '1.7.2.1');
+define('INCSUB_SUPPORT_VERSION', '1.7.2.2');
 define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
 
 global $ticket_status, $ticket_priority, $incsub_support_page, $incsub_support_page_long;
@@ -1225,7 +1225,7 @@ function incsub_support_tickets_output() {
 
 	Visit:
 
-		http://". $current_site->domain . $current_site->path ."wp-admin/{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}
+		". admin_url("{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}") . "
 
 	to reply to view the new ticket.
 
@@ -1245,7 +1245,7 @@ function incsub_support_tickets_output() {
 
 
 	Ticket URL:
-		http://". $current_site->domain . $current_site->path ."wp-admin/{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}"), // ends lang string
+		". admin_url( "{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}") ), // ends lang string
 
 	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
 					); // ends array.
@@ -1304,7 +1304,7 @@ function incsub_support_tickets_output() {
 
 	Visit:
 
-		http://". $current_site->domain . $current_site->path ."wp-admin/{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}
+		". admin_url("{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}")."
 
 	to respond to this ticket update.
 
@@ -1324,7 +1324,7 @@ function incsub_support_tickets_output() {
 
 
 	Ticket URL:
-		http://". $current_site->domain . $current_site->path ."wp-admin/{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}"), // ends lang string
+		". admin_url("{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}")), // ends lang string
 
 	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
 
@@ -1752,7 +1752,7 @@ function incsub_support_process_reply($curr_user = null) {
 
 	Visit:
 
-		http://". $current_site->domain . $current_site->path ."wp-admin/{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}
+		". admin_url("{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}")."
 
 	to reply to view the new ticket.
 
@@ -1772,7 +1772,7 @@ function incsub_support_process_reply($curr_user = null) {
 
 
 	Ticket URL:
-		http://". $current_site->domain . $current_site->path ."wp-admin/{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}"), // ends lang string
+		". admin_url("{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}")), // ends lang string
 
 	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
 					); // ends array.
@@ -1831,7 +1831,7 @@ function incsub_support_process_reply($curr_user = null) {
 
 	Visit:
 
-		http://". $current_site->domain . $current_site->path ."wp-admin/{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}
+		". admin_url("{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}")."
 
 	to respond to this ticket update.
 
@@ -1851,7 +1851,7 @@ function incsub_support_process_reply($curr_user = null) {
 
 
 	Ticket URL:
-		http://". $current_site->domain . $current_site->path ."wp-admin/{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}"), // ends lang string
+		". admin_url("{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}")), // ends lang string
 
 	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
 
@@ -2383,7 +2383,7 @@ function incsub_support_ticketadmin_main() {
 	
 	Visit:
 
-		http://". $target_blog->domain . $target_blog->path ."wp-admin/admin.php?page=incsub_support_tickets&tid={$ticket_id}
+		". admin_url("admin.php?page=incsub_support_tickets&tid={$ticket_id}")."
 
 	to reply to this ticket, if needed.
 

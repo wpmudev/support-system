@@ -13,6 +13,9 @@ Support System for WordPress multi site.
 
 == ChangeLog ==
 
+= 1.7.2.2 =
+* Fixed: Incorrect URL in Support Ticket Email
+
 = 1.7.2.1 =
 * Fixed: Slashes in e-mail
 * Fixed: Support System Time stamps are not right
