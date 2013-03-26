@@ -29,6 +29,8 @@ if ( version_compare($wp_version, '3.0.9', '>') ) {
 function incsub_support() {
 	global $wp_version, $wpdb;
 	
+	include_once( 'mail-contents.php' );
+
 	// We only need a single set of databases for the whole network
 	register_activation_hook(__FILE__, 'incsub_support_install');
 	register_deactivation_hook(__FILE__, 'incsub_support_uninstall');
@@ -308,8 +310,8 @@ function incsub_support_menu() {
 	global $menu, $submenu, $wpdb, $incsub_support_page, $incsub_support_page_long, $wp_version;
 	
 	$current_site = get_current_site();
-	
-	add_menu_page(__('MU Support System', INCSUB_SUPPORT_LANG_DOMAIN), __(get_site_option('incsub_support_menu_name', 'Support'), INCSUB_SUPPORT_LANG_DOMAIN),  'read', 'incsub_support', 'incsub_support_output_main', null, 30);
+
+	add_menu_page(__('MU Support System', INCSUB_SUPPORT_LANG_DOMAIN), get_site_option('incsub_support_menu_name', 'Support' ),  'read', 'incsub_support', 'incsub_support_output_main', null, 30);
 	
 	add_submenu_page('incsub_support', __('Frequently Asked Questions', INCSUB_SUPPORT_LANG_DOMAIN), __('FAQ', INCSUB_SUPPORT_LANG_DOMAIN), 'read', 'incsub_support_faq', 'incsub_support_output_faq' );
 	add_submenu_page('incsub_support', __('Support Tickets', INCSUB_SUPPORT_LANG_DOMAIN), __('Support Tickets', INCSUB_SUPPORT_LANG_DOMAIN), 'edit_posts', 'incsub_support_tickets', 'incsub_support_output_tickets' );
@@ -1212,42 +1214,25 @@ function incsub_support_tickets_output() {
 				if ( !empty($wpdb->insert_id) ) {
 					$notification = __("Thank you. Your ticket has been submitted. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
 					$nclass = "updated fade";
-					$title = incsub_support_stripslashes($title);
+					
+					$args = array(
+						'support_fetch_imap'	=> incsub_support_get_support_fetch_imap_message(),
+						'title'					=> incsub_support_stripslashes($title),
+						'ticket_status'			=> $ticket_status[ $status ],
+						'ticket_priority'		=> $ticket_priority[ $priority ],
+						'visit_link'			=> admin_url("{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}"),
+						'user_nicename'			=> $wpdb->get_var( "SELECT user_nicename FROM {$wpdb->users} WHERE ID = '{$current_user->ID}'" ),
+						'ticket_message'		=> incsub_support_stripslashes($message),
+						'ticket_url'			=> admin_url( "{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}" )
+					);
+
+					$mail_content = incsub_get_support_tickets_mail_content( $args );
+
 					$email_message = array(
 						"to"		=> incsub_support_notification_admin_email(),
 						"subject"	=> __("New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN) . $title,
-						"message"	=> _("
-	".((get_site_option('incsub_support_fetch_imap', 'disabled') == 'enabled')?"***  DO NOT WRITE BELLOW THIS LINE  ***":"***  DO NOT REPLY TO THIS EMAIL  ***")."
-
-	Subject: ". $title ."
-	Status: ". $ticket_status[$status] ."
-	Priority: ". $ticket_priority[$priority] ."
-
-	Visit:
-
-		". admin_url("{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}") . "
-
-	to reply to view the new ticket.
-
-
-	------------------------------
-	     Begin Ticket Message
-	------------------------------
-
-	". $wpdb->get_var("SELECT user_nicename FROM {$wpdb->users} WHERE ID = '{$current_user->ID}'") ." said:
-
-
-	". incsub_support_stripslashes($message) ."
-
-	------------------------------
-	      End Ticket Message
-	------------------------------
-
-
-	Ticket URL:
-		". admin_url( "{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}") ), // ends lang string
-
-	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
+						"message"	=> $mail_content, // ends lang string
+						"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
 					); // ends array.
 				} else {
 				$notification = __("Ticket Error: There was an error submitting your ticket. Please try again in a few minutes.", INCSUB_SUPPORT_LANG_DOMAIN);
@@ -1290,43 +1275,25 @@ function incsub_support_tickets_output() {
 				if ( !empty($wpdb->rows_affected) ) {
 					$notification = __("Thank you. Your ticket has been updated. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
 					$nclass = "updated fade";
-					$title = incsub_support_stripslashes($title);
+
+					$args = array(
+						'support_fetch_imap'	=> incsub_support_get_support_fetch_imap_message(),
+						'title'					=> incsub_support_stripslashes($title),
+						'ticket_status'			=> $ticket_status[ $status ],
+						'ticket_priority'		=> $ticket_priority[ $priority ],
+						'visit_link'			=> admin_url("{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}"),
+						'user_nicename'			=> $wpdb->get_var( "SELECT user_nicename FROM {$wpdb->users} WHERE ID = '{$current_user->ID}'" ),
+						'ticket_message'		=> incsub_support_stripslashes($message),
+						'ticket_url'			=> admin_url( "{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}" )
+					);
+
+					$mail_content = incsub_get_support_tickets_mail_content( $args );
+
 					$email_message = array(
 						"to"		=> incsub_support_notification_admin_email(),
 						"subject"	=> __("[#{$ticket_id}] ", INCSUB_SUPPORT_LANG_DOMAIN) . $title,
-						"message"	=> _("
-
-	".((get_site_option('incsub_support_fetch_imap', 'disabled') == 'enabled')?"***  DO NOT WRITE BELLOW THIS LINE  ***":"***  DO NOT REPLY TO THIS EMAIL  ***")."
-
-	Subject: ". $title ."
-	Status: ". $ticket_status[$status] ."
-	Priority: ". $ticket_priority[$priority] ."
-
-	Visit:
-
-		". admin_url("{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}")."
-
-	to respond to this ticket update.
-
-
-	------------------------------
-	     Begin Ticket Message
-	------------------------------
-
-	". $wpdb->get_var("SELECT user_nicename FROM {$wpdb->users} WHERE ID = '{$current_user->ID}'") ." said:
-
-
-	". incsub_support_stripslashes($message) ."
-
-	------------------------------
-	      End Ticket Message
-	------------------------------
-
-
-	Ticket URL:
-		". admin_url("{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}")), // ends lang string
-
-	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
+						"message"	=> $mail_content,
+						"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
 
 					); // ends array.
 
@@ -1739,42 +1706,32 @@ function incsub_support_process_reply($curr_user = null) {
 				if ( !empty($wpdb->insert_id) ) {
 					$notification = __("Thank you. Your ticket has been submitted. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
 					$nclass = "updated fade";
-					$title = incsub_support_stripslashes($title);
+
+					// Variables for the message
+					$support_fetch_imap = incsub_support_get_support_fetch_imap_message();
+					$title 				= incsub_support_stripslashes($title);
+					$visit_link 		= admin_url( "{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}" );
+					$user_nicename 		= $wpdb->get_var( "SELECT user_nicename FROM {$wpdb->users} WHERE ID = '{$current_user->ID}'" );
+					$ticket_message 	= incsub_support_stripslashes($message);
+					$ticket_url 		= admin_url( "{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}" );
+
+					$args = array(
+						'support_fetch_imap' 	=> incsub_support_get_support_fetch_imap_message(),
+						'title' 				=> incsub_support_stripslashes($title),
+						'visit_link' 			=> admin_url( "{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}" ),
+						'user_nicename' 		=> $wpdb->get_var( "SELECT user_nicename FROM {$wpdb->users} WHERE ID = '{$current_user->ID}'" ),
+						'ticket_message' 		=> incsub_support_stripslashes($message),
+						'ticket_url' 			=> admin_url( "{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}" ),
+						'ticket_status'			=> $ticket_status[ $status ],
+						'ticket_priority'		=> $ticket_priority[ $priority ]
+					);
+					$mail_content = incsub_support_get_support_process_reply_mail_content( $args );
+
 					$email_message = array(
 						"to"		=> incsub_support_notification_admin_email(),
 						"subject"	=> __("New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN) . $title,
-						"message"	=> _("
-	".((get_site_option('incsub_support_fetch_imap', 'disabled') == 'enabled')?"***  DO NOT WRITE BELLOW THIS LINE  ***":"***  DO NOT REPLY TO THIS EMAIL  ***")."
-
-	Subject: ". $title ."
-	Status: ". $ticket_status[$status] ."
-	Priority: ". $ticket_priority[$priority] ."
-
-	Visit:
-
-		". admin_url("{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}")."
-
-	to reply to view the new ticket.
-
-
-	------------------------------
-	     Begin Ticket Message
-	------------------------------
-
-	". $wpdb->get_var("SELECT user_nicename FROM {$wpdb->users} WHERE ID = '{$current_user->ID}'") ." said:
-
-
-	". incsub_support_stripslashes($message) ."
-
-	------------------------------
-	      End Ticket Message
-	------------------------------
-
-
-	Ticket URL:
-		". admin_url("{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}")), // ends lang string
-
-	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
+						"message"	=> $mail_content, // ends lang string
+						"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
 					); // ends array.
 				} else {
 				$notification = __("Ticket Error: There was an error submitting your ticket. Please try again in a few minutes.", INCSUB_SUPPORT_LANG_DOMAIN);
@@ -1817,43 +1774,25 @@ function incsub_support_process_reply($curr_user = null) {
 				if ( !empty($wpdb->rows_affected) ) {
 					$notification = __("Thank you. Your ticket has been updated. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
 					$nclass = "updated fade";
-					$title = incsub_support_stripslashes($title);
+
+					// Variables for the message
+					$args = array(
+						'support_fetch_imap' 	=> incsub_support_get_support_fetch_imap_message(),
+						'title' 				=> incsub_support_stripslashes($title),
+						'visit_link' 			=> admin_url( "{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}" ),
+						'user_nicename' 		=> $wpdb->get_var( "SELECT user_nicename FROM {$wpdb->users} WHERE ID = '{$current_user->ID}'" ),
+						'ticket_message' 		=> incsub_support_stripslashes($message),
+						'ticket_url' 			=> admin_url( "{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}" ),
+						'ticket_status'			=> $ticket_status[ $status ],
+						'ticket_priority'		=> $ticket_priority[ $priority ]
+					);
+					$mail_content = incsub_support_get_support_process_reply_mail_content( $args );
+
 					$email_message = array(
 						"to"		=> incsub_support_notification_admin_email(),
 						"subject"	=> __("[#{$ticket_id}] ", INCSUB_SUPPORT_LANG_DOMAIN) . $title,
-						"message"	=> _("
-
-	".((get_site_option('incsub_support_fetch_imap', 'disabled') == 'enabled')?"***  DO NOT WRITE BELLOW THIS LINE  ***":"***  DO NOT REPLY TO THIS EMAIL  ***")."
-
-	Subject: ". $title ."
-	Status: ". $ticket_status[$status] ."
-	Priority: ". $ticket_priority[$priority] ."
-
-	Visit:
-
-		". admin_url("{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}")."
-
-	to respond to this ticket update.
-
-
-	------------------------------
-	     Begin Ticket Message
-	------------------------------
-
-	". $wpdb->get_var("SELECT user_nicename FROM {$wpdb->users} WHERE ID = '{$current_user->ID}'") ." said:
-
-
-	". incsub_support_stripslashes($message) ."
-
-	------------------------------
-	      End Ticket Message
-	------------------------------
-
-
-	Ticket URL:
-		". admin_url("{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}")), // ends lang string
-
-	"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
+						"message"	=> $mail_content, // ends lang string
+						"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
 
 					); // ends array.
 
@@ -2367,40 +2306,23 @@ function incsub_support_ticketadmin_main() {
 					$target_blog = get_blog_details($ticket_blog_id);
 					$notification = __("Ticket has been updated successfully, and the user notified of your response. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
 					$nclass = "updated fade";
-					$title = incsub_support_stripslashes($title);
+
+					$args = array(
+						'title'				=> incsub_support_stripslashes($title),
+						'ticket_status'		=> $ticket_status[$status],
+						'ticket_priority'	=> $ticket_priority[$priority],
+						'visit_link'		=> admin_url( "admin.php?page=incsub_support_tickets&tid={$ticket_id}" ),
+						'ticket_message'	=> incsub_support_stripslashes($message),
+						'user_nicename'		=> $wpdb->get_var( $wpdb->prepare("SELECT user_nicename FROM {$wpdb->users} WHERE ID = '%d'", $current_user->ID ) ),
+						'site_name'			=> get_site_option("site_name")
+					);
+
+					$mail_content = incsub_support_get_ticketadmin_mail_content( $args );
+					
 					$email_message = array(
 						"to"		=> incsub_support_notification_user_email($reply_to_id),
 						"subject"	=> __("[#{$ticket_id}] ", INCSUB_SUPPORT_LANG_DOMAIN) . $title,
-						"message"	=> _("
-
-	***  DO NOT REPLY TO THIS EMAIL  ***
-
-	Subject: ". $title ."
-	Status: ". $ticket_status[$status] ."
-	Priority: ". $ticket_priority[$priority] ."
-
-	Please log into your site and visit the support page to reply to this ticket, if needed.
-	
-	Visit:
-
-		". admin_url("admin.php?page=incsub_support_tickets&tid={$ticket_id}")."
-
-	to reply to this ticket, if needed.
-
-	------------------------------
-	     Begin Ticket Message
-	------------------------------
-
-	". incsub_support_stripslashes($message) ."
-
-	------------------------------
-	      End Ticket Message
-	------------------------------
-
-	Thanks,
-	". $wpdb->get_var($wpdb->prepare("SELECT user_nicename FROM {$wpdb->users} WHERE ID = '%d'", $current_user->ID)) .",
-	". get_site_option("site_name") ."\r\n\r\n"), // ends lang string
-
+						"message"	=> $mail_content, // ends lang string
 						"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
 					); // ends array.
 				} else {
