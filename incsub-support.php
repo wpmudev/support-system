@@ -122,39 +122,47 @@ function incsub_support_init() {
 		)
 	);
 	
-	if (isset($_POST['incsub_support_menu_name'])) {
-		update_site_option('incsub_support_menu_name', $_POST['incsub_support_menu_name']);
-	}
-	if (isset($_POST['incsub_support_from_name'])) {
-		update_site_option('incsub_support_from_name', $_POST['incsub_support_from_name']);
-	}
-	if (isset($_POST['incsub_support_from_mail'])) {
-		update_site_option('incsub_support_from_mail', $_POST['incsub_support_from_mail']);
-	}
-	if (isset($_POST['incsub_support_fetch_imap'])) {
-		update_site_option('incsub_support_fetch_imap', $_POST['incsub_support_fetch_imap']);
-		
-		if (get_site_option('incsub_support_imap_frequency', '') != $_POST['incsub_support_imap_frequency']) {
-			if (wp_reschedule_event(0, $_POST['incsub_support_imap_frequency'], 'incsub_support_fetch_imap') === false) {
-				wp_schedule_event(0, $_POST['incsub_support_imap_frequency'], 'incsub_support_fetch_imap');
-			}
-			update_site_option('incsub_support_imap_frequency', $_POST['incsub_support_imap_frequency']);
+
+	if ( isset( $_POST['submit'] ) && isset( $_GET['page'] ) && 'support-options' == $_GET['page']  ) {
+		if (isset($_POST['incsub_support_menu_name'])) {
+			update_site_option('incsub_support_menu_name', $_POST['incsub_support_menu_name']);
 		}
-		
-		if (empty($_POST['incsub_support_imap']['password'])) {
-			$_POST['incsub_support_imap']['password'] = $incsub_support_imap['password'];
+		if (isset($_POST['incsub_support_from_name'])) {
+			update_site_option('incsub_support_from_name', $_POST['incsub_support_from_name']);
 		}
-		
-		update_site_option('incsub_support_imap', $_POST['incsub_support_imap']);
-		
-		if (isset($_POST['test']) && $_POST['incsub_support_fetch_imap'] == "enabled") {
-			if (incsub_support_fetch_imap()) {
-				wp_redirect("{$incsub_support_settings_page}?page=support-options&updated=true&tested=true");
-			} else {
-				wp_redirect("{$incsub_support_settings_page}?page=support-options&updated=true&tested=false");
-			}
+		if (isset($_POST['incsub_support_from_mail'])) {
+			update_site_option('incsub_support_from_mail', $_POST['incsub_support_from_mail']);
+		}
+		if (isset($_POST['incsub_allow_only_pro_sites'])) {
+			update_site_option('incsub_allow_only_pro_sites', true );
 		} else {
-			wp_redirect("{$incsub_support_settings_page}?page=support-options&updated=true");
+			update_site_option('incsub_allow_only_pro_sites', false );
+		}
+		if (isset($_POST['incsub_support_fetch_imap'])) {
+			update_site_option('incsub_support_fetch_imap', $_POST['incsub_support_fetch_imap']);
+			
+			if (get_site_option('incsub_support_imap_frequency', '') != $_POST['incsub_support_imap_frequency']) {
+				if (wp_reschedule_event(0, $_POST['incsub_support_imap_frequency'], 'incsub_support_fetch_imap') === false) {
+					wp_schedule_event(0, $_POST['incsub_support_imap_frequency'], 'incsub_support_fetch_imap');
+				}
+				update_site_option('incsub_support_imap_frequency', $_POST['incsub_support_imap_frequency']);
+			}
+			
+			if (empty($_POST['incsub_support_imap']['password'])) {
+				$_POST['incsub_support_imap']['password'] = $incsub_support_imap['password'];
+			}
+			
+			update_site_option('incsub_support_imap', $_POST['incsub_support_imap']);
+			
+			if (isset($_POST['test']) && $_POST['incsub_support_fetch_imap'] == "enabled") {
+				if (incsub_support_fetch_imap()) {
+					wp_redirect("{$incsub_support_settings_page}?page=support-options&updated=true&tested=true");
+				} else {
+					wp_redirect("{$incsub_support_settings_page}?page=support-options&updated=true&tested=false");
+				}
+			} else {
+				wp_redirect("{$incsub_support_settings_page}?page=support-options&updated=true");
+			}
 		}
 	}
 }
@@ -309,6 +317,16 @@ function incsub_support_tablename($table) {
 function incsub_support_menu() {
 	global $menu, $submenu, $wpdb, $incsub_support_page, $incsub_support_page_long, $wp_version;
 	
+
+	if ( 
+		get_site_option( 'incsub_allow_only_pro_sites', false )
+		&& is_plugin_active( 'pro-sites/pro-sites.php' ) 
+		&& function_exists( 'is_pro_site' )
+		&& ! is_pro_site()
+	) {
+		return false;
+	}
+
 	$current_site = get_current_site();
 
 	add_menu_page(__('MU Support System', INCSUB_SUPPORT_LANG_DOMAIN), get_site_option('incsub_support_menu_name', 'Support' ),  'read', 'incsub_support', 'incsub_support_output_main', null, 30);
@@ -416,6 +434,15 @@ function incsub_support_options() {
 					</td>
 					<td class="info"> <?php _e("Enable or disable fetching responses to tickets via IMAP", INCSUB_SUPPORT_LANG_DOMAIN); ?></td>
 				</tr>
+				<?php if ( is_plugin_active( 'pro-sites/pro-sites.php' ) ): ?>
+					<?php $checked = get_site_option( 'incsub_allow_only_pro_sites', false ) ? 'checked' : ''; ?> 
+					<tr>
+						<td><label for="incsub_allow_only_pro_sites"><?php _e('Allow support only for Pro Sites', INCSUB_SUPPORT_LANG_DOMAIN); ?></label> </td>
+						<td>
+							<input type="checkbox" id="incsub_allow_only_pro_sites" name="incsub_allow_only_pro_sites" <?php echo $checked; ?>></input>
+						</td>
+					</tr>
+				<?php endif; ?>
 				<tr class="imap_details" >
 					<td><label for="incsub_support_imap_server"><?php _e('IMAP details', INCSUB_SUPPORT_LANG_DOMAIN); ?></label> </td>
 					<td>
@@ -445,8 +472,8 @@ function incsub_support_options() {
 			</table>
 			
 			<p class="submit">
-				<input type="submit" name="submit" value="<?php _e('Save Changes', INCSUB_SUPPORT_LANG_DOMAIN) ?>" />
-				<input type="submit" name="test" class="imap_details" value="<?php _e('Test IMAP settings', INCSUB_SUPPORT_LANG_DOMAIN) ?>" />
+				<input class="button-primary" type="submit" name="submit" value="<?php _e('Save Changes', INCSUB_SUPPORT_LANG_DOMAIN) ?>" />
+				<input class="button" type="submit" name="test" class="imap_details" value="<?php _e('Test IMAP settings', INCSUB_SUPPORT_LANG_DOMAIN) ?>" />
 			</p>
 		</form>
 	</div>

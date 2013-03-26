@@ -1,5 +1,5 @@
 === Support ===
-Contributors: mohanjith
+Contributors: mohanjith,igmoweb
 Tags: support, ticket, faq
 Requires at least: 3.0.0
 Stable tag: trunk
@@ -12,6 +12,11 @@ Support System for WordPress multi site
 Support System for WordPress multi site.
 
 == ChangeLog ==
+
+= 1.8 =
+* Added integration twith Pro Sites Plugin
+* Fixed notice when updating a ticket
+* Fixed bug when activating the plugin
 
 = 1.7.2.2 =
 * Fixed: Incorrect URL in Support Ticket Email
