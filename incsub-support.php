@@ -1756,7 +1756,7 @@ function incsub_support_process_reply($curr_user = null) {
 			$category = $_POST['category'];
 			$priority = $_POST['priority'];
 			$ticket_id = $_POST['ticket_id'];
-			$status = ($_POST['closeticket'] == 1) ? 5 : 3;
+			$status = ( isset( $_POST['closeticket'] ) && $_POST['closeticket'] == 1) ? 5 : 3;
 			$email_message = false;
 			$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_messages')."
 				(site_id, ticket_id, user_id, subject, message, message_date)
