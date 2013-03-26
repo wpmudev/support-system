@@ -14,7 +14,7 @@ Text Domain: incsub-support
 define('INCSUB_SUPPORT_VERSION', '1.7.2.2');
 define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
 
-global $ticket_status, $ticket_priority, $incsub_support_page, $incsub_support_page_long;
+global $ticket_status, $ticket_priority, $incsub_support_page, $incsub_support_page_long, $wp_version;
 
 if ( version_compare($wp_version, '3.0.9', '>') ) {
 	$incsub_support_page = 'admin.php';
