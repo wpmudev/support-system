@@ -11,7 +11,7 @@ Author URI: http://premium.wpmudev.org
 Text Domain: incsub-support
 */
 
-define('INCSUB_SUPPORT_VERSION', '1.7.2.2');
+define('INCSUB_SUPPORT_VERSION', '1.8');
 define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
 
 global $ticket_status, $ticket_priority, $incsub_support_page, $incsub_support_page_long, $wp_version;
@@ -34,6 +34,9 @@ function incsub_support() {
 	// We only need a single set of databases for the whole network
 	register_activation_hook(__FILE__, 'incsub_support_install');
 	register_deactivation_hook(__FILE__, 'incsub_support_uninstall');
+
+	if ( version_compare( INCSUB_SUPPORT_VERSION, '1.8', '>=' ) )
+		incsub_support_create_tickets_messages_table();
 	
 	if ( version_compare(INCSUB_SUPPORT_VERSION, get_site_option('incsub_support_version', INCSUB_SUPPORT_VERSION), '>') ) {
 		$faq_cats = $wpdb->get_results("SELECT cat_id, site_id FROM ".incsub_support_tablename('faq_cats').";");
@@ -72,6 +75,8 @@ function incsub_support() {
 	
 	add_filter('whitelist_options', 'incsub_support_whitelist_options');
 	add_filter('cron_schedules', 'incsub_support_cron_schedules');
+
+	add_action( 'wp_ajax_remove_attachment', 'incsub_support_remove_attachment' );
 }
 
 function incsub_support_init() {
@@ -171,9 +176,61 @@ function incsub_support_admin_styles() {
 	wp_enqueue_style('incsub_support_admin_css');
 }
 
+function incsub_support_blog_admin_scripts() {
+	if( function_exists( 'wp_enqueue_media' ) ) {
+	    wp_enqueue_media();
+	    wp_enqueue_script( 'thickbox' );
+	    wp_enqueue_style( 'thickbox' );
+	} else {
+	    wp_enqueue_style( 'thickbox' );
+	    wp_enqueue_script( 'media-upload' );
+	    wp_enqueue_script( 'thickbox' );
+	}
+
+	wp_register_script( 'incsub_support_blog_admin_js', plugins_url('incsub-support/js/wp_blog_admin.js'), array('jquery'), INCSUB_SUPPORT_VERSION, true );
+	wp_enqueue_script( 'incsub_support_blog_admin_js' );
+
+	$l10n = array(
+		'remove' => __( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN )
+	);
+	wp_localize_script( 'incsub_support_blog_admin_js', 'translation_strings', $l10n );
+}
+
+
 function incsub_support_admin_script() {
 	wp_enqueue_script('incsub_support_admin_js');
 }
+
+
+function incsub_support_create_tickets_messages_table() {
+
+	global $wpdb;
+
+	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+
+	// Get the correct character collate
+	if ( ! empty($wpdb->charset) )
+		$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+	if ( ! empty($wpdb->collate) )
+		$charset_collate .= " COLLATE $wpdb->collate";
+
+	$sql_main = "CREATE TABLE ".incsub_support_tablename('tickets_messages')." (
+			message_id bigint(20) unsigned NOT NULL auto_increment,
+			site_id bigint(20) unsigned NOT NULL,
+			ticket_id bigint(20) unsigned NOT NULL,
+			user_id bigint(20) unsigned NOT NULL,
+			admin_id bigint(20) unsigned NOT NULL,
+			message_date timestamp NOT NULL default CURRENT_TIMESTAMP,
+			subject varchar(255) character set utf8 NOT NULL,
+			message mediumtext character set utf8 NOT NULL,
+			attachments longtext character set utf8,
+			PRIMARY KEY  (message_id),
+			KEY ticket_id (ticket_id)
+		      ) ENGINE=MyISAM $charset_collate;";
+
+	dbDelta($sql_main);
+}
+
 
 function incsub_support_install() {
 	global $wpdb;
@@ -252,19 +309,7 @@ function incsub_support_install() {
 		      ) ENGINE=MyISAM $charset_collate;";
 	dbDelta($sql_main);
 	
-	$sql_main = "CREATE TABLE IF NOT EXISTS ".incsub_support_tablename('tickets_messages')." (
-			message_id bigint(20) unsigned NOT NULL auto_increment,
-			site_id bigint(20) unsigned NOT NULL,
-			ticket_id bigint(20) unsigned NOT NULL,
-			user_id bigint(20) unsigned NOT NULL,
-			admin_id bigint(20) unsigned NOT NULL,
-			message_date timestamp NOT NULL default CURRENT_TIMESTAMP,
-			subject varchar(255) character set utf8 NOT NULL,
-			message mediumtext character set utf8 NOT NULL,
-			PRIMARY KEY  (message_id),
-			KEY ticket_id (ticket_id)
-		      ) ENGINE=MyISAM $charset_collate;";
-	dbDelta($sql_main);
+	incsub_support_create_tickets_messages_table();
 	
 	$current_site = get_current_site();
 	
@@ -332,7 +377,8 @@ function incsub_support_menu() {
 	add_menu_page(__('MU Support System', INCSUB_SUPPORT_LANG_DOMAIN), get_site_option('incsub_support_menu_name', 'Support' ),  'read', 'incsub_support', 'incsub_support_output_main', null, 30);
 	
 	add_submenu_page('incsub_support', __('Frequently Asked Questions', INCSUB_SUPPORT_LANG_DOMAIN), __('FAQ', INCSUB_SUPPORT_LANG_DOMAIN), 'read', 'incsub_support_faq', 'incsub_support_output_faq' );
-	add_submenu_page('incsub_support', __('Support Tickets', INCSUB_SUPPORT_LANG_DOMAIN), __('Support Tickets', INCSUB_SUPPORT_LANG_DOMAIN), 'edit_posts', 'incsub_support_tickets', 'incsub_support_output_tickets' );
+	$page = add_submenu_page('incsub_support', __('Support Tickets', INCSUB_SUPPORT_LANG_DOMAIN), __('Support Tickets', INCSUB_SUPPORT_LANG_DOMAIN), 'edit_posts', 'incsub_support_tickets', 'incsub_support_output_tickets' );
+	add_action( 'admin_print_scripts-' . $page, 'incsub_support_blog_admin_scripts' );
 
 	if ( version_compare($wp_version, '3.1', '<') ) {
 		add_submenu_page($incsub_support_page, __('Frequently Asked Questions', INCSUB_SUPPORT_LANG_DOMAIN), __('FAQ Manager', INCSUB_SUPPORT_LANG_DOMAIN), 'manage_options', 'faq-manager', 'incsub_support_faqadmin' );
@@ -1211,472 +1257,6 @@ function incsub_support_output_main() {
 <?php
 }
 
-function incsub_support_tickets_output() {
-	global $current_site, $current_user, $blog_id, $wpdb, $ticket_status, $ticket_priority, $incsub_support_page, $incsub_support_page_long;
-	
-	// post routine.
-	if ( !empty($_POST['addticket']) and $_POST['addticket'] == 1 ) {
-		if ( empty($_POST['subject']) or !is_numeric($_POST['category']) or !is_numeric($_POST['priority']) or empty($_POST['message']) ) {
-			$notification = __("Ticket Error: All fields are required.", INCSUB_SUPPORT_LANG_DOMAIN);
-			$nclass = "error";
-		} else {
-			$title = $wpdb->escape(incsub_support_stripslashes(strip_tags($_POST['subject'])));
-			$message = $wpdb->escape(incsub_support_stripslashes(strip_tags($_POST['message'])));
-			$category = $_POST['category'];
-			$priority = $_POST['priority'];
-			$email_message = false;
-			$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets')."
-				(site_id, blog_id, cat_id, user_id, ticket_priority, ticket_opened, title)
-			VALUES (	
-				'%d', '%d', '%s', '%d',
-				'%s', NOW(), '%s')
-			", $current_site->id, $blog_id, $category, $current_user->ID, $priority, $title));
-			if ( !empty($wpdb->insert_id) ) {
-				$ticket_id = $wpdb->insert_id;
-				$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_messages')."
-					(site_id, ticket_id, user_id, subject, message, message_date)
-					VALUES (
-						'%d', '%d', '%d', '%s', '%s', '%s')
-				", $current_site->id, $ticket_id, $current_user->ID, $title, $message, gmdate('Y-m-d H:i:s')));
-				if ( !empty($wpdb->insert_id) ) {
-					$notification = __("Thank you. Your ticket has been submitted. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
-					$nclass = "updated fade";
-					
-					$args = array(
-						'support_fetch_imap'	=> incsub_support_get_support_fetch_imap_message(),
-						'title'					=> incsub_support_stripslashes($title),
-						'ticket_status'			=> $ticket_status[ $status ],
-						'ticket_priority'		=> $ticket_priority[ $priority ],
-						'visit_link'			=> admin_url("{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}"),
-						'user_nicename'			=> $wpdb->get_var( "SELECT user_nicename FROM {$wpdb->users} WHERE ID = '{$current_user->ID}'" ),
-						'ticket_message'		=> incsub_support_stripslashes($message),
-						'ticket_url'			=> admin_url( "{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}" )
-					);
-
-					$mail_content = incsub_get_support_tickets_mail_content( $args );
-
-					$email_message = array(
-						"to"		=> incsub_support_notification_admin_email(),
-						"subject"	=> __("New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN) . $title,
-						"message"	=> $mail_content, // ends lang string
-						"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
-					); // ends array.
-				} else {
-				$notification = __("Ticket Error: There was an error submitting your ticket. Please try again in a few minutes.", INCSUB_SUPPORT_LANG_DOMAIN);
-					$nclass = "error";
-				}
-			} else {
-				$notification = __("Ticket Error: There was an error submitting your ticket. Please try again in a few minutes.", INCSUB_SUPPORT_LANG_DOMAIN);
-				$nclass = "error";
-			}
-		}
-	} elseif ( !empty($_POST['modifyticket']) and $_POST['modifyticket'] == 1 ) {
-		if ( !empty($_POST['canelsubmit']) ) {
-			wp_redirect("admin.php?page=incsub_support_tickets");
-			exit();
-		}
-		if ( empty($_POST['subject']) or !is_numeric($_POST['category']) or !is_numeric($_POST['priority']) or !is_numeric($_POST['status']) or !is_numeric($_POST['ticket_id']) or empty($_POST['message']) ) {
-			$notification = __("Ticket Error: All fields are required.", INCSUB_SUPPORT_LANG_DOMAIN);
-			$nclass = "error";
-		} else {
-			$title = $wpdb->escape(incsub_support_stripslashes(strip_tags($_POST['subject'])));
-			$message = $wpdb->escape(incsub_support_stripslashes(strip_tags($_POST['message'])));
-			$category = $_POST['category'];
-			$priority = $_POST['priority'];
-			$ticket_id = $_POST['ticket_id'];
-			$status = ($_POST['closeticket'] == 1) ? 5 : 3;
-			$email_message = false;
-			$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_messages')."
-				(site_id, ticket_id, user_id, subject, message, message_date)
-				VALUES ('%d', '%d', '%d', '%s', '%s', '%s')
-			", $current_site->id, $ticket_id, $current_user->ID, $title, $message, gmdate('Y-m-d H:i:s')));
-
-			if ( !empty($wpdb->insert_id) ) {
-				$wpdb->query($wpdb->prepare("UPDATE ".incsub_support_tablename('tickets')."
-					SET
-						cat_id = '%d', last_reply_id = '%d', ticket_priority = '%s', ticket_status = '%s', num_replies = num_replies+1
-					WHERE site_id = '%d' AND blog_id = '%d' AND ticket_id = '%d'
-					LIMIT 1
-				", $category, $current_user->ID, $priority, $status, $current_site->id, $blog_id, $ticket_id));
-
-				if ( !empty($wpdb->rows_affected) ) {
-					$notification = __("Thank you. Your ticket has been updated. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
-					$nclass = "updated fade";
-
-					$args = array(
-						'support_fetch_imap'	=> incsub_support_get_support_fetch_imap_message(),
-						'title'					=> incsub_support_stripslashes($title),
-						'ticket_status'			=> $ticket_status[ $status ],
-						'ticket_priority'		=> $ticket_priority[ $priority ],
-						'visit_link'			=> admin_url("{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}"),
-						'user_nicename'			=> $wpdb->get_var( "SELECT user_nicename FROM {$wpdb->users} WHERE ID = '{$current_user->ID}'" ),
-						'ticket_message'		=> incsub_support_stripslashes($message),
-						'ticket_url'			=> admin_url( "{$incsub_support_page_long}?page=ticket-manager&tid={$ticket_id}" )
-					);
-
-					$mail_content = incsub_get_support_tickets_mail_content( $args );
-
-					$email_message = array(
-						"to"		=> incsub_support_notification_admin_email(),
-						"subject"	=> __("[#{$ticket_id}] ", INCSUB_SUPPORT_LANG_DOMAIN) . $title,
-						"message"	=> $mail_content,
-						"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
-
-					); // ends array.
-
-				} else {
-					$notification = __("Ticket Error: There was an error updating your ticket. Please try again in a few minutes.", INCSUB_SUPPORT_LANG_DOMAIN);
-					$nclass = "error";
-				}
-			} else {
-				$notification = __("Ticket Error: There was an error adding your reply. Please try again in a few minutes.", INCSUB_SUPPORT_LANG_DOMAIN);
-				$nclass = "error";
-			}
-		}
-	}
-	if ( !empty($notification) ) {
-		if ( !empty($email_message) and is_array($email_message) ) {
-			wp_mail($email_message["to"], $email_message["subject"], $email_message["message"], $email_message["headers"]);
-		}
-?>
-	<div class="<?php echo $nclass; ?>"><?php echo $notification; ?></div>
-<?php
-	}
-
-	$do_history = ( !empty($_GET['action']) and $_GET['action'] == 'history' ) ? '' : 'AND t.ticket_updated > DATE_SUB(CURDATE(), INTERVAL 1 MONTH)';
-	$tickets = $wpdb->get_results("
-		SELECT t.ticket_id, t.blog_id, t.user_id, t.cat_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_updated, t.title, c.cat_name, u.display_name
-		FROM ".incsub_support_tablename('tickets')." AS t
-		LEFT JOIN ".incsub_support_tablename('tickets_cats')." AS c ON (t.cat_id = c.cat_id)
-		LEFT JOIN $wpdb->users AS u ON (t.admin_id = u.ID)
-		WHERE t.site_id = '{$current_site->id}' AND t.blog_id = '{$blog_id}' {$do_history}
-	");
-?>
-<div class="wrap">
-<?php
-	if ( !empty($_GET['tid']) and is_numeric($_GET['tid']) ) {
-		$current_ticket = $wpdb->get_results("
-		SELECT
-			t.ticket_id, t.blog_id, t.cat_id, t.user_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_opened, t.ticket_updated, t.title,
-			c.cat_name, u.display_name AS user_name, a.display_name AS admin_name, l.display_name AS last_user_reply, m.user_id AS user_avatar_id, 
-			m.admin_id AS admin_avatar_id, m.message_date, m.subject, m.message, r.display_name AS reporting_name, s.display_name AS staff_member
-		FROM ".incsub_support_tablename('tickets')."_messages AS m
-		LEFT JOIN ".incsub_support_tablename('tickets')." AS t ON (m.ticket_id = t.ticket_id)
-		LEFT JOIN $wpdb->users AS u ON (t.user_id = u.ID)
-		LEFT JOIN $wpdb->users AS a ON (t.admin_id = a.ID)
-		LEFT JOIN $wpdb->users AS l ON (t.last_reply_id = l.ID)
-		LEFT JOIN $wpdb->users AS r ON (m.user_id = r.ID)
-		LEFT JOIN $wpdb->users AS s ON (m.admin_id = s.ID)
-		LEFT JOIN ".incsub_support_tablename('tickets_cats')." AS c ON (t.cat_id = c.cat_id)
-		WHERE (m.ticket_id = '". $_GET['tid'] ."' AND t.site_id = '{$current_site->id}' AND t.blog_id = '{$blog_id}')
-		ORDER BY m.message_id ASC
-	");
-
-		if ( empty($current_ticket) ) {
-			$ticket_error = 1;
-?>
-	<h2 class="error"><?php _e("Error: Invalid Ticket Selected", INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
-<?php
-		} else {
-		$message_list = $current_ticket;
-		$current_ticket = $current_ticket[0];
-		$current_ticket->admin_name = !empty($current_ticket->admin_name) ? $current_ticket->admin_name : __("Not yet assigned", INCSUB_SUPPORT_LANG_DOMAIN);
-?>
-	<h2><?php _e("Ticket Details", INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
-		<form action="admin.php?page=incsub_support_tickets" method="post" name="updateticket" id="updateticket">
-			<table class="form-table" border="1">
-				<tr class="form-field form-required">
-					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Ticket Subject:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<td style="border-bottom:0;">
-						<?php echo incsub_support_stripslashes($current_ticket->title); ?>
-						<input type="hidden" name="tickettitle" value="<?php echo "Re: ".incsub_support_stripslashes($current_ticket->title); ?>" />
-						<input type="hidden" name="ticket_id" value="<?php echo $current_ticket->ticket_id; ?>" />
-					</td>
-					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Current Date/Time:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<td style="border-bottom:0;"><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), time(), true); ?></td>
-				</tr>
-				<tr class="form-field form-required">
-					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Reporting User:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<td style="border-bottom:0;"><?php echo $current_ticket->user_name; ?></td>
-					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Staff Representative:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<td style="border-bottom:0;"><?php echo $current_ticket->admin_name; ?></td>
-				</tr>
-				<tr class="form-field form-required">
-					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Last Reply From:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<td style="border-bottom:0;"><?php echo $current_ticket->last_user_reply; ?></td>
-					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Current Status:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<td style="border-bottom:0;">
-						<?php echo $ticket_status[$current_ticket->ticket_status]; ?>
-						<input type="hidden" name="status" value="<?php echo $current_ticket->ticket_status; ?>" />
-					</td>
-				</tr>
-				<tr class="form-field form-required">
-					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Last Updated:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<td style="border-bottom:0;"><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), strtotime($current_ticket->ticket_updated), true); ?></td>
-					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Created On:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<td style="border-bottom:0;"><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), strtotime($current_ticket->ticket_opened), true); ?></td>
-				</tr>
-				<?php $blog_details = get_blog_details($current_ticket->blog_id); ?>
-				<tr class="form-field form-required">
-					<th scope="row" style="background: #464646; color: #FEFEFE; border: 1px solid #242424;"><?php _e("Submitted from:", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<td style="border-bottom:0;"><a href="<?php echo get_blogaddress_by_id($current_ticket->blog_id); ?>"><?php echo $blog_details->blogname; ?></a></td>
-					<th scope="row">&nbsp;</th>
-					<td style="border-bottom:0;">&nbsp;</td>
-				</tr>
-			</table>
-			<br /><br />
-			<h2><?php _e("Ticket History", INCSUB_SUPPORT_LANG_DOMAIN); ?></h2><br />
-			<table class="widefat" cellpadding="3" cellspacing="3" border="1">
-				<thead>
-					<tr>
-						<th scope="col"><?php _e("Author", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-						<th scope="col"><?php _e("Ticket Message/Reply", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-						<th scope="col"><?php _e("Date/Time", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					</tr>
-				</thead>
-				<tbody>
-<?php
-			if ( !empty($message_list) ) {
-				foreach ( $message_list as $message ) {
-					if ( !empty($message->reporting_name) ) {
-						$avatar_id = $message->user_avatar_id;
-						$avatar = '<img src="'. WP_PLUGIN_URL . '/incsub-support/images/user.gif" alt="User" />';
-						$display_name = $message->reporting_name ."<br /><br />";
-						$mclass = ' class="alternate"';
-					} elseif ( !empty($message->staff_member) ) {
-						$avatar_id = $message->admin_avatar_id;
-						$avatar = '<img src="'. WP_PLUGIN_URL . '/incsub-support/images/staff.gif" alt="User" />';
-						$display_name = $message->staff_member ."<br /><br />";
-						$mclass = ' style="background-color: #cccccc;"';
-					} else {
-						$avatar_id = "";
-						$display_name = __("User", INCSUB_SUPPORT_LANG_DOMAIN);
-						$mclass = '';
-					}
-					if ( function_exists("get_blog_avatar") ) {
-						// check for blog avatar function, as get_avatar is too common.
-						$avatar = get_avatar($avatar_id,'32','gravatar_default');
-					}
-?>
-					<tr<?php echo $mclass; ?>>
-						<th scope="row" style="text-align: center;"><?php echo $display_name . $avatar; ?></th>
-						<td style="padding: 0 5px 5px 5px;">
-							<h3 style="margin-top: .5em;"><?php echo incsub_support_stripslashes($message->subject); ?></h3>
-							<div style="padding: 0 20px;">
-								<?php echo do_shortcode(wpautop(html_entity_decode(incsub_support_stripslashes($message->message)))); ?>
-							</div>
-						</td>
-						<td><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), strtotime($message->message_date), true); ?></td>
-					</tr>
-<?php
-				}
-?>
-
-<?php
-			}
-?>
-				</tbody>
-			</table>
-			<br /><br />
-<?php
-			if ( $current_ticket->ticket_status != 5 ) {
-			// ticket isn't closed
-?>
-			<h2><?php _e("Update This Ticket", INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
-			<p><em><?php _e("* All fields are required.", INCSUB_SUPPORT_LANG_DOMAIN); ?></em></p>
-			<table class="form-table">
-				<tr class="form-field form-required">
-					<th scope="row"><label for="subject"><?php _e("Subject", INCSUB_SUPPORT_LANG_DOMAIN); ?></label></th>
-					<td><input type="text" name="subject" id="subject" maxlength="100" size="60" value="Re: <?php echo incsub_support_stripslashes($current_ticket->title); ?>" />&nbsp;<small>(<?php _e("max: 100 characters"); ?>)</small></td>
-				</tr>
-				<tr class="form-field form-required">
-					<th scope="row"><?php _e('Category', INCSUB_SUPPORT_LANG_DOMAIN); ?>:</th>
-					<td>
-						<select name="category" id="category">
-<?php
-				$get_cats = $wpdb->get_results("SELECT cat_id, cat_name FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' ORDER BY cat_name ASC");
-				if ( empty($get_cats) ) {
-					$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name) VALUES ('%d', 'General')", $current_site->id));
-					$get_cats = $wpdb->get_results("SELECT cat_id, cat_name FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' ORDER BY cat_name ASC");
-				}
-				$x = 0;
-				foreach ($get_cats as $cat) {
-					if ( $cat->cat_id == $current_ticket->cat_id ) {
-						$selected = ' selected="selected"';
-						$x++;
-					} else {
-						$selected = "";
-					}
-?>
-							<option<?php echo $selected; ?> value="<?php echo $cat->cat_id; ?>"><?php echo $cat->cat_name; ?></option>
-<?php
-				}
-?>
-						</select>
-					</td>
-				</tr>
-				<tr class="form-field form-required">
-					<th scope="row"><?php _e('Priority', INCSUB_SUPPORT_LANG_DOMAIN); ?>:</th>
-					<td>
-						<select name="priority" id="priority">
-<?php
-				foreach ($ticket_priority as $key => $val) {
-					if ( $key == $current_ticket->ticket_priority ) {
-						$selected = ' selected="selected"';
-					} else {
-						$selected = "";
-					}
-?>
-							<option<?php echo $selected; ?> value="<?php echo $key; ?>"><?php echo $val; ?></option>
-<?php
-				}
-?>
-						</select>
-					</td>
-				</tr>
-				<tr class="form-field form-required">
-					<th scope="row"><label for="message"><?php _e("Add A Reply", INCSUB_SUPPORT_LANG_DOMAIN); ?></label></th>
-					<td>&nbsp;<small>(<?php _e("Please provide as much information as possible, so that we may better help you.", INCSUB_SUPPORT_LANG_DOMAIN); ?>)</small><br /><textarea name="message" id="message" class="message" rows="12" cols="58"></textarea></td>
-				</tr>
-				<tr class="form-field form-required">
-					<th scope="row"><label for="closeticket"><?php _e("Close Ticket?", INCSUB_SUPPORT_LANG_DOMAIN); ?></label></th>
-					<td><input type="checkbox" name="closeticket" id="closeticket" value="1" /> <strong><?php _e("Yes, please close this ticket.", INCSUB_SUPPORT_LANG_DOMAIN); ?></strong><br /><small><em><?php _e("Once a ticket is closed, you can no longer reply to (or update) it.", INCSUB_SUPPORT_LANG_DOMAIN); ?></em></small></td>
-				</tr>
-			</table>
-			<p class="submit">
-				<input type="hidden" name="modifyticket" value="1" />
-				<input name="updateticket" type="submit" id="updateticket" value="<?php _e("Update Ticket", INCSUB_SUPPORT_LANG_DOMAIN); ?>" />&nbsp;&nbsp;&nbsp;&nbsp;<input name="canelsubmit" type="submit" id="cancelsubmit" value="<?php _e("Cancel", INCSUB_SUPPORT_LANG_DOMAIN); ?>" />
-			</p>
-		</form>
-<?php
-			} // end if ticket !closed check.
-		} // end else check for current ticket
-	} // end check for GET tid
-
-	if ( empty($current_ticket) and empty($ticket_error) ) {
-?>
-	<h2><?php _e("Recent Support Tickets", INCSUB_SUPPORT_LANG_DOMAIN); ?> <small style="font-size: 12px; padding-left: 10px;">(<a href="admin.php?page=incsub_support_tickets&amp;action=history"><?php _e("Ticket History", INCSUB_SUPPORT_LANG_DOMAIN); ?></a>)</small></h2>
-	<br />
-		<table width="100%" cellpadding="3" cellspacing="3" class="widefat">
-			<thead>
-				<tr>
-					<th scope="col"><?php _e("Ticket ID", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<th scope="col"><?php _e("Subject", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<th scope="col"><?php _e("Status", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<th scope="col"><?php _e("Priority", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<th scope="col"><?php _e("Staff Member", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<th scope="col"><?php _e("Submitted From", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<th scope="col"><?php _e("Last Updated", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-				</tr>
-			</thead>
-			<tbody id="the-list">
-<?php
-
-		if ( empty($tickets) ) {
-?>
-				<tr class='alternate'>
-					<th scope="row" colspan="6">
-						<p><?php _e("There aren't any tickets to view at this time.", INCSUB_SUPPORT_LANG_DOMAIN); ?></p>
-					</th>
-				</tr>
-<?php
-		} else {
-			foreach ($tickets as $ticket) {
-			$class = ( $class != "alternate") ? "alternate" : "";
-			if ( empty($ticket->display_name) ) { $ticket->display_name = __("Unassigned", INCSUB_SUPPORT_LANG_DOMAIN); }
-				$blog_details = get_blog_details($ticket->blog_id); ?>
-				<tr class='<?php echo $class; ?>'>
-					<th scope="row"><?php echo $ticket->ticket_id; ?></th>
-					<td valign="top"><a href="admin.php?page=incsub_support_tickets&amp;tid=<?php echo $ticket->ticket_id; ?>"><?php echo incsub_support_stripslashes($ticket->title); ?></a></td>
-					<td valign="top"><?php echo $ticket_status[$ticket->ticket_status]; ?></td>
-					<td valign="top"><?php echo $ticket_priority[$ticket->ticket_priority]; ?></td>
-					<td valign="top"><a href="<?php echo get_blogaddress_by_id($ticket->blog_id); ?>"><?php echo $blog_details->blogname; ?></a></td>
-					<td valign="top"><?php echo date_i18n(get_option("date_format") ." ". get_option("time_format"), strtotime($ticket->ticket_updated), true); ?></td>
-				</tr>
-<?php
-			}
-		}
-?>
-			</tbody>
-		</table>
-	<br /><br />
-
-	<h2><?php _e("Add Ticket", INCSUB_SUPPORT_LANG_DOMAIN); ?></h2>
-		<p><em><?php _e("* All fields are required.", INCSUB_SUPPORT_LANG_DOMAIN); ?></em></p>
-		<form action="admin.php?page=incsub_support_tickets" method="post" name="newticket" id="newticket">
-			<table class="form-table">
-				<tr class="form-field form-required">
-					<th scope="row"><label for="subject"><?php _e("Subject", INCSUB_SUPPORT_LANG_DOMAIN); ?></label></th>
-					<td><input type="text" name="subject" id="subject" maxlength="100" size="60" />&nbsp;<small>(<?php _e("max: 100 characters", INCSUB_SUPPORT_LANG_DOMAIN); ?>)</small></td>
-				</tr>
-				<tr class="form-field form-required">
-					<th scope="row"><?php _e('Category', INCSUB_SUPPORT_LANG_DOMAIN); ?>:</th>
-					<td>
-						<select name="category" id="category">
-<?php 			
-		$get_cats = $wpdb->get_results("SELECT cat_id, cat_name FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' ORDER BY cat_name ASC");
-		if ( empty($get_cats) ) {
-			$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_cats')." (site_id, cat_name) VALUES ('%d', 'General')", $current_site->id));
-			$get_cats = $wpdb->get_results("SELECT cat_id, cat_name FROM ".incsub_support_tablename('tickets_cats')." WHERE site_id = '{$current_site->id}' ORDER BY cat_name ASC");
-		}
-		$x = 0;
-		foreach ($get_cats as $cat) {
-			if ( $x == 0 ) {
-				$selected = ' selected="selected"';
-				$x++;
-			} else {
-				$selected = "";
-			}
-?>
-							<option<?php echo $selected; ?> value="<?php echo $cat->cat_id; ?>"><?php echo $cat->cat_name; ?></option>
-<?php
-		}
-?>
-						</select>
-					</td>
-				</tr>
-				<tr class="form-field form-required">
-					<th scope="row"><?php _e('Priority', INCSUB_SUPPORT_LANG_DOMAIN); ?>:</th>
-					<td>
-						<select name="priority" id="priority">
-<?php
-		$x = 0;
-		foreach ($ticket_priority as $key => $val) {
-			if ( $x == 0 ) {
-				$selected = ' selected="selected"';
-				$x++;
-			} else {
-				$selected = "";
-			}
-?>
-							<option<?php echo $selected; ?> value="<?php echo $key; ?>"><?php echo $val; ?></option>
-<?php
-		}
-?>
-						</select>
-					</td>
-				</tr>
-				<tr class="form-field form-required">
-					<th scope="row"><?php _e("Status", INCSUB_SUPPORT_LANG_DOMAIN); ?></th>
-					<td><em><?php _e("New Ticket", INCSUB_SUPPORT_LANG_DOMAIN); ?></em></td>
-				</tr>
-				<tr class="form-field form-required">
-					<th scope="row"><label for="message"><?php _e("Problem Description", INCSUB_SUPPORT_LANG_DOMAIN); ?></label></th>
-					<td>&nbsp;<small>(<?php _e("Please provide as much information as possible, so that we may better help you.", INCSUB_SUPPORT_LANG_DOMAIN); ?>)</small><br /><textarea name="message" id="message" class="message" rows="12" cols="58"></textarea></td>
-				</tr>
-			</table>
-			<p class="submit">
-				<input type="hidden" name="addticket" value="1" />
-				<input name="submitticket" type="submit" id="addusersub" value="<?php _e("Submit New Ticket", INCSUB_SUPPORT_LANG_DOMAIN); ?>" />
-			</p>
-		</form>
-
-<?php
-	} // end empty current ticket check
-?>
-</div>
-<?php
-}
 
 function incsub_support_notification_admin_email() {
 	global $wpdb;
@@ -1708,28 +1288,62 @@ function incsub_support_process_reply($curr_user = null) {
 	
 	// post routine.
 	if ( !empty($_POST['addticket']) and $_POST['addticket'] == 1 ) {
+
+		//  Checking for uploaded files
+		$files = array();
+		if ( ! empty ( $_POST['uploaded-files'] ) ) {
+			$files = (array)$_POST['uploaded-files'];
+		}
+		$files = maybe_serialize( $files );
+
 		if ( empty($_POST['subject']) or !is_numeric($_POST['category']) or !is_numeric($_POST['priority']) or empty($_POST['message']) ) {
 			$notification = __("Ticket Error: All fields are required.", INCSUB_SUPPORT_LANG_DOMAIN);
 			$nclass = "error";
 		} else {
+
 			$title = $wpdb->escape(incsub_support_stripslashes(strip_tags($_POST['subject'])));
 			$message = $wpdb->escape(incsub_support_stripslashes(strip_tags($_POST['message'])));
 			$category = $_POST['category'];
 			$priority = $_POST['priority'];
 			$email_message = false;
-			$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets')."
-				(site_id, blog_id, cat_id, user_id, ticket_priority, ticket_opened, title)
-			VALUES (	
-				'%d', '%d', '%d', '%d',
-				'%d', NOW(), '%s')
-			", $current_site->id, $blog_id, $category,$current_user->ID, $priority, $title));
+
+			$wpdb->query(
+				$wpdb->prepare(
+					"INSERT INTO ".incsub_support_tablename('tickets')."
+					(site_id, blog_id, cat_id, user_id, ticket_priority, ticket_opened, title)
+					VALUES (	
+						'%d', '%d', '%d', '%d',
+						'%d', NOW(), '%s'
+					)", 
+					$current_site->id, 
+					$blog_id, 
+					$category,
+					$current_user->ID, 
+					$priority, 
+					$title
+				)
+			);
+
 			if ( !empty($wpdb->insert_id) ) {
+
 				$ticket_id = $wpdb->insert_id;
-				$wpdb->query($wpdb->prepare("INSERT INTO ".incsub_support_tablename('tickets_messages')."
-					(site_id, ticket_id, user_id, subject, message, message_date)
-					VALUES (
-						'%d', '%d', '%d', '%s', '%s', '%s')
-				", $current_site->id, $ticket_id, $current_user->ID, $title, $message, gmdate('Y-m-d H:i:s')));
+				$wpdb->query(
+					$wpdb->prepare(
+						"INSERT INTO ".incsub_support_tablename('tickets_messages')."
+						(site_id, ticket_id, user_id, subject, message, message_date, attachments)
+						VALUES (
+							'%d', '%d', '%d', '%s', '%s', '%s', '%s'
+						)", 
+						$current_site->id, 
+						$ticket_id, 
+						$current_user->ID, 
+						$title, 
+						$message, 
+						gmdate('Y-m-d H:i:s'),
+						$files
+					)
+				);
+
 				if ( !empty($wpdb->insert_id) ) {
 					$notification = __("Thank you. Your ticket has been submitted. You will be notified by email of any responses to this ticket.", INCSUB_SUPPORT_LANG_DOMAIN);
 					$nclass = "updated fade";
@@ -1871,7 +1485,7 @@ function incsub_support_output_tickets() {
 		SELECT
 			t.ticket_id, t.blog_id, t.cat_id, t.user_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_opened, t.ticket_updated, t.title,
 			c.cat_name, u.display_name AS user_name, a.display_name AS admin_name, l.display_name AS last_user_reply, m.user_id AS user_avatar_id, 
-			m.admin_id AS admin_avatar_id, m.message_date, m.subject, m.message, r.display_name AS reporting_name, s.display_name AS staff_member
+			m.admin_id AS admin_avatar_id, m.message_date, m.subject, m.message, m.attachments, r.display_name AS reporting_name, s.display_name AS staff_member
 		FROM ".incsub_support_tablename('tickets')."_messages AS m
 		LEFT JOIN ".incsub_support_tablename('tickets')." AS t ON (m.ticket_id = t.ticket_id)
 		LEFT JOIN $wpdb->users AS u ON (t.user_id = u.ID)
@@ -2052,13 +1666,39 @@ function incsub_support_output_tickets() {
 					<td>&nbsp;<small>(<?php _e("Please provide as much information as possible, so that we may better help you.", INCSUB_SUPPORT_LANG_DOMAIN); ?>)</small><br /><textarea name="message" id="message" class="message" rows="12" cols="58"></textarea></td>
 				</tr>
 				<tr class="form-field form-required">
+					<?php 
+						if ( ! isset( $files ) ) {
+							$files = maybe_unserialize( $current_ticket->attachments );
+							if ( ! is_array( $files ) )
+								$files = array();
+						}
+
+					?>
+					<th scope="row"><label for="message"><?php _e("Attached files (click to view)", INCSUB_SUPPORT_LANG_DOMAIN); ?></label></th>
+					<td>
+						<ul>
+							<?php foreach ( $files as $file ): ?>
+								<li>
+									<span class="description" style="text-align:center"><?php echo basename( wp_get_attachment_url( $file ) ); ?> </span><br/>
+									<?php if ( wp_attachment_is_image( $file ) ): ?>
+										<a href="<?php echo wp_get_attachment_url( $file ); ?>" class="thickbox"><?php echo wp_get_attachment_image( $file, 'thumbnail', true ); ?></a>								
+									<?php else: ?>
+										sfdsdff
+									<?php endif; ?>
+								</li>
+							<?php endforeach; ?>
+						<ul>
+					</td>
+				</tr>
+				<tr class="form-field form-required">
 					<th scope="row"><label for="closeticket"><?php _e("Close Ticket?", INCSUB_SUPPORT_LANG_DOMAIN); ?></label></th>
 					<td><input type="checkbox" name="closeticket" id="closeticket" value="1" /> <strong><?php _e("Yes, please close this ticket.", INCSUB_SUPPORT_LANG_DOMAIN); ?></strong><br /><small><em><?php _e("Once a ticket is closed, you can no longer reply to (or update) it.", INCSUB_SUPPORT_LANG_DOMAIN); ?></em></small></td>
 				</tr>
 			</table>
 			<p class="submit">
 				<input type="hidden" name="modifyticket" value="1" />
-				<input name="updateticket" type="submit" id="updateticket" value="<?php _e("Update Ticket", INCSUB_SUPPORT_LANG_DOMAIN); ?>" />&nbsp;&nbsp;&nbsp;&nbsp;<input name="canelsubmit" type="submit" id="cancelsubmit" value="<?php _e("Cancel", INCSUB_SUPPORT_LANG_DOMAIN); ?>" />
+				<input name="updateticket" class="button-primary" type="submit" id="updateticket" value="<?php _e("Update Ticket", INCSUB_SUPPORT_LANG_DOMAIN); ?>" />&nbsp;&nbsp;&nbsp;&nbsp;
+				<input name="canelsubmit" class="button" type="submit" id="cancelsubmit" value="<?php _e("Cancel", INCSUB_SUPPORT_LANG_DOMAIN); ?>" />
 			</p>
 		</form>
 <?php
@@ -2179,18 +1819,55 @@ function incsub_support_output_tickets() {
 					<th scope="row"><label for="message"><?php _e("Problem Description", INCSUB_SUPPORT_LANG_DOMAIN); ?></label></th>
 					<td>&nbsp;<small>(<?php _e("Please provide as much information as possible, so that we may better help you.", INCSUB_SUPPORT_LANG_DOMAIN); ?>)</small><br /><textarea name="message" id="message" class="message" rows="12" cols="58"></textarea></td>
 				</tr>
+				<tr class="form-field">
+					<th scope="row"><label for="upload-file"><?php _e("Attached files", INCSUB_SUPPORT_LANG_DOMAIN); ?></label></th>
+					<td>
+						<?php if ( isset( $files ) ): ?>
+							<ul>
+								<?php foreach ( $files as $file ): ?>
+									<li>
+										<span class="description" style="text-align:center"><?php echo basename( wp_get_attachment_url( $file ) ); ?> </span><br/>
+										<?php if ( wp_attachment_is_image( $file ) ): ?>
+											<a href="<?php echo wp_get_attachment_url( $file ); ?>" class="thickbox"><?php echo wp_get_attachment_image( $file, 'thumbnail', true ); ?></a>								
+										<?php else: ?>
+											sfdsdff
+										<?php endif; ?>
+									</li>
+								<?php endforeach; ?>
+							<ul>
+						<?php endif; ?>
+						<a href="#" class="button-secondary" id="upload-file"><?php _e( 'Upload new file', INCSUB_SUPPORT_LANG_DOMAIN ); ?></a>
+					</td>
+				</tr>
 			</table>
 			<p class="submit">
 				<input type="hidden" name="addticket" value="1" />
-				<input name="submitticket" type="submit" id="addusersub" value="<?php _e("Submit New Ticket", INCSUB_SUPPORT_LANG_DOMAIN); ?>" />
+				<input name="submitticket" type="submit" class="button-primary" id="addusersub" value="<?php _e("Submit New Ticket", INCSUB_SUPPORT_LANG_DOMAIN); ?>" />
 			</p>
 		</form>
 
 <?php
+
 	} // end empty current ticket check
 ?>
 </div>
 <?php
+}
+
+/**
+ * Executed by AJAX, will delete an attachment from Media Library
+ */
+function incsub_support_remove_attachment() {
+
+	if ( isset( $_POST['attachment_id'] ) ) {
+
+		$attachment = wp_get_attachment_url( (int)$_POST['attachment_id'] );
+		if ( empty( $attachment ) )
+			die();
+
+		wp_delete_attachment( absint( $_POST['attachment_id'] ) );
+	}
+	die();
 }
 
 function incsub_support_output_faq() {

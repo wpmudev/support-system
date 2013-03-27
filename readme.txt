@@ -17,6 +17,7 @@ Support System for WordPress multi site.
 * Added integration twith Pro Sites Plugin
 * Fixed notice when updating a ticket
 * Fixed bug when activating the plugin
+* New feature: Attach images to a ticket
 
 = 1.7.2.2 =
 * Fixed: Incorrect URL in Support Ticket Email
