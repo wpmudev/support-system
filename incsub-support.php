@@ -1665,7 +1665,7 @@ function incsub_support_output_tickets() {
 					<th scope="row"><label for="message"><?php _e("Add A Reply", INCSUB_SUPPORT_LANG_DOMAIN); ?></label></th>
 					<td>&nbsp;<small>(<?php _e("Please provide as much information as possible, so that we may better help you.", INCSUB_SUPPORT_LANG_DOMAIN); ?>)</small><br /><textarea name="message" id="message" class="message" rows="12" cols="58"></textarea></td>
 				</tr>
-				<tr class="form-field form-required">
+				<tr class="form-field">
 					<?php 
 						if ( ! isset( $files ) ) {
 							$files = maybe_unserialize( $current_ticket->attachments );
@@ -2092,7 +2092,7 @@ function incsub_support_ticketadmin_main() {
 		SELECT
 			t.ticket_id, t.blog_id, t.cat_id, t.user_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_opened, t.ticket_updated, t.title,
 			c.cat_name, u.display_name AS user_name, a.display_name AS admin_name, l.display_name AS last_user_reply, m.user_id AS user_avatar_id, 
-			m.admin_id AS admin_avatar_id, m.message_date, m.subject, m.message, r.display_name AS reporting_name, s.display_name AS staff_member
+			m.admin_id AS admin_avatar_id, m.message_date, m.subject, m.message, m.attachments, r.display_name AS reporting_name, s.display_name AS staff_member
 		FROM ".incsub_support_tablename('tickets')."_messages AS m
 		LEFT JOIN ".incsub_support_tablename('tickets')." AS t ON (m.ticket_id = t.ticket_id)
 		LEFT JOIN $wpdb->users AS u ON (t.user_id = u.ID)
@@ -2299,7 +2299,33 @@ function incsub_support_ticketadmin_main() {
 				</tr>
 				<tr class="form-field form-required">
 					<th scope="row"><label for="message"><?php _e("Add A Reply", INCSUB_SUPPORT_LANG_DOMAIN); ?></label></th>
-					<td>&nbsp;<small>(<?php _e("Please provide as much information as possible, so that the user can understand the solution/request.", INCSUB_SUPPORT_LANG_DOMAIN); ?>)</small><br /><textarea name="message" id="message" class="message" rows="12" cols="58"></textarea></td>
+					<td>&nbsp;<small>(<?php _e("Please provide as much information as possible, so that the user can understand the solution/request.", INCSUB_SUPPORT_LANG_DOMAIN); ?>)</small><br /><textarea name="message" id="message" class="message" rows="12" cols="58"><?php echo $current_ticket->message; ?></textarea></td>
+				</tr>
+				<tr class="form-field">
+					<?php 
+						switch_to_blog( $current_ticket->blog_id );
+						if ( ! isset( $files ) ) {
+							$files = maybe_unserialize( $current_ticket->attachments );
+							if ( ! is_array( $files ) )
+								$files = array();
+						}
+					?>
+					<th scope="row"><label for="message"><?php _e("Attached files (click to view)", INCSUB_SUPPORT_LANG_DOMAIN); ?></label></th>
+					<td>
+						<ul>
+							<?php foreach ( $files as $file ): ?>
+								<li>
+									<span class="description" style="text-align:center"><?php echo basename( wp_get_attachment_url( $file ) ); ?> </span><br/>
+									<?php if ( wp_attachment_is_image( $file ) ): ?>
+										<a href="<?php echo wp_get_attachment_url( $file ); ?>" class="thickbox"><?php echo wp_get_attachment_image( $file, 'thumbnail', true ); ?></a>								
+									<?php else: ?>
+										sfdsdff
+									<?php endif; ?>
+								</li>
+							<?php endforeach; ?>
+						<ul>
+					</td>
+					<?php restore_current_blog(); ?>
 				</tr>
 				<tr class="form-field form-required">
 					<th scope="row"><label for="closeticket"><?php _e("Close Ticket?", INCSUB_SUPPORT_LANG_DOMAIN); ?></label></th>
@@ -2308,7 +2334,8 @@ function incsub_support_ticketadmin_main() {
 			</table>
 			<p class="submit">
 				<input type="hidden" name="modifyticket" value="1" />
-				<input name="updateticket" type="submit" id="updateticket" value="<?php _e("Update Ticket", INCSUB_SUPPORT_LANG_DOMAIN); ?>" />&nbsp;&nbsp;&nbsp;&nbsp;<input name="canelsubmit" type="submit" id="cancelsubmit" value="<?php _e("Cancel", INCSUB_SUPPORT_LANG_DOMAIN); ?>" />
+				<input name="updateticket" class="button-primary" type="submit" id="updateticket" value="<?php _e("Update Ticket", INCSUB_SUPPORT_LANG_DOMAIN); ?>" />&nbsp;&nbsp;&nbsp;&nbsp;
+				<input name="canelsubmit" class="button" type="submit" id="cancelsubmit" value="<?php _e("Cancel", INCSUB_SUPPORT_LANG_DOMAIN); ?>" />
 			</p>
 		</form>
 <?php
