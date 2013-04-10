@@ -1,0 +1,16 @@
+th#poster {
+	width:200px;
+	vertical-align:middle;
+}
+th#message {
+	width:65%;
+}
+th#date {
+	width:15%;
+}
+th#create_faq {
+	width:10%;
+}
+td.column-message h4 {
+	margin-top:0;
+}
