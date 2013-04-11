@@ -36,12 +36,12 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 				array(
 					'slug' => 'details',
 					'link' => add_query_arg( 'view', 'details' ),
-					'label' => 'Ticket details'
+					'label' => __( 'Ticket details', INCSUB_SUPPORT_LANG_DOMAIN )
 				),
 				array(
 					'slug' => 'history',
 					'link' => add_query_arg( 'view', 'history' ),
-					'label' => 'Ticket history'
+					'label' => __( 'Update ticket', INCSUB_SUPPORT_LANG_DOMAIN )
 				)
 			);
 

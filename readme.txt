@@ -3,7 +3,7 @@ Contributors: mohanjith,igmoweb
 Tags: support, ticket, faq
 Requires at least: 3.0.0
 Stable tag: trunk
-Tested up to: 3.3.1
+Tested up to: 3.5.1
 
 Support System for WordPress multi site
 
@@ -14,10 +14,14 @@ Support System for WordPress multi site.
 == ChangeLog ==
 
 = 1.8 =
-* Added integration twith Pro Sites Plugin
-* Fixed notice when updating a ticket
-* Fixed bug when activating the plugin
-* New feature: Attach images to a ticket
+* Plugin totally recoded
+* New feature: Added integration with Pro Sites Plugin
+* New feature: WYSIWYG Editor for tickets
+* New feature: New setting that brings the possibility
+to hide tickets from users which did not opened them.
+* New styles for FAQs
+* More WP admin integration
+* Fixed several bugs and notices
 
 = 1.7.2.2 =
 * Fixed: Incorrect URL in Support Ticket Email
