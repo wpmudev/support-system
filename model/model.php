@@ -963,7 +963,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			$current_site_id = $current_site->id;
 
 			$default_cat = $wpdb->get_var(
-				"SELECT * FROM $this->tickets_cats_table
+				"SELECT * FROM $this->faq_cats_table
 				WHERE defcat = 2"
 			);
 			if ( empty( $default_cat ) ) {

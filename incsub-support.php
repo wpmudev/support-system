@@ -26,7 +26,10 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 	class MU_Support_System {
 
+		// Current version of the plugin
 		public static $version = INCSUB_SUPPORT_PLUGIN_VERSION;
+
+		// Sets of valid values like status, or privacy options
 		public static $ticket_status;
 		public static $ticket_priority;
 		public static $responsibilities;
@@ -34,8 +37,10 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		public static $fetch_imap;
 		public static $incsub_support_imap_ssl;
 
+		// Plugin settings
 		public static $settings = array();
 
+		// Network menus
 		public static $network_main_menu;
 		public static $network_single_ticket_menu;
 		public static $network_faq_manager_menu;
@@ -44,6 +49,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		public static $network_faq_categories_menu;
 		public static $network_support_settings_menu;
 
+		// Blogs menus
 		public static $admin_main_menu;
 		public static $admin_new_ticket_menu;
 		public static $admin_single_ticket_menu;
@@ -116,19 +122,21 @@ if ( ! class_exists( 'MU_Support_System') ) {
 				'incsub_ticket_privacy' => get_site_option( 'incsub_ticket_privacy', 'all' )
 			);
 
-
+			// Include needed files
 			$this->includes();
 
 			// Activation/Upgrades
 			register_activation_hook( __FILE__, array( &$this, 'activate' ) );
 			register_deactivation_hook( __FILE__, array( &$this, 'deactivate' ) );
 
-			
+			// Adding cron schedules
+			add_filter( 'cron_schedules', array( &$this, 'cron_schedules' ) );
 
+			// Is this an upgrade?
 			add_action( 'admin_init', array( &$this, 'check_for_upgrades' ) );
 
 
-			// Admin menus
+			// Create Admin menus
 			$this->admin_menus();
 		}
 
@@ -235,6 +243,26 @@ if ( ! class_exists( 'MU_Support_System') ) {
 				
 			}
 
+		}
+
+		/**
+		 * Programs several schedules frequency
+		 * 
+		 * @since 1.6
+		 * 
+		 * @param Array $schedule WP Schedules Array
+		 * 
+		 * @param Array New WP Schedules Array
+		 */
+		public function cron_schedules( $schedules ) {
+			if ( self::$settings['incsub_support_fetch_imap'] == 'enabled' ) {
+				$schedules['everyminute'] = array( 'interval' => 60, 'display' => __('Once a minute', INCSUB_SUPPORT_LANG_DOMAIN) );
+				$schedules['fiveminutes'] = array( 'interval' => 300, 'display' => __('Once every five minutes', INCSUB_SUPPORT_LANG_DOMAIN) );
+				$schedules['fifteenminutes'] = array( 'interval' => 900, 'display' => __('Once every fifteen minutes', INCSUB_SUPPORT_LANG_DOMAIN) );
+				$schedules['thirtyminutes'] = array( 'interval' => 1800, 'display' => __('Once every half an hour', INCSUB_SUPPORT_LANG_DOMAIN) );
+			}
+			
+			return $schedules;
 		}
 
 	}
