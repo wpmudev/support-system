@@ -27,6 +27,9 @@ if ( ! class_exists( 'MU_Support_Network_Main_Menu' ) ) {
 			$this->capability = 'manage_network';
 			$this->menu_slug = 'ticket-manager';
 
+			$model = MU_Support_System_Model::get_instance();
+			$this->count_update = $model->get_unchecked_tickets();
+			
 			parent::__construct();
 
 			// Status of the screen
@@ -53,6 +56,13 @@ if ( ! class_exists( 'MU_Support_Network_Main_Menu' ) ) {
 		 */
 		public function render_content() {
 
+			if ( isset( $_GET['delete'] ) && is_numeric( $_GET['delete'] ) ) {
+				$model = MU_Support_System_Model::get_instance();
+				$ticket_id = intval( $_GET['delete'] );
+				if ( $model->is_ticket_archived( $ticket_id ) )
+					$model->delete_ticket( $ticket_id );
+			}
+
 		    $tickets_table = new MU_Support_Tickets_Table( $this->view );
 		    $tickets_table->prepare_items();
 
@@ -61,9 +71,10 @@ if ( ! class_exists( 'MU_Support_Network_Main_Menu' ) ) {
 					<li class="active"><a href="<?php echo add_query_arg( 'view', 'active' ); ?>" <?php echo 'active' == $this->view ? 'class="current"' : ''; ?> ><?php echo __( 'Active tickets', INCSUB_SUPPORT_LANG_DOMAIN ); ?></a> |</li>
 					<li class="archived"><a href="<?php echo add_query_arg( 'view', 'archive' ); ?>" <?php echo 'archive' == $this->view ? 'class="current"' : ''; ?>><?php echo __( 'Archived tickets', INCSUB_SUPPORT_LANG_DOMAIN ); ?></a></li>
 				</ul>
+				<form id="support-tickets" method="post">
+					<?php $tickets_table->display(); ?>
+				</form>
 			<?php
-			
-			$tickets_table->display();
 		}
 
 	}

@@ -19,6 +19,7 @@ if ( ! class_exists( 'MU_Support_Menu' ) ) {
 		public $tabs = false;
 		public $active_tab;
 		public $add_new_link = false;
+		public $count_update = false;
 
 		public $submenu = false;
 		public $parent = null;
@@ -61,9 +62,14 @@ if ( ! class_exists( 'MU_Support_Menu' ) ) {
 
 
 			if ( ( ! $this->submenu ) ) {
+				$menu_title = $this->menu_title;
+
+				if ( $this->count_update )
+					$menu_title .= '<span class="update-plugins count-3"><span class="plugin-count">' . $this->count_update . '</span></span>';
+
 				$this->page_id = add_menu_page( 
 					$this->page_title, 
-					$this->menu_title, 
+					$menu_title, 
 					$this->capability, 
 					$this->menu_slug, 
 					array( &$this, 'render_page' ), 

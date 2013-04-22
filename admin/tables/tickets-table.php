@@ -43,6 +43,14 @@ class MU_Support_Tickets_Table extends WP_List_Table {
         return $value;
     }
 
+    function column_cb($item){
+        return sprintf(
+            '<input type="checkbox" name="%1$s[]" value="%2$s" />',
+            /*$1%s*/ $this->_args['singular'],  
+            /*$2%s*/ $item['ticket_id']                
+        );
+    }
+
     function column_status( $item ) {
         $link = add_query_arg( 'ticket_status', absint( $item['ticket_status'] ) );
         return '<a href="' . $link . '">' . MU_Support_System::$ticket_status[ (int)$item['ticket_status'] ] . '</a>';
@@ -71,7 +79,18 @@ class MU_Support_Tickets_Table extends WP_List_Table {
             (int)$item['ticket_id'],
             MU_Support_System::$network_single_ticket_menu->get_permalink()
         );
-        return '<a href="' . $link . '">' . stripslashes_deep( $item['title'] ) . '</a>'; 
+
+        if ( 'archive' == $this->status ) {
+            $delete_link = add_query_arg( 'delete', (int)$item['ticket_id'] );
+            $actions = array(
+                'delete'    => sprintf( __( '<a href="%s">Delete</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_link)
+            );
+            return '<a href="' . $link . '">' . stripslashes_deep( $item['title'] ) . '</a>' . $this->row_actions($actions); 
+        }
+        else {
+            return '<a href="' . $link . '">' . stripslashes_deep( $item['title'] ) . '</a>'; 
+        }
+        
     }
 
     function column_submitted( $item ) {
@@ -89,7 +108,12 @@ class MU_Support_Tickets_Table extends WP_List_Table {
 
 
     function get_columns(){
-        $columns = array(
+        $columns = array();
+
+        if ( 'archive' == $this->status ) {
+            $columns['cb'] = '<input type="checkbox" />';
+        }
+        $columns = array_merge( $columns, array(
             'id'		=> __( 'Ticket ID', INCSUB_SUPPORT_LANG_DOMAIN ),
             'subject'	=> __( 'Subject', INCSUB_SUPPORT_LANG_DOMAIN ),
             'status'	=> __( 'Status', INCSUB_SUPPORT_LANG_DOMAIN ),
@@ -98,7 +122,7 @@ class MU_Support_Tickets_Table extends WP_List_Table {
             'staff'		=> __( 'Staff Member', INCSUB_SUPPORT_LANG_DOMAIN ),
             'submitted' => __( 'Submitted From', INCSUB_SUPPORT_LANG_DOMAIN ),
             'updated'	=> __( 'Last updated (GMT)', INCSUB_SUPPORT_LANG_DOMAIN )
-        );
+        ));
         return $columns;
     }
 
@@ -131,6 +155,49 @@ class MU_Support_Tickets_Table extends WP_List_Table {
         
     }
 
+    function get_bulk_actions() {
+        if ( 'archive' == $this->status ) {
+            $actions = array(
+                'delete'    => 'Delete'
+            );
+            return $actions;    
+        }
+        return array();
+        
+    }
+
+    function process_bulk_action() {
+        
+        //Detect when a bulk action is being triggered...
+        if( 'delete' === $this->current_action() ) {
+            $model = MU_Support_System_Model::get_instance();
+
+            if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) ) {
+                foreach ( $_POST['ticket'] as $ticket_id ) {
+                    if ( $model-> is_ticket_archived( $ticket_id ) ) {
+                        $model->delete_ticket( $ticket_id );
+                    }
+                }
+            }
+        }
+        
+    }
+
+    function single_row( $item ) {
+        static $row_class = '';
+
+        $row_class = ( $row_class == '' ? ' class="alternate"' : '' );
+
+        $background = '';
+        if ( ! $item['view_by_superadmin'] )
+            $background .= 'style="background-color:#e8f3b9" ';
+
+        echo '<tr ' . $background . $row_class . '>';
+        echo $this->single_row_columns( $item );
+        echo '</tr>';
+    }
+    
+
     function prepare_items() {
 
     	$per_page = 30;
@@ -144,6 +211,8 @@ class MU_Support_Tickets_Table extends WP_List_Table {
         	$hidden, 
         	$sortable
         );
+
+        $this->process_bulk_action();
 
         $current_page = $this->get_pagenum();
 

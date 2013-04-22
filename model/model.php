@@ -158,13 +158,15 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				ticket_updated timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
 				num_replies smallint(3) unsigned NOT NULL default '0',
 				title varchar(120) character set utf8 NOT NULL,
+				view_by_superadmin tinyint(1) NOT NULL DEFAULT '0',
 				PRIMARY KEY  (ticket_id),
 				KEY site_id (site_id),
 				KEY blog_id (blog_id),
 				KEY user_id (user_id),
 				KEY admin_id (admin_id),
 				KEY ticket_status (ticket_status),
-				KEY ticket_updated (ticket_updated)
+				KEY ticket_updated (ticket_updated),
+				KEY view_by_superadmin (view_by_superadmin)
 			      ) ENGINE=MyISAM $this->db_charset_collate;";
 
 			dbDelta($sql);
@@ -189,7 +191,6 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				message_date timestamp NOT NULL default CURRENT_TIMESTAMP,
 				subject varchar(255) character set utf8 NOT NULL,
 				message mediumtext character set utf8 NOT NULL,
-				attachments longtext character set utf8,
 				PRIMARY KEY  (message_id),
 				KEY ticket_id (ticket_id)
 			      ) ENGINE=MyISAM $this->db_charset_collate;";
@@ -294,6 +295,40 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			}
 		}
 
+		public function get_unchecked_tickets() {
+			global $wpdb;
+
+			return $wpdb->get_var( "SELECT COUNT(ticket_id) FROM $this->tickets_table WHERE view_by_superadmin = 0" );
+		}
+
+		/**
+		 * Chcks a ticket as viewed already by a super admin
+		 * 
+		 * @since 1.8
+		 */
+		public function check_ticket_as_viewed( $ticket_id ) {
+			global $wpdb;
+
+			// We don't want to update the date
+			$ticket_updated = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT ticket_updated FROM $this->tickets_table WHERE ticket_id = %d",
+					$ticket_id
+				)
+			);
+
+			$wpdb->update(
+				$this->tickets_table,
+				array( 
+					'view_by_superadmin' => 1,
+					 'ticket_updated' => $ticket_updated 
+				),
+				array( 'ticket_id' => $ticket_id ),
+				array( '%d', '%s' ),
+				array( '%d' )
+			);
+		} 
+
 
 		/**
 		 * Get the list of tickets and the total number of them
@@ -347,7 +382,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			// Results. It gets a segment based on offset and upper_limit
 			
 			$pq = $wpdb->prepare("
-					SELECT t.ticket_id, t.blog_id, t.user_id, t.cat_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_updated, t.title, c.cat_name, u.display_name
+					SELECT t.ticket_id, t.blog_id, t.user_id, t.cat_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_updated, t.title, t.view_by_superadmin, c.cat_name, u.display_name
 					FROM $this->tickets_table AS t
 					LEFT JOIN $this->tickets_cats_table AS c ON (t.cat_id = c.cat_id)
 					LEFT JOIN $wpdb->users AS u ON (t.admin_id = u.ID)
@@ -363,6 +398,60 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			return array(
 				'total' 	=> $counts,
 				'results' 	=> $results
+			);
+		}
+
+		/**
+		 * Checks if a ticket has been archived
+		 * 
+		 * @since 1.8
+		 * 
+		 * @param Integer $ticket_id Ticket ID
+		 * 
+		 * @return Boolean
+		 */
+		public function is_ticket_archived( $ticket_id ) {
+			global $wpdb;
+
+			$result = $wpdb->get_row(
+				$wpdb->prepare(
+					"SELECT ticket_status FROM $this->tickets_table WHERE ticket_id = %d",
+					$ticket_id
+				),
+				ARRAY_A
+			);
+
+			if ( 5 == $result['ticket_status'] )
+				return true;
+			else
+				return false;
+		}
+
+		/**
+		 * Deletes a ticket
+		 * 
+		 * @since 1.8
+		 * 
+		 * @param Integer $ticket_id 
+		 * @return 
+		 */
+		public function delete_ticket( $ticket_id ) {
+			global $wpdb;
+
+			$wpdb->query( 
+				$wpdb->prepare( 
+					"DELETE FROM $this->tickets_table
+					 WHERE ticket_id = %d",
+				     $ticket_id
+			     )
+			);
+
+			$wpdb->query( 
+				$wpdb->prepare( 
+					"DELETE FROM $this->tickets_messages_table
+					 WHERE ticket_id = %d",
+				     $ticket_id
+			     )
 			);
 		}
 
@@ -494,7 +583,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 					"SELECT
 						t.ticket_id, m.message_id, t.blog_id, t.cat_id, t.user_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_opened, t.ticket_updated, t.title,
 						c.cat_name, u.display_name AS user_name, a.display_name AS admin_name, l.display_name AS last_user_reply, m.user_id AS user_avatar_id, 
-						m.admin_id AS admin_avatar_id, m.message_date, m.subject, m.message, m.attachments, r.display_name AS reporting_name, s.display_name AS staff_member
+						m.admin_id AS admin_avatar_id, m.message_date, m.subject, m.message, r.display_name AS reporting_name, s.display_name AS staff_member
 					FROM $this->tickets_messages_table AS m
 					LEFT JOIN $this->tickets_table AS t ON (m.ticket_id = t.ticket_id)
 					LEFT JOIN $wpdb->users AS u ON (t.user_id = u.ID)
@@ -509,6 +598,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				$current_site_id,
 				$blog_id
 			);
+
 			return $wpdb->get_results( $q, ARRAY_A );
 		}
 
@@ -634,6 +724,27 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			else
 				return false;
 
+		}
+
+		/**
+		 * Updates a ticket setting
+		 * 
+		 * 
+		 * @return type
+		 */
+		public function update_ticket_field( $ticket_id, $field, $value ) {
+			global $wpdb;
+
+			if ( ! in_array( $field, array( 'admin_id', 'ticket_priority' ) ) )
+				return false;
+
+			$wpdb->update(
+				$this->tickets_table,
+				array( $field => $value ),
+				array( 'ticket_id' => $ticket_id ),
+				array( '%d' ),
+				array( '%d' )
+			);
 		}
 
 

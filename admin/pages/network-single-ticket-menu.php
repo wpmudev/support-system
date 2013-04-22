@@ -54,6 +54,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 
 			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_styles' ) );
 			add_action( 'admin_init', array( &$this, 'validate_form' ) );
+			add_action( 'wp_loaded', array( &$this, 'check_ticket_as_view' ) );
 			add_filter( 'admin_title', array( &$this, 'set_page_title' ), 10, 1 );
 
 		}
@@ -95,7 +96,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 
 			$model = MU_Support_System_Model::get_instance();
 			$ticket_details = $model->get_ticket_details( $ticket_id );	
-			
+
 			if ( empty( $ticket_details ) )
 				wp_die( __( "The ticket you're trying to find does not exist.", INCSUB_SUPPORT_LANG_DOMAIN ) );
 
@@ -142,6 +143,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 		 */
 		private function the_ticket_details( $current_ticket ) {
 			?>
+			<form method="post" action="">
 				<table class="form-table">
 					<h3><?php echo __( 'Ticket Subject', INCSUB_SUPPORT_LANG_DOMAIN ) . ': ' .  stripslashes_deep( $current_ticket['title'] ); ?></h3>
 					<?php $this->render_row( 'Current Status', MU_Support_System::$ticket_status[ $current_ticket['ticket_status'] ] ); ?>
@@ -152,7 +154,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 					<?php $this->render_row( __( 'Last Reply From', INCSUB_SUPPORT_LANG_DOMAIN ), $current_ticket['last_user_reply'] ); ?>
 					<?php $this->render_row( __( 'Last Updated (GMT)', INCSUB_SUPPORT_LANG_DOMAIN ), date_i18n( get_option("date_format") . ' ' . get_option("time_format"), strtotime( $current_ticket['ticket_updated'] ), true ) ); ?>
 					
-					<?php 
+					<?php
 						$blog_details = get_blog_details( $current_ticket['blog_id'] );
 						if ( ! $blog_details ) {
 							$markup = __( 'Unknown', INCSUB_SUPPORT_LANG_DOMAIN );
@@ -165,10 +167,39 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 						$this->render_row( 'Submitted from', $markup ); ?>
 
 					<?php 
-						$markup = ( ! empty( $current_ticket['admin_name'] ) ) ? $current_ticket['admin_name'] : __( 'Not yet assigned', INCSUB_SUPPORT_LANG_DOMAIN );
+						$super_admins = get_super_admins();
+						ob_start();
+					?>
+						<select name="super-admins">
+							<option value="" <?php echo empty( $current_ticket['admin_name'] ) ? 'selected' : '';  ?>><?php _e( 'Not yet assigned', INCSUB_SUPPORT_LANG_DOMAIN ); ?></option>
+							<?php foreach ( $super_admins as $user_name ): ?>
+								<option value="<?php echo esc_attr( $user_name ); ?>" <?php selected( $current_ticket['admin_name'], $user_name ); ?>><?php echo $user_name; ?></option>
+							<?php endforeach; ?>
+						</select>
+					<?php
+						$markup = ob_get_clean();
 						$this->render_row( 'Staff Representative',  $markup ); 
 					?>
+
+					<?php 
+						$current_priority = $current_ticket['ticket_priority'];
+						ob_start();
+					?>
+						<select name="priority">
+							<?php foreach ( MU_Support_System::$ticket_priority as $key => $priority ): ?>
+								<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $current_priority, $key ); ?>><?php echo $priority; ?></option>
+							<?php endforeach; ?>
+						</select>
+					<?php
+						$markup = ob_get_clean();
+						$this->render_row( 'Priority',  $markup ); 
+					?>
 				</table>
+				<?php wp_nonce_field( 'update-ticket-details' ); ?>
+				<input type="hidden" name="action" value="update-ticket-details">
+				<input type="hidden" name="ticket-id" value="<?php echo $current_ticket['ticket_id']; ?>">
+				<?php submit_button( __( 'Save changes', INCSUB_SUPPORT_LANG_DOMAIN ),  'primary', 'submit-details' ); ?>
+			</form>
 			<?php
 		}
 
@@ -306,11 +337,25 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 						<?php wp_nonce_field( 'edit-ticket' ); ?>
 					</table>
 					<p class="submit">
+
 						<?php submit_button( __( 'Update ticket', INCSUB_SUPPORT_LANG_DOMAIN ), 'primary', 'submit', false ); ?>
 					</p>
 				</form>
 			<?php
 
+		}
+
+		/**
+		 * Chcks a ticket as viewed already by a super admin
+		 * 
+		 * @since 1.8
+		 */
+		public function check_ticket_as_view() {
+			if ( is_super_admin() && isset( $_GET['page'] ) && $this->menu_slug == $_GET['page'] && isset( $_GET['tid'] ) ) {
+				$ticket_id = absint( $_GET['tid'] );
+				$model = MU_Support_System_Model::get_instance();
+				$model->check_ticket_as_viewed( $ticket_id );
+			}
 		}
 
 		/**
@@ -414,6 +459,29 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 					wp_redirect( $link );
 				}
 				
+			}
+			elseif ( isset( $_POST['submit-details'] ) && isset( $_POST['action'] ) && 'update-ticket-details' == $_POST['action'] ) {
+
+				if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'update-ticket-details' ) )
+					wp_die( 'Security check error', INCSUB_SUPPORT_LANG_DOMAIN );
+
+				if ( ! isset( $_POST['ticket-id'] ) || ! $ticket_id = absint( $_POST['ticket-id'] ) )
+					return false;
+
+				$model = MU_Support_System_Model::get_instance();
+				$possible_users = array_merge( get_super_admins(), array( 'empty', '' ) );
+				if ( isset( $_POST['super-admins'] ) && in_array( $_POST['super-admins'], $possible_users ) ) {
+					$user = get_user_by( 'login', $_POST['super-admins'] );
+					if ( is_object( $user ) )
+						$model->update_ticket_field( $ticket_id, 'admin_id', $user->data->ID );
+					else
+						$model->update_ticket_field( $ticket_id, 'admin_id', 0 );
+				}
+
+				if ( isset( $_POST['priority'] ) && array_key_exists( $_POST['priority'], MU_Support_System::$ticket_priority ) ) {
+					$model->update_ticket_field( $ticket_id, 'ticket_priority', $_POST['priority'] );
+				}
+
 			}
 
 		}

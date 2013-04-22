@@ -66,7 +66,6 @@ class MU_Support_FAQS_Table extends WP_List_Table {
 
         return stripslashes_deep( $item['question'] ) . $this->row_actions($actions);
 
-        
     }
 
     function column_helpful( $item ) {
