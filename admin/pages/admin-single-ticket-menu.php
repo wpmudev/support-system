@@ -126,15 +126,23 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 				$this->current_ticket['message'] = '';
 			}
 
+			$closed = $model->is_ticket_archived( $this->current_ticket['ticket_id'] );
+			if ( $closed ) {
+				?>
+				<div class="error"><p><?php _e( 'This ticket has been closed. Please, contact a Super Admin if you want to reopen it.', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p></div>
+				<?php
+			}
+
 			?>
 				<p><a class="button" href="<?php echo MU_Support_System::$admin_main_menu->get_permalink() ?>"><?php echo '&larr; ' . __( 'Back to tickets list', INCSUB_SUPPORT_LANG_DOMAIN ); ?></a></p>
 			<?php
 
 		
 			if ( 'history' == $this->active_tab )
-				$this->the_ticket_history( $this->ticket_details );
-			else
+				$this->the_ticket_history( $this->ticket_details, $closed );
+			else {
 				$this->the_ticket_details( $this->current_ticket );
+			}
 		   
 		}
 
@@ -186,7 +194,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 		 * 
 		 * @param Array $ticket_details Ticket Details
 		 */
-		function the_ticket_history( $ticket_details ) {
+		function the_ticket_history( $ticket_details, $closed = false ) {
 
 			if ( $this->is_error() ) {
 				$this->render_errors();
@@ -201,7 +209,8 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 			$ticket_history_table->prepare_items();
 			$ticket_history_table->display();
 
-			$this->the_ticket_form( $this->current_ticket );
+			if ( ! $closed || is_super_admin() || current_user_can( 'manage_options' ) )
+				$this->the_ticket_form( $this->current_ticket );
 		}
 
 		/**

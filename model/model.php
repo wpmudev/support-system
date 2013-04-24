@@ -245,12 +245,15 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 						FROM $this->faq_table
 						WHERE faq_id = $faq_id",
 						ARRAY_A );
-					$answer = stripslashes_deep( html_entity_decode( $faq['answer'], ENT_QUOTES ) );
+					$answer = htmlspecialchars_decode( stripslashes_deep( html_entity_decode( str_replace( '&nbsp;', '<br/>', $faq['answer'] ), ENT_QUOTES ) ) );
 					$question = stripslashes_deep( html_entity_decode( $faq['question'], ENT_QUOTES ) );
 					$cat_id = $faq['cat_id'];
 					$this->update_faq_question( $faq_id, $question, $answer, $cat_id );
 				}
 			}
+
+			// Checking all tickets as viewed by a Super Admin
+			$wpdb->query( "UPDATE $this->tickets_table SET view_by_admin = 1" );
 
 			// Same for tickets messages
 			$messages_ids = $wpdb->get_col( "SELECT message_id FROM $this->tickets_messages_table" );

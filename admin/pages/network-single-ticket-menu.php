@@ -112,12 +112,20 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 		public function render_content() {
 
 
+
 			if ( ! $this->editing ) {
 				$this->ticket_details = $this->get_current_ticket_details( $this->ticket_id );
 				$this->current_ticket = $this->ticket_details[0];
 
 				// We don't need a message when updating a ticket
 				$this->current_ticket['message'] = '';
+			}
+
+			$model = MU_Support_System_Model::get_instance();
+			if ( $model->is_ticket_archived( $this->current_ticket['ticket_id'] ) ) {
+				?>
+				<div class="error"><p><?php _e( 'This ticket has been closed', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p></div>
+				<?php
 			}
 
 			?>
@@ -142,6 +150,8 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 		 * @param Array $current_ticket Current ticket Array
 		 */
 		private function the_ticket_details( $current_ticket ) {
+			$model = MU_Support_System_Model::get_instance();
+			
 			?>
 			<form method="post" action="">
 				<table class="form-table">
@@ -193,6 +203,14 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 					<?php
 						$markup = ob_get_clean();
 						$this->render_row( 'Priority',  $markup ); 
+
+						$ticket_closed = $model->is_ticket_archived( absint( $this->current_ticket['ticket_id'] ) );
+						ob_start();
+					?>
+						<input name="close-ticket" type="checkbox" <?php checked( $ticket_closed ); ?> />
+					<?php
+						$markup = ob_get_clean();
+						$this->render_row( '<strong>Ticket closed</strong>',  $markup ); 
 					?>
 				</table>
 				<?php wp_nonce_field( 'update-ticket-details' ); ?>
@@ -337,7 +355,6 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 						<?php wp_nonce_field( 'edit-ticket' ); ?>
 					</table>
 					<p class="submit">
-
 						<?php submit_button( __( 'Update ticket', INCSUB_SUPPORT_LANG_DOMAIN ), 'primary', 'submit', false ); ?>
 					</p>
 				</form>
@@ -478,8 +495,17 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 						$model->update_ticket_field( $ticket_id, 'admin_id', 0 );
 				}
 
+				$priority = $this->current_ticket['ticket_priority'];
 				if ( isset( $_POST['priority'] ) && array_key_exists( $_POST['priority'], MU_Support_System::$ticket_priority ) ) {
 					$model->update_ticket_field( $ticket_id, 'ticket_priority', $_POST['priority'] );
+					$priority = $this->current_ticket['ticket_priority'];
+				}
+
+				if ( isset( $_POST['close-ticket'] ) ) {
+					$model->update_ticket_status( $ticket_id, $this->current_ticket['cat_id'], $priority, 5 );
+				}
+				else {
+					$model->update_ticket_status( $ticket_id, $this->current_ticket['cat_id'], 0 );
 				}
 
 			}
