@@ -20,6 +20,7 @@ if ( ! class_exists( 'MU_Support_Menu' ) ) {
 		public $active_tab;
 		public $add_new_link = false;
 		public $count_update = false;
+		public $is_network = false;
 
 		public $submenu = false;
 		public $parent = null;

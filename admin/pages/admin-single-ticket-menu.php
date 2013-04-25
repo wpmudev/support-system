@@ -28,7 +28,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 
 			$this->page_title = __( 'Support Ticket', INCSUB_SUPPORT_LANG_DOMAIN); 
 			$this->menu_title = __( 'Support Ticket', INCSUB_SUPPORT_LANG_DOMAIN); 
-			$this->capability = 'read';
+			$this->capability = 'manage_options';
 			$this->menu_slug = 'single-ticket-manager';
 			$this->submenu = true;
 			$this->active_tab = 'details';
@@ -198,25 +198,27 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 					?>
 
 					<?php 
-						$current_priority = $current_ticket['ticket_priority'];
-						ob_start();
-					?>
-						<select name="priority">
-							<?php foreach ( MU_Support_System::$ticket_priority as $key => $priority ): ?>
-								<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $current_priority, $key ); ?>><?php echo $priority; ?></option>
-							<?php endforeach; ?>
-						</select>
-					<?php
-						$markup = ob_get_clean();
-						$this->render_row( 'Priority',  $markup ); 
+						if ( current_user_can( 'manage_options' ) ):
+							$current_priority = $current_ticket['ticket_priority'];
+							ob_start();
+						?>
+							<select name="priority">
+								<?php foreach ( MU_Support_System::$ticket_priority as $key => $priority ): ?>
+									<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $current_priority, $key ); ?>><?php echo $priority; ?></option>
+								<?php endforeach; ?>
+							</select>
+						<?php
+							$markup = ob_get_clean();
+							$this->render_row( 'Priority',  $markup ); 
 
-						$ticket_closed = $model->is_ticket_archived( absint( $this->current_ticket['ticket_id'] ) );
-						ob_start();
-					?>
-						<input name="close-ticket" type="checkbox" <?php checked( $ticket_closed ); ?> />
-					<?php
-						$markup = ob_get_clean();
-						$this->render_row( '<strong>Ticket closed</strong>',  $markup ); 
+							$ticket_closed = $model->is_ticket_archived( absint( $this->current_ticket['ticket_id'] ) );
+							ob_start();
+						?>
+							<input name="close-ticket" type="checkbox" <?php checked( $ticket_closed ); ?> />
+						<?php
+							$markup = ob_get_clean();
+							$this->render_row( '<strong>Ticket closed</strong>',  $markup ); 
+						endif;
 					?>
 				</table>
 				<?php wp_nonce_field( 'update-ticket-details' ); ?>
@@ -250,7 +252,9 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 			$ticket_history_table->prepare_items();
 			$ticket_history_table->display();
 
-			if ( is_super_admin() || current_user_can( 'manage_options' ) ) {
+			$model = MU_Support_System_Model::get_instance();
+
+			if ( is_super_admin() || current_user_can( 'manage_options' ) || ( $model->get_ticket_user_id( $this->current_ticket['ticket_id'] ) == get_current_user_id() ) ) {
 				if ( ! $closed )
 					$this->the_ticket_form( $this->current_ticket );
 			}
@@ -319,7 +323,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 
 							?>
 								<span class="description"><?php _e("Please provide as much information as possible, so that the user can understand the solution/request.", INCSUB_SUPPORT_LANG_DOMAIN); ?></span><br />
-								<?php wp_editor( $current_ticket['message'], 'text-message' ); ?>
+								<?php wp_editor( $current_ticket['message'], 'text-message', array( 'media_buttons' => true ) ); ?>
 							<?php
 								$markup = ob_get_clean();
 								$this->render_row( 
@@ -438,7 +442,12 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 					$user = get_userdata( get_current_user_id() );
 
 					// Administrator mail
-					$visit_link = remove_query_arg( 'view' );
+					$visit_link = add_query_arg(
+						array(
+							'tid' => $this->ticket_id
+						),
+						$this->get_permalink()
+					);
 					$args = array(
 						'title'				=> $this->current_ticket['title'],
 						'ticket_status'		=> MU_Support_System::$ticket_status[$status],
@@ -453,15 +462,27 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 
 					$reply_to_id = $model->get_ticket_user_id( $this->ticket_id );
 					$user_reply_to = get_userdata( $reply_to_id );
+
+					$headers[] = 'MIME-Version: 1.0';
+					$headers[] = 'From: ' . get_site_option( 'incsub_support_from_name', get_bloginfo('blogname') ) . ' <' . get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) . '>';
 					$email_message = array(
 						"to"		=> $user_reply_to->user_email,
 						"subject"	=> __( "[#{$this->ticket_id}] ", INCSUB_SUPPORT_LANG_DOMAIN ) . $this->current_ticket['title'],
 						"message"	=> $mail_content, // ends lang string
-						"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option( 'incsub_support_from_name', get_bloginfo('blogname') ) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
+						"headers"	=> $headers
 					); // ends array.
 
 					wp_mail( $email_message["to"], $email_message["subject"], $email_message["message"], $email_message["headers"] );
 
+					// Getting a super admin email
+					$admin_email = '';
+					if ( ! empty( $admins ) ) {
+						$admin_user = get_user_by( 'login', $admins[0] );
+						$admin_email = $admin_user->user_email;
+					}
+
+					wp_mail( $admin_email, $email_message["subject"], $email_message["message"], $email_message["headers"] );
+					
 					$this->updated = true;
 
 					$link = add_query_arg( 'updated', 'true' );
@@ -514,14 +535,24 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 						);
 						$mail_content = incsub_get_closed_ticket_mail_content( $args );
 
+						// Getting a super admin email
+						$admin_email = '';
+						if ( ! empty( $admins ) ) {
+							$admin_user = get_user_by( 'login', $admins[0] );
+							$admin_email = $admin_user->user_email;
+						}
+
+						$headers[] = 'MIME-Version: 1.0';
+						$headers[] = 'From: ' . get_site_option( 'incsub_support_from_name', get_bloginfo('blogname') ) . ' <' . get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) . '>';
 						$email_message = array(
 							"to"		=> $user->data->user_email,
 							"subject"	=> __( "New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $this->current_ticket['subject'],
-							"message"	=> $this->current_ticket['message'], // ends lang string
-							"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
+							"message"	=> $mail_content, // ends lang string
+							"headers"	=> $headers
 						); // ends array.
 
 						wp_mail( $email_message["to"], $email_message["subject"], $email_message["message"], $email_message["headers"] );
+
 					}
 					$model->update_ticket_status( $ticket_id, $this->current_ticket['cat_id'], $priority, 5 );
 				}

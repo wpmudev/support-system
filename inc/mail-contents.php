@@ -49,7 +49,7 @@ Ticket URL:
 		$args['ticket_priority'],
 		$args['visit_link'],
 		$args['user_nicename'],
-		strip_tags( $args['ticket_message'] ),
+		strip_tags( html_entity_decode( $args['ticket_message'] ) ),
 		$args['ticket_url']
 	);
 }
@@ -91,7 +91,7 @@ Thanks,
 		$args['ticket_status'],
 		$args['ticket_priority'],
 		$args['visit_link'],
-		strip_tags( $args['ticket_message'] ),
+		strip_tags( html_entity_decode( $args['ticket_message'] ) ),
 		$args['user_nicename'],
 		$args['site_name']
 	);
@@ -138,7 +138,7 @@ Ticket URL:
 		$args['ticket_priority'],
 		$args['visit_link'],
 		$args['user_nicename'],
-		strip_tags( $args['ticket_message'] ),
+		strip_tags( html_entity_decode( $args['ticket_message'] ) ),
 		$args['ticket_url']
 	);
 } 

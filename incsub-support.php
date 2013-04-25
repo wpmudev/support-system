@@ -264,6 +264,15 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			return $schedules;
 		}
 
+		/**
+		 * Sets HTML content for mails
+		 * 
+		 * @return String Content type
+		 */
+		public function set_mail_content_type() {
+			return 'text/html';
+		}
+
 	}
 
 }

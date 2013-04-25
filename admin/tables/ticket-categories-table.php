@@ -7,7 +7,7 @@ if(!class_exists('WP_List_Table')){
 class MU_Support_Ticket_Categories_Table extends WP_List_Table {
 
     private $data;
-// TODO:Permitir cambios en los nombres
+
 	function __construct(){
         //Set parent defaults
         parent::__construct( array(

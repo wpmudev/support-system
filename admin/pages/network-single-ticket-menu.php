@@ -19,7 +19,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 		 * 
 		 * @since 1.8
 		 */
-		public function __construct() {
+		public function __construct( $just_object = false ) {
 
 			$this->includes();
 
@@ -42,7 +42,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 				)
 			);
 
-			parent::__construct();
+			parent::__construct( true, $just_object );
 
 			$this->ticket_id = 0;
 			if ( isset( $_GET['tid'] ) )
@@ -331,7 +331,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 
 							?>
 								<span class="description"><?php _e("Please provide as much information as possible, so that the user can understand the solution/request.", INCSUB_SUPPORT_LANG_DOMAIN); ?></span><br />
-								<?php wp_editor( $current_ticket['message'], 'message-text' ); ?>
+								<?php wp_editor( $current_ticket['message'], 'message-text', array( 'media_buttons' => true ) ); ?>
 							<?php
 								$markup = ob_get_clean();
 								$this->render_row( 
@@ -462,14 +462,26 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 
 					$reply_to_id = $model->get_ticket_user_id( $this->ticket_id );
 					$user_reply_to = get_userdata( $reply_to_id );
+
+					$headers[] = 'MIME-Version: 1.0';
+						$headers[] = 'From: ' . get_site_option( 'incsub_support_from_name', get_bloginfo('blogname') ) . ' <' . get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) . '>';
 					$email_message = array(
 						"to"		=> $user_reply_to->user_email,
 						"subject"	=> __( "[#{$this->ticket_id}] ", INCSUB_SUPPORT_LANG_DOMAIN ) . $this->current_ticket['title'],
 						"message"	=> $mail_content, // ends lang string
-						"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option( 'incsub_support_from_name', get_bloginfo('blogname') ) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
+						"headers"	=> $headers
 					); // ends array.
 
 					wp_mail( $email_message["to"], $email_message["subject"], $email_message["message"], $email_message["headers"] );
+
+					// Getting a super admin email
+					$admin_email = '';
+					if ( ! empty( $admins ) ) {
+						$admin_user = get_user_by( 'login', $admins[0] );
+						$admin_email = $admin_user->user_email;
+					}
+
+					wp_mail( $admin_email, $email_message["subject"], $email_message["message"], $email_message["headers"] );
 
 					// Redirecting to ticket history
 					$link = remove_query_arg( 'view' );
@@ -537,14 +549,17 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 						);
 						$mail_content = incsub_get_closed_ticket_mail_content( $args );
 
+						$headers[] = 'MIME-Version: 1.0';
+						$headers[] = 'From: ' . get_site_option( 'incsub_support_from_name', get_bloginfo('blogname') ) . ' <' . get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) . '>';
 						$email_message = array(
 							"to"		=> $user->data->user_email,
 							"subject"	=> __( "New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $this->current_ticket['subject'],
-							"message"	=> $this->current_ticket['message'], // ends lang string
-							"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
+							"message"	=> $mail_content, // ends lang string
+							"headers"	=> $headers
 						); // ends array.
 
 						wp_mail( $email_message["to"], $email_message["subject"], $email_message["message"], $email_message["headers"] );
+
 					}
 					
 				}

@@ -170,7 +170,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_FAQ_Question_Menu' ) ) {
 						<?php $this->render_row( 'FAQ Category', ob_get_clean() ); ?>
 
 						<?php ob_start(); ?>
-							<?php wp_editor( $current_faq['answer'], 'answer' ); ?> 
+							<?php wp_editor( $current_faq['answer'], 'answer', array( 'media_buttons' => true ) ); ?> 
 						<?php $this->render_row( 'Answer', ob_get_clean() ); ?>
 
 					</table>

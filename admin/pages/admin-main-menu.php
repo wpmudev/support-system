@@ -24,7 +24,7 @@ if ( ! class_exists( 'MU_Support_Admin_Main_Menu' ) ) {
 
 			
 			$this->menu_title = MU_Support_System::$settings['incsub_support_menu_name'];
-			$this->capability = 'read';
+			$this->capability = 'manage_options';
 			$this->menu_slug = 'ticket-manager';
 			$this->add_new_link = array(
 				'label' => __( 'Add new ticket', INCSUB_SUPPORT_LANG_DOMAIN ),

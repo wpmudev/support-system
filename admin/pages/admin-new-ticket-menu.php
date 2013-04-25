@@ -22,7 +22,7 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 
 			$this->page_title = __( 'Add new ticket', INCSUB_SUPPORT_LANG_DOMAIN ); 
 			$this->menu_title = __( 'Add new ticket', INCSUB_SUPPORT_LANG_DOMAIN );
-			$this->capability = 'read';
+			$this->capability = 'manage_options';
 			$this->menu_slug = 'add-new-ticket';
 			$this->submenu = true;
 
@@ -83,7 +83,7 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 						<?php $this->render_row( __( 'Priority', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); ?>
 
 						<?php ob_start(); ?>
-							<?php wp_editor( $this->current_ticket['message'], 'message-text' ); ?>
+							<?php wp_editor( $this->current_ticket['message'], 'message-text', array( 'media_buttons' => true ) ); ?>
 						<?php $this->render_row( __( 'Problem description', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); ?>
 						
 					
@@ -141,10 +141,16 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 					$user = get_userdata( get_current_user_id() );
 
 					// Variables for the message
+					if ( ! is_object( MU_Support_System::$network_single_ticket_menu ) )
+						$network_admin = new MU_Support_Network_Single_Ticket_Menu( true );
+					else
+						$network_admin = MU_Support_System::$network_single_ticket_menu;
+
+
 					$visit_link 		= add_query_arg(
 						'tid',
 						$ticket_id,
-						MU_Support_System::$admin_single_ticket_menu->get_permalink()
+						$network_admin->get_permalink()
 					);
 					$user_nicename 		= $user->user_nicename;
 
@@ -170,11 +176,13 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 						$admin_email = $admin_user->user_email;
 					}
 
+					$headers[] = 'MIME-Version: 1.0';
+					$headers[] = 'From: ' . get_site_option( 'incsub_support_from_name', get_bloginfo('blogname') ) . ' <' . get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) . '>';
 					$email_message = array(
 						"to"		=> $admin_email,
 						"subject"	=> __( "New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $this->current_ticket['subject'],
-						"message"	=> $this->current_ticket['message'], // ends lang string
-						"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
+						"message"	=> $mail_content, // ends lang string
+						"headers"	=> $headers
 					); // ends array.
 
 					wp_mail( $email_message["to"], $email_message["subject"], $email_message["message"], $email_message["headers"] );
