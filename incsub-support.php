@@ -240,7 +240,6 @@ if ( ! class_exists( 'MU_Support_System') ) {
 				self::$admin_new_ticket_menu = new MU_Support_Admin_New_Ticket_Menu();
 				self::$admin_main_menu = new MU_Support_Admin_Main_Menu();
 				self::$admin_faq_menu = new MU_Support_Admin_FAQ_Menu();
-				
 			}
 
 		}

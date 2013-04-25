@@ -27,17 +27,17 @@ Visit:
 
 to reply to view the new ticket.
 
-------------------------------
+==============================================================
 	Begin Ticket Message
-------------------------------
+==============================================================
 
 %s said:
 
 %s
 
-------------------------------
+==============================================================
       End Ticket Message
-------------------------------
+==============================================================
 
 Ticket URL:
 
@@ -49,7 +49,7 @@ Ticket URL:
 		$args['ticket_priority'],
 		$args['visit_link'],
 		$args['user_nicename'],
-		$args['ticket_message'],
+		strip_tags( $args['ticket_message'] ),
 		$args['ticket_url']
 	);
 }
@@ -72,15 +72,15 @@ Visit:
 
 to reply to this ticket, if needed.
 
-------------------------------
+==============================================================
      Begin Ticket Message
-------------------------------
+==============================================================
 
 %s
 
-------------------------------
+==============================================================
       End Ticket Message
-------------------------------
+==============================================================
 
 Thanks,
 %s,
@@ -91,7 +91,7 @@ Thanks,
 		$args['ticket_status'],
 		$args['ticket_priority'],
 		$args['visit_link'],
-		$args['ticket_message'],
+		strip_tags( $args['ticket_message'] ),
 		$args['user_nicename'],
 		$args['site_name']
 	);
@@ -115,18 +115,18 @@ Visit:
 to respond to this ticket update.
 
 
-------------------------------
+==============================================================
      Begin Ticket Message
-------------------------------
+==============================================================
 
 %s said:
 
 
 %s
 
-------------------------------
+==============================================================
       End Ticket Message
-------------------------------
+==============================================================
 
 
 Ticket URL:
@@ -138,7 +138,28 @@ Ticket URL:
 		$args['ticket_priority'],
 		$args['visit_link'],
 		$args['user_nicename'],
-		$args['ticket_message'],
+		strip_tags( $args['ticket_message'] ),
+		$args['ticket_url']
+	);
+} 
+
+function incsub_get_closed_ticket_mail_content( $args ) {
+
+	return sprintf( __("
+
+%s
+
+Subject: %s
+Priority: %s
+
+The ticket has been closed.
+
+Ticket URL:
+	%s
+			", INCSUB_SUPPORT_LANG_DOMAIN ),
+		$args['support_fetch_imap'],
+		$args['title'],
+		$args['ticket_priority'],
 		$args['ticket_url']
 	);
 } 

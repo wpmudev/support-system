@@ -153,7 +153,7 @@ class MU_Support_Admin_Tickets_Table extends WP_List_Table {
 
         $privacy = MU_Support_System::$settings['incsub_ticket_privacy'];
 
-        if ( 'requestor' == $privacy && ! current_user_can( 'activate_plugins' ) ) {
+        if ( 'requestor' == $privacy && ! current_user_can( 'manage_options' ) ) {
             $args['user_in'] = array( get_current_user_id() );
         }
 

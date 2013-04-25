@@ -32,14 +32,20 @@ if ( ! class_exists( 'MU_Support_Menu' ) ) {
 
 		/**
 		 * Constructor
+		 * 
+		 * @param Boolean $network 
+		 * @param Boolean $just_object Workaround (needs improving). It allows to create the object but not create the menu
+		 * @return type
 		 */
-		public function __construct( $network = true ) {
+		public function __construct( $network = true, $just_object = false ) {
 			$this->is_network = $network;
-			if ( $network ) {
-				add_action( 'network_admin_menu', array( &$this, 'add_menu' ) );
-			}
-			else {
-				add_action( 'admin_menu', array( &$this, 'add_menu' ) );
+			if ( ! $just_object ) {
+				if ( $network ) {
+					add_action( 'network_admin_menu', array( &$this, 'add_menu' ) );
+				}
+				else {
+					add_action( 'admin_menu', array( &$this, 'add_menu' ) );
+				}
 			}
 		}
 

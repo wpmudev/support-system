@@ -22,7 +22,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 		 * 
 		 * @since 1.8
 		 */
-		public function __construct() {
+		public function __construct( $just_object = false ) {
 
 			$this->includes();
 
@@ -45,7 +45,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 				)
 			);
 
-			parent::__construct( false );
+			parent::__construct( false, $just_object );
 
 			$this->ticket_id = 0;
 			if ( isset( $_GET['tid'] ) )
@@ -118,6 +118,13 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 			if ( ! $model->is_current_blog_ticket( $this->ticket_id ) )
 				wp_die( 'You do not have enough permissions to see the ticket', INCSUB_SUPPORT_LANG_DOMAIN );
 
+			if ( ! current_user_can( 'manage_options' ) ) {
+				$privacy = MU_Support_System::$settings['incsub_ticket_privacy'];
+				if ( 'requestor' == $privacy  && $model->get_ticket_user_id( $this->ticket_id ) != get_current_user_id() ) {
+					wp_die( 'You do not have enough permissions to see the ticket', INCSUB_SUPPORT_LANG_DOMAIN );
+				}
+			}
+
 			if ( ! $this->editing ) {
 				$this->ticket_details = $this->get_current_ticket_details( $this->ticket_id );
 				$this->current_ticket = $this->ticket_details[0];
@@ -128,8 +135,13 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 
 			$closed = $model->is_ticket_archived( $this->current_ticket['ticket_id'] );
 			if ( $closed ) {
+				if ( ! current_user_can( 'manage_options' ) )
+					$message =  __( 'This ticket has been closed. Please, contact a Super Admin if you want to reopen it.', INCSUB_SUPPORT_LANG_DOMAIN );
+				else
+					$message =  __( 'This ticket has been closed.', INCSUB_SUPPORT_LANG_DOMAIN );
+
 				?>
-				<div class="error"><p><?php _e( 'This ticket has been closed. Please, contact a Super Admin if you want to reopen it.', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p></div>
+				<div class="error"><p><?php echo $message; ?></p></div>
 				<?php
 			}
 
@@ -155,7 +167,10 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 		 * @param Array $current_ticket Current ticket Array
 		 */
 		private function the_ticket_details( $current_ticket ) {
+
+			$model = MU_Support_System_Model::get_instance();
 			?>
+			<form method="post" action="">
 				<table class="form-table">
 					<h3><?php echo __( 'Ticket Subject', INCSUB_SUPPORT_LANG_DOMAIN ) . ': ' .  stripslashes_deep( $current_ticket['title'] ); ?></h3>
 					<?php $this->render_row( 'Current Status', MU_Support_System::$ticket_status[ $current_ticket['ticket_status'] ] ); ?>
@@ -176,13 +191,39 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 							$markup = '<a href="' . $blog_address . '">' . $blog_details->blogname . '</a>';
 						}
 						
-						$this->render_row( 'Submitted from', $markup ); ?>
+						$this->render_row( 'Submitted from', $markup );
 
-					<?php 
 						$markup = ( ! empty( $current_ticket['admin_name'] ) ) ? $current_ticket['admin_name'] : __( 'Not yet assigned', INCSUB_SUPPORT_LANG_DOMAIN );
 						$this->render_row( 'Staff Representative',  $markup ); 
 					?>
+
+					<?php 
+						$current_priority = $current_ticket['ticket_priority'];
+						ob_start();
+					?>
+						<select name="priority">
+							<?php foreach ( MU_Support_System::$ticket_priority as $key => $priority ): ?>
+								<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $current_priority, $key ); ?>><?php echo $priority; ?></option>
+							<?php endforeach; ?>
+						</select>
+					<?php
+						$markup = ob_get_clean();
+						$this->render_row( 'Priority',  $markup ); 
+
+						$ticket_closed = $model->is_ticket_archived( absint( $this->current_ticket['ticket_id'] ) );
+						ob_start();
+					?>
+						<input name="close-ticket" type="checkbox" <?php checked( $ticket_closed ); ?> />
+					<?php
+						$markup = ob_get_clean();
+						$this->render_row( '<strong>Ticket closed</strong>',  $markup ); 
+					?>
 				</table>
+				<?php wp_nonce_field( 'update-ticket-details' ); ?>
+				<input type="hidden" name="action" value="update-ticket-details">
+				<input type="hidden" name="ticket-id" value="<?php echo $current_ticket['ticket_id']; ?>">
+				<?php submit_button( __( 'Save changes', INCSUB_SUPPORT_LANG_DOMAIN ),  'primary', 'submit-details' ); ?>
+			</form>
 			<?php
 		}
 
@@ -209,8 +250,10 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 			$ticket_history_table->prepare_items();
 			$ticket_history_table->display();
 
-			if ( ! $closed || is_super_admin() || current_user_can( 'manage_options' ) )
-				$this->the_ticket_form( $this->current_ticket );
+			if ( is_super_admin() || current_user_can( 'manage_options' ) ) {
+				if ( ! $closed )
+					$this->the_ticket_form( $this->current_ticket );
+			}
 		}
 
 		/**
@@ -286,16 +329,18 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 
 
 								// CLOSE TICKET
-								ob_start();
-							?>
-								<input type="checkbox" name="closeticket" id="closeticket" value="1" /> <strong><?php _e( 'Yes, close this ticket.', INCSUB_SUPPORT_LANG_DOMAIN ); ?></strong><br />
-								<span class="description"><?php _e("Once a ticket is closed, users can no longer reply to (or update) it.", INCSUB_SUPPORT_LANG_DOMAIN); ?></span>
-							<?php
-								$markup = ob_get_clean();
-								$this->render_row( 
-									__("Close Ticket?", INCSUB_SUPPORT_LANG_DOMAIN),  
-									$markup
-								);
+								if ( current_user_can( 'manage_options' ) ):
+									ob_start();
+								?>
+									<input type="checkbox" name="closeticket" id="closeticket" value="1" /> <strong><?php _e( 'Yes, close this ticket.', INCSUB_SUPPORT_LANG_DOMAIN ); ?></strong><br />
+									<span class="description"><?php _e("Once a ticket is closed, users can no longer reply to (or update) it.", INCSUB_SUPPORT_LANG_DOMAIN); ?></span>
+								<?php
+									$markup = ob_get_clean();
+									$this->render_row( 
+										__( "Close Ticket?", INCSUB_SUPPORT_LANG_DOMAIN ),  
+										$markup
+									);
+								endif;
 							?>
 						<input type="hidden" name="action" value="add-ticket-reply">
 						<?php wp_nonce_field( 'edit-ticket' ); ?>
@@ -333,7 +378,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 		 */
 		public function validate_form() {
 			
-			if ( isset( $_GET['page'] ) && $this->menu_slug == $_GET['page'] && isset( $_POST['action'] ) && 'add-ticket-reply' == $_POST['action'] ) {
+			if ( isset( $_GET['page'] ) && $this->menu_slug == $_GET['page'] && isset( $_POST['action'] ) && 'add-ticket-reply' == $_POST['action']  && isset( $_GET['page'] ) && $this->menu_slug == $_GET['page'] ) {
 
 				$model = MU_Support_System_Model::get_instance();
 				if ( ! $model->is_current_blog_ticket( $this->ticket_id ) )
@@ -424,6 +469,65 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 
 				}
 
+
+			}
+			elseif ( isset( $_POST['submit-details'] ) && isset( $_POST['action'] ) && 'update-ticket-details' == $_POST['action'] && isset( $_GET['page'] ) && $this->menu_slug == $_GET['page'] ) {
+
+				if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'update-ticket-details' ) )
+					wp_die( 'Security check error', INCSUB_SUPPORT_LANG_DOMAIN );
+
+				if ( ! isset( $_POST['ticket-id'] ) || ! $ticket_id = absint( $_POST['ticket-id'] ) )
+					return false;
+
+				$this->ticket_details = $this->get_current_ticket_details( $this->ticket_id );
+				$this->current_ticket = $this->ticket_details[0];
+
+				$model = MU_Support_System_Model::get_instance();
+
+				$priority = $this->current_ticket['ticket_priority'];
+				if ( isset( $_POST['priority'] ) && array_key_exists( $_POST['priority'], MU_Support_System::$ticket_priority ) ) {
+					$model->update_ticket_field( $ticket_id, 'ticket_priority', $_POST['priority'] );
+					$this->current_ticket['ticket_priority'] = $_POST['priority'];
+					$priority = $this->current_ticket['ticket_priority'];
+				}
+
+				$closed = $model->is_ticket_archived( $ticket_id );
+				if ( isset( $_POST['close-ticket'] ) ) {
+					if ( ! $closed ) {
+						// Was not closed, send an email to the user
+						$user = get_userdata( $this->current_ticket['user_id'] );
+
+						$visit_link = $this->get_permalink();
+
+						$visit_link 		= add_query_arg(
+							'tid',
+							$ticket_id,
+							$this->get_permalink()
+						);
+
+						// Email arguments
+						$args = array(
+							'support_fetch_imap' 	=> incsub_support_get_support_fetch_imap_message(),
+							'title' 				=> $this->current_ticket['subject'],
+							'ticket_url' 			=> $visit_link,
+							'ticket_priority'		=> MU_Support_System::$ticket_priority[ $this->current_ticket['ticket_priority'] ]
+						);
+						$mail_content = incsub_get_closed_ticket_mail_content( $args );
+
+						$email_message = array(
+							"to"		=> $user->data->user_email,
+							"subject"	=> __( "New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $this->current_ticket['subject'],
+							"message"	=> $this->current_ticket['message'], // ends lang string
+							"headers"	=> "MIME-Version: 1.0\n" . "From: \"". get_site_option('incsub_support_from_name', get_bloginfo('blogname')) ."\" <". get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) .">\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n",
+						); // ends array.
+
+						wp_mail( $email_message["to"], $email_message["subject"], $email_message["message"], $email_message["headers"] );
+					}
+					$model->update_ticket_status( $ticket_id, $this->current_ticket['cat_id'], $priority, 5 );
+				}
+				else {
+					$model->update_ticket_status( $ticket_id, $this->current_ticket['cat_id'], $priority, 0 );
+				}
 
 			}
 			

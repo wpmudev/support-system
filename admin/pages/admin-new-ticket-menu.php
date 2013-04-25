@@ -143,7 +143,7 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 					// Variables for the message
 					$visit_link 		= add_query_arg(
 						'tid',
-						'$ticket_id',
+						$ticket_id,
 						MU_Support_System::$admin_single_ticket_menu->get_permalink()
 					);
 					$user_nicename 		= $user->user_nicename;

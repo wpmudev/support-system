@@ -69,7 +69,7 @@ if ( ! class_exists( 'MU_Support_Admin_Main_Menu' ) ) {
 
 		    if ( 'active' == $this->view ) {
 		    	?>
-		    		<li class="active"><a href="<?php echo add_query_arg( 'view', 'all' ); ?>"><?php echo __( 'View tickets history', INCSUB_SUPPORT_LANG_DOMAIN ); ?></a></li>
+		    		<li class="active"><a href="<?php echo add_query_arg( 'view', 'all' ); ?>"><?php echo __( 'View also closed tickets', INCSUB_SUPPORT_LANG_DOMAIN ); ?></a></li>
 		    	<?php
 		    }
 		    else {
