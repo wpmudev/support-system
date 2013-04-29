@@ -28,9 +28,10 @@ if ( ! class_exists( 'MU_Support_Network_Main_Menu' ) ) {
 			$this->menu_slug = 'ticket-manager';
 
 			$model = MU_Support_System_Model::get_instance();
-			$this->count_update = $model->get_unchecked_tickets();
 			
 			parent::__construct();
+
+			add_action( 'init', array( &$this, 'get_new_tickets' ) );
 
 			// Status of the screen
 			$this->view = 'active';
@@ -75,6 +76,11 @@ if ( ! class_exists( 'MU_Support_Network_Main_Menu' ) ) {
 					<?php $tickets_table->display(); ?>
 				</form>
 			<?php
+		}
+
+		public function get_new_tickets() {
+			$model = MU_Support_System_Model::get_instance();
+			$this->count_update = $model->get_unchecked_tickets();
 		}
 
 	}

@@ -64,7 +64,7 @@ class MU_Support_FAQS_Table extends WP_List_Table {
             'delete'    => sprintf( __( '<a href="%s">Delete</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_link)
         );
 
-        return stripslashes_deep( $item['question'] ) . $this->row_actions($actions);
+        return '<a href="' . $edit_link . '">' . stripslashes_deep( $item['question'] ) . '</a>' . $this->row_actions($actions);
 
     }
 
@@ -85,7 +85,7 @@ class MU_Support_FAQS_Table extends WP_List_Table {
 
     function get_columns(){
         $columns = array(
-            'id'		    => __( 'Question ID', INCSUB_SUPPORT_LANG_DOMAIN ),
+            'faq_id'		    => __( 'Question ID', INCSUB_SUPPORT_LANG_DOMAIN ),
             'question'	    => __( 'Question', INCSUB_SUPPORT_LANG_DOMAIN ),
             'category'      => __( 'Category', INCSUB_SUPPORT_LANG_DOMAIN ),
             'helpful'       => __( 'Think is helpful', INCSUB_SUPPORT_LANG_DOMAIN ),
@@ -117,7 +117,7 @@ class MU_Support_FAQS_Table extends WP_List_Table {
     	$per_page = 10;
 
     	$columns = $this->get_columns();
-        $hidden = array( 'id' );
+        $hidden = array( 'faq_id' );
         $sortable = $this->get_sortable_columns();
 
         $this->_column_headers = array(

@@ -67,7 +67,8 @@ if ( ! class_exists( 'MU_Support_Menu' ) ) {
 				return false;
 			}
 
-
+			
+			
 			if ( ( ! $this->submenu ) ) {
 				$menu_title = $this->menu_title;
 

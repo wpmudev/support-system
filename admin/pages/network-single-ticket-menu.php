@@ -411,6 +411,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 					$this->current_ticket['message'] = wpautop( stripslashes_deep( $_POST['message-text'] ) );
 				}
 
+
 				$this->current_ticket['cat_id'] = absint( $_POST['category'] );
 				
 				if ( array_key_exists( $_POST['priority'], MU_Support_System::$ticket_priority ) )
@@ -428,7 +429,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 				if ( ! $this->is_error() ) {
 					$model = MU_Support_System_Model::get_instance();
 
-					$response_id = $model->add_ticket_response( $this->ticket_id, $this->current_ticket['title'], $this->current_ticket['message']  && isset( $_GET['page'] ) && $this->menu_slug == $_GET['page'] );
+					$response_id = $model->add_ticket_response( $this->ticket_id, $this->current_ticket['title'], $this->current_ticket['message'] );
 
 					if ( ! $response_id )
 						wp_die( 'Error while adding a new response, please try again.', INCSUB_SUPPORT_LANG_DOMAIN );
