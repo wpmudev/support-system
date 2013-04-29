@@ -32,7 +32,16 @@ if ( ! class_exists( 'MU_Support_Network_Support_settings' ) ) {
 
 			$this->settings = MU_Support_System::$settings;
 
+			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
 
+
+		}
+
+		public function enqueue_scripts( $hook ) {
+			if ( $this->page_id == $hook ) {
+				wp_register_script( 'support-settings-js', INCSUB_SUPPORT_ASSETS_URL . 'js/settings.js', array(), '20130402' );
+				wp_enqueue_script( 'support-settings-js' );
+			}
 		}
 
 		/**
@@ -112,7 +121,7 @@ if ( ! class_exists( 'MU_Support_Network_Support_settings' ) ) {
 							<?php
 							ob_start();
 							?>
-								<select name="fetch_imap" id="fetch_imap" <?php echo (function_exists('imap_open'))?'':'disabled="disabled"'; ?>>
+								<select name="fetch_imap" id="fetch_imap" <?php disabled( ! function_exists( 'imap_open' ) ); ?>>
 									<?php foreach ( MU_Support_System::$fetch_imap as $key => $value ): ?>
 										<option value="<?php echo $key; ?>" <?php selected( $this->settings['incsub_support_fetch_imap'], $key ); ?>><?php echo $value; ?></option>
 									<?php endforeach; ?>
@@ -121,9 +130,10 @@ if ( ! class_exists( 'MU_Support_Network_Support_settings' ) ) {
 							<?php 
 							$this->render_row( __( 'Fetch responses via IMAP', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); 
 
+							$disabled = ! function_exists( 'imap_open' ) || $this->settings['incsub_support_fetch_imap'] == 'disabled';
 							ob_start();
 							?>
-								<select name="imap_frequency" id="imap_frequency">
+								<select class="imap-settings" <?php disabled( $disabled ); ?> name="imap_frequency" id="imap_frequency">
 									<option value="" <?php selected( $this->settings['incsub_support_imap_frequency'], '' ); ?>></option>
 									<?php foreach ( wp_get_schedules() as $recurrence => $schedule ): ?>
 										<option value="<?php echo $recurrence; ?>" <?php selected( $this->settings['incsub_support_imap_frequency'], $recurrence ); ?>><?php echo $schedule['display']; ?></option>
@@ -134,17 +144,17 @@ if ( ! class_exists( 'MU_Support_Network_Support_settings' ) ) {
 
 							ob_start();
 							?>
-								<input type="text" id="incsub_support_imap_host" name="incsub_support_imap[host]" value="<?php echo $this->settings['incsub_support_imap']['host']; ?>" size="40" />
+								<input class="imap-settings" <?php disabled( $disabled ); ?> type="text" id="incsub_support_imap_host" name="incsub_support_imap[host]" value="<?php echo $this->settings['incsub_support_imap']['host']; ?>" size="40" />
 							<?php $this->render_row( __( 'IMAP server host', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); 
 
 							ob_start();
 							?>
-								<input type="text" id="incsub_support_imap_port" name="incsub_support_imap[port]" value="<?php echo $this->settings['incsub_support_imap']['port']; ?>" size="4" />
+								<input class="imap-settings" <?php disabled( $disabled ); ?> type="text" id="incsub_support_imap_port" name="incsub_support_imap[port]" value="<?php echo $this->settings['incsub_support_imap']['port']; ?>" size="4" />
 							<?php $this->render_row( __( 'IMAP server port', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); 
 
 							ob_start();
 							?>
-								<select name="incsub_support_imap[ssl]" id="incsub_support_imap_ssl">
+								<select class="imap-settings" <?php disabled( $disabled ); ?> name="incsub_support_imap[ssl]" id="incsub_support_imap_ssl">
 									<?php foreach ( MU_Support_System::$incsub_support_imap_ssl as $key => $value ): ?>
 										<option value="<?php echo $key; ?>" <?php selected( $this->settings['incsub_support_imap']['ssl'], $key ); ?>><?php echo $value; ?></option>
 									<?php endforeach; ?>
@@ -153,18 +163,19 @@ if ( ! class_exists( 'MU_Support_Network_Support_settings' ) ) {
 
 							ob_start();
 							?>
-								<input type="text" id="incsub_support_imap_mailbox" name="incsub_support_imap[mailbox]" value="<?php echo $this->settings['incsub_support_imap']['mailbox']; ?>" size="40" />
+								<input class="imap-settings" <?php disabled( $disabled ); ?> type="text" id="incsub_support_imap_mailbox" name="incsub_support_imap[mailbox]" value="<?php echo $this->settings['incsub_support_imap']['mailbox']; ?>" size="40" />
 							<?php $this->render_row( __( 'IMAP mailbox', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); 
 
 							ob_start();
 							?>
-								<input type="text" id="incsub_support_imap_username" name="incsub_support_imap[username]" value="<?php echo $this->settings['incsub_support_imap']['username']; ?>" size="40" />
+								<input class="imap-settings" <?php disabled( $disabled ); ?> type="text" id="incsub_support_imap_username" name="incsub_support_imap[username]" value="<?php echo $this->settings['incsub_support_imap']['username']; ?>" size="40" />
 							<?php $this->render_row( __( 'IMAP username', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); 
 
 							ob_start();
 							?>
-								<input type="password" id="incsub_support_imap_password" name="incsub_support_imap[password]" value="<?php echo $this->settings['incsub_support_imap']['password']; ?>" size="40" />
+								<input class="imap-settings" <?php disabled( $disabled ); ?> type="password" id="incsub_support_imap_password" name="incsub_support_imap[password]" value="<?php echo $this->settings['incsub_support_imap']['password']; ?>" size="40" />
 							<?php $this->render_row( __( 'IMAP password', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); ?>
+							</div>
 					</table>
 					<p class="submit">
 						<?php wp_nonce_field( 'do-support-settings' ); ?>

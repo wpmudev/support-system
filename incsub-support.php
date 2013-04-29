@@ -89,7 +89,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 			self::$privacy = array( 
 				'all' => __( 'Allow all users to see all tickets in a site', INCSUB_SUPPORT_LANG_DOMAIN ),
-				'requestor' => __( 'Allow only requestors and admins to see the tickets in a site', INCSUB_SUPPORT_LANG_DOMAIN )
+				'requestor' => __( 'Allow only requestors to see their own tickets', INCSUB_SUPPORT_LANG_DOMAIN )
 			);
 
 			self::$fetch_imap = array(
@@ -135,9 +135,16 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			// Is this an upgrade?
 			add_action( 'admin_init', array( &$this, 'check_for_upgrades' ) );
 
+			add_action( 'init', array( &$this, 'load_text_domain' ) );
+
 
 			// Create Admin menus
 			$this->admin_menus();
+		}
+
+		public function load_text_domain() {
+			load_textdomain( INCSUB_SUPPORT_LANG_DOMAIN, WP_LANG_DIR . '/' . INCSUB_SUPPORT_LANG_DOMAIN . '/' . INCSUB_SUPPORT_LANG_DOMAIN . '-' . get_locale() . '.mo' );
+        	load_plugin_textdomain( INCSUB_SUPPORT_LANG_DOMAIN, false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );	
 		}
 
 
