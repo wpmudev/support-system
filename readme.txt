@@ -14,8 +14,8 @@ Support System for WordPress multi site.
 == ChangeLog ==
 
 = 1.8 =
+* Added total integration with Pro Sites based on levels
 * Plugin totally recoded
-* New feature: Added integration with Pro Sites Plugin
 * New feature: WYSIWYG Editor for tickets
 * New feature: New setting that brings the possibility
 to hide tickets from users which did not opened them.

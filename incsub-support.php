@@ -88,7 +88,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			);
 
 			self::$privacy = array( 
-				'all' => __( 'Allow all users to see all tickets in a site', INCSUB_SUPPORT_LANG_DOMAIN ),
+				'all' => __( 'Allow all admins to see all tickets in a site', INCSUB_SUPPORT_LANG_DOMAIN ),
 				'requestor' => __( 'Allow only requestors to see their own tickets', INCSUB_SUPPORT_LANG_DOMAIN )
 			);
 
@@ -119,6 +119,9 @@ if ( ! class_exists( 'MU_Support_System') ) {
 				'incsub_support_fetch_imap' => get_site_option('incsub_support_fetch_imap', 'disabled'),
 				'incsub_support_imap_frequency' => get_site_option('incsub_support_imap_frequency', ''),
 				'incsub_allow_only_pro_sites' => get_site_option( 'incsub_allow_only_pro_sites', false ),
+				'incsub_pro_sites_level' => get_site_option( 'incsub_pro_sites_level', '' ),
+				'incsub_allow_only_pro_sites_faq' => get_site_option( 'incsub_allow_only_pro_sites_faq', false ),
+				'incsub_pro_sites_faq_level' => get_site_option( 'incsub_pro_sites_faq_level', '' ),
 				'incsub_ticket_privacy' => get_site_option( 'incsub_ticket_privacy', 'all' )
 			);
 
@@ -139,7 +142,8 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 
 			// Create Admin menus
-			$this->admin_menus();
+			add_action( 'init', array( &$this, 'admin_menus' ) );
+
 		}
 
 		public function load_text_domain() {
@@ -243,10 +247,26 @@ if ( ! class_exists( 'MU_Support_System') ) {
 				self::$network_support_settings_menu = new MU_Support_Network_Support_settings();
 			}
 			elseif ( is_admin() ) {
-				self::$admin_single_ticket_menu = new MU_Support_Admin_Single_Ticket_Menu();
-				self::$admin_new_ticket_menu = new MU_Support_Admin_New_Ticket_Menu();
-				self::$admin_main_menu = new MU_Support_Admin_Main_Menu();
-				self::$admin_faq_menu = new MU_Support_Admin_FAQ_Menu();
+
+				$admin_ticket_menu_allowed = true;
+				if ( (boolean)MU_Support_System::$settings['incsub_allow_only_pro_sites'] )
+					$admin_ticket_menu_allowed = function_exists( 'is_pro_site' ) && is_pro_site( get_current_blog_id(), absint( MU_Support_System::$settings['incsub_pro_sites_level'] ) );
+
+				$admin_faq_menu_allowed = true;
+				if ( MU_Support_System::$settings['incsub_allow_only_pro_sites_faq'] )
+					$admin_faq_menu_allowed = function_exists( 'is_pro_site' ) && is_pro_site( get_current_blog_id(), absint( MU_Support_System::$settings['incsub_pro_sites_faq_level'] ) );
+
+				// If is not a Pro site we will not create the menu
+				if ( $admin_ticket_menu_allowed ) {
+					self::$admin_single_ticket_menu = new MU_Support_Admin_Single_Ticket_Menu();
+					self::$admin_new_ticket_menu = new MU_Support_Admin_New_Ticket_Menu();
+					self::$admin_main_menu = new MU_Support_Admin_Main_Menu();
+				}
+				
+				if ( ! $admin_ticket_menu_allowed && $admin_faq_menu_allowed )
+					self::$admin_faq_menu = new MU_Support_Admin_FAQ_Menu( true );
+				elseif ( $admin_ticket_menu_allowed && $admin_faq_menu_allowed )
+					self::$admin_faq_menu = new MU_Support_Admin_FAQ_Menu( false );
 			}
 
 		}

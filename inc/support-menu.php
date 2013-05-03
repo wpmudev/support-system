@@ -55,19 +55,7 @@ if ( ! class_exists( 'MU_Support_Menu' ) ) {
 		 * 
 		 * @since 1.8
 		 */
-		public function add_menu() {
-
-			if ( 
-				! $this->is_network
-				&& get_site_option( 'incsub_allow_only_pro_sites', false )
-				&& is_plugin_active( 'pro-sites/pro-sites.php' ) 
-				&& function_exists( 'is_pro_site' )
-				&& ! is_pro_site()
-			) {
-				return false;
-			}
-
-			
+		public function add_menu() {			
 			
 			if ( ( ! $this->submenu ) ) {
 				$menu_title = $this->menu_title;
@@ -224,6 +212,13 @@ if ( ! class_exists( 'MU_Support_Menu' ) ) {
 					</ul>
 				</div>
 			<?php
+		}
+
+		/**
+		 * In some cases we'd need to remove the menu
+		 */
+		public function remove_menu() {
+			remove_menu_page( $this->menu_slug )	;
 		}
 
 	}

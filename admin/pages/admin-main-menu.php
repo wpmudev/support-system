@@ -28,7 +28,7 @@ if ( ! class_exists( 'MU_Support_Admin_Main_Menu' ) ) {
 			$this->menu_slug = 'ticket-manager';
 			$this->add_new_link = array(
 				'label' => __( 'Add new ticket', INCSUB_SUPPORT_LANG_DOMAIN ),
-				'link'	=> Mu_Support_System::$admin_new_ticket_menu->get_permalink()
+				'link'	=> MU_Support_System::$admin_new_ticket_menu->get_permalink()
 			);
 
 			parent::__construct( false );
@@ -54,6 +54,7 @@ if ( ! class_exists( 'MU_Support_Admin_Main_Menu' ) ) {
 			// Model
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/admin/tables/admin-tickets-table.php');
 		}
+
 
 		/**
 		 * Renders the page contents

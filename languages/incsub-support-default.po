@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Support System\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-29 16:59+0100\n"
-"PO-Revision-Date: 2013-04-29 17:04+0100\n"
+"POT-Creation-Date: 2013-05-03 12:14+0100\n"
+"PO-Revision-Date: 2013-05-03 12:14+0100\n"
 "Last-Translator: Ignacio <igmoweb@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -58,7 +58,7 @@ msgid "Critical"
 msgstr ""
 
 #: ../incsub-support.php:91
-msgid "Allow all users to see all tickets in a site"
+msgid "Allow all admins to see all tickets in a site"
 msgstr ""
 
 #: ../incsub-support.php:92
@@ -74,50 +74,50 @@ msgid "Disabled"
 msgstr ""
 
 #: ../incsub-support.php:101
-#: ../admin/pages/admin-faq-menu.php:97
+#: ../admin/pages/admin-faq-menu.php:105
 msgid "Yes"
 msgstr ""
 
 #: ../incsub-support.php:102
-#: ../admin/pages/admin-faq-menu.php:97
+#: ../admin/pages/admin-faq-menu.php:105
 msgid "No"
 msgstr ""
 
 #: ../incsub-support.php:106
 #: ../admin/pages/network-main-menu.php:26
 msgid "Support"
-msgstr "JAJAJA"
+msgstr ""
 
-#: ../incsub-support.php:265
+#: ../incsub-support.php:285
 msgid "Once a minute"
 msgstr ""
 
-#: ../incsub-support.php:266
+#: ../incsub-support.php:286
 msgid "Once every five minutes"
 msgstr ""
 
-#: ../incsub-support.php:267
+#: ../incsub-support.php:287
 msgid "Once every fifteen minutes"
 msgstr ""
 
-#: ../incsub-support.php:268
+#: ../incsub-support.php:288
 msgid "Once every half an hour"
 msgstr ""
 
-#: ../admin/pages/admin-faq-menu.php:17
+#: ../admin/pages/admin-faq-menu.php:25
 msgid "Frequently Asked Questions"
 msgstr ""
 
-#: ../admin/pages/admin-faq-menu.php:18
+#: ../admin/pages/admin-faq-menu.php:26
 msgid "FAQ"
 msgstr ""
 
-#: ../admin/pages/admin-faq-menu.php:82
+#: ../admin/pages/admin-faq-menu.php:90
 #, php-format
 msgid "%d questions"
 msgstr ""
 
-#: ../admin/pages/admin-faq-menu.php:96
+#: ../admin/pages/admin-faq-menu.php:104
 msgid "Was this solution helpful?"
 msgstr ""
 
@@ -135,11 +135,11 @@ msgstr ""
 msgid "Recent Tickets"
 msgstr ""
 
-#: ../admin/pages/admin-main-menu.php:72
+#: ../admin/pages/admin-main-menu.php:73
 msgid "View also closed tickets"
 msgstr ""
 
-#: ../admin/pages/admin-main-menu.php:77
+#: ../admin/pages/admin-main-menu.php:78
 msgid "View recent tickets"
 msgstr ""
 
@@ -275,7 +275,7 @@ msgstr ""
 
 #: ../admin/pages/admin-single-ticket-menu.php:227
 #: ../admin/pages/network-single-ticket-menu.php:219
-#: ../admin/pages/network-support-settings-menu.php:182
+#: ../admin/pages/network-support-settings-menu.php:198
 msgid "Save changes"
 msgstr ""
 
@@ -352,7 +352,7 @@ msgid "The name is used to identify the category to which FAQ question relate"
 msgstr ""
 
 #: ../admin/pages/network-faq-categories-menu.php:118
-#: ../admin/pages/network-support-settings-menu.php:192
+#: ../admin/pages/network-support-settings-menu.php:208
 #: ../admin/pages/network-ticket-categories-menu.php:118
 msgid "Security check error"
 msgstr ""
@@ -494,64 +494,77 @@ msgid "Privacy"
 msgstr ""
 
 #: ../admin/pages/network-support-settings-menu.php:114
-msgid "Allow support only for Pro Sites"
+msgid "Check and select a minimum Pro Site Level to allow <strong>Support Tickets</strong> in a blog (if unchecked, Support will be available for any blog)"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:119
+#: ../admin/pages/network-support-settings-menu.php:118
+#: ../admin/pages/network-support-settings-menu.php:127
+msgid "Minimum Pro Site Level"
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:123
+msgid "Check and select a minimum Pro Site Level to allow <strong>Support FAQ</strong> in a blog (if unchecked, Support FAQ will be available for any blog)"
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:130
+msgid "Pro Sites Integration"
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:135
 msgid "IMAP Settings"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:129
-#: ../admin/pages/network-support-settings-menu.php:142
+#: ../admin/pages/network-support-settings-menu.php:145
+#: ../admin/pages/network-support-settings-menu.php:158
 msgid "Enable or disable fetching responses to tickets via IMAP"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:131
-#: ../admin/pages/network-support-settings-menu.php:143
+#: ../admin/pages/network-support-settings-menu.php:147
+#: ../admin/pages/network-support-settings-menu.php:159
 msgid "Fetch responses via IMAP"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:148
+#: ../admin/pages/network-support-settings-menu.php:164
 msgid "IMAP server host"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:153
+#: ../admin/pages/network-support-settings-menu.php:169
 msgid "IMAP server port"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:162
+#: ../admin/pages/network-support-settings-menu.php:178
 msgid "SSL"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:167
+#: ../admin/pages/network-support-settings-menu.php:183
 msgid "IMAP mailbox"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:172
+#: ../admin/pages/network-support-settings-menu.php:188
 msgid "IMAP username"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:177
+#: ../admin/pages/network-support-settings-menu.php:193
 msgid "IMAP password"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:183
+#: ../admin/pages/network-support-settings-menu.php:199
 msgid "Test IMAP settings"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:198
+#: ../admin/pages/network-support-settings-menu.php:214
 msgid "Menu name must not be empty"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:207
+#: ../admin/pages/network-support-settings-menu.php:223
 msgid "Site name must not be empty"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:216
+#: ../admin/pages/network-support-settings-menu.php:232
 msgid "Email must be a valid email"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:249
+#: ../admin/pages/network-support-settings-menu.php:265
 msgid "The IMAP test failed"
 msgstr ""
 
@@ -816,7 +829,7 @@ msgid ""
 "\t\t\t"
 msgstr ""
 
-#: ../inc/support-menu.php:109
+#: ../inc/support-menu.php:97
 msgid "You are not allowed to view this page."
 msgstr ""
 

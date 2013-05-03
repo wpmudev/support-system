@@ -10,16 +10,24 @@ if ( ! class_exists( 'MU_Support_Admin_FAQ_Menu' ) ) {
 		/**
 		 * Constructor
 		 * 
+		 * @param Boolean	$main_menu 	If the menu has a parent or not
+		 * 
 		 * @since 1.8
 		 */
-		public function __construct() {
+		public function __construct( $main_menu ) {
 			
+			// In some cases, FAQ menu can be a main menu on the admin panel
+			if ( $main_menu )
+				$parent = null;
+			else
+				$parent = MU_Support_System::$admin_main_menu->menu_slug;
+
 			$this->page_title = __( 'Frequently Asked Questions', INCSUB_SUPPORT_LANG_DOMAIN ); 
 			$this->menu_title = __( 'FAQ', INCSUB_SUPPORT_LANG_DOMAIN); 
 			$this->capability = 'read';
 			$this->menu_slug = 'support-faq';
-			$this->parent = MU_Support_System::$admin_main_menu->menu_slug;
-			$this->submenu = true;
+			$this->parent = $parent;
+			$this->submenu = ! empty( $parent );
 
 			parent::__construct( false );
 
