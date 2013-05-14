@@ -162,7 +162,7 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 						'user_nicename' 		=> $user_nicename,
 						'ticket_message' 		=> $this->current_ticket['message'],
 						'ticket_url' 			=> $visit_link,
-						'ticket_status'			=> 0,
+						'ticket_status'			=> MU_Support_System::$ticket_status[0],
 						'ticket_priority'		=> MU_Support_System::$ticket_priority[ $this->current_ticket['ticket_priority'] ]
 					);
 					$mail_content = incsub_support_get_support_process_reply_mail_content( $args );

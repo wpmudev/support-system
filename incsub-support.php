@@ -92,37 +92,18 @@ if ( ! class_exists( 'MU_Support_System') ) {
 				'requestor' => __( 'Allow only requestors to see their own tickets', INCSUB_SUPPORT_LANG_DOMAIN )
 			);
 
-			self::$fetch_imap = array(
-				'enabled' => __( 'Enabled', INCSUB_SUPPORT_LANG_DOMAIN ),
-				'disabled' => __( 'Disabled', INCSUB_SUPPORT_LANG_DOMAIN ),
-			);
-
-			self::$incsub_support_imap_ssl = array(
-				'/ssl' => __( 'Yes', INCSUB_SUPPORT_LANG_DOMAIN ),
-				'/notls' => __( 'No', INCSUB_SUPPORT_LANG_DOMAIN )
-			);
-
 			self::$settings = array(
 				'incsub_support_menu_name' => get_site_option( 'incsub_support_menu_name', __( 'Support', INCSUB_SUPPORT_LANG_DOMAIN ) ),
 				'incsub_support_from_name' => get_site_option( 'incsub_support_from_name', get_bloginfo( 'blogname' ) ),
 				'incsub_support_from_mail' => get_site_option( 'incsub_support_from_mail', get_bloginfo( 'admin_email' ) ),
-				'incsub_support_imap' => get_site_option('incsub_support_imap',
-					array(
-					      'host' => 'imap.gmail.com',
-					      'port' => '993',
-					      'ssl' => '/ssl',
-					      'mailbox' => 'INBOX',
-					      'username' => '',
-					      'password' => ''
-					)
-				),
 				'incsub_support_fetch_imap' => get_site_option('incsub_support_fetch_imap', 'disabled'),
 				'incsub_support_imap_frequency' => get_site_option('incsub_support_imap_frequency', ''),
 				'incsub_allow_only_pro_sites' => get_site_option( 'incsub_allow_only_pro_sites', false ),
 				'incsub_pro_sites_level' => get_site_option( 'incsub_pro_sites_level', '' ),
 				'incsub_allow_only_pro_sites_faq' => get_site_option( 'incsub_allow_only_pro_sites_faq', false ),
 				'incsub_pro_sites_faq_level' => get_site_option( 'incsub_pro_sites_faq_level', '' ),
-				'incsub_ticket_privacy' => get_site_option( 'incsub_ticket_privacy', 'all' )
+				'incsub_ticket_privacy' => get_site_option( 'incsub_ticket_privacy', 'all' ),
+				'incsub_support_faq_enabled' => get_site_option( 'incsub_support_faq_enabled', true )
 			);
 
 			// Include needed files
@@ -132,14 +113,10 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			register_activation_hook( __FILE__, array( &$this, 'activate' ) );
 			register_deactivation_hook( __FILE__, array( &$this, 'deactivate' ) );
 
-			// Adding cron schedules
-			add_filter( 'cron_schedules', array( &$this, 'cron_schedules' ) );
-
 			// Is this an upgrade?
 			add_action( 'admin_init', array( &$this, 'check_for_upgrades' ) );
 
 			add_action( 'init', array( &$this, 'load_text_domain' ) );
-
 
 			// Create Admin menus
 			add_action( 'init', array( &$this, 'admin_menus' ) );
@@ -255,6 +232,8 @@ if ( ! class_exists( 'MU_Support_System') ) {
 				$admin_faq_menu_allowed = true;
 				if ( MU_Support_System::$settings['incsub_allow_only_pro_sites_faq'] )
 					$admin_faq_menu_allowed = function_exists( 'is_pro_site' ) && is_pro_site( get_current_blog_id(), absint( MU_Support_System::$settings['incsub_pro_sites_faq_level'] ) );
+
+				$admin_faq_menu_allowed = $admin_faq_menu_allowed && MU_Support_System::$settings['incsub_support_faq_enabled'];
 
 				// If is not a Pro site we will not create the menu
 				if ( $admin_ticket_menu_allowed ) {

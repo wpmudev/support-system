@@ -443,9 +443,8 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 
 					// Administrator mail
 					$visit_link = add_query_arg(
-						array(
-							'tid' => $this->ticket_id
-						),
+						'tid',
+						$this->ticket_id,
 						$this->get_permalink()
 					);
 					$args = array(
