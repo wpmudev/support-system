@@ -31,6 +31,8 @@ if ( ! class_exists( 'MU_Support_Network_FAQ_Categories' ) ) {
 
 			parent::__construct();
 
+			add_action( 'admin_init', array( &$this, 'edit_category' ) );
+
 		}
 
 		/**
@@ -69,39 +71,75 @@ if ( ! class_exists( 'MU_Support_Network_FAQ_Categories' ) ) {
 
 			
 
+			if ( isset( $_GET['action'] ) && 'edit' == $_GET['action'] && isset( $_GET['category'] ) && $cat_id = absint( $_GET['category'] ) ) {
+				$model = MU_Support_System_Model::get_instance();
+				$cat_name = $model->get_faq_category( $cat_id );
 
-			$cats_table = new MU_Support_FAQ_Categories_Table();
-			$cats_table->prepare_items();
-		    ?>
-		    	<br class="clear">
-				<div id="col-container">
-					<div id="col-right">
-						<div class="col-wrap">
-							<div class="form-wrap">
-								<form id="categories-table-form" action="" method="post">
-									<?php $cats_table->display(); ?>
-								</form>
+				?>
+					<form id="categories-table-form" action="" method="post">
+						<table class="form-table">
+							<?php
+								ob_start();
+							?>	
+								<input type="text" name="faq_cat_name" value="<?php echo esc_attr( $cat_name['cat_name'] ); ?>">
+								<input type="hidden" name="faq_cat_id" value="<?php echo esc_attr( $cat_id ); ?>">
+							<?php
+								$this->render_row( __( 'Category name', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() );
+							?>
+						</table>
+						<?php wp_nonce_field( 'edit-faq-category', '_wpnonce' ); ?>
+						<?php submit_button( null, 'primary', 'submit-edit-faq-category' ); ?>
+					</form>
+				<?php
+			}
+			else {
+				$cats_table = new MU_Support_FAQ_Categories_Table();
+				$cats_table->prepare_items();
+			    ?>
+			    	<br class="clear">
+					<div id="col-container">
+						<div id="col-right">
+							<div class="col-wrap">
+								<div class="form-wrap">
+									<form id="categories-table-form" action="" method="post">
+										<?php $cats_table->display(); ?>
+									</form>
+								</div>
+							</div>
+						</div>
+						<div id="col-left">
+							<div class="col-wrap">
+								<div class="form-wrap">
+									<h3><?php _e( 'Add new category', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h3>
+									<form id="categories-table-form" action="" method="post">
+										<?php wp_nonce_field( 'add-faq-category' ); ?>
+										<div class="form-field">
+											<label for="cat_name"><?php _e( 'Category Name', INCSUB_SUPPORT_LANG_DOMAIN ); ?></label>
+											<input name="cat_name" id="cat_name" type="text" value="<?php echo $category_name; ?>" size="40" aria-required="true"><br/>
+											<p><?php _e('The name is used to identify the category to which FAQ question relate', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
+										</div>
+										<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Add New Category"></p>
+									</form>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div id="col-left">
-						<div class="col-wrap">
-							<div class="form-wrap">
-								<h3><?php _e( 'Add new category', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h3>
-								<form id="categories-table-form" action="" method="post">
-									<?php wp_nonce_field( 'add-faq-category' ); ?>
-									<div class="form-field">
-										<label for="cat_name"><?php _e( 'Category Name', INCSUB_SUPPORT_LANG_DOMAIN ); ?></label>
-										<input name="cat_name" id="cat_name" type="text" value="<?php echo $category_name; ?>" size="40" aria-required="true"><br/>
-										<p><?php _e('The name is used to identify the category to which FAQ question relate', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
-									</div>
-									<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Add New Category"></p>
-								</form>
-							</div>
-						</div>
-					</div>
-				</div>
-		    <?php
+			    <?php
+			}
+		}
+
+		public function edit_category() {
+			if ( isset( $_POST['submit-edit-faq-category'] ) ) {
+				if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'edit-faq-category' ) )
+					wp_die( __( 'Security check error', INCSUB_SUPPORT_LANG_DOMAIN ) );
+
+				if ( isset( $_POST['faq_cat_name'] ) && ! empty( $_POST['faq_cat_name'] ) && isset( $_POST['faq_cat_id'] ) ) {
+					$model = MU_Support_System_Model::get_instance();
+					$model->update_faq_category_name( absint( $_POST['faq_cat_id'] ), sanitize_text_field( $_POST['faq_cat_name'] ) );
+				}
+
+				wp_redirect( $this->get_permalink() );
+			}
 		}
 
 		/**

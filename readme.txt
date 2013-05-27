@@ -22,6 +22,7 @@ to hide tickets from users which did not opened them.
 * New styles for FAQs
 * More WP admin integration
 * Fixed several bugs and notices
+* Categories can now be edited
 
 = 1.7.2.2 =
 * Fixed: Incorrect URL in Support Ticket Email

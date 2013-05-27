@@ -776,6 +776,41 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		}
 	
 		
+		public function get_ticket_category( $cat_id ) {
+			global $wpdb, $current_site;
+
+			$current_site_id = $current_site->id;
+
+			$pq = $wpdb->prepare(
+				"SELECT cat_name
+				FROM $this->tickets_cats_table 
+				WHERE site_id = %d
+				AND cat_id = %d", 
+				$current_site_id,
+				$cat_id
+			);
+
+			return $wpdb->get_row( $pq, ARRAY_A );
+		}
+	
+		
+		public function get_faq_category( $cat_id ) {
+			global $wpdb, $current_site;
+
+			$current_site_id = $current_site->id;
+
+			$pq = $wpdb->prepare(
+				"SELECT cat_name
+				FROM $this->faq_cats_table 
+				WHERE site_id = %d
+				AND cat_id = %d", 
+				$current_site_id,
+				$cat_id
+			);
+
+			return $wpdb->get_row( $pq, ARRAY_A );
+		}
+
 
 		public function get_ticket_categories() {
 
@@ -805,6 +840,36 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			}
 
 			return $cats;
+		}
+
+		public function update_ticket_category_name( $id, $name ) {
+			global $wpdb, $current_site;
+
+			$current_site_id = $current_site->id;
+
+			return $wpdb->update(
+				$this->tickets_cats_table,
+				array( 'cat_name' => $name ),
+				array( 'cat_id' => $id, 'site_id' => $current_site_id ),
+				array( '%s' ),
+				array( '%d' )
+			);
+
+		}
+
+		public function update_faq_category_name( $id, $name ) {
+			global $wpdb, $current_site;
+
+			$current_site_id = $current_site->id;
+
+			return $wpdb->update(
+				$this->faq_cats_table,
+				array( 'cat_name' => $name ),
+				array( 'cat_id' => $id, 'site_id' => $current_site_id ),
+				array( '%s' ),
+				array( '%d' )
+			);
+
 		}
 
 	
@@ -1445,6 +1510,61 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				return false;
 			else
 				return $results;
+		}
+
+		/**
+		 * Sets a ticket category as the default one
+		 * @param type $cat_id 
+		 * @return type
+		 */
+		public function set_ticket_category_as_default( $cat_id ) {
+			global $wpdb;
+
+			$default_cat = $this->get_default_ticket_category_id();
+
+			$wpdb->update(
+				$this->tickets_cats_table,
+				array( 'defcat' => 1 ),
+				array( 'cat_id' => $default_cat ),
+				array( '%d' ),
+				array( '%d' )
+			);
+
+			$wpdb->update(
+				$this->tickets_cats_table,
+				array( 'defcat' => 2 ),
+				array( 'cat_id' => $cat_id ),
+				array( '%d' ),
+				array( '%d' )
+			);
+		}
+
+
+		/**
+		 * Sets a FAQ category as the default one
+		 * @param type $cat_id 
+		 * @return type
+		 */
+		public function set_faq_category_as_default( $cat_id ) {
+			global $wpdb;
+
+			$default_cat = $this->get_default_faq_category_id();
+
+			$wpdb->update(
+				$this->faq_cats_table,
+				array( 'defcat' => 1 ),
+				array( 'cat_id' => $default_cat ),
+				array( '%d' ),
+				array( '%d' )
+			);
+
+			$wpdb->update(
+				$this->faq_cats_table,
+				array( 'defcat' => 2 ),
+				array( 'cat_id' => $cat_id ),
+				array( '%d' ),
+				array( '%d' )
+			);
 		}
 
 

@@ -56,10 +56,42 @@ class MU_Support_FAQ_Categories_Table extends WP_List_Table {
     }
 
     function column_name( $item ) {
-        if ( '1' == $item['defcat'] )
-            return $item['cat_name'] . ' <strong>' . __( '[Default category]', INCSUB_SUPPORT_LANG_DOMAIN ) . '</strong>';
-        else
-            return $item['cat_name'];
+        $delete_link = add_query_arg( 
+            array( 
+                'action' => 'delete',
+                'category' => (int)$item['cat_id'] 
+            )
+        );
+
+        $set_default_link = add_query_arg( 
+            array( 
+                'action' => 'set_default',
+                'category' => (int)$item['cat_id'] 
+            )
+        );
+
+        $edit_link = add_query_arg( 
+            array( 
+                'action' => 'edit',
+                'category' => (int)$item['cat_id'] 
+            )
+        );
+
+        $actions = array(
+            'edit' => sprintf( __( '<a href="%s">Edit</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $edit_link )   
+        );
+
+        if ( '1' == $item['defcat'] ) {
+            return $item['cat_name'] . ' <strong>' . __( '[Default category]', INCSUB_SUPPORT_LANG_DOMAIN ) . '</strong>'  . $this->row_actions($actions);
+        }
+        else {
+            $more_actions = array( 
+                'delete'    => sprintf( __( '<a href="%s">Delete</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_link ),
+                'set_default' => sprintf( __( '<a href="%s">Set as default</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $set_default_link )      
+            );
+            $actions = array_merge( $actions, $more_actions );
+            return $item['cat_name'] . $this->row_actions($actions);
+        }
     }
 
 
@@ -88,13 +120,20 @@ class MU_Support_FAQ_Categories_Table extends WP_List_Table {
         $model = MU_Support_System_Model::get_instance();
 
         if( 'delete' === $this->current_action() ) {
-            if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'bulk-' . $this->_args['plural'] ) )
-                wp_die( 'Security check error', INCSUB_SUPPORT_LANG_DOMAIN );
 
             if ( isset( $_POST['category'] ) && is_array( $_POST['category'] ) ) {
+                if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'bulk-' . $this->_args['plural'] ) )
+                    wp_die( 'Security check error', INCSUB_SUPPORT_LANG_DOMAIN );
+
                 foreach ( $_POST['category'] as $category )
                     $model->delete_faq_category( absint( $category ) );
             }
+            elseif ( isset( $_GET['category'] ) && $category = absint( $_GET['category'] ) ) {
+                $model->delete_faq_category( $category );
+            }
+        }
+        if( 'set_default' === $this->current_action() && isset( $_GET['category'] ) && $category = absint( $_GET['category'] ) ) {
+            $model->set_faq_category_as_default( $category );
         }
 
     	$per_page = 7;
