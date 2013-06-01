@@ -232,6 +232,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		public function upgrade_18() {
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 			$this->create_tickets_messages_table();
+			$this->create_tickets_table();
 
 			// Converting FAQs entities to text
 			// So they can be properly displayed in the WP Editor
@@ -253,7 +254,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			}
 
 			// Checking all tickets as viewed by a Super Admin
-			$wpdb->query( "UPDATE $this->tickets_table SET view_by_admin = 1" );
+			$wpdb->query( "UPDATE $this->tickets_table SET view_by_superadmin = 1" );
 
 			// Same for tickets messages
 			$messages_ids = $wpdb->get_col( "SELECT message_id FROM $this->tickets_messages_table" );
@@ -269,6 +270,18 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 					$this->update_ticket_message( $message_id, $subject, $message_text );
 				}
 			}
+		}
+
+		/**
+		 * Upgrades the Database to 1.8.1 version
+		 * 
+		 * @since 1.8.1
+		 */
+		public function upgrade_181() {
+			global $wpdb;
+			
+			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+			$this->create_tickets_table();				
 		}
 
 		/**

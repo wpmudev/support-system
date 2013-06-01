@@ -6,7 +6,7 @@ Description: Support System for WordPress multi site
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub), Ignacio (Incsub)
 WDP ID: 36
 Network: true
-Version: 1.8
+Version: 1.8.1
 Author URI: http://premium.wpmudev.org
 Text Domain: incsub-support
 */
@@ -28,7 +28,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '1.8' );
+define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '1.8.1' );
 
 if ( ! defined( 'INCSUB_SUPPORT_LANG_DOMAIN' ) )
 	define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
@@ -219,6 +219,9 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 				if ( version_compare( $saved_version, '1.8' ) < 0 )
 					$model->upgrade_18();
+
+				if ( version_compare( $saved_version, '1.8.1' ) < 0 )
+					$model->upgrade_181();
 
 				update_site_option( 'incsub_support_version', self::$version );
 			}

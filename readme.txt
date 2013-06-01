@@ -13,6 +13,9 @@ Support System for WordPress multi site.
 
 == ChangeLog ==
 
+= 1.8.1 =
+* Fixed upgrade function
+
 = 1.8 =
 * Added total integration with Pro Sites based on levels
 * Plugin totally recoded
