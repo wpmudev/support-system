@@ -14,7 +14,7 @@ if ( ! class_exists( 'MU_Support_Menu' ) ) {
 		public $menu_title = '';
 		public $capability = 'read';
 		public $menu_slug;
-		public $icon_url = '';
+		public $icon_url = 'div';
 		public $position = null;
 		public $tabs = false;
 		public $active_tab;
@@ -98,7 +98,7 @@ if ( ! class_exists( 'MU_Support_Menu' ) ) {
 
 			?>
 				<div class="wrap">
-					<?php screen_icon(); ?>
+					<?php screen_icon( 'support' ); ?>
 					<?php if ( is_array( $this->tabs ) ): ?>
 						<h2 class="nav-tab-wrapper">
 							<?php foreach ( $this->tabs as $tab ): ?>

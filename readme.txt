@@ -13,6 +13,12 @@ Support System for WordPress multi site.
 
 == ChangeLog ==
 
+= 1.8.2 =
+* Settings page moved under Support Main menu.
+* New setting: Users can open/see tickets based on their roles.
+* Added new icons for admin menus
+* Improved tickets screen with a better submenu classification: all, active and closed tickets
+
 = 1.8.1 =
 * Fixed upgrade function
 

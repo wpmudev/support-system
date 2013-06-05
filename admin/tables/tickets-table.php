@@ -53,6 +53,7 @@ class MU_Support_Tickets_Table extends WP_List_Table {
 
     function column_status( $item ) {
         $link = add_query_arg( 'ticket_status', absint( $item['ticket_status'] ) );
+        $link = remove_query_arg( 'view', $link );
         return '<a href="' . $link . '">' . MU_Support_System::$ticket_status[ (int)$item['ticket_status'] ] . '</a>';
     }
 

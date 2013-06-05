@@ -6,7 +6,7 @@ Description: Support System for WordPress multi site
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub), Ignacio (Incsub)
 WDP ID: 36
 Network: true
-Version: 1.8.1
+Version: 1.8.2
 Author URI: http://premium.wpmudev.org
 Text Domain: incsub-support
 */
@@ -28,7 +28,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '1.8.1' );
+define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '1.8.2' );
 
 if ( ! defined( 'INCSUB_SUPPORT_LANG_DOMAIN' ) )
 	define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
@@ -105,7 +105,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			);
 
 			self::$privacy = array( 
-				'all' => __( 'Allow all admins to see all tickets in a site', INCSUB_SUPPORT_LANG_DOMAIN ),
+				'all' => __( 'Allow all users to see all tickets in a site', INCSUB_SUPPORT_LANG_DOMAIN ),
 				'requestor' => __( 'Allow only requestors to see their own tickets', INCSUB_SUPPORT_LANG_DOMAIN )
 			);
 
@@ -120,7 +120,9 @@ if ( ! class_exists( 'MU_Support_System') ) {
 				'incsub_allow_only_pro_sites_faq' => get_site_option( 'incsub_allow_only_pro_sites_faq', false ),
 				'incsub_pro_sites_faq_level' => get_site_option( 'incsub_pro_sites_faq_level', '' ),
 				'incsub_ticket_privacy' => get_site_option( 'incsub_ticket_privacy', 'all' ),
-				'incsub_support_faq_enabled' => get_site_option( 'incsub_support_faq_enabled', true )
+				'incsub_support_faq_enabled' => get_site_option( 'incsub_support_faq_enabled', true ),
+				'incsub_support_tickets_role' => get_site_option( 'incsub_support_tickets_role', 'manage_options' ),
+				'incsub_support_faqs_role' => get_site_option( 'incsub_support_faqs_role', 'read' )
 			);
 
 			// Include needed files
@@ -138,11 +140,17 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			// Create Admin menus
 			add_action( 'init', array( &$this, 'admin_menus' ) );
 
+			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_styles' ) );
+
 		}
 
 		public function load_text_domain() {
 			load_textdomain( INCSUB_SUPPORT_LANG_DOMAIN, WP_LANG_DIR . '/' . INCSUB_SUPPORT_LANG_DOMAIN . '/' . INCSUB_SUPPORT_LANG_DOMAIN . '-' . get_locale() . '.mo' );
         	load_plugin_textdomain( INCSUB_SUPPORT_LANG_DOMAIN, false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );	
+		}
+
+		public function enqueue_styles() {
+			wp_enqueue_style( 'support-admin-icon', INCSUB_SUPPORT_ASSETS_URL . 'css/icon-styles.css', array(), '20130607' );
 		}
 
 
@@ -297,6 +305,16 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		 */
 		public function set_mail_content_type() {
 			return 'text/html';
+		}
+
+		public static function get_roles() {
+			return array(
+				'manage_options' => __( 'Administrator' ),
+				'publish_pages' => __( 'Editor' ),
+				'publish_posts' => __( 'Author' ),
+				'edit_posts' => __( 'Contributor' ),
+				'read' => __( 'Subscriber' )
+			);
 		}
 
 	}

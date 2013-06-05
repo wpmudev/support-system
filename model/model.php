@@ -355,7 +355,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		 * @param Integer $offset First ticket to retrieve
 		 * @param Integer $upper_limit Last ticket to retrieve
 		 */
-		public function get_tickets( $type, $offset, $upper_limit, $args = array() ) {
+		public function get_tickets( $type, $offset = 0, $upper_limit = 0, $args = array() ) {
 			global $wpdb, $current_site;
 
 			$current_site_id = $current_site->id;

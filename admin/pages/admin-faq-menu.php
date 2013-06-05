@@ -24,7 +24,7 @@ if ( ! class_exists( 'MU_Support_Admin_FAQ_Menu' ) ) {
 
 			$this->page_title = __( 'Frequently Asked Questions', INCSUB_SUPPORT_LANG_DOMAIN ); 
 			$this->menu_title = __( 'FAQ', INCSUB_SUPPORT_LANG_DOMAIN); 
-			$this->capability = 'read';
+			$this->capability = MU_Support_System::$settings['incsub_support_faqs_role'];
 			$this->menu_slug = 'support-faq';
 			$this->parent = $parent;
 			$this->submenu = ! empty( $parent );

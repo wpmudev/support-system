@@ -28,7 +28,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 
 			$this->page_title = __( 'Support Ticket', INCSUB_SUPPORT_LANG_DOMAIN); 
 			$this->menu_title = __( 'Support Ticket', INCSUB_SUPPORT_LANG_DOMAIN); 
-			$this->capability = 'manage_options';
+			$this->capability = MU_Support_System::$settings['incsub_support_tickets_role'];
 			$this->menu_slug = 'single-ticket-manager';
 			$this->submenu = true;
 			$this->active_tab = 'details';

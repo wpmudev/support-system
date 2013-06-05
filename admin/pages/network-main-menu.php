@@ -34,8 +34,8 @@ if ( ! class_exists( 'MU_Support_Network_Main_Menu' ) ) {
 			add_action( 'init', array( &$this, 'get_new_tickets' ) );
 
 			// Status of the screen
-			$this->view = 'active';
-			if ( isset( $_GET['view'] ) && in_array( $_GET['view'], array( 'active', 'archive' ) ) )
+			$this->view = 'all';
+			if ( isset( $_GET['view'] ) && in_array( $_GET['view'], array( 'all', 'active', 'archive' ) ) )
 				$this->view = $_GET['view'];
 
 		}
@@ -57,8 +57,9 @@ if ( ! class_exists( 'MU_Support_Network_Main_Menu' ) ) {
 		 */
 		public function render_content() {
 
-			if ( isset( $_GET['delete'] ) && is_numeric( $_GET['delete'] ) ) {
-				$model = MU_Support_System_Model::get_instance();
+			$model = MU_Support_System_Model::get_instance();
+
+			if ( isset( $_GET['delete'] ) && is_numeric( $_GET['delete'] ) ) {	
 				$ticket_id = intval( $_GET['delete'] );
 				if ( $model->is_ticket_archived( $ticket_id ) )
 					$model->delete_ticket( $ticket_id );
@@ -67,10 +68,19 @@ if ( ! class_exists( 'MU_Support_Network_Main_Menu' ) ) {
 		    $tickets_table = new MU_Support_Tickets_Table( $this->view );
 		    $tickets_table->prepare_items();
 
+		    $all_tickets_count = $model->get_tickets( 'all' );
+		    $all_tickets_count = $all_tickets_count['total'];
+
+		    $archived_tickets_count = $model->get_tickets( 'archive' );
+		    $archived_tickets_count = $archived_tickets_count['total'];
+
+		    $active_tickets_count = $all_tickets_count - $archived_tickets_count;
+
 			?>
 				<ul class="subsubsub">
-					<li class="active"><a href="<?php echo add_query_arg( 'view', 'active' ); ?>" <?php echo 'active' == $this->view ? 'class="current"' : ''; ?> ><?php echo __( 'Active tickets', INCSUB_SUPPORT_LANG_DOMAIN ); ?></a> |</li>
-					<li class="archived"><a href="<?php echo add_query_arg( 'view', 'archive' ); ?>" <?php echo 'archive' == $this->view ? 'class="current"' : ''; ?>><?php echo __( 'Archived tickets', INCSUB_SUPPORT_LANG_DOMAIN ); ?></a></li>
+					<li class="all"><a href="<?php echo add_query_arg( 'view', 'all' ); ?>" <?php echo 'all' == $this->view ? 'class="current"' : ''; ?> ><?php echo __( 'All', INCSUB_SUPPORT_LANG_DOMAIN ); ?> <span class="count">(<?php echo $all_tickets_count; ?>)</span></a> |</li>
+					<li class="active"><a href="<?php echo add_query_arg( 'view', 'active' ); ?>" <?php echo 'active' == $this->view ? 'class="current"' : ''; ?> ><?php echo __( 'Opened', INCSUB_SUPPORT_LANG_DOMAIN ); ?> <span class="count">(<?php echo $active_tickets_count; ?>)</span></a> |</li>
+					<li class="archived"><a href="<?php echo add_query_arg( 'view', 'archive' ); ?>" <?php echo 'archive' == $this->view ? 'class="current"' : ''; ?>><?php echo __( 'Closed', INCSUB_SUPPORT_LANG_DOMAIN ); ?> <span class="count">(<?php echo $archived_tickets_count; ?>)</span></a></li>
 				</ul>
 				<form id="support-tickets" method="post">
 					<?php $tickets_table->display(); ?>

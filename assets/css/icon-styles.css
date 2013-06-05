@@ -1,0 +1,12 @@
+#icon-support {
+	background: transparent url( '../images/icon32.png' ) no-repeat;
+}
+
+#toplevel_page_ticket-manager .wp-menu-image {
+	background: transparent url( '../images/icons.png' ) no-repeat 0px -27px;
+}
+
+#toplevel_page_ticket-manager.wp-has-current-submenu .wp-menu-image,
+#toplevel_page_ticket-manager:hover .wp-menu-image {
+	background: transparent url( '../images/icons.png' ) no-repeat 0px -0px;
+}

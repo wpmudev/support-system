@@ -22,7 +22,7 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 
 			$this->page_title = __( 'Add new ticket', INCSUB_SUPPORT_LANG_DOMAIN ); 
 			$this->menu_title = __( 'Add new ticket', INCSUB_SUPPORT_LANG_DOMAIN );
-			$this->capability = 'manage_options';
+			$this->capability = MU_Support_System::$settings['incsub_support_tickets_role'];
 			$this->menu_slug = 'add-new-ticket';
 			$this->submenu = true;
 
