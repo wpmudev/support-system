@@ -19,13 +19,13 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 		 * 
 		 * @since 1.8
 		 */
-		public function __construct( $just_object = false ) {
+		public function __construct( $just_object = false,  $is_network = true, $capability = 'manage_network' ) {
 
 			$this->includes();
 
 			$this->page_title = __( 'Support Ticket', INCSUB_SUPPORT_LANG_DOMAIN); 
 			$this->menu_title = __( 'Support Ticket', INCSUB_SUPPORT_LANG_DOMAIN); 
-			$this->capability = 'manage_network';
+			$this->capability = $capability;
 			$this->menu_slug = 'single-ticket-manager';
 			$this->submenu = true;
 			$this->active_tab = 'details';
@@ -42,7 +42,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 				)
 			);
 
-			parent::__construct( true, $just_object );
+			parent::__construct( $is_network, $just_object );
 
 			$this->ticket_id = 0;
 			if ( isset( $_GET['tid'] ) )
@@ -165,19 +165,25 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 					<?php $this->render_row( __( 'Last Updated (GMT)', INCSUB_SUPPORT_LANG_DOMAIN ), date_i18n( get_option("date_format") . ' ' . get_option("time_format"), strtotime( $current_ticket['ticket_updated'] ), true ) ); ?>
 					
 					<?php
-						$blog_details = get_blog_details( $current_ticket['blog_id'] );
-						if ( ! $blog_details ) {
-							$markup = __( 'Unknown', INCSUB_SUPPORT_LANG_DOMAIN );
-						}
-						else {						
-							$blog_address = get_blogaddress_by_id( $current_ticket['blog_id'] );
-							$markup = '<a href="' . $blog_address . '">' . $blog_details->blogname . '</a>';
-						}
+						$markup = __( 'Unknown', INCSUB_SUPPORT_LANG_DOMAIN );
+						if ( is_multisite() ) {
+				            $blog_details = get_blog_details( $current_ticket['blog_id'] );
+				            
+				            if ( ! empty( $blog_details ) ) {
+				                $blog_address = get_blogaddress_by_id( $current_ticket['blog_id'] );
+								$markup = '<a href="' . $blog_address . '">' . $blog_details->blogname . '</a>';
+							}
+				        }
+				        else {
+				            $user = get_userdata( $current_ticket['user_id'] );
+				            if ( ! empty( $user ) )
+				                $markup = '<a href="' . admin_url( 'user-edit.php?user_id=' . $user->ID ) . '">' . $user->user_nicename . '</a>';
+				        }
 						
 						$this->render_row( 'Submitted from', $markup ); ?>
 
 					<?php 
-						$super_admins = get_super_admins();
+						$super_admins = is_multisite() ? get_super_admins() : $this->get_admins();
 						ob_start();
 					?>
 						<select name="super-admins">
@@ -221,6 +227,20 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 			<?php
 		}
 
+		/**
+		 * Get all administrators in a blog
+		 * 
+		 * @return Array collection of Administrators
+		 */
+		private function get_admins() {
+			$users = get_users( array( 'role' => 'administrator' ) );
+
+			$administrators = array();
+			foreach ( $users as $user ) {
+				$administrators[] = $user->data->user_login;
+			}
+			return $administrators;
+		}
 
 		/**
 		 * Renders the ticket history messages
@@ -503,7 +523,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 				$this->current_ticket = $this->ticket_details[0];
 
 				$model = MU_Support_System_Model::get_instance();
-				$possible_users = array_merge( get_super_admins(), array( 'empty', '' ) );
+				$possible_users = array_merge( is_multisite() ? get_super_admins() : $this->get_admins(), array( 'empty', '' ) );
 				if ( isset( $_POST['super-admins'] ) && in_array( $_POST['super-admins'], $possible_users ) ) {
 					$user = get_user_by( 'login', $_POST['super-admins'] );
 					if ( is_object( $user ) )

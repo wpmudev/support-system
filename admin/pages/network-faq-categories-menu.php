@@ -18,18 +18,18 @@ if ( ! class_exists( 'MU_Support_Network_FAQ_Categories' ) ) {
 		 * 
 		 * @since 1.8
 		 */
-		public function __construct() {
+		public function __construct( $is_network = true, $capability = 'manage_network' ) {
 
 			$this->includes();
 
 			$this->page_title = __('FAQ Categories', INCSUB_SUPPORT_LANG_DOMAIN); 
 			$this->menu_title = __('FAQ Categories', INCSUB_SUPPORT_LANG_DOMAIN); 
-			$this->capability = 'manage_network';
+			$this->capability = $capability;
 			$this->menu_slug = 'faq-categories';
 			$this->parent = MU_Support_System::$network_main_menu->menu_slug;
 			$this->submenu = true;
 
-			parent::__construct();
+			parent::__construct( $is_network );
 
 			add_action( 'admin_init', array( &$this, 'edit_category' ) );
 

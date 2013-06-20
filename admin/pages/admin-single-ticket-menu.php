@@ -182,14 +182,20 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 					<?php $this->render_row( __( 'Last Updated (GMT)', INCSUB_SUPPORT_LANG_DOMAIN ), date_i18n( get_option("date_format") . ' ' . get_option("time_format"), strtotime( $current_ticket['ticket_updated'] ), true ) ); ?>
 					
 					<?php 
-						$blog_details = get_blog_details( $current_ticket['blog_id'] );
-						if ( ! $blog_details ) {
-							$markup = __( 'Unknown', INCSUB_SUPPORT_LANG_DOMAIN );
-						}
-						else {						
-							$blog_address = get_blogaddress_by_id( $current_ticket['blog_id'] );
-							$markup = '<a href="' . $blog_address . '">' . $blog_details->blogname . '</a>';
-						}
+						$markup = __( 'Unknown', INCSUB_SUPPORT_LANG_DOMAIN );
+						if ( is_multisite() ) {
+				            $blog_details = get_blog_details( $current_ticket['blog_id'] );
+				            
+				            if ( ! empty( $blog_details ) ) {
+				                $blog_address = get_blogaddress_by_id( $current_ticket['blog_id'] );
+								$markup = '<a href="' . $blog_address . '">' . $blog_details->blogname . '</a>';
+							}
+				        }
+				        else {
+				            $user = get_userdata( $current_ticket['user_id'] );
+				            if ( ! empty( $user ) )
+				                $markup = $user->user_nicename;
+				        }
 						
 						$this->render_row( 'Submitted from', $markup );
 

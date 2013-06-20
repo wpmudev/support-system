@@ -12,13 +12,13 @@ if ( ! class_exists( 'MU_Support_Network_FAQ_Manager_Menu' ) ) {
 		 * 
 		 * @since 1.8
 		 */
-		public function __construct() {
+		public function __construct( $is_network = true, $capability = 'manage_network'  ) {
 		
 			$this->includes();
 
 			$this->page_title = __( 'FAQ Manager', INCSUB_SUPPORT_LANG_DOMAIN ); 
 			$this->menu_title = __( 'FAQ Manager', INCSUB_SUPPORT_LANG_DOMAIN); 
-			$this->capability = 'manage_network';
+			$this->capability = $capability;
 			$this->menu_slug = 'support-faq-manager';
 			$this->parent = MU_Support_System::$network_main_menu->menu_slug;
 			$this->submenu = true;
@@ -30,7 +30,7 @@ if ( ! class_exists( 'MU_Support_Network_FAQ_Manager_Menu' ) ) {
 				'link'=> $add_new_link
 			);
 
-			parent::__construct();
+			parent::__construct( $is_network );
 
 		}
 

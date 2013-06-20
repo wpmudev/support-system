@@ -19,16 +19,16 @@ if ( ! class_exists( 'MU_Support_Network_Support_settings' ) ) {
 		 * 
 		 * @since 1.8
 		 */
-		public function __construct() {
+		public function __construct( $is_network = true, $capability = 'manage_network' ) {
 
 			$this->page_title = __('Support System Settings', INCSUB_SUPPORT_LANG_DOMAIN); 
 			$this->menu_title = __('Settings', INCSUB_SUPPORT_LANG_DOMAIN); 
-			$this->capability = 'manage_network';
+			$this->capability = $capability;
 			$this->menu_slug = 'mu-support-settings';
 			$this->parent = MU_Support_System::$network_main_menu->menu_slug;
 			$this->submenu = true;
 
-			parent::__construct();
+			parent::__construct( $is_network );
 
 			$this->settings = MU_Support_System::$settings;
 
@@ -127,40 +127,40 @@ if ( ! class_exists( 'MU_Support_Network_Support_settings' ) ) {
 
 							    <?php $this->render_row( __( 'Roles', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() );
 
-						    ob_start();
-						    ?>
-						    	<select name="privacy" id="privacy">
-						    		<?php foreach ( MU_Support_System::$privacy as $key => $value ): ?>
-						    			<option value="<?php echo $key; ?>" <?php selected( $this->settings['incsub_ticket_privacy'], $key ); ?>><?php echo $value; ?></option>
-						    		<?php endforeach; ?>
-						    	</select>
-						    <?php
-						    $this->render_row( __( 'Privacy', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() );
-
-						    if ( is_plugin_active( 'pro-sites/pro-sites.php' ) ) {
 							    ob_start();
 							    ?>
-							    	<p><label for="pro_sites">
-							    		<input type="checkbox" id="pro_sites" name="pro_sites" <?php checked( $this->settings['incsub_allow_only_pro_sites'] ); ?>>
-							    		<span> <?php _e( 'Check and select a minimum Pro Site Level to allow <strong>Support Tickets</strong> in a blog (if unchecked, Support will be available for any blog)', INCSUB_SUPPORT_LANG_DOMAIN); ?></span>
-							    	</label></p>
-							    	<p><label for="pro_sites_levels">
-							    		<?php psts_levels_select( 'pro_sites_levels', $this->settings['incsub_pro_sites_level'] ); ?> 
-							    		<span class="description"><?php _e( 'Minimum Pro Site Level', INCSUB_SUPPORT_LANG_DOMAIN ); ?></span>
-							    	</label></p>
-
-							    	<p><label for="pro_sites_faq">
-							    		<input type="checkbox" id="pro_sites_faq" name="pro_sites_faq" <?php checked( $this->settings['incsub_allow_only_pro_sites_faq'] ); ?>>
-							    		<span> <?php _e( 'Check and select a minimum Pro Site Level to allow <strong>Support FAQ</strong> in a blog (if unchecked, Support FAQ will be available for any blog)', INCSUB_SUPPORT_LANG_DOMAIN); ?></span>
-							    	</label></p>
-							    	<p><label for="pro_sites_faq_levels">
-							    		<?php psts_levels_select( 'pro_sites_faq_levels', $this->settings['incsub_pro_sites_faq_level'] ); ?> 
-							    		<span class="description"><?php _e( 'Minimum Pro Site Level', INCSUB_SUPPORT_LANG_DOMAIN ); ?></span>
-							    	</label></p>
+							    	<select name="privacy" id="privacy">
+							    		<?php foreach ( MU_Support_System::$privacy as $key => $value ): ?>
+							    			<option value="<?php echo $key; ?>" <?php selected( $this->settings['incsub_ticket_privacy'], $key ); ?>><?php echo $value; ?></option>
+							    		<?php endforeach; ?>
+							    	</select>
 							    <?php
-						    	$this->render_row( __( 'Pro Sites Integration', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() );
-							}
-							?>
+							    $this->render_row( __( 'Privacy', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() );
+
+							    if ( is_plugin_active( 'pro-sites/pro-sites.php' ) ) {
+								    ob_start();
+								    ?>
+								    	<p><label for="pro_sites">
+								    		<input type="checkbox" id="pro_sites" name="pro_sites" <?php checked( $this->settings['incsub_allow_only_pro_sites'] ); ?>>
+								    		<span> <?php _e( 'Check and select a minimum Pro Site Level to allow <strong>Support Tickets</strong> in a blog (if unchecked, Support will be available for any blog)', INCSUB_SUPPORT_LANG_DOMAIN); ?></span>
+								    	</label></p>
+								    	<p><label for="pro_sites_levels">
+								    		<?php psts_levels_select( 'pro_sites_levels', $this->settings['incsub_pro_sites_level'] ); ?> 
+								    		<span class="description"><?php _e( 'Minimum Pro Site Level', INCSUB_SUPPORT_LANG_DOMAIN ); ?></span>
+								    	</label></p>
+
+								    	<p><label for="pro_sites_faq">
+								    		<input type="checkbox" id="pro_sites_faq" name="pro_sites_faq" <?php checked( $this->settings['incsub_allow_only_pro_sites_faq'] ); ?>>
+								    		<span> <?php _e( 'Check and select a minimum Pro Site Level to allow <strong>Support FAQ</strong> in a blog (if unchecked, Support FAQ will be available for any blog)', INCSUB_SUPPORT_LANG_DOMAIN); ?></span>
+								    	</label></p>
+								    	<p><label for="pro_sites_faq_levels">
+								    		<?php psts_levels_select( 'pro_sites_faq_levels', $this->settings['incsub_pro_sites_faq_level'] ); ?> 
+								    		<span class="description"><?php _e( 'Minimum Pro Site Level', INCSUB_SUPPORT_LANG_DOMAIN ); ?></span>
+								    	</label></p>
+								    <?php
+							    	$this->render_row( __( 'Pro Sites Integration', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() );
+								}
+								?>
 						</table>
 
 						
@@ -250,9 +250,7 @@ if ( ! class_exists( 'MU_Support_Network_Support_settings' ) ) {
 
 			// Updating changes
 			if ( ! $this->is_error() ) {
-				foreach ( $this->settings as $key => $setting ) {
-					update_site_option( $key, $setting );
-				}
+				update_site_option( 'incsub_support_settings', $this->settings );
 			}
 
 		}

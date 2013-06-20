@@ -20,7 +20,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_FAQ_Question_Menu' ) ) {
 		 * 
 		 * @since 1.8
 		 */
-		public function __construct() {
+		public function __construct( $is_network = true, $capability = 'manage_network'  ) {
 
 			$this->action = 'edit';
 			if ( isset( $_GET['action'] ) && in_array( $_GET['action'], array( 'edit', 'new' ) ) )
@@ -34,12 +34,12 @@ if ( ! class_exists( 'MU_Support_Network_Single_FAQ_Question_Menu' ) ) {
 				$this->page_title = __( 'Edit FAQ Question', INCSUB_SUPPORT_LANG_DOMAIN); 
 				$this->menu_title = __( 'Edit FAQ Question', INCSUB_SUPPORT_LANG_DOMAIN); 
 			}
-			$this->capability = 'manage_network';
+			$this->capability = $capability;
 			$this->menu_slug = 'single-faq-question';
 			$this->submenu = true;
 
 
-			parent::__construct();
+			parent::__construct( $is_network );
 
 			$this->faq_id = 0;
 			if ( isset( $_GET['fid'] ) )

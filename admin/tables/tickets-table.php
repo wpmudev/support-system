@@ -95,10 +95,20 @@ class MU_Support_Tickets_Table extends WP_List_Table {
     }
 
     function column_submitted( $item ) {
-        $blog_details = get_blog_details( array( 'blog_id' => (int)$item['blog_id'] ) );
+
         $value = __( 'Unknown', INCSUB_SUPPORT_LANG_DOMAIN );
-        if ( ! empty( $blog_details ) )
-            $value = '<a href="' . get_site_url( $item['blog_id'] ) . '">' . $blog_details->blogname . '</a>';
+
+        if ( is_multisite() ) {
+            $blog_details = get_blog_details( array( 'blog_id' => (int)$item['blog_id'] ) );
+            
+            if ( ! empty( $blog_details ) )
+                $value = '<a href="' . get_site_url( $item['blog_id'] ) . '">' . $blog_details->blogname . '</a>';
+        }
+        else {
+            $user = get_userdata( $item['user_id'] );
+            if ( ! empty( $user ) )
+                $value = '<a href="' . admin_url( 'user-edit.php?user_id=' . $user->ID ) . '">' . $user->user_nicename . '</a>';
+        }
 
         return $value;
     }

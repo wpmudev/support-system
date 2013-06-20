@@ -358,7 +358,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		public function get_tickets( $type, $offset = 0, $upper_limit = 0, $args = array() ) {
 			global $wpdb, $current_site;
 
-			$current_site_id = $current_site->id;
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			$where_clause = '';
 			if ( 'archive' == $type )
@@ -539,12 +539,14 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		public function add_new_ticket( $ticket_details ) {
 			global $wpdb, $current_site;
 
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
+
 			$wpdb->query(
 				$wpdb->prepare(
 					"INSERT INTO $this->tickets_table
 					(site_id, blog_id, cat_id, user_id, ticket_priority, ticket_opened, title)
 					VALUES ( '%d', '%d', '%d', '%d', '%d', NOW(), '%s' )",
-					$current_site->id,
+					$current_site_id,
 					get_current_blog_id(),
 					$ticket_details['cat_id'],
 					get_current_user_id(),
@@ -564,7 +566,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 					VALUES (
 						'%d', '%d', '%d', '%s', '%s', '%s'
 					)", 
-					$current_site->id, 
+					$current_site_id, 
 					$wpdb->insert_id, 
 					get_current_user_id(), 
 					$ticket_details['subject'], 
@@ -591,7 +593,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 
 			global $wpdb, $current_site;
 
-			$current_site_id = $current_site->id;
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 			$blog_id = get_current_blog_id();
 
 			
@@ -661,13 +663,14 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		 * @return Mixed Last inserted ID or false 
 		 */
 		public function add_ticket_response( $ticket_id, $title, $message ) {
-			global $wpdb;
+			global $wpdb, $current_site;
 
-			$current_site = get_current_site();
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
+
 			$wpdb->insert(
 				$this->tickets_messages_table,
 				array(
-					'site_id' => $current_site->id,
+					'site_id' => $current_site_id,
 					'ticket_id' => $ticket_id,
 					'admin_id' => get_current_user_id(),
 					'subject' => $title,
@@ -707,6 +710,8 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		public function update_ticket_status( $ticket_id, $category_id, $priority, $status, $responsibility = 'keep' ) {
 			global $wpdb, $current_site;
 
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
+			
 			switch ( $responsibility ) {
 				case 'keep': $adding_update_key = ''; break;
 				case 'punt': $adding_update_key = ',admin_id = 0'; break;
@@ -729,7 +734,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				get_current_user_id(), 
 				$priority, 
 				$status, 
-				$current_site->id, 
+				$current_site_id, 
 				$ticket_id
 			);
 
@@ -792,7 +797,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		public function get_ticket_category( $cat_id ) {
 			global $wpdb, $current_site;
 
-			$current_site_id = $current_site->id;
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			$pq = $wpdb->prepare(
 				"SELECT cat_name
@@ -810,7 +815,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		public function get_faq_category( $cat_id ) {
 			global $wpdb, $current_site;
 
-			$current_site_id = $current_site->id;
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			$pq = $wpdb->prepare(
 				"SELECT cat_name
@@ -829,7 +834,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 
 			global $wpdb, $current_site;
 
-			$current_site_id = $current_site->id;
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			$pq = $wpdb->prepare(
 				"SELECT cat_id, cat_name, defcat
@@ -845,7 +850,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			);
 			
 			if ( empty($cats) ) {
-				$this->fill_ticket_cats_default();
+				$this->fill_tickets_cats_default();
 				$cats = $wpdb->get_results(
 					$pq,
 					ARRAY_A
@@ -858,7 +863,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		public function update_ticket_category_name( $id, $name ) {
 			global $wpdb, $current_site;
 
-			$current_site_id = $current_site->id;
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			return $wpdb->update(
 				$this->tickets_cats_table,
@@ -873,7 +878,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		public function update_faq_category_name( $id, $name ) {
 			global $wpdb, $current_site;
 
-			$current_site_id = $current_site->id;
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			return $wpdb->update(
 				$this->faq_cats_table,
@@ -900,7 +905,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 
 			global $wpdb, $current_site;
 
-			$current_site_id = $current_site->id;
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			$results = $wpdb->get_var( 
 				$wpdb->prepare(
@@ -932,7 +937,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 
 			global $wpdb, $current_site;
 
-			$current_site_id = $current_site->id;
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			$res = $wpdb->insert(
 				$this->tickets_cats_table,
@@ -1024,7 +1029,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 
 			global $wpdb, $current_site;
 
-			$current_site_id = $current_site->id;
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			$pq = $wpdb->prepare(
 				"SELECT cat_id
@@ -1056,7 +1061,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		public function get_questions( $offset, $upper_limit, $args = array() ) {
 			global $wpdb, $current_site;
 
-			$current_site_id = $current_site->id;
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			$where_clause = '';
 			if ( isset( $args['category'] ) )
@@ -1067,7 +1072,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				FROM $this->faq_table as q
 				LEFT JOIN $this->faq_cats_table AS c 
 				ON ( q.cat_id = c.cat_id )
-				WHERE q.site_id = $current_site->id
+				WHERE q.site_id = $current_site_id
 				$where_clause
 				ORDER BY c.cat_name, q.question ASC
 				LIMIT $offset, $upper_limit",
@@ -1079,7 +1084,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				FROM $this->faq_table as q
 				LEFT JOIN $this->faq_cats_table AS c 
 				ON ( q.cat_id = c.cat_id )
-				WHERE q.site_id = $current_site->id"
+				WHERE q.site_id = $current_site_id"
 			);
 
 			return array(
@@ -1122,6 +1127,8 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		public function get_faqs( $cat_id = false ) {
 			global $wpdb, $current_site;
 
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
+
 			$where_clause = '';
 			if ( $cat_id )
 				$where_clause = $wpdb->prepare( " AND q.cat_id = %d", $cat_id );
@@ -1136,7 +1143,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				WHERE q.site_id = %d
 				$where_clause
 				ORDER BY c.cat_name ASC",
-				$current_site->id
+				$current_site_id
 			);
 
 			return $wpdb->get_results( $pq, ARRAY_A );
@@ -1152,7 +1159,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 
 			global $wpdb, $current_site;
 
-			$current_site_id = $current_site->id;
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			$default_cat = $wpdb->get_var(
 				"SELECT * FROM $this->faq_cats_table
@@ -1182,7 +1189,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 
 			global $wpdb, $current_site;
 
-			$current_site_id = $current_site->id;
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			$default_cat = $wpdb->get_var(
 				"SELECT * FROM $this->tickets_cats_table
@@ -1215,7 +1222,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 
 			global $wpdb, $current_site;
 
-			$current_site_id = $current_site->id;
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			$pq = $wpdb->prepare(
 				"SELECT cat_id, cat_name, defcat, qcount
@@ -1307,7 +1314,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		public function add_new_faq_question( $question, $answer, $cat_id ) {
 			global $wpdb, $current_site;
 
-			$current_site_id = $current_site->id;
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			$result = $wpdb->insert( 
 				$this->faq_table, 
@@ -1474,7 +1481,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 
 			global $wpdb, $current_site;
 
-			$current_site_id = $current_site->id;
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			$results = $wpdb->get_var( 
 				$wpdb->prepare(
@@ -1507,7 +1514,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 
 			global $wpdb, $current_site;
 
-			$current_site_id = $current_site->id;
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			$pq = $wpdb->prepare(
 				"SELECT cat_id
@@ -1593,7 +1600,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 
 			global $wpdb, $current_site;
 
-			$current_site_id = $current_site->id;
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			$res = $wpdb->insert(
 				$this->faq_cats_table,

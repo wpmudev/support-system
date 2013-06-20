@@ -22,7 +22,6 @@ if ( ! class_exists( 'MU_Support_Admin_Main_Menu' ) ) {
 
 			$this->includes();
 
-			
 			$this->menu_title = MU_Support_System::$settings['incsub_support_menu_name'];
 			$this->capability = MU_Support_System::$settings['incsub_support_tickets_role'];
 			$this->menu_slug = 'ticket-manager';

@@ -18,18 +18,18 @@ if ( ! class_exists( 'MU_Support_Network_Main_Menu' ) ) {
 		 * 
 		 * @since 1.8
 		 */
-		public function __construct() {
+		public function __construct( $is_network = true, $capability = 'manage_network' ) {
 
 			$this->includes();
 
 			$this->page_title = __('Support Ticket Management System', INCSUB_SUPPORT_LANG_DOMAIN); 
 			$this->menu_title = __('Support', INCSUB_SUPPORT_LANG_DOMAIN); 
-			$this->capability = 'manage_network';
+			$this->capability = $capability;
 			$this->menu_slug = 'ticket-manager';
 
 			$model = MU_Support_System_Model::get_instance();
 			
-			parent::__construct();
+			parent::__construct( $is_network );
 
 			add_action( 'init', array( &$this, 'get_new_tickets' ) );
 
