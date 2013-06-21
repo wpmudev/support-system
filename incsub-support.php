@@ -2,11 +2,11 @@
 /*
 Plugin Name: Support System
 Plugin URI: http://premium.wpmudev.org/project/support-system
-Description: Support System for WordPress multi site 
+Description: Support System for WordPress.
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub), Ignacio (Incsub)
 WDP ID: 36
 Network: true
-Version: 1.8.2
+Version: 1.9
 Author URI: http://premium.wpmudev.org
 Text Domain: incsub-support
 */

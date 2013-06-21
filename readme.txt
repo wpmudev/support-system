@@ -5,13 +5,17 @@ Requires at least: 3.0.0
 Stable tag: trunk
 Tested up to: 3.5.1
 
-Support System for WordPress multi site
+Support System for WordPress multi site. Now also for single sites.
 
 == Description ==
 
-Support System for WordPress multi site.
+Support System for WordPress multi site.. Now also for single sites.
 
 == ChangeLog ==
+
+= 1.9 =
+* Single site compatibility
+* Minor fixes
 
 = 1.8.2 =
 * Settings page moved under Support Main menu.
