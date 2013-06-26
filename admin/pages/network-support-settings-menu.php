@@ -118,16 +118,6 @@ if ( ! class_exists( 'MU_Support_Network_Support_settings' ) ) {
 
 							    <?php $this->render_row( __( 'User roles that can see the FAQs <span class="description">(uncheck all if you want to disable this feature)</span>', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() );
 
-							    ob_start();
-							    ?>
-							    	<select name="privacy" id="privacy">
-							    		<?php foreach ( MU_Support_System::$privacy as $key => $value ): ?>
-							    			<option value="<?php echo $key; ?>" <?php selected( $this->settings['incsub_ticket_privacy'], $key ); ?>><?php echo $value; ?></option>
-							    		<?php endforeach; ?>
-							    	</select>
-							    <?php
-							    $this->render_row( __( 'Privacy', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() );
-
 							    if ( is_plugin_active( 'pro-sites/pro-sites.php' ) ) {
 								    ob_start();
 								    ?>
@@ -151,7 +141,15 @@ if ( ! class_exists( 'MU_Support_Network_Support_settings' ) ) {
 								    <?php
 							    	$this->render_row( __( 'Pro Sites Integration', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() );
 								}
-								?>
+
+							    ob_start();
+							    ?>
+							    	<select name="privacy" id="privacy">
+							    		<?php foreach ( MU_Support_System::$privacy as $key => $value ): ?>
+							    			<option value="<?php echo $key; ?>" <?php selected( $this->settings['incsub_ticket_privacy'], $key ); ?>><?php echo $value; ?></option>
+							    		<?php endforeach; ?>
+							    	</select>
+							    <?php $this->render_row( __( 'Privacy', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); ?>
 						</table>
 
 						

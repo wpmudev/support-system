@@ -214,6 +214,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		 */
 		public function deactivate() {
 			delete_site_option( 'incsub_support_version' );
+			delete_site_option( 'incsub_support_settings' );
 		}
 
 		
