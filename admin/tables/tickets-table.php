@@ -134,7 +134,7 @@ class MU_Support_Tickets_Table extends WP_List_Table {
             'submitted' => __( 'Submitted From', INCSUB_SUPPORT_LANG_DOMAIN ),
             'updated'	=> __( 'Last updated (GMT)', INCSUB_SUPPORT_LANG_DOMAIN )
         ));
-        return $columns;
+        return apply_filters( 'support_network_ticket_columns', $columns );
     }
 
     function extra_tablenav( $which ) {

@@ -163,6 +163,8 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 					<?php $this->render_row( __( 'Reporting User', INCSUB_SUPPORT_LANG_DOMAIN ), $current_ticket['user_name'] ); ?>
 					<?php $this->render_row( __( 'Last Reply From', INCSUB_SUPPORT_LANG_DOMAIN ), $current_ticket['last_user_reply'] ); ?>
 					<?php $this->render_row( __( 'Last Updated (GMT)', INCSUB_SUPPORT_LANG_DOMAIN ), date_i18n( get_option("date_format") . ' ' . get_option("time_format"), strtotime( $current_ticket['ticket_updated'] ), true ) ); ?>
+
+					<?php do_action( 'support_network_ticket_details_fields', $current_ticket ); ?>
 					
 					<?php
 						$markup = __( 'Unknown', INCSUB_SUPPORT_LANG_DOMAIN );

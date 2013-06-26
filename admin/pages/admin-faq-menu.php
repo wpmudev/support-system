@@ -24,7 +24,7 @@ if ( ! class_exists( 'MU_Support_Admin_FAQ_Menu' ) ) {
 
 			$this->page_title = __( 'Frequently Asked Questions', INCSUB_SUPPORT_LANG_DOMAIN ); 
 			$this->menu_title = __( 'FAQ', INCSUB_SUPPORT_LANG_DOMAIN); 
-			$this->capability = MU_Support_System::$settings['incsub_support_faqs_role'];
+			$this->capability = 'read';
 			$this->menu_slug = 'support-faq';
 			$this->parent = $parent;
 			$this->submenu = ! empty( $parent );
@@ -78,8 +78,11 @@ if ( ! class_exists( 'MU_Support_Admin_FAQ_Menu' ) ) {
 		 */
 		public function render_content() {
 
+			global $wp_embed;
+
 		    $model = MU_Support_System_Model::get_instance();
 		    $faq_categories = $model->get_faq_categories();
+
 		    ?>	
 
 		<div id="tabs">
@@ -97,10 +100,12 @@ if ( ! class_exists( 'MU_Support_Admin_FAQ_Menu' ) ) {
 				<?php $faqs = $model->get_faqs( $category['cat_id'] ); ?>
 				<div id="category-<?php echo $category['cat_id']; ?>" class="accordion" style="margin:20px">
 		    		<?php foreach ( $faqs as $faq ): ?>
+
+		    			<?php $answer = apply_filters('the_content', strip_tags( $faq['answer'] ) ); ?>
 		    		
 			    		<h3><?php echo $faq['question']; ?></h3>
 						<div>
-							<?php echo $faq['answer']; ?>
+							<?php echo $answer; ?>
 							<p class="submit" data-faq-id="<?php echo $faq['faq_id']; ?>"><?php _e( 'Was this solution helpful?', INCSUB_SUPPORT_LANG_DOMAIN ); ?> 
 								<?php echo '<button class="button-primary vote-button" data-vote="yes"> ' . __( 'Yes', INCSUB_SUPPORT_LANG_DOMAIN ) . '</button> <button href="#" class="button vote-button" data-vote="no"> ' . __( 'No', INCSUB_SUPPORT_LANG_DOMAIN ) . '</button>'; ?>
 								<img style="display:none; margin-left:10px;vertical-align:middle" src="<?php echo INCSUB_SUPPORT_ASSETS_URL . 'images/ajax-loader.gif'; ?>">

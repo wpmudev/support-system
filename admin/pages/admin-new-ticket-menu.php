@@ -22,7 +22,7 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 
 			$this->page_title = __( 'Add new ticket', INCSUB_SUPPORT_LANG_DOMAIN ); 
 			$this->menu_title = __( 'Add new ticket', INCSUB_SUPPORT_LANG_DOMAIN );
-			$this->capability = MU_Support_System::$settings['incsub_support_tickets_role'];
+			$this->capability = 'read';
 			$this->menu_slug = 'add-new-ticket';
 			$this->submenu = true;
 
@@ -85,6 +85,8 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 						<?php ob_start(); ?>
 							<?php wp_editor( $this->current_ticket['message'], 'message-text', array( 'media_buttons' => true ) ); ?>
 						<?php $this->render_row( __( 'Problem description', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); ?>
+
+						<?php do_action( 'support_new_ticket_fields', $this->current_ticket ); ?>
 						
 					
 					</table>
@@ -129,6 +131,7 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 					$this->add_error( 'message', __( 'Message must not be empty', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
 				if ( ! $this->is_error() ) {
+
 					$model = MU_Support_System_Model::get_instance();
 					$ticket_id = $model->add_new_ticket( $this->current_ticket );
 
@@ -136,6 +139,8 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 						$this->add_error( 'ticket-insert', __("Ticket Error: There was an error submitting your ticket. Please try again in a few minutes.", INCSUB_SUPPORT_LANG_DOMAIN ) );
 						return false;
 					}
+
+					do_action( 'support_new_ticket', $ticket_id, $this->current_ticket );
 
 					// Current user data
 					$user = get_userdata( get_current_user_id() );

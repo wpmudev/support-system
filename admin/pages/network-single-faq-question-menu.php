@@ -195,6 +195,8 @@ if ( ! class_exists( 'MU_Support_Network_Single_FAQ_Question_Menu' ) ) {
 
 			if ( isset( $_POST['submit'] ) && isset( $_POST['action'] ) && 'edit-faq-question' == $_POST['action'] ) {
 
+				global $wp_embed;
+
 				if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'] , 'edit-faq-question' ) )
 					wp_die( 'Security check error', INCSUB_SUPPORT_LANG_DOMAIN );
 

@@ -90,7 +90,7 @@ class MU_Support_Admin_Tickets_Table extends WP_List_Table {
             'staff'		=> __( 'Staff Member', INCSUB_SUPPORT_LANG_DOMAIN ),
             'updated'	=> __( 'Last updated (GMT)', INCSUB_SUPPORT_LANG_DOMAIN )
         );
-        return $columns;
+        return apply_filters( 'support_ticket_columns', $columns );
     }
 
     function extra_tablenav( $which ) {

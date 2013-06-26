@@ -6,7 +6,7 @@ Description: Support System for WordPress.
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub), Ignacio (Incsub)
 WDP ID: 36
 Network: true
-Version: 1.9
+Version: 1.9.1
 Author URI: http://premium.wpmudev.org
 Text Domain: incsub-support
 */
@@ -28,7 +28,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '1.9' );
+define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '1.9.1' );
 
 if ( ! defined( 'INCSUB_SUPPORT_LANG_DOMAIN' ) )
 	define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
@@ -80,8 +80,13 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		 */
 		public function __construct() {
 
-			$this->group_settings_upgrade();
-			
+
+
+			// Include needed files
+			$this->includes();
+
+			incsub_support_group_settings_upgrade();
+
 			// Setting properties
 			self::$ticket_status = array(
 				0	=>	__( 'New', INCSUB_SUPPORT_LANG_DOMAIN ),
@@ -114,15 +119,12 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 			self::$settings = wp_parse_args( get_site_option( 'incsub_support_settings' ), self::get_default_settings() );
 
-			// Include needed files
-			$this->includes();
-
 			// Activation/Upgrades
 			register_activation_hook( __FILE__, array( &$this, 'activate' ) );
 			register_deactivation_hook( __FILE__, array( &$this, 'deactivate' ) );
 
 			// Is this an upgrade?
-			add_action( 'admin_init', array( &$this, 'check_for_upgrades' ) );
+			add_action( 'admin_init', 'incsub_support_check_for_upgrades' );
 
 			add_action( 'init', array( &$this, 'load_text_domain' ) );
 
@@ -142,37 +144,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			wp_enqueue_style( 'support-admin-icon', INCSUB_SUPPORT_ASSETS_URL . 'css/icon-styles.css', array(), '20130607' );
 		}
 
-		/**
-		 * Groups the old settings into just one setting option
-		 * 
-		 * @since 1.9
-		 */
-		private function group_settings_upgrade() {
-			$saved_version = get_site_option( 'incsub_support_version', false );
-			if ( ! $saved_version || version_compare( $saved_version, '1.9' ) < 0 ) {
-				// We're going to group all settings into one option
-				$old_settings = array(
-					'incsub_support_menu_name' => get_site_option( 'incsub_support_menu_name', __( 'Support', INCSUB_SUPPORT_LANG_DOMAIN ) ),
-					'incsub_support_from_name' => get_site_option( 'incsub_support_from_name', get_bloginfo( 'blogname' ) ),
-					'incsub_support_from_mail' => get_site_option( 'incsub_support_from_mail', get_bloginfo( 'admin_email' ) ),
-					'incsub_support_fetch_imap' => get_site_option('incsub_support_fetch_imap', 'disabled'),
-					'incsub_support_imap_frequency' => get_site_option('incsub_support_imap_frequency', ''),
-					'incsub_allow_only_pro_sites' => get_site_option( 'incsub_allow_only_pro_sites', false ),
-					'incsub_pro_sites_level' => get_site_option( 'incsub_pro_sites_level', '' ),
-					'incsub_allow_only_pro_sites_faq' => get_site_option( 'incsub_allow_only_pro_sites_faq', false ),
-					'incsub_pro_sites_faq_level' => get_site_option( 'incsub_pro_sites_faq_level', '' ),
-					'incsub_ticket_privacy' => get_site_option( 'incsub_ticket_privacy', 'all' ),
-					'incsub_support_faq_enabled' => get_site_option( 'incsub_support_faq_enabled', true ),
-					'incsub_support_tickets_role' => get_site_option( 'incsub_support_tickets_role', is_multisite() ? 'manage_options' : 'publish_pages' ),
-					'incsub_support_faqs_role' => get_site_option( 'incsub_support_faqs_role', 'read' )
-				);
-				update_site_option( 'incsub_support_settings', $old_settings );
-
-				foreach ( $old_settings as $key => $value ) {
-					delete_site_option( $key );
-				}
-			}
-		}
+		
 
 		public static function get_default_settings() {
 			return array(
@@ -186,9 +158,8 @@ if ( ! class_exists( 'MU_Support_System') ) {
 				'incsub_allow_only_pro_sites_faq' => false,
 				'incsub_pro_sites_faq_level' => '',
 				'incsub_ticket_privacy' => 'all',
-				'incsub_support_faq_enabled' => true ,
-				'incsub_support_tickets_role' => is_multisite() ? 'manage_options' : 'publish_pages',
-				'incsub_support_faqs_role' => 'read'
+				'incsub_support_tickets_role' => array( 'administrator', 'editor', 'author', 'contributor', 'subscriber' ),
+				'incsub_support_faqs_role' => array( 'administrator', 'editor', 'author', 'contributor', 'subscriber' )
 			);
 		}
 
@@ -204,6 +175,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 			// Admin
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/support-menu.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/upgrades.php');
 
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/admin/pages/network-main-menu.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/admin/pages/network-ticket-categories-menu.php');
@@ -242,37 +214,9 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		 */
 		public function deactivate() {
 			delete_site_option( 'incsub_support_version' );
-			delete_site_option( 'incsub_support_settings' );
 		}
 
-		/**
-		 * Upgrades the plugin
-		 * 
-		 * @since 1.8
-		 * 
-		 * @param String old_version old version number
-		 */
-		public function check_for_upgrades() {
-
-			$saved_version = get_site_option( 'incsub_support_version', false );
-
-			if ( ! $saved_version || version_compare( $saved_version, self::$version ) < 0 ) {
-
-				$model = MU_Support_System_Model::get_instance();
-
-				if ( version_compare( $saved_version, '1.7.2.2' ) < 0 )
-					$model->upgrade_1722();
-
-				if ( version_compare( $saved_version, '1.8' ) < 0 )
-					$model->upgrade_18();
-
-				if ( version_compare( $saved_version, '1.8.1' ) < 0 )
-					$model->upgrade_181();
-
-				update_site_option( 'incsub_support_version', self::$version );
-			}
-
-		}
+		
 
 		/**
 		 * Add actions for admin menus
@@ -292,15 +236,31 @@ if ( ! class_exists( 'MU_Support_System') ) {
 				}
 				elseif ( is_admin() ) {
 
-					$admin_ticket_menu_allowed = true;
-					if ( (boolean)MU_Support_System::$settings['incsub_allow_only_pro_sites'] )
-						$admin_ticket_menu_allowed = function_exists( 'is_pro_site' ) && is_pro_site( get_current_blog_id(), absint( MU_Support_System::$settings['incsub_pro_sites_level'] ) );
+					$user = get_userdata( get_current_user_id() );
+					$user_role = isset( $user->roles[0] ) ? $user->roles[0] : ( is_super_admin() ? 'administrator' : '' );
 
-					$admin_faq_menu_allowed = true;
-					if ( MU_Support_System::$settings['incsub_allow_only_pro_sites_faq'] )
-						$admin_faq_menu_allowed = function_exists( 'is_pro_site' ) && is_pro_site( get_current_blog_id(), absint( MU_Support_System::$settings['incsub_pro_sites_faq_level'] ) );
+					$admin_ticket_menu_allowed = false;
+					// Tickets allowed?
+					foreach ( self::$settings['incsub_support_tickets_role'] as $ticket_role ) {
+						if ( $user_role == $ticket_role ) {
+							$admin_ticket_menu_allowed = true;
+							break;
+						}
+					}
 
-					$admin_faq_menu_allowed = $admin_faq_menu_allowed && MU_Support_System::$settings['incsub_support_faq_enabled'];
+					if ( (boolean)self::$settings['incsub_allow_only_pro_sites'] && $admin_ticket_menu_allowed )
+						$admin_ticket_menu_allowed = function_exists( 'is_pro_site' ) && is_pro_site( get_current_blog_id(), absint( self::$settings['incsub_pro_sites_level'] ) );
+
+					// FAQs allowed?
+					$admin_faq_menu_allowed = false;
+					foreach ( self::$settings['incsub_support_faqs_role'] as $faq_role ) {
+						if ( $user_role == $faq_role ) {
+							$admin_faq_menu_allowed = true;
+							break;
+						}
+					}
+					if ( self::$settings['incsub_allow_only_pro_sites_faq'] && $admin_faq_menu_allowed )
+						$admin_faq_menu_allowed = function_exists( 'is_pro_site' ) && is_pro_site( get_current_blog_id(), absint( self::$settings['incsub_pro_sites_faq_level'] ) );
 
 					// If is not a Pro site we will not create the menu
 					if ( $admin_ticket_menu_allowed ) {
@@ -316,7 +276,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 				}
 			}
 			elseif ( ! is_multisite() && is_admin() ) {
-				if ( current_user_can( 'manage_options' ) ) {
+				if ( current_user_can( 'administrator' ) ) {
 					self::$network_main_menu = new MU_Support_Network_Main_Menu( false, 'manage_options' );
 					self::$network_single_ticket_menu = new MU_Support_Network_Single_Ticket_Menu( false, false, 'manage_options' );
 					self::$network_ticket_categories = new MU_Support_Network_Ticket_Categories( false, 'manage_options' );
@@ -326,39 +286,39 @@ if ( ! class_exists( 'MU_Support_System') ) {
 					self::$network_support_settings_menu = new MU_Support_Network_Support_settings( false, 'manage_options' );
 				}
 				else {
-					self::$admin_single_ticket_menu = new MU_Support_Admin_Single_Ticket_Menu();
-					self::$admin_new_ticket_menu = new MU_Support_Admin_New_Ticket_Menu();
-					self::$admin_main_menu = new MU_Support_Admin_Main_Menu();
 
-					$admin_faq_menu_allowed = MU_Support_System::$settings['incsub_support_faq_enabled'];
-					$admin_ticket_menu_allowed = current_user_can( MU_Support_System::$settings['incsub_support_tickets_role'] );
+					$user = get_userdata( get_current_user_id() );
+					$user_role = $user->roles[0];
 
+					// Tickets allowed?
+					$admin_ticket_menu_allowed = false;
+					foreach ( self::$settings['incsub_support_tickets_role'] as $ticket_role ) {
+						if ( $user_role == $ticket_role ) {
+							$admin_ticket_menu_allowed = true;
+							break;
+						}
+					}
+					if ( $admin_ticket_menu_allowed ) {
+						self::$admin_single_ticket_menu = new MU_Support_Admin_Single_Ticket_Menu();
+						self::$admin_new_ticket_menu = new MU_Support_Admin_New_Ticket_Menu();
+						self::$admin_main_menu = new MU_Support_Admin_Main_Menu();
+					}
+					
+
+					// FAQs allowed?
+					$admin_faq_menu_allowed = false;
+					foreach ( self::$settings['incsub_support_faqs_role'] as $faq_role ) {
+						if ( $user_role == $faq_role ) {
+							$admin_faq_menu_allowed = true;
+							break;
+						}
+					}
 					if ( ! $admin_ticket_menu_allowed && $admin_faq_menu_allowed )
 						self::$admin_faq_menu = new MU_Support_Admin_FAQ_Menu( true );
 					elseif ( $admin_ticket_menu_allowed && $admin_faq_menu_allowed )
 						self::$admin_faq_menu = new MU_Support_Admin_FAQ_Menu( false );
 				}
 			}
-		}
-
-		/**
-		 * Programs several schedules frequency
-		 * 
-		 * @since 1.6
-		 * 
-		 * @param Array $schedule WP Schedules Array
-		 * 
-		 * @param Array New WP Schedules Array
-		 */
-		public function cron_schedules( $schedules ) {
-			if ( self::$settings['incsub_support_fetch_imap'] == 'enabled' ) {
-				$schedules['everyminute'] = array( 'interval' => 60, 'display' => __('Once a minute', INCSUB_SUPPORT_LANG_DOMAIN) );
-				$schedules['fiveminutes'] = array( 'interval' => 300, 'display' => __('Once every five minutes', INCSUB_SUPPORT_LANG_DOMAIN) );
-				$schedules['fifteenminutes'] = array( 'interval' => 900, 'display' => __('Once every fifteen minutes', INCSUB_SUPPORT_LANG_DOMAIN) );
-				$schedules['thirtyminutes'] = array( 'interval' => 1800, 'display' => __('Once every half an hour', INCSUB_SUPPORT_LANG_DOMAIN) );
-			}
-			
-			return $schedules;
 		}
 
 		/**
@@ -370,24 +330,27 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			return 'text/html';
 		}
 
+		/**
+		 * Return all roles depending on multisite or not
+		 * 
+		 * @since 1.9
+		 */
 		public static function get_roles() {
-			if ( is_multisite() ) {
-				return array(
-					'manage_options' => __( 'Administrator' ),
-					'publish_pages' => __( 'Editor' ),
-					'publish_posts' => __( 'Author' ),
-					'edit_posts' => __( 'Contributor' ),
-					'read' => __( 'Subscriber' )
-				);
+
+			global $wp_roles;
+
+			$just_roles = $wp_roles->roles;
+
+			if ( ! is_multisite() )
+				unset( $just_roles['administrator'] );
+
+			$support_roles = array();
+			foreach ( $just_roles as $key => $role ) {
+				$support_roles[ $key ] = $role['name'];
 			}
-			else {
-				return array(
-					'publish_pages' => __( 'Editor' ),
-					'publish_posts' => __( 'Author' ),
-					'edit_posts' => __( 'Contributor' ),
-					'read' => __( 'Subscriber' )
-				);
-			}
+			
+			return $support_roles;
+
 		}
 
 	}

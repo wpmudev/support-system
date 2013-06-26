@@ -97,35 +97,26 @@ if ( ! class_exists( 'MU_Support_Network_Support_settings' ) ) {
 						    $this->render_row( __( 'Support from e-mail', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() );
 
 						    ob_start();
-						    ?>
-						    	<label for="faq_enabled">
-									<input type="checkbox" name="faq_enabled" id="faq_enabled" <?php checked( $this->settings['incsub_support_faq_enabled'] ); ?>>
-									<span class="description"><?php _e( "If unchecked, blogs users will not see the FAQ menu", INCSUB_SUPPORT_LANG_DOMAIN ); ?></span>
-								</label>
-						    <?php
-						    $this->render_row( __( 'Enable FAQ menu', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() );
-
-						    ob_start();
 								$roles = MU_Support_System::get_roles();
-							    ?>
-							    	<p><label for="tickets_role">
-							    		<select name="tickets_role" id="tickets_role">
-							    			<?php foreach ( $roles as $key => $value ): ?>
-							    				<option value="<?php echo $key; ?>" <?php selected( $this->settings['incsub_support_tickets_role'], $key ); ?>><?php echo $value; ?></option>
-							    			<?php endforeach; ?>
-							    		</select>
-							    		<span class="description"><?php _e( 'Minimum User role that can open/see tickets.', INCSUB_SUPPORT_LANG_DOMAIN ); ?></span>
-							    	</label></p>
-							    	<p><label for="faqs_role">
-							    		<select name="faqs_role" id="faqs_role">
-							    			<?php foreach ( $roles as $key => $value ): ?>
-							    				<option value="<?php echo $key; ?>" <?php selected( $this->settings['incsub_support_faqs_role'], $key ); ?>><?php echo $value; ?></option>
-							    			<?php endforeach; ?>
-							    		</select>
-							    		<span class="description"><?php _e( 'Minimum User role that can see the FAQs.', INCSUB_SUPPORT_LANG_DOMAIN ); ?></span>
-							    	</label></p>
+							    ?>	
+							    	<?php foreach ( $roles as $key => $value ):	?>
 
-							    <?php $this->render_row( __( 'Roles', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() );
+							    		<label for="tickets_role_<?php echo $key; ?>">						    		
+						    				<input type="checkbox" value="<?php echo $key; ?>" id="tickets_role_<?php echo $key; ?>" name="tickets_role[]" <?php checked( in_array( $key, $this->settings['incsub_support_tickets_role'] ) ); ?> /> <?php echo $value; ?><br/>
+							    		</label>
+							    	<?php endforeach; ?>
+							    <?php 
+							    	$this->render_row( __( 'User roles that can open/see tickets.', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); 
+
+							    	ob_start();
+							    ?>
+							    	<?php foreach ( $roles as $key => $value ): ?>
+							    		<label for="faqs_role_<?php echo $key; ?>">
+						    				<input type="checkbox" value="<?php echo $key; ?>" id="faqs_role_<?php echo $key; ?>" name="faqs_role[]" <?php checked( in_array( $key, $this->settings['incsub_support_faqs_role'] ) ); ?> /> <?php echo $value; ?><br/>
+							    		</label>
+							    	<?php endforeach; ?>
+
+							    <?php $this->render_row( __( 'User roles that can see the FAQs <span class="description">(uncheck all if you want to disable this feature)</span>', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() );
 
 							    ob_start();
 							    ?>
@@ -235,18 +226,28 @@ if ( ! class_exists( 'MU_Support_Network_Support_settings' ) ) {
 				$this->settings['incsub_pro_sites_faq_level'] = '';
 			}
 
-			// FAQ MENU
-			if ( isset( $input['faq_enabled'] ) )
-				$this->settings['incsub_support_faq_enabled'] = true;
-			else
-				$this->settings['incsub_support_faq_enabled'] = false;
-
 			// ROLES
-			if ( isset( $input['tickets_role'] ) && array_key_exists( $input['tickets_role'], MU_Support_System::get_roles() ) )
-				$this->settings['incsub_support_tickets_role'] = $input['tickets_role'];
+			$this->settings['incsub_support_tickets_role'] = array();
+			if ( isset( $input['tickets_role'] ) && is_array( $input['tickets_role'] ) ) {
+				foreach ( $input['tickets_role'] as $ticket_role ) {
+					if ( array_key_exists( $ticket_role, MU_Support_System::get_roles() ) )
+						$this->settings['incsub_support_tickets_role'][] = $ticket_role;	
+				}
+			}
 
-			if ( isset( $input['faqs_role'] ) && array_key_exists( $input['faqs_role'], MU_Support_System::get_roles() ) )
-				$this->settings['incsub_support_faqs_role'] = $input['faqs_role'];
+			if ( empty( $this->settings['incsub_support_tickets_role'] ) ) {
+				$default_settings = MU_Support_System::get_default_settings();
+				$this->settings['incsub_support_tickets_role'] = $default_settings['incsub_support_tickets_role'];
+			}
+
+
+			$this->settings['incsub_support_faqs_role'] = array();
+			if ( isset( $input['faqs_role'] ) && is_array( $input['faqs_role'] ) ) {
+				foreach ( $input['faqs_role'] as $faq_role ) {
+					if ( array_key_exists( $faq_role, MU_Support_System::get_roles() ) )
+						$this->settings['incsub_support_faqs_role'][] = $faq_role;	
+				}
+			}
 
 			// Updating changes
 			if ( ! $this->is_error() ) {
