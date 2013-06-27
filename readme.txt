@@ -13,6 +13,13 @@ Support System for WordPress multi site.. Now also for single sites.
 
 == ChangeLog ==
 
+= 1.9.1 =
+* Multiselect user roles
+* Improved upgrading system
+* Little optimizations
+* Added some custom filters/actions
+* Other minor changes
+
 = 1.9 =
 * Single site compatibility
 * Minor fixes
