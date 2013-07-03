@@ -13,6 +13,9 @@ Support System for WordPress multi site.. Now also for single sites.
 
 == ChangeLog ==
 
+= 1.9.2 =
+* Improved translation system
+
 = 1.9.1 =
 * Multiselect user roles
 * Improved upgrading system

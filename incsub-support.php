@@ -6,7 +6,7 @@ Description: Support System for WordPress.
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub), Ignacio (Incsub)
 WDP ID: 36
 Network: true
-Version: 1.9.1
+Version: 1.9.2
 Author URI: http://premium.wpmudev.org
 Text Domain: incsub-support
 */
@@ -28,7 +28,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '1.9.1' );
+define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '1.9.2' );
 
 if ( ! defined( 'INCSUB_SUPPORT_LANG_DOMAIN' ) )
 	define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
@@ -87,6 +87,31 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 			incsub_support_group_settings_upgrade();
 
+			// Initializes plugin
+			add_action( 'init', array( &$this, 'init_plugin' ) );
+
+			// Activation/Upgrades
+			register_activation_hook( __FILE__, array( &$this, 'activate' ) );
+			register_deactivation_hook( __FILE__, array( &$this, 'deactivate' ) );
+
+			// Is this an upgrade?
+			add_action( 'admin_init', 'incsub_support_check_for_upgrades' );
+
+			add_action( 'plugins_loaded', array( &$this, 'load_text_domain' ) );
+
+			// Create Admin menus
+			add_action( 'init', array( &$this, 'admin_menus' ) );
+
+			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_styles' ) );
+			add_action( 'load_textdomain', array( &$this, 'test' ), 10, 2 );
+
+		}
+
+		function test( $a, $b ) {
+
+		}
+
+		public function init_plugin() {
 			// Setting properties
 			self::$ticket_status = array(
 				0	=>	__( 'New', INCSUB_SUPPORT_LANG_DOMAIN ),
@@ -118,26 +143,15 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			);
 
 			self::$settings = wp_parse_args( get_site_option( 'incsub_support_settings' ), self::get_default_settings() );
-
-			// Activation/Upgrades
-			register_activation_hook( __FILE__, array( &$this, 'activate' ) );
-			register_deactivation_hook( __FILE__, array( &$this, 'deactivate' ) );
-
-			// Is this an upgrade?
-			add_action( 'admin_init', 'incsub_support_check_for_upgrades' );
-
-			add_action( 'init', array( &$this, 'load_text_domain' ) );
-
-			// Create Admin menus
-			add_action( 'init', array( &$this, 'admin_menus' ) );
-
-			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_styles' ) );
-
 		}
 
 		public function load_text_domain() {
-			load_textdomain( INCSUB_SUPPORT_LANG_DOMAIN, WP_LANG_DIR . '/' . INCSUB_SUPPORT_LANG_DOMAIN . '/' . INCSUB_SUPPORT_LANG_DOMAIN . '-' . get_locale() . '.mo' );
-        	load_plugin_textdomain( INCSUB_SUPPORT_LANG_DOMAIN, false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );	
+
+			$locale = apply_filters( 'plugin_locale', get_locale(), INCSUB_SUPPORT_LANG_DOMAIN );
+
+			load_textdomain( INCSUB_SUPPORT_LANG_DOMAIN, WP_LANG_DIR . '/' . INCSUB_SUPPORT_LANG_DOMAIN . '/' . INCSUB_SUPPORT_LANG_DOMAIN . '-' . $locale . '.mo' );
+			load_plugin_textdomain( INCSUB_SUPPORT_LANG_DOMAIN, FALSE, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+			
 		}
 
 		public function enqueue_styles() {
@@ -347,7 +361,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 			$support_roles = array();
 			foreach ( $just_roles as $key => $role ) {
-				$support_roles[ $key ] = $role['name'];
+				$support_roles[ $key ] = translate_user_role( $role['name'] );
 			}
 			
 			return $support_roles;
