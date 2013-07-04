@@ -13,6 +13,9 @@ Support System for WordPress multi site.. Now also for single sites.
 
 == ChangeLog ==
 
+= 1.9.3 =
+* Some strings were not being translated
+
 = 1.9.2 =
 * Improved translation system
 
