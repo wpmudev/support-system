@@ -156,8 +156,8 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 			<form method="post" action="">
 				<table class="form-table">
 					<h3><?php echo __( 'Ticket Subject', INCSUB_SUPPORT_LANG_DOMAIN ) . ': ' .  stripslashes_deep( $current_ticket['title'] ); ?></h3>
-					<?php $this->render_row( 'Current Status', MU_Support_System::$ticket_status[ $current_ticket['ticket_status'] ] ); ?>
-					<?php $this->render_row( 'Created On (GMT)', date_i18n( get_option("date_format") . ' ' . get_option("time_format"), strtotime( $current_ticket['ticket_opened'] ), true ) ); ?>
+					<?php $this->render_row( __( 'Current Status', INCSUB_SUPPORT_LANG_DOMAIN ), MU_Support_System::$ticket_status[ $current_ticket['ticket_status'] ] ); ?>
+					<?php $this->render_row( __( 'Created On (GMT)', INCSUB_SUPPORT_LANG_DOMAIN ), date_i18n( get_option("date_format") . ' ' . get_option("time_format"), strtotime( $current_ticket['ticket_opened'] ), true ) ); ?>
 
 
 					<?php $this->render_row( __( 'Reporting User', INCSUB_SUPPORT_LANG_DOMAIN ), $current_ticket['user_name'] ); ?>
@@ -182,7 +182,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 				                $markup = '<a href="' . admin_url( 'user-edit.php?user_id=' . $user->ID ) . '">' . $user->user_nicename . '</a>';
 				        }
 						
-						$this->render_row( 'Submitted from', $markup ); ?>
+						$this->render_row( __( 'Submitted from', INCSUB_SUPPORT_LANG_DOMAIN ), $markup ); ?>
 
 					<?php 
 						$super_admins = is_multisite() ? get_super_admins() : $this->get_admins();
@@ -196,7 +196,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 						</select>
 					<?php
 						$markup = ob_get_clean();
-						$this->render_row( 'Staff Representative',  $markup ); 
+						$this->render_row( __( 'Staff Representative', INCSUB_SUPPORT_LANG_DOMAIN ),  $markup ); 
 					?>
 
 					<?php 
@@ -210,7 +210,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 						</select>
 					<?php
 						$markup = ob_get_clean();
-						$this->render_row( 'Priority',  $markup ); 
+						$this->render_row( __( 'Priority', INCSUB_SUPPORT_LANG_DOMAIN ),  $markup ); 
 
 						$ticket_closed = $model->is_ticket_archived( absint( $this->current_ticket['ticket_id'] ) );
 						ob_start();
@@ -218,7 +218,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 						<input name="close-ticket" type="checkbox" <?php checked( $ticket_closed ); ?> />
 					<?php
 						$markup = ob_get_clean();
-						$this->render_row( '<strong>Ticket closed</strong>',  $markup ); 
+						$this->render_row( '<strong>' . __( 'Ticket closed', INCSUB_SUPPORT_LANG_DOMAIN ) . '</strong>',  $markup ); 
 					?>
 				</table>
 				<?php wp_nonce_field( 'update-ticket-details' ); ?>
