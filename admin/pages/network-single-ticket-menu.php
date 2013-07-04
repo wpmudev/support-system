@@ -470,7 +470,12 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 					$user = get_userdata( get_current_user_id() );
 
 					// Administrator mail
-					$visit_link = remove_query_arg( 'view' );
+					$visit_link = add_query_arg(
+						'tid',
+						$this->ticket_id,
+						$this->get_permalink()
+					);
+					
 					$args = array(
 						'title'				=> $this->current_ticket['title'],
 						'ticket_status'		=> MU_Support_System::$ticket_status[$status],

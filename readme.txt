@@ -15,6 +15,7 @@ Support System for WordPress multi site.. Now also for single sites.
 
 = 1.9.3 =
 * Some strings were not being translated
+* Fixed link when updating ticket from Network
 
 = 1.9.2 =
 * Improved translation system

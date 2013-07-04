@@ -395,6 +395,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 			
 			if ( isset( $_GET['page'] ) && $this->menu_slug == $_GET['page'] && isset( $_POST['action'] ) && 'add-ticket-reply' == $_POST['action']  && isset( $_GET['page'] ) && $this->menu_slug == $_GET['page'] ) {
 
+
 				$model = MU_Support_System_Model::get_instance();
 				if ( ! $model->is_current_blog_ticket( $this->ticket_id ) )
 					wp_die( 'You do not have enough permissions to edit the ticket', INCSUB_SUPPORT_LANG_DOMAIN );
@@ -467,6 +468,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 						'user_nicename'		=> $user->user_nicename,
 						'site_name'			=> get_site_option( 'site_name' )
 					);
+
 
 					$mail_content = incsub_support_get_ticketadmin_mail_content( $args );
 
