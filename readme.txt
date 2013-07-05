@@ -13,6 +13,11 @@ Support System for WordPress multi site.. Now also for single sites.
 
 == ChangeLog ==
 
+= 1.9.4 =
+* Fixed visit link when sending emails
+* Fixed Headers in mails 
+* Made mails translatable
+
 = 1.9.3 =
 * Some strings were not being translated
 * Fixed link when updating ticket from Network
