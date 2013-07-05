@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Support System\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-04 10:07+0100\n"
-"PO-Revision-Date: 2013-07-04 10:07+0100\n"
+"POT-Creation-Date: 2013-07-05 13:41+0100\n"
+"PO-Revision-Date: 2013-07-05 13:41+0100\n"
 "Last-Translator: Ignacio <igmoweb@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -13,65 +13,65 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../incsub-support.php:117
+#: ../incsub-support.php:113
 msgid "New"
 msgstr ""
 
-#: ../incsub-support.php:118
+#: ../incsub-support.php:114
 msgid "In progress"
 msgstr ""
 
-#: ../incsub-support.php:119
+#: ../incsub-support.php:115
 msgid "Waiting on User to reply"
 msgstr ""
 
-#: ../incsub-support.php:120
+#: ../incsub-support.php:116
 msgid "Waiting on Admin to reply"
 msgstr ""
 
-#: ../incsub-support.php:121
+#: ../incsub-support.php:117
 msgid "Stalled"
 msgstr ""
 
-#: ../incsub-support.php:122
+#: ../incsub-support.php:118
 #: ../admin/pages/admin-main-menu.php:82
 #: ../admin/pages/network-main-menu.php:83
 msgid "Closed"
 msgstr ""
 
-#: ../incsub-support.php:126
+#: ../incsub-support.php:122
 msgid "Low"
 msgstr ""
 
-#: ../incsub-support.php:127
+#: ../incsub-support.php:123
 msgid "Normal"
 msgstr ""
 
-#: ../incsub-support.php:128
+#: ../incsub-support.php:124
 msgid "Elevated"
 msgstr ""
 
-#: ../incsub-support.php:129
+#: ../incsub-support.php:125
 msgid "High"
 msgstr ""
 
-#: ../incsub-support.php:130
+#: ../incsub-support.php:126
 msgid "Critical"
 msgstr ""
 
-#: ../incsub-support.php:141
+#: ../incsub-support.php:137
 msgid "Allow all users to see all tickets in a site"
 msgstr ""
 
-#: ../incsub-support.php:141
+#: ../incsub-support.php:137
 msgid "Allow all users to see all tickets"
 msgstr ""
 
-#: ../incsub-support.php:142
+#: ../incsub-support.php:138
 msgid "Allow only requestors to see their own tickets"
 msgstr ""
 
-#: ../incsub-support.php:165
+#: ../incsub-support.php:161
 #: ../admin/pages/network-main-menu.php:26
 msgid "Support"
 msgstr ""
@@ -194,8 +194,8 @@ msgid "Ticket Error: There was an error submitting your ticket. Please try again
 msgstr ""
 
 #: ../admin/pages/admin-new-ticket-menu.php:188
-#: ../admin/pages/admin-single-ticket-menu.php:559
-#: ../admin/pages/network-single-ticket-menu.php:579
+#: ../admin/pages/admin-single-ticket-menu.php:572
+#: ../admin/pages/network-single-ticket-menu.php:608
 msgid "New Support Ticket: "
 msgstr ""
 
@@ -326,12 +326,12 @@ msgstr ""
 msgid "The ticket you're trying to find does not exist."
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:412
+#: ../admin/pages/admin-single-ticket-menu.php:413
 #: ../admin/pages/network-single-ticket-menu.php:421
 msgid "Title cannot be empty"
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:420
+#: ../admin/pages/admin-single-ticket-menu.php:421
 #: ../admin/pages/network-single-ticket-menu.php:429
 msgid "Message cannot be empty"
 msgstr ""
@@ -695,18 +695,17 @@ msgid "***  DO NOT REPLY TO THIS EMAIL  ***"
 msgstr ""
 
 #: ../inc/mail-contents.php:17
-#, php-format
 msgid ""
 "\n"
-"%s\n"
+"SUPPORT_FETCH_IMAP\n"
 "\n"
-"Subject: %s\n"
-"Status: %s\n"
-"Priority: %s\n"
+"Subject: SUPPORT_SUBJECT\n"
+"Status: SUPPORT_STATUS\n"
+"Priority: SUPPORT_PRIORITY\n"
 "\n"
 "Visit:\n"
 "\n"
-"\t%s\n"
+"\tSUPPORT_LINK\n"
 "\n"
 "to reply to view the new ticket.\n"
 "\n"
@@ -714,9 +713,9 @@ msgid ""
 "\tBegin Ticket Message\n"
 "==============================================================\n"
 "\n"
-"%s said:\n"
+"SUPPORT_USER_NAME said:\n"
 "\n"
-"%s\n"
+"SUPPORT_MESSAGE\n"
 "\n"
 "==============================================================\n"
 "      End Ticket Message\n"
@@ -724,25 +723,24 @@ msgid ""
 "\n"
 "Ticket URL:\n"
 "\n"
-"%s"
+"SUPPORT_TICKET_URL"
 msgstr ""
 
-#: ../inc/mail-contents.php:59
-#, php-format
+#: ../inc/mail-contents.php:60
 msgid ""
 "\n"
 "\n"
 "***  DO NOT REPLY TO THIS EMAIL  ***\n"
 "\n"
-"Subject: %s\n"
-"Status: %s\n"
-"Priority: %s\n"
+"Subject: SUPPORT_SUBJECT\n"
+"Status: SUPPORT_STATUS\n"
+"Priority: SUPPORT_PRIORITY\n"
 "\n"
 "Please log into your site and visit the support page to reply to this ticket, if needed.\n"
 "\n"
 "Visit:\n"
 "\n"
-"\t%s\n"
+"\tSUPPORT_LINK\n"
 "\n"
 "to reply to this ticket, if needed.\n"
 "\n"
@@ -750,33 +748,30 @@ msgid ""
 "     Begin Ticket Message\n"
 "==============================================================\n"
 "\n"
-"%s\n"
+"SUPPORT_MESSAGE\n"
 "\n"
 "==============================================================\n"
 "      End Ticket Message\n"
 "==============================================================\n"
 "\n"
 "Thanks,\n"
-"%s,\n"
-"%s\n"
-"\n"
-"\t\t\t"
+"SUPPORT_USER_NAME,\n"
+"SUPPORT_SITE_NAME"
 msgstr ""
 
-#: ../inc/mail-contents.php:103
-#, php-format
+#: ../inc/mail-contents.php:105
 msgid ""
 "\n"
 "\n"
-"%s\n"
+"SUPPORT_FETCH_IMAP\n"
 "\n"
-"Subject: %s\n"
-"Status: %s\n"
-"Priority: %s\n"
+"Subject: SUPPORT_SUBJECT\n"
+"Status: SUPPORT_STATUS\n"
+"Priority: SUPPORT_PRIORITY\n"
 "\n"
 "Visit:\n"
 "\n"
-"\t%s\n"
+"\tSUPPORT_LINK\n"
 "\n"
 "to respond to this ticket update.\n"
 "\n"
@@ -785,10 +780,10 @@ msgid ""
 "     Begin Ticket Message\n"
 "==============================================================\n"
 "\n"
-"%s said:\n"
+"SUPPORT_USER_NAME said:\n"
 "\n"
 "\n"
-"%s\n"
+"SUPPORT_MESSAGE\n"
 "\n"
 "==============================================================\n"
 "      End Ticket Message\n"
@@ -796,25 +791,22 @@ msgid ""
 "\n"
 "\n"
 "Ticket URL:\n"
-"\t%s\n"
-"\t\t\t"
+"\tSUPPORT_TICKET_URL"
 msgstr ""
 
-#: ../inc/mail-contents.php:148
-#, php-format
+#: ../inc/mail-contents.php:151
 msgid ""
 "\n"
 "\n"
-"%s\n"
+"SUPPORT_FETCH_IMAP\n"
 "\n"
-"Subject: %s\n"
-"Priority: %s\n"
+"Subject: SUPPORT_SUBJECT\n"
+"Priority: SUPPORT_PRIORITY\n"
 "\n"
 "The ticket has been closed.\n"
 "\n"
 "Ticket URL:\n"
-"\t%s\n"
-"\t\t\t"
+"\tSUPPORT_TICKET_URL"
 msgstr ""
 
 #: ../inc/support-menu.php:97
