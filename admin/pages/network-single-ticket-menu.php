@@ -468,12 +468,18 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 						wp_die( 'Error while setting the ticket status, please try with another response.', INCSUB_SUPPORT_LANG_DOMAIN );
 
 					$user = get_userdata( get_current_user_id() );
+					$reply_to_id = $model->get_ticket_user_id( $this->ticket_id );
+					$user_reply_to = get_userdata( $reply_to_id );
 
-					// Administrator mail
+					$visit_link = ( is_super_admin( $reply_to_id ) ) ? network_admin_url( 'admin.php' ) : get_admin_url( $this->current_ticket['blog_id'], 'admin.php' );
+
 					$visit_link = add_query_arg(
-						'tid',
-						$this->ticket_id,
-						$this->get_permalink()
+						array( 
+							'tid' => $this->ticket_id,
+							'view' => 'history',
+							'page' => 'single-ticket-manager'
+						),
+						$visit_link
 					);
 					
 					$args = array(
@@ -487,9 +493,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 					);
 
 					$mail_content = incsub_support_get_ticketadmin_mail_content( $args );
-
-					$reply_to_id = $model->get_ticket_user_id( $this->ticket_id );
-					$user_reply_to = get_userdata( $reply_to_id );
+						
 
 					$headers[] = 'MIME-Version: 1.0';
 						$headers[] = 'From: ' . get_site_option( 'incsub_support_from_name', get_bloginfo('blogname') ) . ' <' . get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) . '>';
@@ -502,12 +506,29 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 
 					wp_mail( $email_message["to"], $email_message["subject"], $email_message["message"], $email_message["headers"] );
 
+
+					// Now the mail for the super admin
+					$visit_link = network_admin_url( 'admin.php' );
+					$visit_link = add_query_arg(
+						array( 
+							'tid' => $this->ticket_id,
+							'view' => 'history',
+							'page' => 'single-ticket-manager'
+						),
+						$visit_link
+					);
+					$args['visit_link'] = $visit_link;
+
 					// Getting a super admin email
+					$admins = get_super_admins();
 					$admin_email = '';
 					if ( ! empty( $admins ) ) {
 						$admin_user = get_user_by( 'login', $admins[0] );
 						$admin_email = $admin_user->user_email;
 					}
+
+					$mail_content = incsub_support_get_ticketadmin_mail_content( $args );
+					$email_message['message'] = $mail_content;
 
 					wp_mail( $admin_email, $email_message["subject"], $email_message["message"], $email_message["headers"] );
 
@@ -560,11 +581,14 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 						else
 							$admin_menu = MU_Support_System::$admin_single_ticket_menu;
 
-						$visit_link = $admin_menu->get_permalink();
 
-						$visit_link 		= add_query_arg(
-							'tid',
-							$ticket_id,
+						$visit_link = get_admin_url( $this->current_ticket['blog_id'], 'admin.php' );
+
+						$visit_link = add_query_arg(
+							array( 
+								'tid' => $this->ticket_id,
+								'page' => 'single-ticket-manager'
+							),
 							$visit_link
 						);
 
@@ -578,7 +602,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 						$mail_content = incsub_get_closed_ticket_mail_content( $args );
 
 						$headers[] = 'MIME-Version: 1.0';
-						$headers[] = 'From: ' . get_site_option( 'incsub_support_from_name', get_bloginfo('blogname') ) . ' <' . get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) . '>';
+						$headers[] = 'From: ' . MU_Support_System::$settings['incsub_support_from_name'] . ' <' . MU_Support_System::$settings['incsub_support_from_mail'] . '>';
 						$email_message = array(
 							"to"		=> $user->data->user_email,
 							"subject"	=> __( "New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $this->current_ticket['subject'],

@@ -103,13 +103,9 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			add_action( 'init', array( &$this, 'admin_menus' ) );
 
 			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_styles' ) );
-			add_action( 'load_textdomain', array( &$this, 'test' ), 10, 2 );
 
 		}
 
-		function test( $a, $b ) {
-
-		}
 
 		public function init_plugin() {
 			// Setting properties

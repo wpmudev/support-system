@@ -182,7 +182,7 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 					}
 
 					$headers[] = 'MIME-Version: 1.0';
-					$headers[] = 'From: ' . get_site_option( 'incsub_support_from_name', get_bloginfo('blogname') ) . ' <' . get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) . '>';
+					$headers[] = 'From: ' . MU_Support_System::$settings['incsub_support_from_name'] . ' <' . MU_Support_System::$settings['incsub_support_from_mail'] . '>';
 					$email_message = array(
 						"to"		=> $admin_email,
 						"subject"	=> __( "New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $this->current_ticket['subject'],

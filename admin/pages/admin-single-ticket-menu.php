@@ -476,7 +476,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 					$user_reply_to = get_userdata( $reply_to_id );
 
 					$headers[] = 'MIME-Version: 1.0';
-					$headers[] = 'From: ' . get_site_option( 'incsub_support_from_name', get_bloginfo('blogname') ) . ' <' . get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) . '>';
+					$headers[] = 'From: ' . MU_Support_System::$settings['incsub_support_from_name'] . ' <' . MU_Support_System::$settings['incsub_support_from_mail'] . '>';
 					$email_message = array(
 						"to"		=> $user_reply_to->user_email,
 						"subject"	=> __( "[#{$this->ticket_id}] ", INCSUB_SUPPORT_LANG_DOMAIN ) . $this->current_ticket['title'],
@@ -486,12 +486,28 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 
 					wp_mail( $email_message["to"], $email_message["subject"], $email_message["message"], $email_message["headers"] );
 
+					// Now the mail for the super admin
+					$visit_link = network_admin_url( 'admin.php' );
+					$visit_link = add_query_arg(
+						array( 
+							'tid' => $this->ticket_id,
+							'view' => 'history',
+							'page' => 'single-ticket-manager'
+						),
+						$visit_link
+					);
+					$args['visit_link'] = $visit_link;
+
 					// Getting a super admin email
+					$admins = get_super_admins();
 					$admin_email = '';
 					if ( ! empty( $admins ) ) {
 						$admin_user = get_user_by( 'login', $admins[0] );
 						$admin_email = $admin_user->user_email;
 					}
+
+					$mail_content = incsub_support_get_ticketadmin_mail_content( $args );
+					$email_message['message'] = $mail_content;
 
 					wp_mail( $admin_email, $email_message["subject"], $email_message["message"], $email_message["headers"] );
 					
@@ -530,12 +546,14 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 						// Was not closed, send an email to the user
 						$user = get_userdata( $this->current_ticket['user_id'] );
 
-						$visit_link = $this->get_permalink();
+						$visit_link = get_admin_url( $this->current_ticket['blog_id'], 'admin.php' );
 
-						$visit_link 		= add_query_arg(
-							'tid',
-							$ticket_id,
-							$this->get_permalink()
+						$visit_link = add_query_arg(
+							array( 
+								'tid' => $this->ticket_id,
+								'page' => 'single-ticket-manager'
+							),
+							$visit_link
 						);
 
 						// Email arguments
@@ -547,15 +565,8 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 						);
 						$mail_content = incsub_get_closed_ticket_mail_content( $args );
 
-						// Getting a super admin email
-						$admin_email = '';
-						if ( ! empty( $admins ) ) {
-							$admin_user = get_user_by( 'login', $admins[0] );
-							$admin_email = $admin_user->user_email;
-						}
-
 						$headers[] = 'MIME-Version: 1.0';
-						$headers[] = 'From: ' . get_site_option( 'incsub_support_from_name', get_bloginfo('blogname') ) . ' <' . get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) . '>';
+						$headers[] = 'From: ' . MU_Support_System::$settings['incsub_support_from_name'] . ' <' . MU_Support_System::$settings['incsub_support_from_mail'] . '>';
 						$email_message = array(
 							"to"		=> $user->data->user_email,
 							"subject"	=> __( "New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $this->current_ticket['subject'],
