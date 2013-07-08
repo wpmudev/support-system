@@ -157,7 +157,7 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 						$ticket_id,
 						$network_admin->get_permalink()
 					);
-					$user_nicename 		= $user->user_nicename;
+					$user_nicename 		= $user->display_name;
 
 					// Email arguments
 					$args = array(

@@ -488,7 +488,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 						'ticket_priority'	=> MU_Support_System::$ticket_priority[ $this->current_ticket['ticket_priority'] ],
 						'visit_link'		=> $visit_link,
 						'ticket_message'	=> $this->current_ticket['message'],
-						'user_nicename'		=> $user->user_nicename,
+						'user_nicename'		=> $user->display_name,
 						'site_name'			=> get_site_option( 'site_name' )
 					);
 

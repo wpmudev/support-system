@@ -107,7 +107,7 @@ class MU_Support_Tickets_Table extends WP_List_Table {
         else {
             $user = get_userdata( $item['user_id'] );
             if ( ! empty( $user ) )
-                $value = '<a href="' . admin_url( 'user-edit.php?user_id=' . $user->ID ) . '">' . $user->user_nicename . '</a>';
+                $value = '<a href="' . admin_url( 'user-edit.php?user_id=' . $user->ID ) . '">' . $user->display_name . '</a>';
         }
 
         return $value;
