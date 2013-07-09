@@ -59,12 +59,6 @@ if ( ! class_exists( 'MU_Support_Network_Main_Menu' ) ) {
 
 			$model = MU_Support_System_Model::get_instance();
 
-			if ( isset( $_GET['delete'] ) && is_numeric( $_GET['delete'] ) ) {	
-				$ticket_id = intval( $_GET['delete'] );
-				if ( $model->is_ticket_archived( $ticket_id ) )
-					$model->delete_ticket( $ticket_id );
-			}
-
 		    $tickets_table = new MU_Support_Tickets_Table( $this->view );
 		    $tickets_table->prepare_items();
 

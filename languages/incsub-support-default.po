@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Support System\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-08 12:09+0100\n"
-"PO-Revision-Date: 2013-07-08 12:09+0100\n"
+"POT-Creation-Date: 2013-07-09 10:45+0100\n"
+"PO-Revision-Date: 2013-07-09 10:46+0100\n"
 "Last-Translator: Ignacio <igmoweb@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -35,7 +35,7 @@ msgstr ""
 
 #: ../incsub-support.php:118
 #: ../admin/pages/admin-main-menu.php:82
-#: ../admin/pages/network-main-menu.php:83
+#: ../admin/pages/network-main-menu.php:77
 msgid "Closed"
 msgstr ""
 
@@ -116,12 +116,12 @@ msgid "Recent Tickets"
 msgstr ""
 
 #: ../admin/pages/admin-main-menu.php:80
-#: ../admin/pages/network-main-menu.php:81
+#: ../admin/pages/network-main-menu.php:75
 msgid "All"
 msgstr ""
 
 #: ../admin/pages/admin-main-menu.php:81
-#: ../admin/pages/network-main-menu.php:82
+#: ../admin/pages/network-main-menu.php:76
 msgid "Opened"
 msgstr ""
 
@@ -682,8 +682,29 @@ msgstr ""
 msgid "Create a FAQ"
 msgstr ""
 
-#: ../admin/tables/tickets-table.php:134
+#: ../admin/tables/tickets-table.php:105
+#: ../admin/tables/tickets-table.php:113
+#, php-format
+msgid "<a href=\"%s\">Delete ticket</a>"
+msgstr ""
+
+#: ../admin/tables/tickets-table.php:106
+#: ../admin/tables/tickets-table.php:114
+#, php-format
+msgid "<a href=\"%s\">Open ticket</a>"
+msgstr ""
+
+#: ../admin/tables/tickets-table.php:117
+#, php-format
+msgid "<a href=\"%s\">Close ticket</a>"
+msgstr ""
+
+#: ../admin/tables/tickets-table.php:161
 msgid "Submitted From"
+msgstr ""
+
+#: ../admin/tables/tickets-table.php:205
+msgid "Close"
 msgstr ""
 
 #: ../inc/mail-contents.php:9
@@ -813,11 +834,11 @@ msgstr ""
 msgid "You are not allowed to view this page."
 msgstr ""
 
-#: ../model/model.php:1169
+#: ../model/model.php:1209
 msgid "General questions"
 msgstr ""
 
-#: ../model/model.php:1200
+#: ../model/model.php:1240
 msgid "General"
 msgstr ""
 

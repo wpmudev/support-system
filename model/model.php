@@ -472,6 +472,46 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		}
 
 		/**
+		 * Reopen a ticket
+		 * 
+		 * @since 1.8
+		 * 
+		 * @param Integer $ticket_id 
+		 * @return 
+		 */
+		public function open_ticket( $ticket_id ) {
+			global $wpdb;
+
+			$wpdb->update(
+				$this->tickets_table,
+				array( 'ticket_status' => 0 ),
+				array( 'ticket_id' => $ticket_id ),
+				array( '%d' ),
+				array( '%d' )
+			);
+		}
+
+		/**
+		 * Close a ticket
+		 * 
+		 * @since 1.8
+		 * 
+		 * @param Integer $ticket_id 
+		 * @return 
+		 */
+		public function close_ticket( $ticket_id ) {
+			global $wpdb;
+
+			$wpdb->update(
+				$this->tickets_table,
+				array( 'ticket_status' => 5 ),
+				array( 'ticket_id' => $ticket_id ),
+				array( '%d' ),
+				array( '%d' )
+			);
+		}
+
+		/**
 		 * Cheks if a ticket belongs to the current blog
 		 * 
 		 * @since 1.8

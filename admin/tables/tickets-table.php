@@ -25,8 +25,8 @@ class MU_Support_Tickets_Table extends WP_List_Table {
 
         //Set parent defaults
         parent::__construct( array(
-            'singular'  => __( 'Ticket', INCSUB_SUPPORT_LANG_DOMAIN ),  
-            'plural'    => __( 'Tickets', INCSUB_SUPPORT_LANG_DOMAIN ), 
+            'singular'  => 'ticket',  
+            'plural'    => 'tickets', 
             'ajax'      => false        
         ) );
         
@@ -81,15 +81,42 @@ class MU_Support_Tickets_Table extends WP_List_Table {
             MU_Support_System::$network_single_ticket_menu->get_permalink()
         );
 
+        $delete_link = add_query_arg( 
+            array( 
+                'action' => 'delete', 
+                'tid' => (int)$item['ticket_id'] 
+            )
+        );
+        $open_link = add_query_arg( 
+            array( 
+                'action' => 'open', 
+                'tid' => (int)$item['ticket_id'] 
+            ) 
+        );
+        $close_link = add_query_arg( 
+            array( 
+                'action' => 'close', 
+                'tid' => (int)$item['ticket_id'] 
+            )
+        );
+
         if ( 'archive' == $this->status ) {
-            $delete_link = add_query_arg( 'delete', (int)$item['ticket_id'] );
             $actions = array(
-                'delete'    => sprintf( __( '<a href="%s">Delete</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_link)
+                'delete'    => sprintf( __( '<a href="%s">Delete ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_link ),
+                'open'      => sprintf( __( '<a href="%s">Open ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $open_link )
             );
             return '<a href="' . $link . '">' . stripslashes_deep( $item['title'] ) . '</a>' . $this->row_actions($actions); 
         }
         else {
-            return '<a href="' . $link . '">' . stripslashes_deep( $item['title'] ) . '</a>'; 
+            $actions = array();
+            if ( 5 == (int)$item['ticket_status'] ) {
+                $actions['delete'] = sprintf( __( '<a href="%s">Delete ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_link );
+                $actions['open'] = sprintf( __( '<a href="%s">Open ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $open_link );
+            }
+            else {
+                $actions['close'] = sprintf( __( '<a href="%s">Close ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $close_link );
+            }
+            return '<a href="' . $link . '">' . stripslashes_deep( $item['title'] ) . '</a>' . $this->row_actions($actions); 
         }
         
     }
@@ -121,7 +148,7 @@ class MU_Support_Tickets_Table extends WP_List_Table {
     function get_columns(){
         $columns = array();
 
-        if ( 'archive' == $this->status ) {
+        if ( in_array( $this->status, array( 'archive', 'active' ) ) ) {
             $columns['cb'] = '<input type="checkbox" />';
         }
         $columns = array_merge( $columns, array(
@@ -169,9 +196,15 @@ class MU_Support_Tickets_Table extends WP_List_Table {
     function get_bulk_actions() {
         if ( 'archive' == $this->status ) {
             $actions = array(
-                'delete'    => 'Delete'
+                'delete'    => __( 'Delete', INCSUB_SUPPORT_LANG_DOMAIN )
             );
             return $actions;    
+        }
+        elseif ( 'active' == $this->status ) {
+            $actions = array(
+                'close'    => __( 'Close', INCSUB_SUPPORT_LANG_DOMAIN )
+            );
+            return $actions; 
         }
         return array();
         
@@ -180,18 +213,52 @@ class MU_Support_Tickets_Table extends WP_List_Table {
     function process_bulk_action() {
         
         //Detect when a bulk action is being triggered...
+        $model = MU_Support_System_Model::get_instance();
         if( 'delete' === $this->current_action() ) {
-            $model = MU_Support_System_Model::get_instance();
-
             if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) ) {
                 foreach ( $_POST['ticket'] as $ticket_id ) {
-                    if ( $model-> is_ticket_archived( $ticket_id ) ) {
+                    if ( $model->is_ticket_archived( absint( $ticket_id ) ) ) {
                         $model->delete_ticket( $ticket_id );
                     }
                 }
             }
+            elseif ( isset( $_GET['tid'] ) && is_numeric( $_GET['tid'] ) ) {
+                $ticket_id = absint( $_GET['tid'] );
+                if ( $model->is_ticket_archived( $ticket_id ) )
+                    $model->delete_ticket( $ticket_id );
+            }
         }
-        
+
+        if( 'open' === $this->current_action() ) {
+            if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) ) {
+                foreach ( $_POST['ticket'] as $ticket_id ) {
+                    if ( $model->is_ticket_archived( absint( $ticket_id ) ) ) {
+                        $model->open_ticket( $ticket_id );
+                    }
+                }
+            }
+            elseif ( isset( $_GET['tid'] ) && is_numeric( $_GET['tid'] ) ) {
+                $ticket_id = absint( $_GET['tid'] );
+                if ( $model->is_ticket_archived( $ticket_id ) )
+                    $model->open_ticket( $ticket_id );
+            }
+        }
+
+        if( 'close' === $this->current_action() ) {
+            if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) ) {
+                foreach ( $_POST['ticket'] as $ticket_id ) {
+                    if ( ! $model->is_ticket_archived( absint( $ticket_id ) ) ) {
+                        $model->close_ticket( $ticket_id );
+                    }
+                }
+            }
+            elseif ( isset( $_GET['tid'] ) && is_numeric( $_GET['tid'] ) ) {
+                $ticket_id = absint( $_GET['tid'] );
+                if ( ! $model->is_ticket_archived( $ticket_id ) )
+                    $model->close_ticket( $ticket_id );
+            }
+        }
+
     }
 
     function single_row( $item ) {
