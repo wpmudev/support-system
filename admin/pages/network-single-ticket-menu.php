@@ -512,7 +512,6 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 						}
 					}
 
-					wp_die();
 					// Redirecting to ticket history
 					$link = remove_query_arg( 'view' );
 					$link = add_query_arg( 'view', 'history', $link );
@@ -532,7 +531,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 				$this->current_ticket = $this->ticket_details[0];
 
 				$model = MU_Support_System_Model::get_instance();
-				$possible_users = array_merge( is_multisite() ? get_super_admins() : $this->get_admins(), array( 'empty', '' ) );
+				$possible_users = array_merge( MU_Support_System::get_super_admins(), array( 'empty', '' ) );
 				if ( isset( $_POST['super-admins'] ) && in_array( $_POST['super-admins'], $possible_users ) ) {
 					$user = get_user_by( 'login', $_POST['super-admins'] );
 					if ( is_object( $user ) )
@@ -553,46 +552,8 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 					$model->update_ticket_status( $ticket_id, $this->current_ticket['cat_id'], $priority, 5 );
 					if ( ! $closed ) {
 						// Was not closed, send an email to the user
-
 						$user = get_userdata( $this->current_ticket['user_id'] );
-
-						// Variables for the message
-						if ( ! is_object( MU_Support_System::$admin_single_ticket_menu ) )
-							$admin_menu = new MU_Support_Admin_Single_Ticket_Menu( true );
-						else
-							$admin_menu = MU_Support_System::$admin_single_ticket_menu;
-
-
-						$visit_link = get_admin_url( $this->current_ticket['blog_id'], 'admin.php' );
-
-						$visit_link = add_query_arg(
-							array( 
-								'tid' => $this->ticket_id,
-								'page' => 'single-ticket-manager'
-							),
-							$visit_link
-						);
-
-						// Email arguments
-						$args = array(
-							'support_fetch_imap' 	=> incsub_support_get_support_fetch_imap_message(),
-							'title' 				=> $this->current_ticket['subject'],
-							'ticket_url' 			=> $visit_link,
-							'ticket_priority'		=> MU_Support_System::$ticket_priority[ $this->current_ticket['ticket_priority'] ]
-						);
-						$mail_content = incsub_get_closed_ticket_mail_content( $args );
-
-						$headers[] = 'MIME-Version: 1.0';
-						$headers[] = 'From: ' . MU_Support_System::$settings['incsub_support_from_name'] . ' <' . MU_Support_System::$settings['incsub_support_from_mail'] . '>';
-						$email_message = array(
-							"to"		=> $user->data->user_email,
-							"subject"	=> __( "New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $this->current_ticket['subject'],
-							"message"	=> $mail_content, // ends lang string
-							"headers"	=> $headers
-						); // ends array.
-
-						wp_mail( $email_message["to"], $email_message["subject"], $email_message["message"], $email_message["headers"] );
-
+						incsub_support_send_user_closed_mail( $user, $ticket_id, $this->current_ticket );
 					}
 					
 				}
