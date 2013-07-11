@@ -451,68 +451,50 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 					if ( ! $ticket_updated )
 						wp_die( 'Error while setting the ticket status, please try with another response.', INCSUB_SUPPORT_LANG_DOMAIN );
 
+
+					$current_user_id = get_current_user_id();
 					$user = get_userdata( get_current_user_id() );
 
-					// Administrator mail
-					$visit_link = add_query_arg(
-						'tid',
-						$this->ticket_id,
-						$this->get_permalink()
-					);
-					$args = array(
-						'title'				=> $this->current_ticket['title'],
-						'ticket_status'		=> MU_Support_System::$ticket_status[$status],
-						'ticket_priority'	=> MU_Support_System::$ticket_priority[ $this->current_ticket['ticket_priority'] ],
-						'visit_link'		=> $visit_link,
-						'ticket_message'	=> $this->current_ticket['message'],
-						'user_nicename'		=> $user->display_name,
-						'site_name'			=> get_site_option( 'site_name' )
-					);
+					if ( empty( $this->current_ticket['admin_id'] ) ) {
+						// Ticket not assigned to any staff
+						// Send to ticket creator & Main Super Admin
+						$super_admin = MU_Support_System::get_main_admin_details();
+						$creator = get_userdata( $this->current_ticket['user_id'] );
 
+						incsub_support_send_user_reply_mail( $creator, $user, $this->ticket_id, $this->current_ticket );
 
-					$mail_content = incsub_support_get_ticketadmin_mail_content( $args );
+						incsub_support_send_admin_reply_mail( $super_admin, $user, $this->ticket_id, $this->current_ticket );
 
-					$reply_to_id = $model->get_ticket_user_id( $this->ticket_id );
-					$user_reply_to = get_userdata( $reply_to_id );
-
-					$headers[] = 'MIME-Version: 1.0';
-					$headers[] = 'From: ' . MU_Support_System::$settings['incsub_support_from_name'] . ' <' . MU_Support_System::$settings['incsub_support_from_mail'] . '>';
-					$email_message = array(
-						"to"		=> $user_reply_to->user_email,
-						"subject"	=> __( "[#{$this->ticket_id}] ", INCSUB_SUPPORT_LANG_DOMAIN ) . $this->current_ticket['title'],
-						"message"	=> $mail_content, // ends lang string
-						"headers"	=> $headers
-					); // ends array.
-
-					wp_mail( $email_message["to"], $email_message["subject"], $email_message["message"], $email_message["headers"] );
-
-					// Now the mail for the super admin
-					$visit_link = network_admin_url( 'admin.php' );
-					$visit_link = add_query_arg(
-						array( 
-							'tid' => $this->ticket_id,
-							'view' => 'history',
-							'page' => 'single-ticket-manager'
-						),
-						$visit_link
-					);
-					$args['visit_link'] = $visit_link;
-
-					// Getting a super admin email
-					$admins = get_super_admins();
-					$admin_email = '';
-					if ( ! empty( $admins ) ) {
-						$admin_user = get_user_by( 'login', $admins[0] );
-						$admin_email = $admin_user->user_email;
 					}
+					else {
+						
+						if ( $current_user_id == absint( $this->current_ticket['admin_id'] ) ) {
+							// Response by assigned staff
+							// Send to creator
+							$creator = get_userdata( $this->current_ticket['user_id'] );
 
-					$mail_content = incsub_support_get_ticketadmin_mail_content( $args );
-					$email_message['message'] = $mail_content;
+							incsub_support_send_user_reply_mail( $creator, $user, $this->ticket_id, $this->current_ticket );
+							
+						}
+						elseif ( $current_user_id == absint( $this->current_ticket['user_id'] ) ) {
+							// Response by creator
+							// Send to Staff
+							$staff = get_userdata( $this->current_ticket['admin_id'] );
 
-					wp_mail( $admin_email, $email_message["subject"], $email_message["message"], $email_message["headers"] );
-					
-					$this->updated = true;
+							incsub_support_send_admin_reply_mail( $staff, $user, $this->ticket_id, $this->current_ticket );
+						}
+						else {
+							// Response by none of them
+							// Send to Creator & Staff
+							$staff = get_userdata( $this->current_ticket['admin_id'] );
+							$creator = get_userdata( $this->current_ticket['user_id'] );
 
+							incsub_support_send_user_reply_mail( $creator, $user, $this->ticket_id, $this->current_ticket );
+							incsub_support_send_admin_reply_mail( $staff, $user, $this->ticket_id, $this->current_ticket );
+
+						}
+					}
+					wp_die();
 					$link = add_query_arg( 'updated', 'true' );
 					wp_redirect( $link );
 

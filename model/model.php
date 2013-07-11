@@ -640,7 +640,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			$q = $wpdb->prepare(
 					"SELECT
 						t.ticket_id, m.message_id, t.blog_id, t.cat_id, t.user_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_opened, t.ticket_updated, t.title,
-						c.cat_name, u.display_name AS user_name, a.display_name AS admin_name, l.display_name AS last_user_reply, m.user_id AS user_avatar_id, 
+						c.cat_name, u.display_name AS user_name, a.display_name AS admin_name, a.user_login AS admin_login, l.display_name AS last_user_reply, m.user_id AS user_avatar_id, 
 						m.admin_id AS admin_avatar_id, m.message_date, m.subject, m.message, r.display_name AS reporting_name, s.display_name AS staff_member
 					FROM $this->tickets_messages_table AS m
 					LEFT JOIN $this->tickets_table AS t ON (m.ticket_id = t.ticket_id)

@@ -406,6 +406,14 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			return $admin_user->user_email;
 		}
 
+		public static function get_main_admin_details() {
+			$administrator = MU_Support_System::$settings['incsub_support_main_super_admin'];
+			$super_admins = MU_Support_System::get_super_admins();
+			$admin_login = $super_admins[ $administrator ];
+			$admin_user = get_user_by( 'login', $admin_login );
+			return $admin_user;
+		}
+
 	}
 
 }

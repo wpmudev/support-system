@@ -185,13 +185,13 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 						$this->render_row( __( 'Submitted from', INCSUB_SUPPORT_LANG_DOMAIN ), $markup ); ?>
 
 					<?php 
-						$super_admins = is_multisite() ? get_super_admins() : $this->get_admins();
+						$super_admins = MU_Support_System::get_super_admins();
 						ob_start();
 					?>
 						<select name="super-admins">
-							<option value="" <?php echo empty( $current_ticket['admin_name'] ) ? 'selected' : '';  ?>><?php _e( 'Not yet assigned', INCSUB_SUPPORT_LANG_DOMAIN ); ?></option>
+							<option value="" <?php echo empty( $current_ticket['admin_login'] ) ? 'selected' : '';  ?>><?php _e( 'Not yet assigned', INCSUB_SUPPORT_LANG_DOMAIN ); ?></option>
 							<?php foreach ( $super_admins as $user_name ): ?>
-								<option value="<?php echo esc_attr( $user_name ); ?>" <?php selected( $current_ticket['admin_name'], $user_name ); ?>><?php echo $user_name; ?></option>
+								<option value="<?php echo esc_attr( $user_name ); ?>" <?php selected( $current_ticket['admin_login'], $user_name ); ?>><?php echo $user_name; ?></option>
 							<?php endforeach; ?>
 						</select>
 					<?php
@@ -468,70 +468,51 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 						wp_die( 'Error while setting the ticket status, please try with another response.', INCSUB_SUPPORT_LANG_DOMAIN );
 
 					$user = get_userdata( get_current_user_id() );
-					$reply_to_id = $model->get_ticket_user_id( $this->ticket_id );
-					$user_reply_to = get_userdata( $reply_to_id );
-
-					$visit_link = ( is_super_admin( $reply_to_id ) ) ? network_admin_url( 'admin.php' ) : get_admin_url( $this->current_ticket['blog_id'], 'admin.php' );
-
-					$visit_link = add_query_arg(
-						array( 
-							'tid' => $this->ticket_id,
-							'view' => 'history',
-							'page' => 'single-ticket-manager'
-						),
-						$visit_link
-					);
 					
-					$args = array(
-						'title'				=> $this->current_ticket['title'],
-						'ticket_status'		=> MU_Support_System::$ticket_status[$status],
-						'ticket_priority'	=> MU_Support_System::$ticket_priority[ $this->current_ticket['ticket_priority'] ],
-						'visit_link'		=> $visit_link,
-						'ticket_message'	=> $this->current_ticket['message'],
-						'user_nicename'		=> $user->display_name,
-						'site_name'			=> get_site_option( 'site_name' )
-					);
+					$current_user_id = get_current_user_id();
+					$user = get_userdata( get_current_user_id() );
 
-					$mail_content = incsub_support_get_ticketadmin_mail_content( $args );
+					if ( empty( $this->current_ticket['admin_id'] ) ) {
+						// Ticket not assigned to any staff
+						// Send to ticket creator & Main Super Admin
+						$super_admin = MU_Support_System::get_main_admin_details();
+						$creator = get_userdata( $this->current_ticket['user_id'] );
+
+						incsub_support_send_user_reply_mail( $creator, $user, $this->ticket_id, $this->current_ticket );
+
+						incsub_support_send_admin_reply_mail( $super_admin, $user, $this->ticket_id, $this->current_ticket );
+
+					}
+					else {
 						
+						if ( $current_user_id == absint( $this->current_ticket['admin_id'] ) ) {
+							// Response by assigned staff
+							// Send to creator
+							$creator = get_userdata( $this->current_ticket['user_id'] );
 
-					$headers[] = 'MIME-Version: 1.0';
-						$headers[] = 'From: ' . get_site_option( 'incsub_support_from_name', get_bloginfo('blogname') ) . ' <' . get_site_option('incsub_support_from_mail', get_bloginfo('admin_email')) . '>';
-					$email_message = array(
-						"to"		=> $user_reply_to->user_email,
-						"subject"	=> __( "[#{$this->ticket_id}] ", INCSUB_SUPPORT_LANG_DOMAIN ) . $this->current_ticket['title'],
-						"message"	=> $mail_content, // ends lang string
-						"headers"	=> $headers
-					); // ends array.
+							incsub_support_send_user_reply_mail( $creator, $user, $this->ticket_id, $this->current_ticket );
+							
+						}
+						elseif ( $current_user_id == absint( $this->current_ticket['user_id'] ) ) {
+							// Response by creator
+							// Send to Staff
+							$staff = get_userdata( $this->current_ticket['admin_id'] );
 
-					wp_mail( $email_message["to"], $email_message["subject"], $email_message["message"], $email_message["headers"] );
+							incsub_support_send_admin_reply_mail( $staff, $user, $this->ticket_id, $this->current_ticket );
+						}
+						else {
+							// Response by none of them
+							// Send to Creator & Staff
+							$staff = get_userdata( $this->current_ticket['admin_id'] );
+							$creator = get_userdata( $this->current_ticket['user_id'] );
 
+							incsub_support_send_user_reply_mail( $creator, $user, $this->ticket_id, $this->current_ticket );
+							incsub_support_send_admin_reply_mail( $staff, $user, $this->ticket_id, $this->current_ticket );
 
-					// Now the mail for the super admin
-					$visit_link = network_admin_url( 'admin.php' );
-					$visit_link = add_query_arg(
-						array( 
-							'tid' => $this->ticket_id,
-							'view' => 'history',
-							'page' => 'single-ticket-manager'
-						),
-						$visit_link
-					);
-					$args['visit_link'] = $visit_link;
-
-					// Getting a super admin email
-					$admins = get_super_admins();
-					$admin_email = '';
-					if ( ! empty( $admins ) ) {
-						$admin_user = get_user_by( 'login', $admins[0] );
-						$admin_email = $admin_user->user_email;
+						}
 					}
 
-					$mail_content = incsub_support_get_ticketadmin_mail_content( $args );
-					$email_message['message'] = $mail_content;
-
-					wp_mail( $admin_email, $email_message["subject"], $email_message["message"], $email_message["headers"] );
-
+					wp_die();
 					// Redirecting to ticket history
 					$link = remove_query_arg( 'view' );
 					$link = add_query_arg( 'view', 'history', $link );
