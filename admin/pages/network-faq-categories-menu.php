@@ -118,7 +118,7 @@ if ( ! class_exists( 'MU_Support_Network_FAQ_Categories' ) ) {
 											<input name="cat_name" id="cat_name" type="text" value="<?php echo $category_name; ?>" size="40" aria-required="true"><br/>
 											<p><?php _e('The name is used to identify the category to which FAQ question relate', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
 										</div>
-										<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Add New Category"></p>
+										<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="<?php _e( 'Add New Category', INCSUB_SUPPORT_LANG_DOMAIN ); ?>"></p>
 									</form>
 								</div>
 							</div>

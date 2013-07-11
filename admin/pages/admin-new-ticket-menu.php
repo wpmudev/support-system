@@ -141,56 +141,16 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 					}
 
 					do_action( 'support_new_ticket', $ticket_id, $this->current_ticket );
-
+					
 					// Current user data
 					$user = get_userdata( get_current_user_id() );
 
-					// Variables for the message
-					if ( ! is_object( MU_Support_System::$network_single_ticket_menu ) )
-						$network_admin = new MU_Support_Network_Single_Ticket_Menu( true );
-					else
-						$network_admin = MU_Support_System::$network_single_ticket_menu;
+					// First, a mail for the user that has just opened the ticket
+					incsub_support_send_user_new_ticket_mail( $user, $ticket_id, $this->current_ticket );
 
 
-					$visit_link 		= add_query_arg(
-						'tid',
-						$ticket_id,
-						$network_admin->get_permalink()
-					);
-					$user_nicename 		= $user->display_name;
-
-					// Email arguments
-					$args = array(
-						'support_fetch_imap' 	=> incsub_support_get_support_fetch_imap_message(),
-						'title' 				=> $this->current_ticket['subject'],
-						'visit_link' 			=> $visit_link,
-						'user_nicename' 		=> $user_nicename,
-						'ticket_message' 		=> $this->current_ticket['message'],
-						'ticket_url' 			=> $visit_link,
-						'ticket_status'			=> MU_Support_System::$ticket_status[0],
-						'ticket_priority'		=> MU_Support_System::$ticket_priority[ $this->current_ticket['ticket_priority'] ]
-					);
-					$mail_content = incsub_support_get_support_process_reply_mail_content( $args );
-
-					$admins = get_site_option("site_admins");
-
-					// Getting a super admin email
-					$admin_email = '';
-					if ( ! empty( $admins ) ) {
-						$admin_user = get_user_by( 'login', $admins[0] );
-						$admin_email = $admin_user->user_email;
-					}
-
-					$headers[] = 'MIME-Version: 1.0';
-					$headers[] = 'From: ' . MU_Support_System::$settings['incsub_support_from_name'] . ' <' . MU_Support_System::$settings['incsub_support_from_mail'] . '>';
-					$email_message = array(
-						"to"		=> $admin_email,
-						"subject"	=> __( "New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $this->current_ticket['subject'],
-						"message"	=> $mail_content, // ends lang string
-						"headers"	=> $headers
-					); // ends array.
-
-					wp_mail( $email_message["to"], $email_message["subject"], $email_message["message"], $email_message["headers"] );
+					// Now, a mail for the main Administrator
+					incsub_support_send_admin_new_ticket_mail( $user, $ticket_id, $this->current_ticket );
 
 					wp_redirect( MU_Support_System::$admin_main_menu->get_permalink() );
 				}

@@ -157,6 +157,9 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		
 
 		public static function get_default_settings() {
+
+			$super_admins = self::get_super_admins();
+			
 			return array(
 				'incsub_support_menu_name' => __( 'Support', INCSUB_SUPPORT_LANG_DOMAIN ),
 				'incsub_support_from_name' => get_bloginfo( 'blogname' ),
@@ -169,7 +172,8 @@ if ( ! class_exists( 'MU_Support_System') ) {
 				'incsub_pro_sites_faq_level' => '',
 				'incsub_ticket_privacy' => 'all',
 				'incsub_support_tickets_role' => array( 'administrator', 'editor', 'author', 'contributor', 'subscriber' ),
-				'incsub_support_faqs_role' => array( 'administrator', 'editor', 'author', 'contributor', 'subscriber' )
+				'incsub_support_faqs_role' => array( 'administrator', 'editor', 'author', 'contributor', 'subscriber' ),
+				'incsub_support_main_super_admin' => key( $super_admins ) //First of the Super Admins
 			);
 		}
 
@@ -362,6 +366,44 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			
 			return $support_roles;
 
+		}
+
+		/**
+		 * Return a ist of Super Admins for multisites or Admins for single sites
+		 * 
+		 * @since 1.9.5
+		 * 
+		 * @return Array of Super Admins/Admins
+		 */
+		public static function get_super_admins() {
+
+			if ( is_multisite() ) {
+				$super_admins = get_super_admins();
+			}
+			else {
+				$admins = get_users( 
+					array( 
+						'role' => 'administrator',
+						'fields' => array( 'ID', 'user_nicename' )
+					)
+				);
+
+				$super_admins = array();
+				foreach ( $admins as $admin ) {
+					$super_admins[ $admin->ID ] = $admin->user_nicename;
+				}
+
+			}
+
+			return $super_admins;
+		}
+
+		public static function get_main_admin_email() {
+			$administrator = MU_Support_System::$settings['incsub_support_main_super_admin'];
+			$super_admins = MU_Support_System::get_super_admins();
+			$admin_login = $super_admins[ $administrator ];
+			$admin_user = get_user_by( 'login', $admin_login );
+			return $admin_user->user_email;
 		}
 
 	}

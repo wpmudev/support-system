@@ -95,7 +95,16 @@ if ( ! class_exists( 'MU_Support_Network_Support_settings' ) ) {
 								<span class="description"><?php _e("Support mail from address.", INCSUB_SUPPORT_LANG_DOMAIN); ?></span>
 						    <?php
 						    $this->render_row( __( 'Support from e-mail', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() );
-						    ?>
+
+						    ob_start(); ?>
+						    	<select name="super_admin" id="super_admin">
+						    		<?php $super_admins = MU_Support_System::get_super_admins(); ?>
+						    		<?php foreach ( $super_admins as $key => $value ): ?>
+						    			<option value="<?php echo $key; ?>" <?php selected( $this->settings['incsub_support_main_super_admin'], $key ); ?>><?php echo $value; ?></option>
+						    		<?php endforeach; ?>
+						    	</select>
+						    	<span class="description"> <?php _e( 'If the ticket is not assigned to any staff member, This will be the Administrator who receives all emails with any updates about the ticket', INCSUB_SUPPORT_LANG_DOMAIN ); ?></span>
+						    <?php $this->render_row( __( 'Main Administrator', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); ?>
 						</table>
 
 						<h3><?php _e( 'Permissions Settings', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h3>
@@ -201,6 +210,10 @@ if ( ! class_exists( 'MU_Support_Network_Support_settings' ) ) {
 				else
 					$this->settings['incsub_support_from_mail'] = $input['from_mail'];
 			}
+
+			// MAIN SUPER ADMIN
+			if ( isset( $input['super_admin'] ) )
+				$this->settings['incsub_support_main_super_admin'] = absint( $input['super_admin'] );
 
 			// PRIVACY
 			if ( isset( $input['privacy'] ) && array_key_exists( $input['privacy'], MU_Support_System::$privacy ) ) {
