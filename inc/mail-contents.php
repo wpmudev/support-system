@@ -101,16 +101,13 @@ function incsub_support_send_user_reply_mail( $user, $response_user, $ticket_id,
 	
 	$headers = incsub_support_get_email_headers();
 
-	// Variables for the message
-	if ( ! is_object( MU_Support_System::$admin_single_ticket_menu ) )
-		$admin_menu = new MU_Support_Admin_Single_Ticket_Menu( true );
-	else
-		$admin_menu = MU_Support_System::$admin_single_ticket_menu;
-
+	$visit_link = get_admin_url( $ticket['blog_id'], 'admin.php' );
 	$visit_link = add_query_arg(
-		'tid',
-		$ticket_id,
-		$admin_menu->get_permalink()
+		array( 
+			'tid' => $ticket_id,
+			'page' => 'single-ticket-manager'
+		),
+		$visit_link
 	);
 
 	switch_to_blog( $ticket['blog_id'] );
@@ -188,12 +185,6 @@ function incsub_support_send_admin_reply_mail( $admin_user, $response_user, $tic
 function incsub_support_send_user_closed_mail( $user, $ticket_id, $ticket ) {
 	
 	$headers = incsub_support_get_email_headers();
-
-	// Variables for the message
-	if ( ! is_object( MU_Support_System::$admin_single_ticket_menu ) )
-		$admin_menu = new MU_Support_Admin_Single_Ticket_Menu( true );
-	else
-		$admin_menu = MU_Support_System::$admin_single_ticket_menu;
 
 	$visit_link = get_admin_url( $ticket['blog_id'], 'admin.php' );
 	$visit_link = add_query_arg(

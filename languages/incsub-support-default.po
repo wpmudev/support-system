@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Support System\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-09 10:45+0100\n"
-"PO-Revision-Date: 2013-07-09 10:46+0100\n"
+"POT-Creation-Date: 2013-07-12 12:20+0100\n"
+"PO-Revision-Date: 2013-07-12 12:20+0100\n"
 "Last-Translator: Ignacio <igmoweb@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -71,7 +71,7 @@ msgstr ""
 msgid "Allow only requestors to see their own tickets"
 msgstr ""
 
-#: ../incsub-support.php:161
+#: ../incsub-support.php:164
 #: ../admin/pages/network-main-menu.php:26
 msgid "Support"
 msgstr ""
@@ -193,12 +193,6 @@ msgstr ""
 msgid "Ticket Error: There was an error submitting your ticket. Please try again in a few minutes."
 msgstr ""
 
-#: ../admin/pages/admin-new-ticket-menu.php:188
-#: ../admin/pages/admin-single-ticket-menu.php:572
-#: ../admin/pages/network-single-ticket-menu.php:608
-msgid "New Support Ticket: "
-msgstr ""
-
 #: ../admin/pages/admin-single-ticket-menu.php:29
 #: ../admin/pages/admin-single-ticket-menu.php:30
 #: ../admin/pages/network-single-ticket-menu.php:26
@@ -284,7 +278,7 @@ msgstr ""
 
 #: ../admin/pages/admin-single-ticket-menu.php:235
 #: ../admin/pages/network-single-ticket-menu.php:227
-#: ../admin/pages/network-support-settings-menu.php:166
+#: ../admin/pages/network-support-settings-menu.php:175
 msgid "Save changes"
 msgstr ""
 
@@ -365,9 +359,13 @@ msgstr ""
 msgid "The name is used to identify the category to which FAQ question relate"
 msgstr ""
 
+#: ../admin/pages/network-faq-categories-menu.php:121
+msgid "Add New Category"
+msgstr ""
+
 #: ../admin/pages/network-faq-categories-menu.php:134
 #: ../admin/pages/network-faq-categories-menu.php:156
-#: ../admin/pages/network-support-settings-menu.php:175
+#: ../admin/pages/network-support-settings-menu.php:184
 #: ../admin/pages/network-ticket-categories-menu.php:137
 #: ../admin/pages/network-ticket-categories-menu.php:160
 msgid "Security check error"
@@ -497,52 +495,60 @@ msgstr ""
 msgid "Support from e-mail"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:101
+#: ../admin/pages/network-support-settings-menu.php:106
+msgid "If the ticket is not assigned to any staff member, This will be the Administrator who receives all emails with any updates about the ticket"
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:107
+msgid "Main Administrator"
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:110
 msgid "Permissions Settings"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:114
+#: ../admin/pages/network-support-settings-menu.php:123
 msgid "User roles that can open/see tickets."
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:124
+#: ../admin/pages/network-support-settings-menu.php:133
 msgid "User roles that can see the FAQs <span class=\"description\">(uncheck all if you want to disable this feature)</span>"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:131
+#: ../admin/pages/network-support-settings-menu.php:140
 msgid "Check and select a minimum Pro Site Level to allow <strong>Support Tickets</strong> in a blog (if unchecked, Support will be available for any blog)"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:135
 #: ../admin/pages/network-support-settings-menu.php:144
+#: ../admin/pages/network-support-settings-menu.php:153
 msgid "Minimum Pro Site Level"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:140
+#: ../admin/pages/network-support-settings-menu.php:149
 msgid "Check and select a minimum Pro Site Level to allow <strong>Support FAQ</strong> in a blog (if unchecked, Support FAQ will be available for any blog)"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:147
+#: ../admin/pages/network-support-settings-menu.php:156
 msgid "Pro Sites Integration"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:152
+#: ../admin/pages/network-support-settings-menu.php:161
 msgid "Privacy Settings"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:160
+#: ../admin/pages/network-support-settings-menu.php:169
 msgid "Privacy"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:181
+#: ../admin/pages/network-support-settings-menu.php:190
 msgid "Menu name must not be empty"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:190
+#: ../admin/pages/network-support-settings-menu.php:199
 msgid "Site name must not be empty"
 msgstr ""
 
-#: ../admin/pages/network-support-settings-menu.php:199
+#: ../admin/pages/network-support-settings-menu.php:208
 msgid "Email must be a valid email"
 msgstr ""
 
@@ -707,15 +713,32 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: ../inc/mail-contents.php:9
+#: ../inc/mail-contents.php:43
+msgid "Ticket submitted: "
+msgstr ""
+
+#: ../inc/mail-contents.php:88
+msgid "New Support Ticket: "
+msgstr ""
+
+#: ../inc/mail-contents.php:130
+#: ../inc/mail-contents.php:172
+msgid "Ticket response notification: "
+msgstr ""
+
+#: ../inc/mail-contents.php:207
+msgid "Ticket closed notification: "
+msgstr ""
+
+#: ../inc/mail-contents.php:213
 msgid "***  DO NOT WRITE BELLOW THIS LINE  ***"
 msgstr ""
 
-#: ../inc/mail-contents.php:11
+#: ../inc/mail-contents.php:215
 msgid "***  DO NOT REPLY TO THIS EMAIL  ***"
 msgstr ""
 
-#: ../inc/mail-contents.php:17
+#: ../inc/mail-contents.php:221
 msgid ""
 "\n"
 "SUPPORT_FETCH_IMAP\n"
@@ -724,11 +747,30 @@ msgid ""
 "Status: SUPPORT_STATUS\n"
 "Priority: SUPPORT_PRIORITY\n"
 "\n"
-"Visit:\n"
+"Your ticket has been submitted\n"
 "\n"
-"\tSUPPORT_LINK\n"
+"Visit: SUPPORT_LINK\n"
 "\n"
-"to reply to view the new ticket.\n"
+"to reply or view the new ticket.\n"
+"\n"
+"Thanks,\n"
+"SUPPORT_SITE_NAME"
+msgstr ""
+
+#: ../inc/mail-contents.php:248
+msgid ""
+"\n"
+"SUPPORT_FETCH_IMAP\n"
+"\n"
+"Subject: SUPPORT_SUBJECT\n"
+"Status: SUPPORT_STATUS\n"
+"Priority: SUPPORT_PRIORITY\n"
+"\n"
+"A new ticket has been submitted\n"
+"\n"
+"Visit: SUPPORT_LINK\n"
+"\n"
+"to reply or view the new ticket.\n"
 "\n"
 "==============================================================\n"
 "\tBegin Ticket Message\n"
@@ -740,14 +782,10 @@ msgid ""
 "\n"
 "==============================================================\n"
 "      End Ticket Message\n"
-"==============================================================\n"
-"\n"
-"Ticket URL:\n"
-"\n"
-"SUPPORT_TICKET_URL"
+"=============================================================="
 msgstr ""
 
-#: ../inc/mail-contents.php:60
+#: ../inc/mail-contents.php:286
 msgid ""
 "\n"
 "\n"
@@ -759,15 +797,13 @@ msgid ""
 "\n"
 "Please log into your site and visit the support page to reply to this ticket, if needed.\n"
 "\n"
-"Visit:\n"
-"\n"
-"\tSUPPORT_LINK\n"
-"\n"
-"to reply to this ticket, if needed.\n"
+"Visit: SUPPORT_LINK\n"
 "\n"
 "==============================================================\n"
 "     Begin Ticket Message\n"
 "==============================================================\n"
+"\n"
+"SUPPORT_RESPONSE_USER_NAME said:\n"
 "\n"
 "SUPPORT_MESSAGE\n"
 "\n"
@@ -776,33 +812,28 @@ msgid ""
 "==============================================================\n"
 "\n"
 "Thanks,\n"
-"SUPPORT_USER_NAME,\n"
 "SUPPORT_SITE_NAME"
 msgstr ""
 
-#: ../inc/mail-contents.php:105
+#: ../inc/mail-contents.php:327
 msgid ""
 "\n"
 "\n"
-"SUPPORT_FETCH_IMAP\n"
+"***  DO NOT REPLY TO THIS EMAIL  ***\n"
 "\n"
 "Subject: SUPPORT_SUBJECT\n"
 "Status: SUPPORT_STATUS\n"
 "Priority: SUPPORT_PRIORITY\n"
 "\n"
-"Visit:\n"
+"Please log into network admin and visit the support page to reply to this ticket, if needed.\n"
 "\n"
-"\tSUPPORT_LINK\n"
-"\n"
-"to respond to this ticket update.\n"
-"\n"
+"Visit: SUPPORT_LINK\n"
 "\n"
 "==============================================================\n"
 "     Begin Ticket Message\n"
 "==============================================================\n"
 "\n"
-"SUPPORT_USER_NAME said:\n"
-"\n"
+"SUPPORT_RESPONSE_USER_NAME said:\n"
 "\n"
 "SUPPORT_MESSAGE\n"
 "\n"
@@ -810,12 +841,10 @@ msgid ""
 "      End Ticket Message\n"
 "==============================================================\n"
 "\n"
-"\n"
-"Ticket URL:\n"
-"\tSUPPORT_TICKET_URL"
+"Thanks"
 msgstr ""
 
-#: ../inc/mail-contents.php:151
+#: ../inc/mail-contents.php:367
 msgid ""
 "\n"
 "\n"

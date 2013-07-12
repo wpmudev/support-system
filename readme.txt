@@ -13,6 +13,13 @@ Support System for WordPress multi site.. Now also for single sites.
 
 == ChangeLog ==
 
+= 1.9.5 =
+* New setting: Default Super Admin for notifications
+* Mail System improved.
+* Fixed bug when selecting a Staff Representative.
+* Replaced user nicename for display name in mails
+* Better user experience for tickets table
+
 = 1.9.4 =
 * Fixed visit link when sending emails
 * Fixed Headers in mails 
