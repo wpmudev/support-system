@@ -85,6 +85,13 @@ if ( ! class_exists( 'MU_Support_Admin_FAQ_Menu' ) ) {
 
 		    ?>	
 
+		    <style>
+		    	.accordion ul li {
+		    		list-style: disc;
+		    		margin-left:25px;
+		    	}
+		    </style>
+
 		<div id="tabs">
 			<ul>
 				<?php foreach ( $faq_categories as $category ): ?>
@@ -101,7 +108,7 @@ if ( ! class_exists( 'MU_Support_Admin_FAQ_Menu' ) ) {
 				<div id="category-<?php echo $category['cat_id']; ?>" class="accordion" style="margin:20px">
 		    		<?php foreach ( $faqs as $faq ): ?>
 
-		    			<?php $answer = apply_filters('the_content', strip_tags( $faq['answer'] ) ); ?>
+		    			<?php $answer = apply_filters('the_content', $faq['answer'] ); ?>
 		    		
 			    		<h3><?php echo $faq['question']; ?></h3>
 						<div>
