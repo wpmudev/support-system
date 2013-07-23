@@ -110,9 +110,15 @@ function incsub_support_send_user_reply_mail( $user, $response_user, $ticket_id,
 		$visit_link
 	);
 
-	switch_to_blog( $ticket['blog_id'] );
-	$blogname = get_bloginfo( 'name' );
-	restore_current_blog();
+	if ( is_multisite() ) {
+		switch_to_blog( $ticket['blog_id'] );
+		$blogname = get_bloginfo( 'name' );
+		restore_current_blog();	
+	}
+	else {
+		$blogname = get_bloginfo( 'name' );
+	}
+	
 
 	// Email arguments
 	$args = array(
