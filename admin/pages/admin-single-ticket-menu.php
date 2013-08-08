@@ -62,6 +62,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 
 			add_action( 'admin_init', array( &$this, 'validate_form' ) );
 			add_filter( 'admin_title', array( &$this, 'set_page_title' ), 10, 1 );
+			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
 			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_styles' ) );
 
 		}
@@ -91,6 +92,12 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 		private function includes() {
 			// Model
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/admin/tables/ticket-history-table.php');
+		}
+
+		public function enqueue_scripts( $hook ) {
+			if ( $this->page_id == $hook ) {
+				wp_enqueue_script( 'single-ticket-menu-js', INCSUB_SUPPORT_ASSETS_URL . 'js/single-ticket-menu.js', array(), '20130802' );
+			}
 		}
 
 		/**
@@ -283,7 +290,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 			
 
 			?>	
-				<form id="edit-ticket-form" action="" method="post">
+				<form id="edit-ticket-form" action="" method="post" enctype="multipart/form-data">
 					<h2><?php _e( 'Add a new response', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h2>
 					<table class="form-table">
 						<?php 
@@ -353,7 +360,20 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 										$markup
 									);
 								endif;
-							?>
+								?>
+
+								<?php
+								// ATACHMENTS
+									ob_start();
+								?>				
+								<ul id="attachments-list">
+								
+								</ul>			
+	 							<button id="submit-new-attachment" class="button-secondary"><?php _e( 'Upload a new file', INCSUB_SUPPORT_LANG_DOMAIN ); ?></button>
+	 							<?php
+									$markup = ob_get_clean();
+									$this->render_row( __( 'Attachments', INCSUB_SUPPORT_LANG_DOMAIN ),  $markup ); 
+								?>
 
 							
 
@@ -432,10 +452,21 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 
 				$status = isset( $_POST['closeticket'] ) ? 5 : 3;
 
+				if ( ! empty( $_FILES['attachments'] ) ) {
+					$files_uploaded = MU_Support_System::upload_attachments( $_FILES['attachments'] );					
+
+					if ( ! empty( $files_uploaded ) ) {
+						$this->current_ticket['attachments'] = array();
+						foreach( $files_uploaded as $file_uploaded ) {
+							$this->current_ticket['attachments'][] = $file_uploaded['url'];
+						}
+					}
+				}
+
 				if ( ! $this->is_error() ) {
 
 					// Adding a new response (ticket message)
-					$response_id = $model->add_ticket_response( $this->ticket_id, $this->current_ticket['title'], $this->current_ticket['message'] );
+					$response_id = $model->add_ticket_response( $this->ticket_id, $this->current_ticket['title'], $this->current_ticket['message'], $this->current_ticket['attachments'] );
 
 					if ( ! $response_id )
 						wp_die( 'Error while adding a new response, please try again.', INCSUB_SUPPORT_LANG_DOMAIN );

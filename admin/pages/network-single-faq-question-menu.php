@@ -101,7 +101,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_FAQ_Question_Menu' ) ) {
 					$ticket = $model->get_ticket_message_details( $this->ticket_id );
 					if ( $ticket ) {
 						$faq_details['question'] = trim( preg_replace( '/^Re:/i', '', $ticket['subject'], 1 ) );
-						$faq_details['answer'] = wpautop( $ticket['message'] );
+						$faq_details['answer'] = $ticket['message'];
 					}					
 				}
 			}
@@ -211,7 +211,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_FAQ_Question_Menu' ) ) {
 					$this->current_faq['question'] = sanitize_text_field( $_POST['question'] );
 				}
 
-				$this->current_faq['answer'] = wpautop( stripslashes_deep( $_POST['answer'] ) );
+				$this->current_faq['answer'] = stripslashes_deep( $_POST['answer'] );
 
 				$this->current_faq['cat_id'] = absint( $_POST['category'] );				
 

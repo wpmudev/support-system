@@ -31,7 +31,14 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 			$this->editing = false;
 
 			add_action( 'admin_init', array( &$this, 'validate_form' ) );
+			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
 
+		}
+
+		public function enqueue_scripts( $hook ) {
+			if ( $this->page_id == $hook ) {
+				wp_enqueue_script( 'single-ticket-menu-js', INCSUB_SUPPORT_ASSETS_URL . 'js/single-ticket-menu.js', array(), '20130802' );
+			}
 		}
 
 		/**
@@ -57,7 +64,7 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 			$model = MU_Support_System_Model::get_instance();
 			$categories = $model->get_ticket_categories();
 			?>
-				<form method="post" action="">
+				<form method="post" action="" enctype="multipart/form-data">
 					<table class="form-table">
 						
 						<p><span class="description"><?php _e( '* All fields are required.', INCSUB_SUPPORT_LANG_DOMAIN ); ?></span></p>
@@ -85,6 +92,19 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 						<?php ob_start(); ?>
 							<?php wp_editor( $this->current_ticket['message'], 'message-text', array( 'media_buttons' => true ) ); ?>
 						<?php $this->render_row( __( 'Problem description', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); ?>
+
+						<?php
+						// ATACHMENTS
+							ob_start();
+						?>				
+						<ul id="attachments-list">
+						
+						</ul>			
+							<button id="submit-new-attachment" class="button-secondary"><?php _e( 'Upload a new file', INCSUB_SUPPORT_LANG_DOMAIN ); ?></button>
+							<?php
+							$markup = ob_get_clean();
+							$this->render_row( __( 'Attachments', INCSUB_SUPPORT_LANG_DOMAIN ),  $markup ); 
+						?>
 
 						<?php do_action( 'support_new_ticket_fields', $this->current_ticket ); ?>
 						
@@ -129,6 +149,17 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 				$this->current_ticket['message'] = stripslashes_deep( $_POST['message-text'] );
 				if ( empty( $this->current_ticket['message'] ) )
 					$this->add_error( 'message', __( 'Message must not be empty', INCSUB_SUPPORT_LANG_DOMAIN ) );
+
+				if ( ! empty( $_FILES['attachments'] ) ) {
+					$files_uploaded = MU_Support_System::upload_attachments( $_FILES['attachments'] );					
+
+					if ( ! empty( $files_uploaded ) ) {
+						$this->current_ticket['attachments'] = array();
+						foreach( $files_uploaded as $file_uploaded ) {
+							$this->current_ticket['attachments'][] = $file_uploaded['url'];
+						}
+					}
+				}
 
 				if ( ! $this->is_error() ) {
 

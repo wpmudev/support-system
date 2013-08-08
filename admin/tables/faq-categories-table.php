@@ -160,6 +160,7 @@ class MU_Support_FAQ_Categories_Table extends WP_List_Table {
         foreach ( $data as $key => $item ) {
             $data[ $key ]['faqs'] = $model->get_faqs_from_cat( $item['cat_id'] );
         }
+        
 
         $this->items = $data;
 

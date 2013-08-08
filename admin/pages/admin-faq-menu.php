@@ -78,10 +78,12 @@ if ( ! class_exists( 'MU_Support_Admin_FAQ_Menu' ) ) {
 		 */
 		public function render_content() {
 
-			global $wp_embed;
-
 		    $model = MU_Support_System_Model::get_instance();
 		    $faq_categories = $model->get_faq_categories();
+
+		    foreach ( $faq_categories as $key => $item ) {
+	            $faq_categories[ $key ]['faqs'] = $model->get_faqs_from_cat( $item['cat_id'] );
+	        }
 
 		    ?>	
 
@@ -97,22 +99,33 @@ if ( ! class_exists( 'MU_Support_Admin_FAQ_Menu' ) ) {
 				<?php foreach ( $faq_categories as $category ): ?>
 				    <li>
 				    	<a href="#category-<?php echo $category['cat_id']; ?>">
-				    		<span><?php echo $category['cat_name']; ?> (<?php echo sprintf( __( '%d questions', INCSUB_SUPPORT_LANG_DOMAIN ), $category['qcount'] ); ?>)</span>
+				    		<span><?php echo $category['cat_name']; ?> (<?php echo sprintf( __( '%d questions', INCSUB_SUPPORT_LANG_DOMAIN ), $category['faqs'] ); ?>)</span>
 					    </a>
 					</li>
 				<?php endforeach; ?>
 			</ul>
-
+		
 			<?php foreach ( $faq_categories as $category ): ?>
 				<?php $faqs = $model->get_faqs( $category['cat_id'] ); ?>
 				<div id="category-<?php echo $category['cat_id']; ?>" class="accordion" style="margin:20px">
 		    		<?php foreach ( $faqs as $faq ): ?>
 
-		    			<?php $answer = apply_filters('the_content', $faq['answer'] ); ?>
+		    			<?php 
+		    				add_filter( 'the_content', 'wptexturize'        );
+							add_filter( 'the_content', 'convert_smilies'    );
+							add_filter( 'the_content', 'convert_chars'      );
+							add_filter( 'the_content', 'wpautop'            );
+							add_filter( 'the_content', 'shortcode_unautop'  );
+							add_filter( 'the_content', 'prepend_attachment' );
+
+							$answer = preg_replace_callback( '|^\s*(https?://[^\s"]+)\s*$|im', array( &$this, 'embed_media' ), $faq['answer'] );
+		    				$answer = apply_filters( 'the_content', $answer ); 
+		    				
+						?>
 		    		
 			    		<h3><?php echo $faq['question']; ?></h3>
 						<div>
-							<?php echo $answer; ?>
+							<?php echo ( $answer ); ?>
 							<p class="submit" data-faq-id="<?php echo $faq['faq_id']; ?>"><?php _e( 'Was this solution helpful?', INCSUB_SUPPORT_LANG_DOMAIN ); ?> 
 								<?php echo '<button class="button-primary vote-button" data-vote="yes"> ' . __( 'Yes', INCSUB_SUPPORT_LANG_DOMAIN ) . '</button> <button href="#" class="button vote-button" data-vote="no"> ' . __( 'No', INCSUB_SUPPORT_LANG_DOMAIN ) . '</button>'; ?>
 								<img style="display:none; margin-left:10px;vertical-align:middle" src="<?php echo INCSUB_SUPPORT_ASSETS_URL . 'images/ajax-loader.gif'; ?>">
@@ -126,6 +139,14 @@ if ( ! class_exists( 'MU_Support_Admin_FAQ_Menu' ) ) {
 		    			 
 		</div>
 		<?php
+		}
+
+		public function embed_media( $match ) {
+			require_once( ABSPATH . WPINC . '/class-oembed.php' );
+			$wp_oembed = _wp_oembed_get_object();
+
+			$embed_code = $wp_oembed->get_html( $match[1] );
+			return $embed_code;
 		}
 
 	}

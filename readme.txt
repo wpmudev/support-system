@@ -13,6 +13,13 @@ Support System for WordPress multi site.. Now also for single sites.
 
 == ChangeLog ==
 
+= 1.9.6 =
+* New feature: Attachments on tickets
+* New feature: Embed media in FAQs
+* Fixed issue with mails encoding
+* Fixed bug on FAQs counts
+* Fixed bug with images in FAQs
+
 = 1.9.5 =
 * New setting: Default Super Admin for notifications
 * Mail System improved.

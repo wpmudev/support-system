@@ -88,6 +88,16 @@ class MU_Support_Ticket_History_Table extends WP_List_Table {
         ?>
             <h4><?php echo $item['subject']; ?></h4>
             <p><?php echo $item['message']; ?></p>
+            <?php if ( ! empty( $item['attachments'] ) ): ?>
+                <div class="ticket-acttachments-wrap" style="background: #EBEBEB; padding: 15px; margin-top: 20px; display: inline-block; margin-bottom: 20px; border:1px solid #DADADA; border-radius:3px">
+                    <h4><?php _e( 'Attachments', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h4>
+                    <ul class="ticket-acttachments" >
+                        <?php foreach ( $item['attachments'] as $attachment ): ?>
+                            <li class="ticket-attachment-item"><a href="<?php echo $attachment; ?>" title="<?php _e( 'Download file', INCSUB_SUPPORT_LANG_DOMAIN ); ?>"><?php echo basename( $attachment ); ?></a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
         <?php
         return ob_get_clean();
     }

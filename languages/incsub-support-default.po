@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Support System\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-12 12:20+0100\n"
-"PO-Revision-Date: 2013-07-12 12:20+0100\n"
+"POT-Creation-Date: 2013-08-08 18:47+0100\n"
+"PO-Revision-Date: 2013-08-08 18:47+0100\n"
 "Last-Translator: Ignacio <igmoweb@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -84,20 +84,20 @@ msgstr ""
 msgid "FAQ"
 msgstr ""
 
-#: ../admin/pages/admin-faq-menu.php:93
+#: ../admin/pages/admin-faq-menu.php:102
 #, php-format
 msgid "%d questions"
 msgstr ""
 
-#: ../admin/pages/admin-faq-menu.php:109
+#: ../admin/pages/admin-faq-menu.php:129
 msgid "Was this solution helpful?"
 msgstr ""
 
-#: ../admin/pages/admin-faq-menu.php:110
+#: ../admin/pages/admin-faq-menu.php:130
 msgid "Yes"
 msgstr ""
 
-#: ../admin/pages/admin-faq-menu.php:110
+#: ../admin/pages/admin-faq-menu.php:130
 msgid "No"
 msgstr ""
 
@@ -125,24 +125,24 @@ msgstr ""
 msgid "Opened"
 msgstr ""
 
-#: ../admin/pages/admin-new-ticket-menu.php:63
+#: ../admin/pages/admin-new-ticket-menu.php:70
 msgid "* All fields are required."
 msgstr ""
 
-#: ../admin/pages/admin-new-ticket-menu.php:66
+#: ../admin/pages/admin-new-ticket-menu.php:73
 msgid "(max: 100 characters)"
 msgstr ""
 
-#: ../admin/pages/admin-new-ticket-menu.php:67
-#: ../admin/pages/admin-single-ticket-menu.php:295
-#: ../admin/pages/network-single-ticket-menu.php:296
+#: ../admin/pages/admin-new-ticket-menu.php:74
+#: ../admin/pages/admin-single-ticket-menu.php:302
+#: ../admin/pages/network-single-ticket-menu.php:302
 #: ../admin/tables/admin-tickets-table.php:86
 msgid "Subject"
 msgstr ""
 
-#: ../admin/pages/admin-new-ticket-menu.php:75
-#: ../admin/pages/admin-single-ticket-menu.php:310
-#: ../admin/pages/network-single-ticket-menu.php:311
+#: ../admin/pages/admin-new-ticket-menu.php:82
+#: ../admin/pages/admin-single-ticket-menu.php:317
+#: ../admin/pages/network-single-ticket-menu.php:317
 #: ../admin/tables/admin-tickets-table.php:89
 #: ../admin/tables/faq-categories-table.php:14
 #: ../admin/tables/faqs-table.php:90
@@ -150,46 +150,58 @@ msgstr ""
 msgid "Category"
 msgstr ""
 
-#: ../admin/pages/admin-new-ticket-menu.php:83
-#: ../admin/pages/admin-single-ticket-menu.php:220
-#: ../admin/pages/admin-single-ticket-menu.php:325
-#: ../admin/pages/network-single-ticket-menu.php:213
-#: ../admin/pages/network-single-ticket-menu.php:326
+#: ../admin/pages/admin-new-ticket-menu.php:90
+#: ../admin/pages/admin-single-ticket-menu.php:227
+#: ../admin/pages/admin-single-ticket-menu.php:332
+#: ../admin/pages/network-single-ticket-menu.php:219
+#: ../admin/pages/network-single-ticket-menu.php:332
 #: ../admin/tables/admin-tickets-table.php:88
 msgid "Priority"
 msgstr ""
 
-#: ../admin/pages/admin-new-ticket-menu.php:87
+#: ../admin/pages/admin-new-ticket-menu.php:94
 msgid "Problem description"
 msgstr ""
 
-#: ../admin/pages/admin-new-ticket-menu.php:95
+#: ../admin/pages/admin-new-ticket-menu.php:103
+#: ../admin/pages/admin-single-ticket-menu.php:372
+#: ../admin/pages/network-single-ticket-menu.php:391
+msgid "Upload a new file"
+msgstr ""
+
+#: ../admin/pages/admin-new-ticket-menu.php:106
+#: ../admin/pages/admin-single-ticket-menu.php:375
+#: ../admin/pages/network-single-ticket-menu.php:394
+msgid "Attachments"
+msgstr ""
+
+#: ../admin/pages/admin-new-ticket-menu.php:115
 msgid "Submit new ticket"
 msgstr ""
 
-#: ../admin/pages/admin-new-ticket-menu.php:96
-#: ../admin/pages/admin-single-ticket-menu.php:149
-#: ../admin/pages/network-single-ticket-menu.php:132
+#: ../admin/pages/admin-new-ticket-menu.php:116
+#: ../admin/pages/admin-single-ticket-menu.php:156
+#: ../admin/pages/network-single-ticket-menu.php:138
 msgid "Back to tickets list"
 msgstr ""
 
-#: ../admin/pages/admin-new-ticket-menu.php:119
+#: ../admin/pages/admin-new-ticket-menu.php:139
 msgid "Subject must not be empty"
 msgstr ""
 
-#: ../admin/pages/admin-new-ticket-menu.php:123
+#: ../admin/pages/admin-new-ticket-menu.php:143
 msgid "Not valid category"
 msgstr ""
 
-#: ../admin/pages/admin-new-ticket-menu.php:127
+#: ../admin/pages/admin-new-ticket-menu.php:147
 msgid "Not valid priority"
 msgstr ""
 
-#: ../admin/pages/admin-new-ticket-menu.php:131
+#: ../admin/pages/admin-new-ticket-menu.php:151
 msgid "Message must not be empty"
 msgstr ""
 
-#: ../admin/pages/admin-new-ticket-menu.php:139
+#: ../admin/pages/admin-new-ticket-menu.php:170
 msgid "Ticket Error: There was an error submitting your ticket. Please try again in a few minutes."
 msgstr ""
 
@@ -206,127 +218,127 @@ msgid "Ticket details"
 msgstr ""
 
 #: ../admin/pages/admin-single-ticket-menu.php:44
-#: ../admin/pages/admin-single-ticket-menu.php:364
+#: ../admin/pages/admin-single-ticket-menu.php:384
 #: ../admin/pages/network-single-ticket-menu.php:41
-#: ../admin/pages/network-single-ticket-menu.php:381
+#: ../admin/pages/network-single-ticket-menu.php:401
 msgid "Update ticket"
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:139
+#: ../admin/pages/admin-single-ticket-menu.php:146
 msgid "This ticket has been closed. Please, contact a Super Admin if you want to reopen it."
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:141
+#: ../admin/pages/admin-single-ticket-menu.php:148
 msgid "This ticket has been closed."
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:175
-#: ../admin/pages/network-single-ticket-menu.php:158
+#: ../admin/pages/admin-single-ticket-menu.php:182
+#: ../admin/pages/network-single-ticket-menu.php:164
 msgid "Ticket Subject"
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:176
-#: ../admin/pages/network-single-ticket-menu.php:159
+#: ../admin/pages/admin-single-ticket-menu.php:183
+#: ../admin/pages/network-single-ticket-menu.php:165
 msgid "Current Status"
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:177
-#: ../admin/pages/network-single-ticket-menu.php:160
+#: ../admin/pages/admin-single-ticket-menu.php:184
+#: ../admin/pages/network-single-ticket-menu.php:166
 msgid "Created On (GMT)"
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:180
-#: ../admin/pages/network-single-ticket-menu.php:163
+#: ../admin/pages/admin-single-ticket-menu.php:187
+#: ../admin/pages/network-single-ticket-menu.php:169
 msgid "Reporting User"
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:181
-#: ../admin/pages/network-single-ticket-menu.php:164
+#: ../admin/pages/admin-single-ticket-menu.php:188
+#: ../admin/pages/network-single-ticket-menu.php:170
 msgid "Last Reply From"
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:182
-#: ../admin/pages/network-single-ticket-menu.php:165
+#: ../admin/pages/admin-single-ticket-menu.php:189
+#: ../admin/pages/network-single-ticket-menu.php:171
 msgid "Last Updated (GMT)"
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:187
-#: ../admin/pages/network-single-ticket-menu.php:170
+#: ../admin/pages/admin-single-ticket-menu.php:194
+#: ../admin/pages/network-single-ticket-menu.php:176
 msgid "Unknown"
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:202
-#: ../admin/pages/network-single-ticket-menu.php:185
+#: ../admin/pages/admin-single-ticket-menu.php:209
+#: ../admin/pages/network-single-ticket-menu.php:191
 msgid "Submitted from"
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:204
-#: ../admin/pages/network-single-ticket-menu.php:192
+#: ../admin/pages/admin-single-ticket-menu.php:211
+#: ../admin/pages/network-single-ticket-menu.php:198
 #: ../admin/tables/admin-tickets-table.php:41
 msgid "Not yet assigned"
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:205
-#: ../admin/pages/network-single-ticket-menu.php:199
+#: ../admin/pages/admin-single-ticket-menu.php:212
+#: ../admin/pages/network-single-ticket-menu.php:205
 msgid "Staff Representative"
-msgstr ""
-
-#: ../admin/pages/admin-single-ticket-menu.php:228
-#: ../admin/pages/network-single-ticket-menu.php:221
-msgid "Ticket closed"
 msgstr ""
 
 #: ../admin/pages/admin-single-ticket-menu.php:235
 #: ../admin/pages/network-single-ticket-menu.php:227
+msgid "Ticket closed"
+msgstr ""
+
+#: ../admin/pages/admin-single-ticket-menu.php:242
+#: ../admin/pages/network-single-ticket-menu.php:233
 #: ../admin/pages/network-support-settings-menu.php:175
 msgid "Save changes"
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:255
+#: ../admin/pages/admin-single-ticket-menu.php:262
 msgid "Message added to ticket successfully"
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:287
+#: ../admin/pages/admin-single-ticket-menu.php:294
 msgid "Add a new response"
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:333
-#: ../admin/pages/network-single-ticket-menu.php:355
+#: ../admin/pages/admin-single-ticket-menu.php:340
+#: ../admin/pages/network-single-ticket-menu.php:361
 msgid "Please provide as much information as possible, so that the user can understand the solution/request."
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:338
-#: ../admin/pages/network-single-ticket-menu.php:360
+#: ../admin/pages/admin-single-ticket-menu.php:345
+#: ../admin/pages/network-single-ticket-menu.php:366
 msgid "Add a reply"
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:347
-#: ../admin/pages/network-single-ticket-menu.php:368
+#: ../admin/pages/admin-single-ticket-menu.php:354
+#: ../admin/pages/network-single-ticket-menu.php:374
 msgid "Yes, close this ticket."
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:348
-#: ../admin/pages/network-single-ticket-menu.php:369
+#: ../admin/pages/admin-single-ticket-menu.php:355
+#: ../admin/pages/network-single-ticket-menu.php:375
 msgid "Once a ticket is closed, users can no longer reply to (or update) it."
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:352
-#: ../admin/pages/network-single-ticket-menu.php:373
+#: ../admin/pages/admin-single-ticket-menu.php:359
+#: ../admin/pages/network-single-ticket-menu.php:379
 msgid "Close Ticket?"
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:384
-#: ../admin/pages/network-single-ticket-menu.php:101
+#: ../admin/pages/admin-single-ticket-menu.php:404
+#: ../admin/pages/network-single-ticket-menu.php:107
 msgid "The ticket you're trying to find does not exist."
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:413
-#: ../admin/pages/network-single-ticket-menu.php:421
+#: ../admin/pages/admin-single-ticket-menu.php:433
+#: ../admin/pages/network-single-ticket-menu.php:442
 msgid "Title cannot be empty"
 msgstr ""
 
-#: ../admin/pages/admin-single-ticket-menu.php:421
-#: ../admin/pages/network-single-ticket-menu.php:429
+#: ../admin/pages/admin-single-ticket-menu.php:441
+#: ../admin/pages/network-single-ticket-menu.php:450
 msgid "Message cannot be empty"
 msgstr ""
 
@@ -427,27 +439,27 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: ../admin/pages/network-single-ticket-menu.php:127
+#: ../admin/pages/network-single-ticket-menu.php:133
 msgid "This ticket has been closed"
 msgstr ""
 
-#: ../admin/pages/network-single-ticket-menu.php:335
+#: ../admin/pages/network-single-ticket-menu.php:341
 msgid "Keep Responsibility For This Ticket"
 msgstr ""
 
-#: ../admin/pages/network-single-ticket-menu.php:336
+#: ../admin/pages/network-single-ticket-menu.php:342
 msgid "Give Up Responsibility To Allow Another Admin To Accept"
 msgstr ""
 
-#: ../admin/pages/network-single-ticket-menu.php:338
+#: ../admin/pages/network-single-ticket-menu.php:344
 msgid "Accept Responsibility For This Ticket"
 msgstr ""
 
-#: ../admin/pages/network-single-ticket-menu.php:340
+#: ../admin/pages/network-single-ticket-menu.php:346
 msgid "Keep Current Admin, And Just Help Out With A Reply"
 msgstr ""
 
-#: ../admin/pages/network-single-ticket-menu.php:347
+#: ../admin/pages/network-single-ticket-menu.php:353
 msgid "Ticket Responsibility"
 msgstr ""
 
@@ -688,6 +700,10 @@ msgstr ""
 msgid "Create a FAQ"
 msgstr ""
 
+#: ../admin/tables/ticket-history-table.php:96
+msgid "Download file"
+msgstr ""
+
 #: ../admin/tables/tickets-table.php:105
 #: ../admin/tables/tickets-table.php:113
 #, php-format
@@ -721,24 +737,24 @@ msgstr ""
 msgid "New Support Ticket: "
 msgstr ""
 
-#: ../inc/mail-contents.php:130
-#: ../inc/mail-contents.php:172
+#: ../inc/mail-contents.php:136
+#: ../inc/mail-contents.php:178
 msgid "Ticket response notification: "
 msgstr ""
 
-#: ../inc/mail-contents.php:207
+#: ../inc/mail-contents.php:213
 msgid "Ticket closed notification: "
 msgstr ""
 
-#: ../inc/mail-contents.php:213
+#: ../inc/mail-contents.php:219
 msgid "***  DO NOT WRITE BELLOW THIS LINE  ***"
 msgstr ""
 
-#: ../inc/mail-contents.php:215
+#: ../inc/mail-contents.php:221
 msgid "***  DO NOT REPLY TO THIS EMAIL  ***"
 msgstr ""
 
-#: ../inc/mail-contents.php:221
+#: ../inc/mail-contents.php:227
 msgid ""
 "\n"
 "SUPPORT_FETCH_IMAP\n"
@@ -757,7 +773,7 @@ msgid ""
 "SUPPORT_SITE_NAME"
 msgstr ""
 
-#: ../inc/mail-contents.php:248
+#: ../inc/mail-contents.php:254
 msgid ""
 "\n"
 "SUPPORT_FETCH_IMAP\n"
@@ -785,7 +801,7 @@ msgid ""
 "=============================================================="
 msgstr ""
 
-#: ../inc/mail-contents.php:286
+#: ../inc/mail-contents.php:292
 msgid ""
 "\n"
 "\n"
@@ -815,7 +831,7 @@ msgid ""
 "SUPPORT_SITE_NAME"
 msgstr ""
 
-#: ../inc/mail-contents.php:327
+#: ../inc/mail-contents.php:333
 msgid ""
 "\n"
 "\n"
@@ -844,7 +860,7 @@ msgid ""
 "Thanks"
 msgstr ""
 
-#: ../inc/mail-contents.php:367
+#: ../inc/mail-contents.php:373
 msgid ""
 "\n"
 "\n"
@@ -863,11 +879,11 @@ msgstr ""
 msgid "You are not allowed to view this page."
 msgstr ""
 
-#: ../model/model.php:1209
+#: ../model/model.php:1228
 msgid "General questions"
 msgstr ""
 
-#: ../model/model.php:1240
+#: ../model/model.php:1259
 msgid "General"
 msgstr ""
 

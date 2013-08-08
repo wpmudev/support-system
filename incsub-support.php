@@ -6,7 +6,7 @@ Description: Support System for WordPress.
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub), Ignacio (Incsub)
 WDP ID: 36
 Network: true
-Version: 1.9.5
+Version: 1.9.6
 Author URI: http://premium.wpmudev.org
 Text Domain: incsub-support
 */
@@ -28,7 +28,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '1.9.5' );
+define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '1.9.6' );
 
 if ( ! defined( 'INCSUB_SUPPORT_LANG_DOMAIN' ) )
 	define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
@@ -412,6 +412,45 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			$admin_login = $super_admins[ $administrator ];
 			$admin_user = get_user_by( 'login', $admin_login );
 			return $admin_user;
+		}
+
+		public static function upload_attachments( $attachments ) {
+
+			global $current_user;
+
+			$files_keys = array_keys( $attachments['name'] );
+
+			$files_uploaded = array();
+
+			$upload_cap = $current_user->allcaps['unfiltered_upload'];
+			$current_user->allcaps['unfiltered_upload'] = true;
+
+			$allowed_file_types = apply_filters( 'incsub_support_allowed_mime_types', array(
+				'jpg' =>'image/jpg',
+				'jpeg' =>'image/jpeg', 
+				'gif' => 'image/gif', 
+				'png' => 'image/png',
+				'zip' => 'application/zip',
+				'gz|gzip' => 'application/x-gzip',
+				'rar' => 'application/rar',
+				'pdf' => 'application/pdf'
+			) );
+
+			foreach ( $files_keys as $key ) {
+				$file = array(
+					'name'		=> $attachments['name'][ $key ],
+					'type'		=> $attachments['type'][ $key ],
+					'tmp_name'	=> $attachments['tmp_name'][ $key ],
+					'error'		=> $attachments['error'][ $key ],
+					'size'		=> $attachments['size'][ $key ]
+				);
+				$uploaded = wp_handle_upload( &$file, $overrides = array('test_form' => false, 'mimes' => $allowed_file_types) );
+				if ( ! isset( $uploaded['error'] ) )
+					$files_uploaded[] = $uploaded;
+			}
+			$current_user->allcaps['unfiltered_upload'] = $upload_cap;
+
+			return $files_uploaded;
 		}
 
 	}

@@ -191,6 +191,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				message_date timestamp NOT NULL default CURRENT_TIMESTAMP,
 				subject varchar(255) character set utf8 NOT NULL,
 				message mediumtext character set utf8 NOT NULL,
+				attachments text DEFAULT '',
 				PRIMARY KEY  (message_id),
 				KEY ticket_id (ticket_id)
 			      ) ENGINE=MyISAM $this->db_charset_collate;";
@@ -222,6 +223,11 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 
 			$this->fill_tickets_cats_default();
 
+		}
+
+		public function upgrade_196() {
+			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+			$this->create_tickets_messages_table();
 		}
 
 		/**
@@ -581,6 +587,8 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 
 			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
+			$attachments = !empty( $ticket_details['attachments'] ) ? $ticket_details['attachments'] : array();
+
 			$wpdb->query(
 				$wpdb->prepare(
 					"INSERT INTO $this->tickets_table
@@ -602,16 +610,17 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			$wpdb->query(
 				$wpdb->prepare(
 					"INSERT INTO $this->tickets_messages_table
-					(site_id, ticket_id, user_id, subject, message, message_date)
+					(site_id, ticket_id, user_id, subject, message, message_date, attachments)
 					VALUES (
-						'%d', '%d', '%d', '%s', '%s', '%s'
+						'%d', '%d', '%d', '%s', '%s', '%s', '%s'
 					)", 
 					$current_site_id, 
 					$wpdb->insert_id, 
 					get_current_user_id(), 
 					$ticket_details['subject'], 
 					$ticket_details['message'], 
-					gmdate('Y-m-d H:i:s')
+					gmdate('Y-m-d H:i:s'),
+					maybe_serialize( $attachments )
 				)
 			);
 
@@ -641,7 +650,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 					"SELECT
 						t.ticket_id, m.message_id, t.blog_id, t.cat_id, t.user_id, t.admin_id, t.ticket_type, t.ticket_priority, t.ticket_status, t.ticket_opened, t.ticket_updated, t.title,
 						c.cat_name, u.display_name AS user_name, a.display_name AS admin_name, a.user_login AS admin_login, l.display_name AS last_user_reply, m.user_id AS user_avatar_id, 
-						m.admin_id AS admin_avatar_id, m.message_date, m.subject, m.message, r.display_name AS reporting_name, s.display_name AS staff_member
+						m.admin_id AS admin_avatar_id, m.message_date, m.subject, m.message, r.display_name AS reporting_name, s.display_name AS staff_member, m.attachments AS attachments
 					FROM $this->tickets_messages_table AS m
 					LEFT JOIN $this->tickets_table AS t ON (m.ticket_id = t.ticket_id)
 					LEFT JOIN $wpdb->users AS u ON (t.user_id = u.ID)
@@ -656,8 +665,16 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				$current_site_id,
 				$blog_id
 			);
+			
+			$results = $wpdb->get_results( $q, ARRAY_A );
 
-			return $wpdb->get_results( $q, ARRAY_A );
+			if ( ! empty( $results ) ) {
+				for ( $i = 0; $i < count( $results ); $i++ ) {
+					$results[$i]['attachments'] = maybe_unserialize( $results[$i]['attachments'] );		
+				} 
+			}
+
+			return $results;
 		}
 
 		/**
@@ -702,7 +719,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		 * 
 		 * @return Mixed Last inserted ID or false 
 		 */
-		public function add_ticket_response( $ticket_id, $title, $message ) {
+		public function add_ticket_response( $ticket_id, $title, $message, $attachments = array() ) {
 			global $wpdb, $current_site;
 
 			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
@@ -715,12 +732,14 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 					'admin_id' => get_current_user_id(),
 					'subject' => $title,
 					'message' => $message,
-					'message_date' => gmdate('Y-m-d H:i:s')
+					'message_date' => gmdate('Y-m-d H:i:s'),
+					'attachments' => maybe_serialize( $attachments )
 				),
 				array(
 					'%d',
 					'%d',
 					'%d',
+					'%s',
 					'%s',
 					'%s',
 					'%s'
@@ -1277,6 +1296,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				ARRAY_A
 			);
 			
+
 			if ( empty($cats) ) {
 				$this->fill_faq_cats_default();
 				
