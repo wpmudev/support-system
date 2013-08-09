@@ -1,9 +1,9 @@
 === Support ===
 Contributors: mohanjith,igmoweb
 Tags: support, ticket, faq
-Requires at least: 3.0.0
+Requires at least: 3.4
 Stable tag: trunk
-Tested up to: 3.5.1
+Tested up to: 3.6
 
 Support System for WordPress multi site. Now also for single sites.
 
@@ -12,6 +12,9 @@ Support System for WordPress multi site. Now also for single sites.
 Support System for WordPress multi site.. Now also for single sites.
 
 == ChangeLog ==
+
+= 1.9.7 =
+* Fixed bug when using PHP 5.4+
 
 = 1.9.6 =
 * New feature: Attachments on tickets
