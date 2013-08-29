@@ -75,6 +75,13 @@ if ( ! class_exists( 'MU_Support_Network_Ticket_Categories' ) ) {
 				$model = MU_Support_System_Model::get_instance();
 				$cat_name = $model->get_ticket_category( $cat_id );
 
+				$user_id = $cat_name['user_id'];
+				$user = get_user_by( 'id', $user_id );
+
+				$user_login = 0;
+				if ( $user )
+					$user_login = $user->data->user_login;
+
 				?>
 					<form id="categories-table-form" action="" method="post">
 						<table class="form-table">
@@ -85,6 +92,13 @@ if ( ! class_exists( 'MU_Support_Network_Ticket_Categories' ) ) {
 								<input type="hidden" name="ticket_cat_id" value="<?php echo esc_attr( $cat_id ); ?>">
 							<?php
 								$this->render_row( __( 'Category name', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() );
+							?>
+							<?php
+								ob_start();
+							?>	
+								<?php $this->admin_users_dropdown( $user_login ); ?>
+							<?php
+								$this->render_row( __( 'Assign to user', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() );
 							?>
 						</table>
 						<?php wp_nonce_field( 'edit-ticket-category', '_wpnonce' ); ?>
@@ -118,6 +132,11 @@ if ( ! class_exists( 'MU_Support_Network_Ticket_Categories' ) ) {
 											<input name="cat_name" id="cat_name" type="text" value="<?php echo $category_name; ?>" size="40" aria-required="true"><br/>
 											<p><?php _e('The name is used to identify the category to which tickets relate', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
 										</div>
+										<div class="form-field">
+											<label for="admin_user"><?php _e( 'Assign to user', INCSUB_SUPPORT_LANG_DOMAIN ); ?></label>
+											<?php $this->admin_users_dropdown(); ?>
+											<p><?php _e( 'Any new opened ticket with this category will be assigned to this user', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
+										</div>
 										<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Add New Category"></p>
 									</form>
 								</div>
@@ -138,7 +157,14 @@ if ( ! class_exists( 'MU_Support_Network_Ticket_Categories' ) ) {
 
 				if ( isset( $_POST['ticket_cat_name'] ) && ! empty( $_POST['ticket_cat_name'] ) && isset( $_POST['ticket_cat_id'] ) ) {
 					$model = MU_Support_System_Model::get_instance();
-					$model->update_ticket_category_name( absint( $_POST['ticket_cat_id'] ), sanitize_text_field( $_POST['ticket_cat_name'] ) );
+					$user_id = 0;
+					if ( ! empty( $_POST['admin_user'] ) ) {
+						$user = get_user_by( 'login', $_POST['admin_user'] );			
+						if ( $user )
+							$user_id = $user->ID;
+					}
+
+					$model->update_ticket_category( absint( $_POST['ticket_cat_id'] ), sanitize_text_field( $_POST['ticket_cat_name'] ), $user_id );
 				}
 
 				wp_redirect( $this->get_permalink() );
@@ -166,11 +192,30 @@ if ( ! class_exists( 'MU_Support_Network_Ticket_Categories' ) ) {
 					$this->add_error( 'category-name', __( 'Category name cannot be empty', INCSUB_SUPPORT_LANG_DOMAIN ) );
 			}
 
+			$user_id = 0;
+			if ( ! empty( $_POST['admin_user'] ) ) {
+				$user = get_user_by( 'login', $_POST['admin_user'] );
+				if ( $user )
+					$user_id = $user->ID;
+			}
+
 			$model = MU_Support_System_Model::get_instance();
-			$model->add_ticket_category( $category_name );
+			$model->add_ticket_category( $category_name, $user_id );
 
 			return $category_name;
 
+		}
+
+		private function admin_users_dropdown( $selected = 0 ) {
+			$admin_users = MU_Support_System::get_super_admins();
+			?>
+				<select name="admin_user" id="admin_user">
+					<option value="" <?php selected( $selected, 0 ); ?>><?php _e( 'None', INCSUB_SUPPORT_LANG_DOMAIN ); ?></option>
+					<?php foreach ( $admin_users as $admin_user ): ?>
+						<option value="<?php echo $admin_user; ?>" <?php selected( $selected, $admin_user ); ?>><?php echo $admin_user; ?></option>
+					<?php endforeach; ?>
+				</select>
+			<?php
 		}
 
 	}

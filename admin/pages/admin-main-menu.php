@@ -67,10 +67,17 @@ if ( ! class_exists( 'MU_Support_Admin_Main_Menu' ) ) {
 		    $tickets_table = new MU_Support_Admin_Tickets_Table( $this->view );
 		    $tickets_table->prepare_items();
 
-			$all_tickets_count = $model->get_tickets( 'all', 0, 0, array( 'blog_id' => get_current_blog_id() ) );
+		    $args = array(
+		    	'blog_id' => get_current_blog_id()
+		    );
+
+		    if ( 'requestor' == MU_Support_System::$settings['incsub_ticket_privacy'] )
+		    	$args['user_in'] = array( get_current_user_id() );
+
+			$all_tickets_count = $model->get_tickets( 'all', 0, 0, $args );
 		    $all_tickets_count = $all_tickets_count['total'];
 
-		    $archived_tickets_count = $model->get_tickets( 'archive', 0, 0, array( 'blog_id' => get_current_blog_id() ) );
+		    $archived_tickets_count = $model->get_tickets( 'archive', 0, 0, $args );
 		    $archived_tickets_count = $archived_tickets_count['total'];
 
 		    $active_tickets_count = $all_tickets_count - $archived_tickets_count;

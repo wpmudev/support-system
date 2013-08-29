@@ -32,6 +32,7 @@ class MU_Support_Ticket_Categories_Table extends WP_List_Table {
             'cb'        => '<input type="checkbox" />',
             'id'        => __( 'ID', INCSUB_SUPPORT_LANG_DOMAIN ),
             'name'      => __( 'Name', INCSUB_SUPPORT_LANG_DOMAIN ),
+            'user'      => __( 'Assign to user', INCSUB_SUPPORT_LANG_DOMAIN ),
             'tickets'   => __( 'Tickets', INCSUB_SUPPORT_LANG_DOMAIN )
         );
         return $columns;
@@ -91,6 +92,14 @@ class MU_Support_Ticket_Categories_Table extends WP_List_Table {
             $actions = array_merge( $actions, $more_actions );
             return $item['cat_name'] . $this->row_actions($actions);
         }
+    }
+
+    function column_user( $item ) {
+        $user_login = __( 'None', INCSUB_SUPPORT_LANG_DOMAIN );
+        if ( $user = get_user_by( 'id', $item['user_id'] ) )
+            $user_login = $user->data->user_login;
+
+        return $user_login;
     }
 
 

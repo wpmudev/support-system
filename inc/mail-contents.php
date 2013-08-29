@@ -84,6 +84,10 @@ function incsub_support_send_admin_new_ticket_mail( $user, $ticket_id, $ticket )
 	$mail_content = incsub_support_admin_get_new_ticket_mail_content( $args );
 
 	$admin_email = MU_Support_System::get_main_admin_email();
+	if ( $ticket['admin_id'] ) {
+		$admin_user = get_user_by( 'id', $ticket['admin_id'] );
+		$admin_email = $admin_user->data->user_email;
+	}
 
 	wp_mail( $admin_email, __( "New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $ticket['subject'], $mail_content, $headers );
 }

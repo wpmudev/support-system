@@ -86,6 +86,8 @@ if ( ! class_exists( 'MU_Support_Network_FAQ_Categories' ) ) {
 							<?php
 								$this->render_row( __( 'Category name', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() );
 							?>
+
+							
 						</table>
 						<?php wp_nonce_field( 'edit-faq-category', '_wpnonce' ); ?>
 						<?php submit_button( null, 'primary', 'submit-edit-faq-category' ); ?>
@@ -95,6 +97,8 @@ if ( ! class_exists( 'MU_Support_Network_FAQ_Categories' ) ) {
 			else {
 				$cats_table = new MU_Support_FAQ_Categories_Table();
 				$cats_table->prepare_items();
+
+				
 			    ?>
 			    	<br class="clear">
 					<div id="col-container">
@@ -135,7 +139,7 @@ if ( ! class_exists( 'MU_Support_Network_FAQ_Categories' ) ) {
 
 				if ( isset( $_POST['faq_cat_name'] ) && ! empty( $_POST['faq_cat_name'] ) && isset( $_POST['faq_cat_id'] ) ) {
 					$model = MU_Support_System_Model::get_instance();
-					$model->update_faq_category_name( absint( $_POST['faq_cat_id'] ), sanitize_text_field( $_POST['faq_cat_name'] ) );
+					$model->update_faq_category( absint( $_POST['faq_cat_id'] ), sanitize_text_field( $_POST['faq_cat_name'] ) );
 				}
 
 				wp_redirect( $this->get_permalink() );
@@ -169,6 +173,10 @@ if ( ! class_exists( 'MU_Support_Network_FAQ_Categories' ) ) {
 
 		}
 
+		
+
 	}
+
+
 
 }

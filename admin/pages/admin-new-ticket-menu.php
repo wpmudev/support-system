@@ -150,6 +150,13 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 				if ( empty( $this->current_ticket['message'] ) )
 					$this->add_error( 'message', __( 'Message must not be empty', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
+				$this->current_ticket['admin_id'] = 0;
+				$model = MU_Support_System_Model::get_instance();
+				$ticket_category = $model->get_ticket_category( $this->current_ticket['cat_id'] );
+				$admin_id = 0;
+				if ( ! empty( $ticket_category['user_id'] ) && $user = get_user_by( 'id', $ticket_category['user_id'] ) )
+					$this->current_ticket['admin_id'] = $user->ID;
+
 				if ( ! empty( $_FILES['attachments'] ) ) {
 					$files_uploaded = MU_Support_System::upload_attachments( $_FILES['attachments'] );					
 
@@ -178,7 +185,6 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 
 					// First, a mail for the user that has just opened the ticket
 					incsub_support_send_user_new_ticket_mail( $user, $ticket_id, $this->current_ticket );
-
 
 					// Now, a mail for the main Administrator
 					incsub_support_send_admin_new_ticket_mail( $user, $ticket_id, $this->current_ticket );

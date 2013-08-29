@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Support System\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-08 18:47+0100\n"
-"PO-Revision-Date: 2013-08-08 18:47+0100\n"
+"POT-Creation-Date: 2013-08-29 18:08+0100\n"
+"PO-Revision-Date: 2013-08-29 18:08+0100\n"
 "Last-Translator: Ignacio <igmoweb@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgid "Stalled"
 msgstr ""
 
 #: ../incsub-support.php:118
-#: ../admin/pages/admin-main-menu.php:82
+#: ../admin/pages/admin-main-menu.php:89
 #: ../admin/pages/network-main-menu.php:77
 msgid "Closed"
 msgstr ""
@@ -115,12 +115,12 @@ msgstr ""
 msgid "Recent Tickets"
 msgstr ""
 
-#: ../admin/pages/admin-main-menu.php:80
+#: ../admin/pages/admin-main-menu.php:87
 #: ../admin/pages/network-main-menu.php:75
 msgid "All"
 msgstr ""
 
-#: ../admin/pages/admin-main-menu.php:81
+#: ../admin/pages/admin-main-menu.php:88
 #: ../admin/pages/network-main-menu.php:76
 msgid "Opened"
 msgstr ""
@@ -201,7 +201,7 @@ msgstr ""
 msgid "Message must not be empty"
 msgstr ""
 
-#: ../admin/pages/admin-new-ticket-menu.php:170
+#: ../admin/pages/admin-new-ticket-menu.php:177
 msgid "Ticket Error: There was an error submitting your ticket. Please try again in a few minutes."
 msgstr ""
 
@@ -353,38 +353,38 @@ msgid "A new category has been added"
 msgstr ""
 
 #: ../admin/pages/network-faq-categories-menu.php:87
-#: ../admin/pages/network-ticket-categories-menu.php:87
+#: ../admin/pages/network-ticket-categories-menu.php:94
 msgid "Category name"
 msgstr ""
 
-#: ../admin/pages/network-faq-categories-menu.php:113
-#: ../admin/pages/network-ticket-categories-menu.php:113
+#: ../admin/pages/network-faq-categories-menu.php:117
+#: ../admin/pages/network-ticket-categories-menu.php:127
 msgid "Add new category"
 msgstr ""
 
-#: ../admin/pages/network-faq-categories-menu.php:117
-#: ../admin/pages/network-ticket-categories-menu.php:117
+#: ../admin/pages/network-faq-categories-menu.php:121
+#: ../admin/pages/network-ticket-categories-menu.php:131
 msgid "Category Name"
 msgstr ""
 
-#: ../admin/pages/network-faq-categories-menu.php:119
+#: ../admin/pages/network-faq-categories-menu.php:123
 msgid "The name is used to identify the category to which FAQ question relate"
 msgstr ""
 
-#: ../admin/pages/network-faq-categories-menu.php:121
+#: ../admin/pages/network-faq-categories-menu.php:125
 msgid "Add New Category"
 msgstr ""
 
-#: ../admin/pages/network-faq-categories-menu.php:134
-#: ../admin/pages/network-faq-categories-menu.php:156
+#: ../admin/pages/network-faq-categories-menu.php:138
+#: ../admin/pages/network-faq-categories-menu.php:160
 #: ../admin/pages/network-support-settings-menu.php:184
-#: ../admin/pages/network-ticket-categories-menu.php:137
-#: ../admin/pages/network-ticket-categories-menu.php:160
+#: ../admin/pages/network-ticket-categories-menu.php:156
+#: ../admin/pages/network-ticket-categories-menu.php:186
 msgid "Security check error"
 msgstr ""
 
-#: ../admin/pages/network-faq-categories-menu.php:162
-#: ../admin/pages/network-ticket-categories-menu.php:166
+#: ../admin/pages/network-faq-categories-menu.php:166
+#: ../admin/pages/network-ticket-categories-menu.php:192
 msgid "Category name cannot be empty"
 msgstr ""
 
@@ -569,8 +569,23 @@ msgstr ""
 msgid "Tickets Categories"
 msgstr ""
 
-#: ../admin/pages/network-ticket-categories-menu.php:119
+#: ../admin/pages/network-ticket-categories-menu.php:101
+#: ../admin/pages/network-ticket-categories-menu.php:136
+#: ../admin/tables/ticket-categories-table.php:35
+msgid "Assign to user"
+msgstr ""
+
+#: ../admin/pages/network-ticket-categories-menu.php:133
 msgid "The name is used to identify the category to which tickets relate"
+msgstr ""
+
+#: ../admin/pages/network-ticket-categories-menu.php:138
+msgid "Any new opened ticket with this category will be assigned to this user"
+msgstr ""
+
+#: ../admin/pages/network-ticket-categories-menu.php:213
+#: ../admin/tables/ticket-categories-table.php:98
+msgid "None"
 msgstr ""
 
 #: ../admin/tables/admin-tickets-table.php:28
@@ -580,7 +595,7 @@ msgstr ""
 
 #: ../admin/tables/admin-tickets-table.php:29
 #: ../admin/tables/faqs-table.php:24
-#: ../admin/tables/ticket-categories-table.php:35
+#: ../admin/tables/ticket-categories-table.php:36
 msgid "Tickets"
 msgstr ""
 
@@ -632,31 +647,31 @@ msgstr ""
 
 #: ../admin/tables/faq-categories-table.php:81
 #: ../admin/tables/faqs-table.php:63
-#: ../admin/tables/ticket-categories-table.php:80
+#: ../admin/tables/ticket-categories-table.php:81
 #, php-format
 msgid "<a href=\"%s\">Edit</a>"
 msgstr ""
 
 #: ../admin/tables/faq-categories-table.php:85
-#: ../admin/tables/ticket-categories-table.php:84
+#: ../admin/tables/ticket-categories-table.php:85
 msgid "[Default category]"
 msgstr ""
 
 #: ../admin/tables/faq-categories-table.php:89
 #: ../admin/tables/faqs-table.php:64
-#: ../admin/tables/ticket-categories-table.php:88
+#: ../admin/tables/ticket-categories-table.php:89
 #, php-format
 msgid "<a href=\"%s\">Delete</a>"
 msgstr ""
 
 #: ../admin/tables/faq-categories-table.php:90
-#: ../admin/tables/ticket-categories-table.php:89
+#: ../admin/tables/ticket-categories-table.php:90
 #, php-format
 msgid "<a href=\"%s\">Set as default</a>"
 msgstr ""
 
 #: ../admin/tables/faq-categories-table.php:111
-#: ../admin/tables/ticket-categories-table.php:110
+#: ../admin/tables/ticket-categories-table.php:119
 msgid "Delete"
 msgstr ""
 
@@ -733,28 +748,28 @@ msgstr ""
 msgid "Ticket submitted: "
 msgstr ""
 
-#: ../inc/mail-contents.php:88
+#: ../inc/mail-contents.php:92
 msgid "New Support Ticket: "
 msgstr ""
 
-#: ../inc/mail-contents.php:136
-#: ../inc/mail-contents.php:178
+#: ../inc/mail-contents.php:140
+#: ../inc/mail-contents.php:182
 msgid "Ticket response notification: "
 msgstr ""
 
-#: ../inc/mail-contents.php:213
+#: ../inc/mail-contents.php:217
 msgid "Ticket closed notification: "
 msgstr ""
 
-#: ../inc/mail-contents.php:219
+#: ../inc/mail-contents.php:223
 msgid "***  DO NOT WRITE BELLOW THIS LINE  ***"
 msgstr ""
 
-#: ../inc/mail-contents.php:221
+#: ../inc/mail-contents.php:225
 msgid "***  DO NOT REPLY TO THIS EMAIL  ***"
 msgstr ""
 
-#: ../inc/mail-contents.php:227
+#: ../inc/mail-contents.php:231
 msgid ""
 "\n"
 "SUPPORT_FETCH_IMAP\n"
@@ -773,7 +788,7 @@ msgid ""
 "SUPPORT_SITE_NAME"
 msgstr ""
 
-#: ../inc/mail-contents.php:254
+#: ../inc/mail-contents.php:258
 msgid ""
 "\n"
 "SUPPORT_FETCH_IMAP\n"
@@ -801,7 +816,7 @@ msgid ""
 "=============================================================="
 msgstr ""
 
-#: ../inc/mail-contents.php:292
+#: ../inc/mail-contents.php:296
 msgid ""
 "\n"
 "\n"
@@ -831,7 +846,7 @@ msgid ""
 "SUPPORT_SITE_NAME"
 msgstr ""
 
-#: ../inc/mail-contents.php:333
+#: ../inc/mail-contents.php:337
 msgid ""
 "\n"
 "\n"
@@ -860,7 +875,7 @@ msgid ""
 "Thanks"
 msgstr ""
 
-#: ../inc/mail-contents.php:373
+#: ../inc/mail-contents.php:377
 msgid ""
 "\n"
 "\n"
@@ -879,11 +894,11 @@ msgstr ""
 msgid "You are not allowed to view this page."
 msgstr ""
 
-#: ../model/model.php:1228
+#: ../model/model.php:1239
 msgid "General questions"
 msgstr ""
 
-#: ../model/model.php:1259
+#: ../model/model.php:1270
 msgid "General"
 msgstr ""
 

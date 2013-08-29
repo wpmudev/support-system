@@ -13,6 +13,11 @@ Support System for WordPress multi site.. Now also for single sites.
 
 == ChangeLog ==
 
+= 1.9.8 =
+* Fixed counts in tickets
+* Fixed counts in FAQs
+* New feature: Automatically assign a user to a ticket based on ticket categories
+
 = 1.9.7 =
 * Fixed bug when using PHP 5.4+
 

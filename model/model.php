@@ -122,7 +122,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				site_id bigint(20) unsigned NOT NULL,
 				cat_name varchar(255) NOT NULL,
 				qcount smallint(3) unsigned NOT NULL,
-				defcat enum('0','1') NOT NULL default '0',
+				defcat enum('0','1') NOT NULL default '0'
 				PRIMARY KEY  (cat_id),
 				KEY site_id (site_id),
 				UNIQUE KEY cat_name (cat_name)
@@ -214,7 +214,8 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				site_id bigint(20) unsigned NOT NULL,
 				cat_name varchar(100) NOT NULL,
 				defcat enum('0','1') NOT NULL default '0',
-				PRIMARY KEY  (cat_id),
+				user_id bigint(20) DEFAULT 0,
+				PRIMARY KEY  (cat_id),				
 				KEY site_id (site_id),
 				UNIQUE KEY cat_name (cat_name)
 			      ) ENGINE=MyISAM $this->db_charset_collate;";
@@ -223,6 +224,12 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 
 			$this->fill_tickets_cats_default();
 
+		}
+
+		public function upgrade_198() {
+			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+			$this->create_tickets_cats_table();
+			$this->update_faq_counts();
 		}
 
 		public function upgrade_196() {
@@ -592,19 +599,22 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			$wpdb->query(
 				$wpdb->prepare(
 					"INSERT INTO $this->tickets_table
-					(site_id, blog_id, cat_id, user_id, ticket_priority, ticket_opened, title)
-					VALUES ( '%d', '%d', '%d', '%d', '%d', NOW(), '%s' )",
+					(site_id, blog_id, cat_id, user_id, ticket_priority, ticket_opened, title, admin_id)
+					VALUES ( '%d', '%d', '%d', '%d', '%d', NOW(), '%s', %d )",
 					$current_site_id,
 					get_current_blog_id(),
 					$ticket_details['cat_id'],
 					get_current_user_id(),
 					$ticket_details['ticket_priority'],
-					$ticket_details['subject']
+					$ticket_details['subject'],
+					$ticket_details['admin_id']
 				)
 			);
 
 			if ( ! $wpdb->insert_id )
 				return false;
+
+
 
 			$ticket_id = $wpdb->insert_id;
 			$wpdb->query(
@@ -859,7 +869,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			$pq = $wpdb->prepare(
-				"SELECT cat_name
+				"SELECT cat_name, user_id
 				FROM $this->tickets_cats_table 
 				WHERE site_id = %d
 				AND cat_id = %d", 
@@ -896,7 +906,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			$pq = $wpdb->prepare(
-				"SELECT cat_id, cat_name, defcat
+				"SELECT cat_id, cat_name, defcat, user_id
 				FROM $this->tickets_cats_table 
 				WHERE site_id = %d 
 				ORDER BY cat_name ASC", 
@@ -919,22 +929,22 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			return $cats;
 		}
 
-		public function update_ticket_category_name( $id, $name ) {
+		public function update_ticket_category( $id, $name, $user_id = 0 ) {
 			global $wpdb, $current_site;
 
 			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			return $wpdb->update(
 				$this->tickets_cats_table,
-				array( 'cat_name' => $name ),
+				array( 'cat_name' => $name, 'user_id' => $user_id ),
 				array( 'cat_id' => $id, 'site_id' => $current_site_id ),
-				array( '%s' ),
+				array( '%s', '%d' ),
 				array( '%d' )
 			);
 
 		}
 
-		public function update_faq_category_name( $id, $name ) {
+		public function update_faq_category( $id, $name ) {
 			global $wpdb, $current_site;
 
 			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
@@ -992,7 +1002,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		 * @param String $name Category name
 		 * 
 		 */
-		public function add_ticket_category( $name ) {
+		public function add_ticket_category( $name, $user_id = 0 ) {
 
 			global $wpdb, $current_site;
 
@@ -1002,9 +1012,10 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				$this->tickets_cats_table,
 				array( 
 					'cat_name' 	=> $name,
-					'site_id'	=> $current_site_id
+					'site_id'	=> $current_site_id,
+					'user_id'	=> $user_id
 				),
-				array( '%s', '%d' )
+				array( '%s', '%d', '%d' )
 			);
 
 		}
@@ -1334,6 +1345,8 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				array( '%s', '%s', '%d' ),
 				array( '%d' )
 			);
+
+			$this->update_faq_counts();
 		}
 
 		/**
@@ -1393,24 +1406,35 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			);
 
 			if ( $result ) {
-				$faq_id = $wpdb->insert_id;
-				$result = $wpdb->query(
-					$wpdb->prepare(
-						"UPDATE $this->faq_cats_table
-						SET qcount = qcount + 1
-						WHERE cat_id = %d",
-						$cat_id
-					)
-				);
-
-				if ( ! $result )
-					return false;
-				else
-					return $faq_id;
+				$this->update_faq_counts();
+				return $wpdb->insert_id;
 			}
 			
 			return false;
 			
+		}
+
+		private function update_faq_counts() {
+			global $wpdb;
+
+			$categories = $this->get_faq_categories();
+
+			foreach ( $categories as $category ) {
+				$cat_id = $category['cat_id'];
+				$query = $wpdb->prepare( "SELECT COUNT(faq_id) FROM $this->faq_table WHERE cat_id = %d", $cat_id );
+				$faq_count = $wpdb->get_var( $query );
+				$wpdb->update(
+					$this->faq_cats_table,
+					array(
+						'qcount' => $faq_count
+					),
+					array(
+						'cat_id' => $cat_id
+					),
+					array( '%d' ),
+					array( '%d' )
+				);
+			}
 		}
 
 		/**
@@ -1443,14 +1467,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 					)
 				);
 
-				$wpdb->query(
-					$wpdb->prepare(
-						"UPDATE $this->faq_cats_table
-						SET qcount = qcount - 1
-						WHERE cat_id = %d",
-						$cat_id
-					)
-				);
+				$this->update_faq_counts();
 
 				return true;
 			}

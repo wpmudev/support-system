@@ -6,7 +6,7 @@ Description: Support System for WordPress.
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub), Ignacio (Incsub)
 WDP ID: 36
 Network: true
-Version: 1.9.7
+Version: 1.9.8
 Author URI: http://premium.wpmudev.org
 Text Domain: incsub-support
 */
@@ -28,7 +28,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '1.9.7' );
+define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '1.9.8' );
 
 if ( ! defined( 'INCSUB_SUPPORT_LANG_DOMAIN' ) )
 	define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
@@ -95,7 +95,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			register_deactivation_hook( __FILE__, array( &$this, 'deactivate' ) );
 
 			// Is this an upgrade?
-			add_action( 'admin_init', 'incsub_support_check_for_upgrades' );
+			add_action( 'init', 'incsub_support_check_for_upgrades' );
 
 			add_action( 'plugins_loaded', array( &$this, 'load_text_domain' ) );
 
