@@ -13,6 +13,9 @@ Support System for WordPress multi site.. Now also for single sites.
 
 == ChangeLog ==
 
+= 1.9.8.1 =
+* Fixed error when creating FAQ categories table
+
 = 1.9.8 =
 * Fixed counts in tickets
 * Fixed counts in FAQs

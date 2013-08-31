@@ -71,6 +71,10 @@ function incsub_support_check_for_upgrades() {
 			$model->upgrade_198();
 		}
 
+		if ( version_compare( $saved_version, '1.9.8.1' ) < 0 ) {
+			$model->upgrade_1981();
+		}
+
 		update_site_option( 'incsub_support_version', INCSUB_SUPPORT_PLUGIN_VERSION );
 	}
 

@@ -122,7 +122,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				site_id bigint(20) unsigned NOT NULL,
 				cat_name varchar(255) NOT NULL,
 				qcount smallint(3) unsigned NOT NULL,
-				defcat enum('0','1') NOT NULL default '0'
+				defcat enum('0','1') NOT NULL default '0',
 				PRIMARY KEY  (cat_id),
 				KEY site_id (site_id),
 				UNIQUE KEY cat_name (cat_name)
@@ -224,6 +224,11 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 
 			$this->fill_tickets_cats_default();
 
+		}
+
+		public function upgrade_1981() {
+			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+			$this->create_faq_cats_table();
 		}
 
 		public function upgrade_198() {
