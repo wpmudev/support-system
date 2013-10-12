@@ -32,7 +32,6 @@ if ( ! class_exists( 'MU_Support_Admin_FAQ_Menu' ) ) {
 			parent::__construct( false );
 
 			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
-			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_styles' ) );
 
 			add_action( 'wp_ajax_vote_faq_question', array( &$this, 'vote_faq_question' ) );
 
@@ -56,20 +55,11 @@ if ( ! class_exists( 'MU_Support_Admin_FAQ_Menu' ) ) {
 
 		public function enqueue_scripts( $hook ) {
 			if ( $this->page_id == $hook ) {
-				wp_enqueue_script( 'jquery-ui-accordion' );
-				wp_enqueue_script( 'jquery-ui-tabs' );
-
 				wp_register_script( 'mu-support-faq-js', INCSUB_SUPPORT_ASSETS_URL . 'js/faq.js', array(), '20130402' );
 				wp_enqueue_script( 'mu-support-faq-js' );
 			}
 		}
 
-		public function enqueue_styles( $hook ) {
-			if ( $this->page_id == $hook ) {
-				wp_register_style( 'mu-support-jquery-ui', INCSUB_SUPPORT_ASSETS_URL . 'css/jquery-ui/jquery-ui-1.10.2.custom.min.css', array(), '20130402' );
-				wp_enqueue_style( 'mu-support-jquery-ui' );
-			}
-		}
 
 		/**
 		 * Renders the page contents
@@ -78,12 +68,35 @@ if ( ! class_exists( 'MU_Support_Admin_FAQ_Menu' ) ) {
 		 */
 		public function render_content() {
 
-		    $model = MU_Support_System_Model::get_instance();
-		    $faq_categories = $model->get_faq_categories();
+			$model = MU_Support_System_Model::get_instance();
+			$faq_categories = $model->get_faq_categories();
 
-		    foreach ( $faq_categories as $key => $item ) {
-	            $faq_categories[ $key ]['faqs'] = $model->get_faqs_from_cat( $item['cat_id'] );
-	        }
+			$is_search = false;
+
+			if ( isset( $_POST['submit-faq-search'] ) && check_admin_referer( 'faq_search' ) ) {
+				$is_search = true;
+				$new_faq_categories = array();
+				foreach ( $faq_categories as $key => $item ) {
+					$answers = $model->get_faqs( $item['cat_id'], stripslashes_deep( $_POST['faq-s'] ) );
+					if ( count( $answers ) > 0 ) {
+						$the_faq = $item;
+		            	$the_faq['answers'] = $answers;
+		            	$the_faq['faqs'] = count( $answers );
+		            	$new_faq_categories[] = $the_faq;
+		            }
+		        }
+
+		        $index = 0;
+		        $faq_categories = $new_faq_categories;
+			}
+			else {
+		    	foreach ( $faq_categories as $key => $item ) {
+		            $faq_categories[ $key ]['faqs'] = $model->get_faqs_from_cat( $item['cat_id'] );
+		            $faq_categories[ $key ]['answers'] = $model->get_faqs( $item['cat_id'] );
+		        }
+		    }		    
+
+	        $half_of_array = ceil( count( $faq_categories ) / 2 );
 
 		    ?>	
 
@@ -92,53 +105,93 @@ if ( ! class_exists( 'MU_Support_Admin_FAQ_Menu' ) ) {
 		    		list-style: disc;
 		    		margin-left:25px;
 		    	}
+		    	#faq-categories .faq-categories-column:first-child {
+					width: 36%;
+				}
+				#faq-categories .faq-categories-column {
+					width: 32%;
+					min-width: 200px;
+					float: left;
+				}
+				.faq-question-title {
+					cursor:pointer;
+					background:none;
+					font-size:15px;
+					font-weight:normal;
+				}
 		    </style>
-
-		<div id="tabs">
-			<ul>
-				<?php foreach ( $faq_categories as $category ): ?>
-				    <li>
-				    	<a href="#category-<?php echo $category['cat_id']; ?>">
-				    		<span><?php echo $category['cat_name']; ?> (<?php echo sprintf( __( '%d questions', INCSUB_SUPPORT_LANG_DOMAIN ), $category['faqs'] ); ?>)</span>
-					    </a>
-					</li>
-				<?php endforeach; ?>
-			</ul>
-		
-			<?php foreach ( $faq_categories as $category ): ?>
-				<?php $faqs = $model->get_faqs( $category['cat_id'] ); ?>
-				<div id="category-<?php echo $category['cat_id']; ?>" class="accordion" style="margin:20px">
-		    		<?php foreach ( $faqs as $faq ): ?>
-
-		    			<?php 
-		    				add_filter( 'the_content', 'wptexturize'        );
-							add_filter( 'the_content', 'convert_smilies'    );
-							add_filter( 'the_content', 'convert_chars'      );
-							add_filter( 'the_content', 'wpautop'            );
-							add_filter( 'the_content', 'shortcode_unautop'  );
-							add_filter( 'the_content', 'prepend_attachment' );
-
-							$answer = preg_replace_callback( '|^\s*(https?://[^\s"]+)\s*$|im', array( &$this, 'embed_media' ), $faq['answer'] );
-		    				$answer = apply_filters( 'the_content', $answer ); 
-		    				
-						?>
-		    		
-			    		<h3><?php echo $faq['question']; ?></h3>
-						<div>
-							<?php echo ( $answer ); ?>
-							<p class="submit" data-faq-id="<?php echo $faq['faq_id']; ?>"><?php _e( 'Was this solution helpful?', INCSUB_SUPPORT_LANG_DOMAIN ); ?> 
-								<?php echo '<button class="button-primary vote-button" data-vote="yes"> ' . __( 'Yes', INCSUB_SUPPORT_LANG_DOMAIN ) . '</button> <button href="#" class="button vote-button" data-vote="no"> ' . __( 'No', INCSUB_SUPPORT_LANG_DOMAIN ) . '</button>'; ?>
-								<img style="display:none; margin-left:10px;vertical-align:middle" src="<?php echo INCSUB_SUPPORT_ASSETS_URL . 'images/ajax-loader.gif'; ?>">
-							</p>
+	
+		    <div id="faq-categories" class="metabox-holder">
+		    	<div class="postbox">
+					<h3 class="hndle"><span><?php _e( 'FAQ Categories', INCSUB_SUPPORT_LANG_DOMAIN ); ?></span></h3>
+					<div class="inside">
+						<div class="faq-categories-column">
+							<h4><?php _e( 'Search', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h4>
+							<form method="post">
+								<input type="text" name="faq-s" value="<?php echo isset( $_POST['faq-s'] ) ? esc_attr( stripslashes_deep( $_POST['faq-s'] ) ) : ''; ?>">
+								<?php wp_nonce_field( 'faq_search' ); ?>
+								<?php submit_button( __( 'Search', INCSUB_SUPPORT_LANG_DOMAIN ), 'secondary', 'submit-faq-search' ); ?>
+							</form>
 						</div>
-					
-					<?php endforeach; ?>
+						<div class="faq-categories-column">
+							<ul>
+								<?php for ( $i = 0; $i < $half_of_array ; $i++ ): ?>
+									<li><a href="#" class="faq-category" data-cat-id="<?php echo $faq_categories[ $i ]['cat_id']; ?>"><?php echo stripslashes_deep( $faq_categories[ $i ]['cat_name'] ) . ' (' . $faq_categories[ $i ]['faqs'] . ')'; ?></a></li>
+								<?php endfor; ?>
+							</ul>
+						</div>
+						<div class="faq-categories-column">
+							<ul>
+								<?php for ( $i = $half_of_array; $i < count( $faq_categories ) ; $i++ ): ?>
+									<li><a href="#" class="faq-category" data-cat-id="<?php echo $faq_categories[ $i ]['cat_id']; ?>"><?php echo stripslashes_deep( $faq_categories[ $i ]['cat_name'] ) . ' (' . $faq_categories[ $i ]['faqs'] . ')'; ?></a></li>
+								<?php endfor; ?>
+							</ul>
+						</div>
+						<div class="clear"></div>
+					</div>
 				</div>
+			</div>
 
-			<?php endforeach; ?>
-		    			 
-		</div>
-		<?php
+			<div id="faq-category-details" class="metabox-holder">
+				<div class="postbox">
+					<h3 class="hndle"><span><?php _e( 'Select a category', INCSUB_SUPPORT_LANG_DOMAIN ); ?></span></h3>
+					<div class="inside">
+						<?php foreach ( $faq_categories as $category ): ?>
+
+							<div id="faq-category-<?php echo $category['cat_id']; ?>" class="faq-category-question">
+								<?php foreach ( $category['answers'] as $faq ): ?>
+
+					    			<?php 
+					    				add_filter( 'the_content', 'wptexturize'        );
+										add_filter( 'the_content', 'convert_smilies'    );
+										add_filter( 'the_content', 'convert_chars'      );
+										add_filter( 'the_content', 'wpautop'            );
+										add_filter( 'the_content', 'shortcode_unautop'  );
+										add_filter( 'the_content', 'prepend_attachment' );
+
+										$answer = preg_replace_callback( '|^\s*(https?://[^\s"]+)\s*$|im', array( &$this, 'embed_media' ), $faq['answer'] );
+					    				$answer = apply_filters( 'the_content', $answer ); 
+					    				
+									?>
+
+									<h4 class="faq-question-title"><a href="#" class="faq-question-selector" data-faq-id="<?php echo $faq['faq_id']; ?>"><?php echo stripslashes_deep( $faq['question'] ); ?></a></h4>
+
+									<div class="faq-category-answer" id="faq-answer-<?php echo $faq['faq_id']; ?>">
+										<?php echo ( $answer ); ?>
+										<p class="submit" data-faq-id="<?php echo $faq['faq_id']; ?>"><?php _e( 'Was this solution helpful?', INCSUB_SUPPORT_LANG_DOMAIN ); ?> 
+											<?php echo '<button class="button-primary vote-button" data-vote="yes"> ' . __( 'Yes', INCSUB_SUPPORT_LANG_DOMAIN ) . '</button> <button href="#" class="button vote-button" data-vote="no"> ' . __( 'No', INCSUB_SUPPORT_LANG_DOMAIN ) . '</button>'; ?>
+											<img style="display:none; margin-left:10px;vertical-align:middle" src="<?php echo INCSUB_SUPPORT_ASSETS_URL . 'images/ajax-loader.gif'; ?>">
+										</p>
+									</div>
+								<?php endforeach; ?>
+							</div>
+						<?php endforeach; ?>
+					</div>
+				</div>
+			</div>
+
+			
+			<?php
 		}
 
 		public function embed_media( $match ) {

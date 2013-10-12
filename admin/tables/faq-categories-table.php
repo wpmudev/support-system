@@ -90,7 +90,7 @@ class MU_Support_FAQ_Categories_Table extends WP_List_Table {
                 'set_default' => sprintf( __( '<a href="%s">Set as default</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $set_default_link )      
             );
             $actions = array_merge( $actions, $more_actions );
-            return $item['cat_name'] . $this->row_actions($actions);
+            return stripslashes_deep( $item['cat_name'] ) . $this->row_actions($actions);
         }
     }
 

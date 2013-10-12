@@ -13,6 +13,14 @@ Support System for WordPress multi site.. Now also for single sites.
 
 == ChangeLog ==
 
+= 1.9.9 =
+* Stripping slashes from FAQ questions.
+* Sending emails to user when a ticket has been closed.
+* New FAQ screen stylings
+* Time of creation/update now considering UTC.
+* Fixed error on updating dates.
+* New feature: Search in FAQ screen.
+
 = 1.9.8.1 =
 * Fixed error when creating FAQ categories table
 

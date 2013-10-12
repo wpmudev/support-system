@@ -192,14 +192,21 @@ function incsub_support_send_admin_reply_mail( $admin_user, $response_user, $tic
  * 
  * @since 1.9.5
  */
-function incsub_support_send_user_closed_mail( $user, $ticket_id, $ticket ) {
+function incsub_support_send_user_closed_mail( $ticket_id ) {
+
+	$ticket = incsub_support_get_ticket( $ticket_id );
+
+	if ( ! $ticket )
+		return;
+
+	$creator = get_userdata( $ticket->user_id );
 	
 	$headers = incsub_support_get_email_headers();
 
-	$visit_link = get_admin_url( $ticket['blog_id'], 'admin.php' );
+	$visit_link = get_admin_url( $ticket->blog_id, 'admin.php' );
 	$visit_link = add_query_arg(
 		array( 
-			'tid' => $ticket_id,
+			'tid' => $ticket->ticket_id,
 			'page' => 'single-ticket-manager'
 		),
 		$visit_link
@@ -208,13 +215,13 @@ function incsub_support_send_user_closed_mail( $user, $ticket_id, $ticket ) {
 	// Email arguments
 	$args = array(
 		'support_fetch_imap' 	=> incsub_support_get_support_fetch_imap_message(),
-		'title' 				=> $ticket['subject'],
+		'title' 				=> $ticket->title,
 		'ticket_url' 			=> $visit_link,
-		'ticket_priority'		=> MU_Support_System::$ticket_priority[ $ticket['ticket_priority'] ]
+		'ticket_priority'		=> incsub_support_get_ticket_priority_name( $ticket->ticket_priority )
 	);
 	$mail_content = incsub_get_closed_ticket_mail_content( $args );
 
-	wp_mail( $user->user_email, __( "Ticket closed notification: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $ticket['subject'], $mail_content, $headers );
+	wp_mail( $creator->user_email, __( "Ticket closed notification: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $ticket->title, $mail_content, $headers );
 }
 
 

@@ -12,9 +12,6 @@ class MU_Support_Tickets_Table extends WP_List_Table {
     private $category = false;
     private $ticket_status = false;
 
-    // All categories
-    private $categories = array();
-
 	function __construct( $view ){
         $this->status = $view;
         if ( isset( $_GET['category'] ) && absint( $_GET['category'] ) )
@@ -25,8 +22,8 @@ class MU_Support_Tickets_Table extends WP_List_Table {
 
         //Set parent defaults
         parent::__construct( array(
-            'singular'  => 'ticket',  
-            'plural'    => 'tickets', 
+            'singular'  => __( 'Ticket', INCSUB_SUPPORT_LANG_DOMAIN ),  
+            'plural'    => __( 'Tickets', INCSUB_SUPPORT_LANG_DOMAIN ), 
             'ajax'      => false        
         ) );
         
@@ -36,9 +33,9 @@ class MU_Support_Tickets_Table extends WP_List_Table {
 
         $value = '';
     	switch ( $column_name ) {
-    		case 'id'			: $value = (int)$item['ticket_id']; break;
-            case 'priority' 	: $value = MU_Support_System::$ticket_priority[ (int)$item['ticket_priority'] ]; break;
-            case 'staff'		: $value = empty( $item['display_name'] ) ? __( 'Not yet assigned', INCSUB_SUPPORT_LANG_DOMAIN ) : $item['display_name']; break;            	
+    		case 'id'			: $value = (int)$item->ticket_id; break;
+            case 'priority' 	: $value = incsub_support_get_ticket_priority_name( (int)$item->ticket_priority ); break;
+            case 'staff'		: $value = $item->get_staff_name(); break;            	
     	}
         return $value;
     }
@@ -47,26 +44,26 @@ class MU_Support_Tickets_Table extends WP_List_Table {
         return sprintf(
             '<input type="checkbox" name="%1$s[]" value="%2$s" />',
             /*$1%s*/ $this->_args['singular'],  
-            /*$2%s*/ $item['ticket_id']                
+            /*$2%s*/ $item->ticket_id                
         );
     }
 
     function column_status( $item ) {
-        $link = add_query_arg( 'ticket_status', absint( $item['ticket_status'] ) );
+        $link = add_query_arg( 'ticket_status', absint( $item->ticket_status ) );
         $link = remove_query_arg( 'view', $link );
-        return '<a href="' . $link . '">' . MU_Support_System::$ticket_status[ (int)$item['ticket_status'] ] . '</a>';
+        return '<a href="' . $link . '">' . incsub_support_get_ticket_status_name( (int)$item->ticket_status ) . '</a>';
     }
 
     function column_category( $item ) {
         
         $link = MU_Support_System::$network_main_menu->get_permalink();
         $link = add_query_arg( 'view', $this->status, $link );
-        $link = add_query_arg( 'category', $item['cat_id'], $link );
+        $link = add_query_arg( 'category', $item->cat_id, $link );
 
         ob_start();
             ?>
                 <a href="<?php echo $link; ?>">
-                    <?php echo $this->categories[ $item['cat_id'] ]; ?>
+                    <?php echo $item->get_category_name(); ?>
                 </a>
             <?php
         return ob_get_clean();
@@ -77,26 +74,26 @@ class MU_Support_Tickets_Table extends WP_List_Table {
         // Link to the single ticket page
         $link = add_query_arg(
             'tid',
-            (int)$item['ticket_id'],
+            (int)$item->ticket_id,
             MU_Support_System::$network_single_ticket_menu->get_permalink()
         );
 
         $delete_link = add_query_arg( 
             array( 
                 'action' => 'delete', 
-                'tid' => (int)$item['ticket_id'] 
+                'tid' => (int)$item->ticket_id 
             )
         );
         $open_link = add_query_arg( 
             array( 
                 'action' => 'open', 
-                'tid' => (int)$item['ticket_id'] 
+                'tid' => (int)$item->ticket_id 
             ) 
         );
         $close_link = add_query_arg( 
             array( 
                 'action' => 'close', 
-                'tid' => (int)$item['ticket_id'] 
+                'tid' => (int)$item->ticket_id 
             )
         );
 
@@ -105,18 +102,18 @@ class MU_Support_Tickets_Table extends WP_List_Table {
                 'delete'    => sprintf( __( '<a href="%s">Delete ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_link ),
                 'open'      => sprintf( __( '<a href="%s">Open ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $open_link )
             );
-            return '<a href="' . $link . '">' . stripslashes_deep( $item['title'] ) . '</a>' . $this->row_actions($actions); 
+            return '<a href="' . $link . '">' . stripslashes_deep( $item->title ) . '</a>' . $this->row_actions($actions); 
         }
         else {
             $actions = array();
-            if ( 5 == (int)$item['ticket_status'] ) {
+            if ( 5 == (int)$item->ticket_status ) {
                 $actions['delete'] = sprintf( __( '<a href="%s">Delete ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_link );
                 $actions['open'] = sprintf( __( '<a href="%s">Open ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $open_link );
             }
             else {
                 $actions['close'] = sprintf( __( '<a href="%s">Close ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $close_link );
             }
-            return '<a href="' . $link . '">' . stripslashes_deep( $item['title'] ) . '</a>' . $this->row_actions($actions); 
+            return '<a href="' . $link . '">' . stripslashes_deep( $item->title ) . '</a>' . $this->row_actions($actions); 
         }
         
     }
@@ -126,13 +123,13 @@ class MU_Support_Tickets_Table extends WP_List_Table {
         $value = __( 'Unknown', INCSUB_SUPPORT_LANG_DOMAIN );
 
         if ( is_multisite() ) {
-            $blog_details = get_blog_details( array( 'blog_id' => (int)$item['blog_id'] ) );
+            $blog_details = get_blog_details( array( 'blog_id' => (int)$item->blog_id ) );
             
             if ( ! empty( $blog_details ) )
-                $value = '<a href="' . get_site_url( $item['blog_id'] ) . '">' . $blog_details->blogname . '</a>';
+                $value = '<a href="' . get_site_url( $item->blog_id ) . '">' . $blog_details->blogname . '</a>';
         }
         else {
-            $user = get_userdata( $item['user_id'] );
+            $user = get_userdata( $item->user_id );
             if ( ! empty( $user ) )
                 $value = '<a href="' . admin_url( 'user-edit.php?user_id=' . $user->ID ) . '">' . $user->display_name . '</a>';
         }
@@ -141,7 +138,7 @@ class MU_Support_Tickets_Table extends WP_List_Table {
     }
 
     function column_updated( $item ) {
-        return date_i18n(get_option("date_format") ." ". get_option("time_format"), strtotime( $item['ticket_updated'] ), true ); 
+        return get_date_from_gmt( $item->ticket_updated, get_option("date_format") ." ". get_option("time_format") ); 
     }
 
 
@@ -214,48 +211,50 @@ class MU_Support_Tickets_Table extends WP_List_Table {
         
         //Detect when a bulk action is being triggered...
         $model = MU_Support_System_Model::get_instance();
+        $link = MU_Support_System::$network_main_menu->get_permalink();
+
         if( 'delete' === $this->current_action() ) {
+
             if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) ) {
-                foreach ( $_POST['ticket'] as $ticket_id ) {
-                    if ( $model->is_ticket_archived( absint( $ticket_id ) ) ) {
-                        $model->delete_ticket( $ticket_id );
-                    }
-                }
+                $tickets = incsub_support_get_tickets( $_POST['ticket'] );
+                foreach ( $tickets as $ticket )
+                    $ticket->delete();
             }
             elseif ( isset( $_GET['tid'] ) && is_numeric( $_GET['tid'] ) ) {
-                $ticket_id = absint( $_GET['tid'] );
-                if ( $model->is_ticket_archived( $ticket_id ) )
-                    $model->delete_ticket( $ticket_id );
+                $ticket = incsub_support_get_ticket( $_GET['tid'] );
+                if ( $ticket )
+                    $ticket->delete();
             }
+
         }
 
         if( 'open' === $this->current_action() ) {
             if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) ) {
-                foreach ( $_POST['ticket'] as $ticket_id ) {
-                    if ( $model->is_ticket_archived( absint( $ticket_id ) ) ) {
-                        $model->open_ticket( $ticket_id );
-                    }
-                }
+                $tickets = incsub_support_get_tickets( $_POST['ticket'] );
+                foreach ( $tickets as $ticket )
+                    $ticket->open();
             }
             elseif ( isset( $_GET['tid'] ) && is_numeric( $_GET['tid'] ) ) {
-                $ticket_id = absint( $_GET['tid'] );
-                if ( $model->is_ticket_archived( $ticket_id ) )
-                    $model->open_ticket( $ticket_id );
+                $ticket = incsub_support_get_ticket( $_GET['tid'] );
+                if ( $ticket )
+                    $ticket->open();
             }
         }
 
         if( 'close' === $this->current_action() ) {
             if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) ) {
-                foreach ( $_POST['ticket'] as $ticket_id ) {
-                    if ( ! $model->is_ticket_archived( absint( $ticket_id ) ) ) {
-                        $model->close_ticket( $ticket_id );
-                    }
+                $tickets = incsub_support_get_tickets( $_POST['ticket'] );
+                foreach ( $tickets as $ticket ) {
+                    $ticket->close();
+                    incsub_support_send_user_closed_mail( $ticket->ticket_id );
                 }
             }
             elseif ( isset( $_GET['tid'] ) && is_numeric( $_GET['tid'] ) ) {
-                $ticket_id = absint( $_GET['tid'] );
-                if ( ! $model->is_ticket_archived( $ticket_id ) )
-                    $model->close_ticket( $ticket_id );
+                $ticket = incsub_support_get_ticket( $_GET['tid'] );
+                if ( $ticket ) {
+                    $ticket->close();
+                    incsub_support_send_user_closed_mail( $ticket->ticket_id );
+                }
             }
         }
 
@@ -267,7 +266,7 @@ class MU_Support_Tickets_Table extends WP_List_Table {
         $row_class = ( $row_class == '' ? ' class="alternate"' : '' );
 
         $background = '';
-        if ( ! $item['view_by_superadmin'] )
+        if ( ! $item->view_by_superadmin )
             $background .= 'style="background-color:#e8f3b9" ';
 
         echo '<tr ' . $background . $row_class . '>';
@@ -294,7 +293,7 @@ class MU_Support_Tickets_Table extends WP_List_Table {
 
         $current_page = $this->get_pagenum();
 
-        $model = MU_Support_System_Model::get_instance();
+        $model = incsub_support_get_model();
 
         $args = array();
 
@@ -305,17 +304,11 @@ class MU_Support_Tickets_Table extends WP_List_Table {
         if ( is_integer( $this->ticket_status ) )
             $args['ticket_status'] = $this->ticket_status;
 
-        $data = $model->get_tickets( $this->status, ($current_page - 1) * $per_page, $per_page, $args );
+        $args['type'] = $this->status;
+        $data = $model->get_tickets_beta( ( $current_page - 1 ) * $per_page, $per_page, $args );
 
         $total_items = $data['total'];
-
-        $this->items = $data['results'];
-
-        // Categories
-        $categories = $model->get_ticket_categories();
-        foreach ( $categories as $category ) {
-            $this->categories[ $category['cat_id'] ] = $category['cat_name'];
-        }
+        $this->items = $data['tickets'];
 
         $this->set_pagination_args( array(
             'total_items' => $total_items,                

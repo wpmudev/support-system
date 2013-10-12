@@ -361,7 +361,24 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				array( '%d', '%s' ),
 				array( '%d' )
 			);
-		} 
+		}
+
+		public function get_ticket( $ticket_id ) {
+			global $wpdb, $current_site;
+
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
+
+			return $wpdb->get_row( 
+				$wpdb->prepare( 
+					"SELECT * FROM $this->tickets_table
+					WHERE site_id = %d
+					AND ticket_id = %d
+					LIMIT 1",
+					$current_site_id,
+					$ticket_id
+				)
+			);
+		}
 
 
 		/**
@@ -434,6 +451,10 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				'results' 	=> $results
 			);
 		}
+
+
+
+
 
 		/**
 		 * Checks if a ticket has been archived
@@ -600,17 +621,20 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 			$attachments = !empty( $ticket_details['attachments'] ) ? $ticket_details['attachments'] : array();
+			$time = current_time( 'mysql', 1 );
 
 			$wpdb->query(
 				$wpdb->prepare(
 					"INSERT INTO $this->tickets_table
-					(site_id, blog_id, cat_id, user_id, ticket_priority, ticket_opened, title, admin_id)
-					VALUES ( '%d', '%d', '%d', '%d', '%d', NOW(), '%s', %d )",
+					(site_id, blog_id, cat_id, user_id, ticket_priority, ticket_opened, ticket_updated, title, admin_id)
+					VALUES ( '%d', '%d', '%d', '%d', '%d', %s, %s, '%s', %d )",
 					$current_site_id,
 					get_current_blog_id(),
 					$ticket_details['cat_id'],
 					get_current_user_id(),
 					$ticket_details['ticket_priority'],
+					$time,
+					$time,
 					$ticket_details['subject'],
 					$ticket_details['admin_id']
 				)
@@ -634,7 +658,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 					get_current_user_id(), 
 					$ticket_details['subject'], 
 					$ticket_details['message'], 
-					gmdate('Y-m-d H:i:s'),
+					$time,
 					maybe_serialize( $attachments )
 				)
 			);
@@ -747,7 +771,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 					'admin_id' => get_current_user_id(),
 					'subject' => $title,
 					'message' => $message,
-					'message_date' => gmdate('Y-m-d H:i:s'),
+					'message_date' => current_time( 'mysql', 1 ),
 					'attachments' => maybe_serialize( $attachments )
 				),
 				array(
@@ -785,6 +809,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			global $wpdb, $current_site;
 
 			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
+			$time = current_time( 'mysql', 1 );
 			
 			switch ( $responsibility ) {
 				case 'keep': $adding_update_key = ''; break;
@@ -800,6 +825,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 					last_reply_id = %d, 
 					ticket_priority = '%s', 
 					ticket_status = %d, 
+					ticket_updated = %s,
 					num_replies = num_replies + 1
 					{$adding_update_key}
 				WHERE site_id = %d AND ticket_id = %d
@@ -807,7 +833,8 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				$category_id, 
 				get_current_user_id(), 
 				$priority, 
-				$status, 
+				$status,
+				$time, 
 				$current_site_id, 
 				$ticket_id
 			);
@@ -1199,27 +1226,30 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		 * 
 		 * @return Array of FAQs details
 		 */
-		public function get_faqs( $cat_id = false ) {
+		public function get_faqs( $cat_id = false, $search = false ) {
 			global $wpdb, $current_site;
 
 			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
-			$where_clause = '';
+			$where_clause[] = $wpdb->prepare( "q.site_id = %d", $current_site_id );
 			if ( $cat_id )
-				$where_clause = $wpdb->prepare( " AND q.cat_id = %d", $cat_id );
+				$where_clause[] = $wpdb->prepare( "q.cat_id = %d", $cat_id );
+
+			if ( $search ) {
+				$s = '%' . $search . '%';
+				$where_clause[] = $wpdb->prepare( "( q.question LIKE %s OR q.answer LIKE %s )", $s, $s );
+			}
+
+			$where_clause = implode( ' AND ', $where_clause );
 
 			
-			$pq = $wpdb->prepare(
-				"SELECT 
+			$pq = "SELECT 
 				q.faq_id, q.question, q.answer, q.help_count, q.help_yes, q.help_no, c.cat_name, c.cat_id, c.qcount
 				FROM $this->faq_table AS q
 				LEFT JOIN $this->faq_cats_table AS c 
 				ON ( q.cat_id = c.cat_id )
-				WHERE q.site_id = %d
-				$where_clause
-				ORDER BY c.cat_name ASC",
-				$current_site_id
-			);
+				WHERE $where_clause
+				ORDER BY c.cat_name ASC";
 
 			return $wpdb->get_results( $pq, ARRAY_A );
 
@@ -1695,9 +1725,89 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 
 		}
 
+		// BETA FUNCTIONS
+
+	public function get_tickets_beta( $offset = 0, $upper_limit = 0, $args = array() ) {
+			global $wpdb, $current_site;
+
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
+
+			$type = ! isset( $args['type'] ) ? 'all' : $args['type'];
+
+			$where_clause = array();
+			$where_clause[] = $wpdb->prepare( "WHERE t.site_id = %d", $current_site_id );
+
+			if ( 'archive' == $type ) {
+				$where_clause[] = "t.ticket_status = 5";
+			}
+			elseif ( 'all' == $type ) {}
+			else {
+				$where_clause[] = "t.ticket_status != 5";
+			}
+
+			if ( isset( $args['category'] ) )
+				$where_clause[] = $wpdb->prepare( "t.cat_id = %d", $args['category'] );
+
+			if ( isset( $args['ticket_status'] ) )
+				$where_clause[] = $wpdb->prepare( "t.ticket_status = %d", $args['ticket_status'] );
+
+			if ( isset( $args['blog_id'] ) )
+				$where_clause[] = $wpdb->prepare( "t.blog_id = %d", $args['blog_id'] );
+
+			if ( isset( $args['user_in'] ) && is_array( $args['user_in'] ) ) {
+				$where_clause[] = "t.user_id IN (" . implode( ',', $args['user_in'] ) . ")";
+			}
+
+			$where_clause = implode( " AND ", $where_clause );
+
+
+			// Total number of tickets
+			$counts = $wpdb->get_var( "SELECT COUNT(t.ticket_id)
+				FROM $this->tickets_table AS t
+				$where_clause"
+			);
+
+			// Results. It gets a segment based on offset and upper_limit
+			
+			$pq = "SELECT *
+				FROM $this->tickets_table AS t
+				$where_clause
+				ORDER BY t.ticket_updated DESC
+				LIMIT $offset, $upper_limit";
+			
+			$results = $wpdb->get_results( $pq );
+
+			$tickets = array();
+			foreach ( $results as $ticket ) {
+				$tickets[] = incsub_support_get_ticket( $ticket );
+			}
+
+			return array(
+				'total' 	=> $counts,
+				'tickets' 	=> $tickets
+			);
+		}
+
+		public function get_ticket_category_name_beta( $cat_id ) {
+			global $wpdb, $current_site;
+
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
+
+			$pq = $wpdb->prepare(
+				"SELECT cat_name
+				FROM $this->tickets_cats_table 
+				WHERE site_id = %d
+				AND cat_id = %d
+				LIMIT 1", 
+				$current_site_id,
+				$cat_id
+			);
+
+			return $wpdb->get_var( $pq );
+		}
+
 
 	}
-
 
 
 }

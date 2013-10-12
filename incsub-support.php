@@ -6,7 +6,7 @@ Description: Support System for WordPress.
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub), Ignacio (Incsub)
 WDP ID: 36
 Network: true
-Version: 1.9.8.1
+Version: 1.9.9
 Author URI: http://premium.wpmudev.org
 Text Domain: incsub-support
 */
@@ -28,7 +28,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '1.9.8.1' );
+define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '1.9.9' );
 
 if ( ! defined( 'INCSUB_SUPPORT_LANG_DOMAIN' ) )
 	define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
@@ -37,7 +37,6 @@ define( 'INCSUB_SUPPORT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'INCSUB_SUPPORT_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
 define( 'INCSUB_SUPPORT_ASSETS_URL', INCSUB_SUPPORT_PLUGIN_URL . 'assets/' );
-
 
 if ( ! class_exists( 'MU_Support_System') ) {
 
@@ -186,6 +185,11 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		private function includes() {
 			// Model
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/model/model.php');
+
+			// Classes
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/ticket.php');
+
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers.php');
 
 			// Admin
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/support-menu.php');

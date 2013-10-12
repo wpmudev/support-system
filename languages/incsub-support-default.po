@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Support System\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-29 18:08+0100\n"
-"PO-Revision-Date: 2013-08-29 18:08+0100\n"
+"POT-Creation-Date: 2013-10-12 20:08+0100\n"
+"PO-Revision-Date: 2013-10-12 20:08+0100\n"
 "Last-Translator: Ignacio <igmoweb@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -13,65 +13,65 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../incsub-support.php:113
+#: ../incsub-support.php:112
 msgid "New"
 msgstr ""
 
-#: ../incsub-support.php:114
+#: ../incsub-support.php:113
 msgid "In progress"
 msgstr ""
 
-#: ../incsub-support.php:115
+#: ../incsub-support.php:114
 msgid "Waiting on User to reply"
 msgstr ""
 
-#: ../incsub-support.php:116
+#: ../incsub-support.php:115
 msgid "Waiting on Admin to reply"
 msgstr ""
 
-#: ../incsub-support.php:117
+#: ../incsub-support.php:116
 msgid "Stalled"
 msgstr ""
 
-#: ../incsub-support.php:118
+#: ../incsub-support.php:117
 #: ../admin/pages/admin-main-menu.php:89
 #: ../admin/pages/network-main-menu.php:77
 msgid "Closed"
 msgstr ""
 
-#: ../incsub-support.php:122
+#: ../incsub-support.php:121
 msgid "Low"
 msgstr ""
 
-#: ../incsub-support.php:123
+#: ../incsub-support.php:122
 msgid "Normal"
 msgstr ""
 
-#: ../incsub-support.php:124
+#: ../incsub-support.php:123
 msgid "Elevated"
 msgstr ""
 
-#: ../incsub-support.php:125
+#: ../incsub-support.php:124
 msgid "High"
 msgstr ""
 
-#: ../incsub-support.php:126
+#: ../incsub-support.php:125
 msgid "Critical"
 msgstr ""
 
-#: ../incsub-support.php:137
+#: ../incsub-support.php:136
 msgid "Allow all users to see all tickets in a site"
 msgstr ""
 
-#: ../incsub-support.php:137
+#: ../incsub-support.php:136
 msgid "Allow all users to see all tickets"
 msgstr ""
 
-#: ../incsub-support.php:138
+#: ../incsub-support.php:137
 msgid "Allow only requestors to see their own tickets"
 msgstr ""
 
-#: ../incsub-support.php:164
+#: ../incsub-support.php:163
 #: ../admin/pages/network-main-menu.php:26
 msgid "Support"
 msgstr ""
@@ -84,20 +84,30 @@ msgstr ""
 msgid "FAQ"
 msgstr ""
 
-#: ../admin/pages/admin-faq-menu.php:102
-#, php-format
-msgid "%d questions"
+#: ../admin/pages/admin-faq-menu.php:136
+#: ../admin/pages/network-faq-categories-menu.php:25
+#: ../admin/pages/network-faq-categories-menu.php:26
+msgid "FAQ Categories"
 msgstr ""
 
-#: ../admin/pages/admin-faq-menu.php:129
+#: ../admin/pages/admin-faq-menu.php:139
+#: ../admin/pages/admin-faq-menu.php:143
+msgid "Search"
+msgstr ""
+
+#: ../admin/pages/admin-faq-menu.php:167
+msgid "Select a category"
+msgstr ""
+
+#: ../admin/pages/admin-faq-menu.php:191
 msgid "Was this solution helpful?"
 msgstr ""
 
-#: ../admin/pages/admin-faq-menu.php:130
+#: ../admin/pages/admin-faq-menu.php:192
 msgid "Yes"
 msgstr ""
 
-#: ../admin/pages/admin-faq-menu.php:130
+#: ../admin/pages/admin-faq-menu.php:192
 msgid "No"
 msgstr ""
 
@@ -136,14 +146,14 @@ msgstr ""
 #: ../admin/pages/admin-new-ticket-menu.php:74
 #: ../admin/pages/admin-single-ticket-menu.php:302
 #: ../admin/pages/network-single-ticket-menu.php:302
-#: ../admin/tables/admin-tickets-table.php:86
+#: ../admin/tables/admin-tickets-table.php:84
 msgid "Subject"
 msgstr ""
 
 #: ../admin/pages/admin-new-ticket-menu.php:82
 #: ../admin/pages/admin-single-ticket-menu.php:317
 #: ../admin/pages/network-single-ticket-menu.php:317
-#: ../admin/tables/admin-tickets-table.php:89
+#: ../admin/tables/admin-tickets-table.php:87
 #: ../admin/tables/faq-categories-table.php:14
 #: ../admin/tables/faqs-table.php:90
 #: ../admin/tables/ticket-categories-table.php:13
@@ -155,7 +165,7 @@ msgstr ""
 #: ../admin/pages/admin-single-ticket-menu.php:332
 #: ../admin/pages/network-single-ticket-menu.php:219
 #: ../admin/pages/network-single-ticket-menu.php:332
-#: ../admin/tables/admin-tickets-table.php:88
+#: ../admin/tables/admin-tickets-table.php:86
 msgid "Priority"
 msgstr ""
 
@@ -274,7 +284,6 @@ msgstr ""
 
 #: ../admin/pages/admin-single-ticket-menu.php:211
 #: ../admin/pages/network-single-ticket-menu.php:198
-#: ../admin/tables/admin-tickets-table.php:41
 msgid "Not yet assigned"
 msgstr ""
 
@@ -340,11 +349,6 @@ msgstr ""
 #: ../admin/pages/admin-single-ticket-menu.php:441
 #: ../admin/pages/network-single-ticket-menu.php:450
 msgid "Message cannot be empty"
-msgstr ""
-
-#: ../admin/pages/network-faq-categories-menu.php:25
-#: ../admin/pages/network-faq-categories-menu.php:26
-msgid "FAQ Categories"
 msgstr ""
 
 #: ../admin/pages/network-faq-categories-menu.php:66
@@ -588,40 +592,40 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: ../admin/tables/admin-tickets-table.php:28
+#: ../admin/tables/admin-tickets-table.php:25
 #: ../admin/tables/faqs-table.php:23
 msgid "Ticket"
 msgstr ""
 
-#: ../admin/tables/admin-tickets-table.php:29
+#: ../admin/tables/admin-tickets-table.php:26
 #: ../admin/tables/faqs-table.php:24
 #: ../admin/tables/ticket-categories-table.php:36
 msgid "Tickets"
 msgstr ""
 
-#: ../admin/tables/admin-tickets-table.php:85
+#: ../admin/tables/admin-tickets-table.php:83
 msgid "Ticket ID"
 msgstr ""
 
-#: ../admin/tables/admin-tickets-table.php:87
+#: ../admin/tables/admin-tickets-table.php:85
 msgid "Status"
 msgstr ""
 
-#: ../admin/tables/admin-tickets-table.php:90
+#: ../admin/tables/admin-tickets-table.php:88
 msgid "Staff Member"
 msgstr ""
 
-#: ../admin/tables/admin-tickets-table.php:91
+#: ../admin/tables/admin-tickets-table.php:89
 msgid "Last updated (GMT)"
 msgstr ""
 
-#: ../admin/tables/admin-tickets-table.php:102
+#: ../admin/tables/admin-tickets-table.php:100
 #: ../admin/tables/faqs-table.php:103
 #, php-format
 msgid "Filtering by category <a class=\"button\" href=\"%s\" title=\"remove filter\">Remove filter</a>"
 msgstr ""
 
-#: ../admin/tables/admin-tickets-table.php:113
+#: ../admin/tables/admin-tickets-table.php:111
 #, php-format
 msgid "Filtering by status <a class=\"button\" href=\"%s\" title=\"remove filter\">Remove filter</a>"
 msgstr ""
@@ -719,28 +723,28 @@ msgstr ""
 msgid "Download file"
 msgstr ""
 
-#: ../admin/tables/tickets-table.php:105
-#: ../admin/tables/tickets-table.php:113
+#: ../admin/tables/tickets-table.php:102
+#: ../admin/tables/tickets-table.php:110
 #, php-format
 msgid "<a href=\"%s\">Delete ticket</a>"
 msgstr ""
 
-#: ../admin/tables/tickets-table.php:106
-#: ../admin/tables/tickets-table.php:114
+#: ../admin/tables/tickets-table.php:103
+#: ../admin/tables/tickets-table.php:111
 #, php-format
 msgid "<a href=\"%s\">Open ticket</a>"
 msgstr ""
 
-#: ../admin/tables/tickets-table.php:117
+#: ../admin/tables/tickets-table.php:114
 #, php-format
 msgid "<a href=\"%s\">Close ticket</a>"
 msgstr ""
 
-#: ../admin/tables/tickets-table.php:161
+#: ../admin/tables/tickets-table.php:158
 msgid "Submitted From"
 msgstr ""
 
-#: ../admin/tables/tickets-table.php:205
+#: ../admin/tables/tickets-table.php:202
 msgid "Close"
 msgstr ""
 
@@ -757,19 +761,19 @@ msgstr ""
 msgid "Ticket response notification: "
 msgstr ""
 
-#: ../inc/mail-contents.php:217
+#: ../inc/mail-contents.php:224
 msgid "Ticket closed notification: "
 msgstr ""
 
-#: ../inc/mail-contents.php:223
+#: ../inc/mail-contents.php:230
 msgid "***  DO NOT WRITE BELLOW THIS LINE  ***"
 msgstr ""
 
-#: ../inc/mail-contents.php:225
+#: ../inc/mail-contents.php:232
 msgid "***  DO NOT REPLY TO THIS EMAIL  ***"
 msgstr ""
 
-#: ../inc/mail-contents.php:231
+#: ../inc/mail-contents.php:238
 msgid ""
 "\n"
 "SUPPORT_FETCH_IMAP\n"
@@ -788,7 +792,7 @@ msgid ""
 "SUPPORT_SITE_NAME"
 msgstr ""
 
-#: ../inc/mail-contents.php:258
+#: ../inc/mail-contents.php:265
 msgid ""
 "\n"
 "SUPPORT_FETCH_IMAP\n"
@@ -816,7 +820,7 @@ msgid ""
 "=============================================================="
 msgstr ""
 
-#: ../inc/mail-contents.php:296
+#: ../inc/mail-contents.php:303
 msgid ""
 "\n"
 "\n"
@@ -846,7 +850,7 @@ msgid ""
 "SUPPORT_SITE_NAME"
 msgstr ""
 
-#: ../inc/mail-contents.php:337
+#: ../inc/mail-contents.php:344
 msgid ""
 "\n"
 "\n"
@@ -875,7 +879,7 @@ msgid ""
 "Thanks"
 msgstr ""
 
-#: ../inc/mail-contents.php:377
+#: ../inc/mail-contents.php:384
 msgid ""
 "\n"
 "\n"
@@ -894,11 +898,11 @@ msgstr ""
 msgid "You are not allowed to view this page."
 msgstr ""
 
-#: ../model/model.php:1239
+#: ../model/model.php:1274
 msgid "General questions"
 msgstr ""
 
-#: ../model/model.php:1270
+#: ../model/model.php:1305
 msgid "General"
 msgstr ""
 

@@ -181,12 +181,12 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 				<table class="form-table">
 					<h3><?php echo __( 'Ticket Subject', INCSUB_SUPPORT_LANG_DOMAIN ) . ': ' .  stripslashes_deep( $current_ticket['title'] ); ?></h3>
 					<?php $this->render_row( __( 'Current Status', INCSUB_SUPPORT_LANG_DOMAIN ), MU_Support_System::$ticket_status[ $current_ticket['ticket_status'] ] ); ?>
-					<?php $this->render_row( __( 'Created On (GMT)', INCSUB_SUPPORT_LANG_DOMAIN ), date_i18n( get_option("date_format") . ' ' . get_option("time_format"), strtotime( $current_ticket['ticket_opened'] ), true ) ); ?>
+					<?php $this->render_row( __( 'Created On (GMT)', INCSUB_SUPPORT_LANG_DOMAIN ), get_date_from_gmt( $current_ticket['ticket_opened'], get_option("date_format") ." ". get_option("time_format") ) ); ?>
 
 
 					<?php $this->render_row( __( 'Reporting User', INCSUB_SUPPORT_LANG_DOMAIN ), $current_ticket['user_name'] ); ?>
 					<?php $this->render_row( __( 'Last Reply From', INCSUB_SUPPORT_LANG_DOMAIN ), $current_ticket['last_user_reply'] ); ?>
-					<?php $this->render_row( __( 'Last Updated (GMT)', INCSUB_SUPPORT_LANG_DOMAIN ), date_i18n( get_option("date_format") . ' ' . get_option("time_format"), strtotime( $current_ticket['ticket_updated'] ), true ) ); ?>
+					<?php $this->render_row( __( 'Last Updated (GMT)', INCSUB_SUPPORT_LANG_DOMAIN ), get_date_from_gmt( $current_ticket['ticket_updated'], get_option("date_format") ." ". get_option("time_format") ) ); ?>
 
 					<?php do_action( 'support_ticket_details_fields', $current_ticket ); ?>
 					
@@ -526,6 +526,11 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 						}
 					}
 
+					// Ticket has been closed? Then send an additional email to the user
+					if ( 5 == $status ) {
+						incsub_support_send_user_closed_mail( $this->ticket_id );
+					}
+
 					$link = add_query_arg( 'updated', 'true' );
 					wp_redirect( $link );
 
@@ -557,8 +562,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 				if ( isset( $_POST['close-ticket'] ) ) {
 					if ( ! $closed ) {
 						// Was not closed, send an email to the user
-						$user = get_userdata( $this->current_ticket['user_id'] );
-						incsub_support_send_user_closed_mail( $user, $ticket_id, $this->current_ticket );
+						incsub_support_send_user_closed_mail( $ticket_id );
 					}
 
 					$model->update_ticket_status( $ticket_id, $this->current_ticket['cat_id'], $priority, 5 );

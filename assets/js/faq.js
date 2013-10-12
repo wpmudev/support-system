@@ -1,6 +1,5 @@
 jQuery(document).ready(function($) {
-	$( ".accordion" ).accordion({collapsible:true,active:false,heightStyle:'content'});	
-	$( "#tabs" ).tabs();
+	//$( ".accordion" ).accordion({collapsible:true,active:false,heightStyle:'content'});	
 
 	$( '.vote-button' ).click( function(e) {
 		e.preventDefault();
@@ -20,5 +19,28 @@ jQuery(document).ready(function($) {
 		$.post( ajaxurl, data, function(response) {
 			loader.hide();
 		});
-	})
+	});
+
+	$( '.faq-category-question' ).hide();
+	
+
+	$( '.faq-category' ).click( function( e ) {
+		e.preventDefault();
+
+		var cat_id = $(this).data('cat-id');
+
+		$( '.faq-category-question' ).fadeOut();
+		$( '#faq-category-' + cat_id ).fadeIn();
+	});
+
+	$('.faq-category-answer').hide();
+	$('.faq-question-selector').click( function(e) {
+		e.preventDefault();
+
+		var faq_id = $(this).data('faq-id');
+		$('.faq-category-answer').slideUp();
+
+		$( '#faq-answer-' + faq_id ).slideDown();
+
+	});
 });
