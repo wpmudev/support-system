@@ -128,7 +128,7 @@ class MU_Support_FAQS_Table extends WP_List_Table {
 
         $current_page = $this->get_pagenum();
 
-        $model = MU_Support_System_Model::get_instance();
+        $model = incsub_support_get_faq_model();
 
         $args = array();
 

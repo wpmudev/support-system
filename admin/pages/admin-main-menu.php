@@ -62,7 +62,7 @@ if ( ! class_exists( 'MU_Support_Admin_Main_Menu' ) ) {
 		 */
 		public function render_content() {
 
-			$model = MU_Support_System_Model::get_instance();
+			$model = incsub_support_get_ticket_model();
 
 		    $tickets_table = new MU_Support_Admin_Tickets_Table( $this->view );
 		    $tickets_table->prepare_items();

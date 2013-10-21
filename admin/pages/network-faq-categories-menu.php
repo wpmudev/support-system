@@ -72,7 +72,7 @@ if ( ! class_exists( 'MU_Support_Network_FAQ_Categories' ) ) {
 			
 
 			if ( isset( $_GET['action'] ) && 'edit' == $_GET['action'] && isset( $_GET['category'] ) && $cat_id = absint( $_GET['category'] ) ) {
-				$model = MU_Support_System_Model::get_instance();
+				$model = incsub_support_get_faq_model();
 				$cat_name = $model->get_faq_category( $cat_id );
 
 				?>
@@ -138,7 +138,7 @@ if ( ! class_exists( 'MU_Support_Network_FAQ_Categories' ) ) {
 					wp_die( __( 'Security check error', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
 				if ( isset( $_POST['faq_cat_name'] ) && ! empty( $_POST['faq_cat_name'] ) && isset( $_POST['faq_cat_id'] ) ) {
-					$model = MU_Support_System_Model::get_instance();
+					$model = incsub_support_get_faq_model();
 					$model->update_faq_category( absint( $_POST['faq_cat_id'] ), sanitize_text_field( $_POST['faq_cat_name'] ) );
 				}
 
@@ -166,7 +166,7 @@ if ( ! class_exists( 'MU_Support_Network_FAQ_Categories' ) ) {
 					$this->add_error( 'category-name', __( 'Category name cannot be empty', INCSUB_SUPPORT_LANG_DOMAIN ) );
 			}
 
-			$model = MU_Support_System_Model::get_instance();
+			$model = incsub_support_get_faq_model();
 			$model->add_faq_category( $category_name );
 
 			return $category_name;

@@ -184,12 +184,16 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		 */
 		private function includes() {
 			// Model
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/model/model.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/model/model-loader.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/model/ticket-model.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/model/faq-model.php');
 
 			// Classes
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/ticket.php');
 
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers.php');
+			// Helpers
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/model.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/ticket.php');
 
 			// Admin
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/support-menu.php');
@@ -219,8 +223,10 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		 * @since 1.8
 		 */
 		public function activate() {
-			$model = MU_Support_System_Model::get_instance();
-			$model->create_tables();
+			$faq_model = incsub_support_get_faq_model();
+			$faq_model->create_tables();
+			$ticket_model = incsub_support_get_ticket_model();
+			$ticket_model->create_tables();
 			update_site_option( 'incsub_support_version', self::$version );
 			update_site_option( 'incsub_support_settings', self::$settings );			
 		}
@@ -241,6 +247,9 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		 * Add actions for admin menus
 		 */
 		public function admin_menus() {
+
+			$model = incsub_support_get_ticket_model();
+			$model = incsub_support_get_faq_model();
 
 			if ( is_multisite() ) {
 				if ( is_network_admin() ) {

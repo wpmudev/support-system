@@ -27,7 +27,7 @@ if ( ! class_exists( 'MU_Support_Network_Main_Menu' ) ) {
 			$this->capability = $capability;
 			$this->menu_slug = 'ticket-manager';
 
-			$model = MU_Support_System_Model::get_instance();
+			$model = incsub_support_get_ticket_model();
 			
 			parent::__construct( $is_network );
 
@@ -57,7 +57,7 @@ if ( ! class_exists( 'MU_Support_Network_Main_Menu' ) ) {
 		 */
 		public function render_content() {
 
-			$model = MU_Support_System_Model::get_instance();
+			$model = incsub_support_get_ticket_model();
 
 		    $tickets_table = new MU_Support_Tickets_Table( $this->view );
 		    $tickets_table->prepare_items();
@@ -83,7 +83,7 @@ if ( ! class_exists( 'MU_Support_Network_Main_Menu' ) ) {
 		}
 
 		public function get_new_tickets() {
-			$model = MU_Support_System_Model::get_instance();
+			$model = incsub_support_get_ticket_model();
 			$this->count_update = $model->get_unchecked_tickets();
 		}
 

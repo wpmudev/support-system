@@ -210,7 +210,7 @@ class MU_Support_Tickets_Table extends WP_List_Table {
     function process_bulk_action() {
         
         //Detect when a bulk action is being triggered...
-        $model = MU_Support_System_Model::get_instance();
+        $model = incsub_support_get_ticket_model();
         $link = MU_Support_System::$network_main_menu->get_permalink();
 
         if( 'delete' === $this->current_action() ) {
@@ -293,7 +293,7 @@ class MU_Support_Tickets_Table extends WP_List_Table {
 
         $current_page = $this->get_pagenum();
 
-        $model = incsub_support_get_model();
+        $model = incsub_support_get_ticket_model();
 
         $args = array();
 

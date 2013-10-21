@@ -136,7 +136,7 @@ class MU_Support_Admin_Tickets_Table extends WP_List_Table {
 
         $current_page = $this->get_pagenum();
 
-        $model = incsub_support_get_model();
+        $model = incsub_support_get_ticket_model();
 
         $args = array();
 

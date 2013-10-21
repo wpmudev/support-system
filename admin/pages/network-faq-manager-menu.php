@@ -53,7 +53,7 @@ if ( ! class_exists( 'MU_Support_Network_FAQ_Manager_Menu' ) ) {
 
 			if ( isset( $_GET['action'] ) && 'delete' == $_GET['action'] && isset( $_GET['fid'] ) ) {
 				$faq_id = absint( $_GET['fid'] );
-				$model = MU_Support_System_Model::get_instance();
+				$model = incsub_support_get_faq_model();
 				$model->delete_faq_question( $faq_id );
 			}
 				

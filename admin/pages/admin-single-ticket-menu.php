@@ -121,7 +121,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 		 */
 		public function render_content() {
 
-			$model = MU_Support_System_Model::get_instance();
+			$model = incsub_support_get_ticket_model();;
 			if ( ! $model->is_current_blog_ticket( $this->ticket_id ) )
 				wp_die( 'You do not have enough permissions to see the ticket', INCSUB_SUPPORT_LANG_DOMAIN );
 
@@ -175,7 +175,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 		 */
 		private function the_ticket_details( $current_ticket ) {
 
-			$model = MU_Support_System_Model::get_instance();
+			$model = incsub_support_get_ticket_model();;
 			?>
 			<form method="post" action="">
 				<table class="form-table">
@@ -267,7 +267,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 			$ticket_history_table->prepare_items();
 			$ticket_history_table->display();
 
-			$model = MU_Support_System_Model::get_instance();
+			$model = incsub_support_get_ticket_model();;
 
 			if ( is_super_admin() || current_user_can( 'manage_options' ) || ( $model->get_ticket_user_id( $this->current_ticket['ticket_id'] ) == get_current_user_id() ) ) {
 				if ( ! $closed )
@@ -284,7 +284,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 		 */
 		function the_ticket_form( $current_ticket ) {
 
-			$model = MU_Support_System_Model::get_instance();
+			$model = incsub_support_get_ticket_model();;
 			$categories = $model->get_ticket_categories();
 
 			
@@ -397,7 +397,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 		 */
 		private function get_current_ticket_details( $ticket_id ) {
 
-			$model = MU_Support_System_Model::get_instance();
+			$model = incsub_support_get_ticket_model();;
 			$ticket_details = $model->get_ticket_details( $ticket_id );	
 			
 			if ( empty( $ticket_details ) )
@@ -416,7 +416,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 			if ( isset( $_GET['page'] ) && $this->menu_slug == $_GET['page'] && isset( $_POST['action'] ) && 'add-ticket-reply' == $_POST['action']  && isset( $_GET['page'] ) && $this->menu_slug == $_GET['page'] ) {
 
 
-				$model = MU_Support_System_Model::get_instance();
+				$model = incsub_support_get_ticket_model();;
 				if ( ! $model->is_current_blog_ticket( $this->ticket_id ) )
 					wp_die( 'You do not have enough permissions to edit the ticket', INCSUB_SUPPORT_LANG_DOMAIN );
 
@@ -549,7 +549,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 				$this->ticket_details = $this->get_current_ticket_details( $this->ticket_id );
 				$this->current_ticket = $this->ticket_details[0];
 
-				$model = MU_Support_System_Model::get_instance();
+				$model = incsub_support_get_ticket_model();;
 
 				$priority = $this->current_ticket['ticket_priority'];
 				if ( isset( $_POST['priority'] ) && array_key_exists( $_POST['priority'], MU_Support_System::$ticket_priority ) ) {
