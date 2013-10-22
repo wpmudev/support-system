@@ -194,6 +194,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			// Helpers
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/model.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/ticket.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/ticket-category.php');
 
 			// Admin
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/support-menu.php');

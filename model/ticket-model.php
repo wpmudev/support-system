@@ -8,6 +8,8 @@ class MU_Support_System_Ticket_Model {
 	public $tickets_table;
 	public $tickets_cats_table;
 
+	private $tickets_count_cache_slug = 'tickets_count';
+
 	public static function get_instance() {
 		if ( empty( self::$instance ) )
 			self::$instance = new self();
@@ -337,6 +339,9 @@ class MU_Support_System_Ticket_Model {
 			     $ticket_id
 		     )
 		);
+
+		delete_transient( $this->tickets_count_cache_slug . 0 );
+		delete_transient( $this->tickets_count_cache_slug . get_current_user_id() );
 	}
 
 	/**
@@ -357,6 +362,9 @@ class MU_Support_System_Ticket_Model {
 			array( '%d' ),
 			array( '%d' )
 		);
+
+		delete_transient( $this->tickets_count_cache_slug . 0 );
+		delete_transient( $this->tickets_count_cache_slug . get_current_user_id() );
 	}
 
 	/**
@@ -377,6 +385,9 @@ class MU_Support_System_Ticket_Model {
 			array( '%d' ),
 			array( '%d' )
 		);
+
+		delete_transient( $this->tickets_count_cache_slug . 0 );
+		delete_transient( $this->tickets_count_cache_slug . get_current_user_id() );
 	}
 
 	/**
@@ -491,6 +502,9 @@ class MU_Support_System_Ticket_Model {
 				maybe_serialize( $attachments )
 			)
 		);
+
+		delete_transient( $this->tickets_count_cache_slug . 0 );
+		delete_transient( $this->tickets_count_cache_slug . get_current_user_id() );
 
 		if ( ! $wpdb->insert_id )
 			return false;
@@ -669,6 +683,9 @@ class MU_Support_System_Ticket_Model {
 		);
 
 		$wpdb->query($q);
+
+		delete_transient( $this->tickets_count_cache_slug . 0 );
+		delete_transient( $this->tickets_count_cache_slug . get_current_user_id() );
 
 		if ( ! empty( $wpdb->rows_affected ) )
 			return true;
@@ -970,65 +987,107 @@ class MU_Support_System_Ticket_Model {
 	}
 
 	// BETA FUNCTIONS
-	public function get_tickets_beta( $offset = 0, $upper_limit = 0, $args = array() ) {
+	public function get_tickets_beta( $args = array() ) {
 		global $wpdb, $current_site;
 
 		$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
-		$type = ! isset( $args['type'] ) ? 'all' : $args['type'];
+		$upper_limit = absint( $args['per_page'] );
+		$page = absint( $args['page'] );
+		$offset = ( $page - 1 ) * $upper_limit;
 
-		$where_clause = array();
-		$where_clause[] = $wpdb->prepare( "WHERE t.site_id = %d", $current_site_id );
+		$where = array();
 
-		if ( 'archive' == $type ) {
-			$where_clause[] = "t.ticket_status = 5";
+		// Site
+		$where[] = $wpdb->prepare( "t.site_id = %d", $current_site_id );
+
+		// Status
+		if ( is_integer( $args['status'] ) ) {
+			$where[] = $wpdb->prepare( "t.ticket_status = %d", $args['status'] );
 		}
-		elseif ( 'all' == $type ) {}
 		else {
-			$where_clause[] = "t.ticket_status != 5";
+			if ( 'opened' == $args['status'] ) {
+				$where[] = "t.ticket_status != 5";
+			}
+			elseif ( 'closed' == $args['status'] ) {
+				$where[] = "t.ticket_status = 5";
+			}
+		}
+		
+		// Category
+		if ( ! empty( $args['category_in'] ) ) {
+			if ( is_array( $args['category_in'] ) ) {
+				$category_in = implode( ',', $args['category_in'] );
+				$where[] = "t.cat_id IN ( $category_in )";
+			}
+			else {
+				$category_in = absint( $args['category_in'] );
+				$where[] = $wpdb->prepare( "t.cat_id = %d", $category_in );
+			}
 		}
 
-		if ( isset( $args['category'] ) )
-			$where_clause[] = $wpdb->prepare( "t.cat_id = %d", $args['category'] );
+		// Blog
+		if ( ! empty( $args['blog_id'] ) )
+			$where[] = $wpdb->prepare( "t.blog_id = %d", absint( $args['blog_id'] ) );
 
-		if ( isset( $args['ticket_status'] ) )
-			$where_clause[] = $wpdb->prepare( "t.ticket_status = %d", $args['ticket_status'] );
-
-		if ( isset( $args['blog_id'] ) )
-			$where_clause[] = $wpdb->prepare( "t.blog_id = %d", $args['blog_id'] );
-
-		if ( isset( $args['user_in'] ) && is_array( $args['user_in'] ) ) {
-			$where_clause[] = "t.user_id IN (" . implode( ',', $args['user_in'] ) . ")";
+		// User
+		if ( ! empty( $args['user_in'] ) ) {
+			if ( is_array( $args['user_in'] ) ) {
+				$user_in = implode( ',', $args['user_in'] );
+				$where[] = "t.user_id IN ( $user_in )";
+			}
+			else {
+				$user_in = absint( $args['user_in'] );
+				$where[] = $wpdb->prepare( "t.user_id = %d", $user_in );
+			}
 		}
 
-		$where_clause = implode( " AND ", $where_clause );
-
-
-		// Total number of tickets
-		$counts = $wpdb->get_var( "SELECT COUNT(t.ticket_id)
-			FROM $this->tickets_table AS t
-			$where_clause"
-		);
+		$where = implode( " AND ", $where );
 
 		// Results. It gets a segment based on offset and upper_limit
 		
 		$pq = "SELECT *
 			FROM $this->tickets_table AS t
-			$where_clause
+			WHERE $where
 			ORDER BY t.ticket_updated DESC
 			LIMIT $offset, $upper_limit";
 		
 		$results = $wpdb->get_results( $pq );
 
-		$tickets = array();
-		foreach ( $results as $ticket ) {
-			$tickets[] = incsub_support_get_ticket( $ticket );
+		return $results;
+	}
+
+	public function get_tickets_count( $args = array() ) {
+		global $wpdb;
+
+		$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
+
+		$query = "SELECT t.ticket_status, COUNT( t.ticket_id ) AS tickets_num FROM $this->tickets_table t";
+
+		$where_clause = array();
+
+		$where_clause[] = $wpdb->prepare( "t.site_id = %d", $current_site_id );
+
+		$user_id = 0;
+		if ( isset( $args['user_in'] ) ) {
+			$where_clause[] = $wpdb->prepare( "t.user_id = %d", $args['user_id'] );
+			$user_id = $args['user_in'];
 		}
 
-		return array(
-			'total' 	=> $counts,
-			'tickets' 	=> $tickets
-		);
+		$where_clause = implode( " AND ", $where_clause );
+
+		$query = "$query WHERE $where_clause GROUP BY ticket_status";
+
+		$count = get_transient( $this->tickets_count_cache_slug . $user_id );
+		if ( false !== $count )
+			return $count;
+		
+		$count = $wpdb->get_results( $query, ARRAY_A );
+
+		set_transient( $this->tickets_count_cache_slug . $user_id, $count, 43200 ); // We'll save it 12 hours
+
+		return $count;
+
 	}
 
 	public function get_ticket_category_name_beta( $cat_id ) {

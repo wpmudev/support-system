@@ -74,19 +74,13 @@ if ( ! class_exists( 'MU_Support_Admin_Main_Menu' ) ) {
 		    if ( 'requestor' == MU_Support_System::$settings['incsub_ticket_privacy'] )
 		    	$args['user_in'] = array( get_current_user_id() );
 
-			$all_tickets_count = $model->get_tickets( 'all', 0, 0, $args );
-		    $all_tickets_count = $all_tickets_count['total'];
-
-		    $archived_tickets_count = $model->get_tickets( 'archive', 0, 0, $args );
-		    $archived_tickets_count = $archived_tickets_count['total'];
-
-		    $active_tickets_count = $all_tickets_count - $archived_tickets_count;
+			$tickets_count = incsub_support_get_tickets_count();
 
 		    ?>
 		    	<ul class="subsubsub">
-					<li class="all"><a href="<?php echo add_query_arg( 'view', 'all' ); ?>" <?php echo 'all' == $this->view ? 'class="current"' : ''; ?> ><?php echo __( 'All', INCSUB_SUPPORT_LANG_DOMAIN ); ?> <span class="count">(<?php echo $all_tickets_count; ?>)</span></a> |</li>
-					<li class="active"><a href="<?php echo add_query_arg( 'view', 'active' ); ?>" <?php echo 'active' == $this->view ? 'class="current"' : ''; ?> ><?php echo __( 'Opened', INCSUB_SUPPORT_LANG_DOMAIN ); ?> <span class="count">(<?php echo $active_tickets_count; ?>)</span></a> |</li>
-					<li class="archived"><a href="<?php echo add_query_arg( 'view', 'archive' ); ?>" <?php echo 'archive' == $this->view ? 'class="current"' : ''; ?>><?php echo __( 'Closed', INCSUB_SUPPORT_LANG_DOMAIN ); ?> <span class="count">(<?php echo $archived_tickets_count; ?>)</span></a></li>
+					<li class="all"><a href="<?php echo add_query_arg( 'view', 'all' ); ?>" <?php echo 'all' == $this->view ? 'class="current"' : ''; ?> ><?php echo __( 'All', INCSUB_SUPPORT_LANG_DOMAIN ); ?> <span class="count">(<?php echo $tickets_count['all']; ?>)</span></a> |</li>
+					<li class="active"><a href="<?php echo add_query_arg( 'view', 'active' ); ?>" <?php echo 'active' == $this->view ? 'class="current"' : ''; ?> ><?php echo __( 'Opened', INCSUB_SUPPORT_LANG_DOMAIN ); ?> <span class="count">(<?php echo $tickets_count['opened']; ?>)</span></a> |</li>
+					<li class="archived"><a href="<?php echo add_query_arg( 'view', 'archive' ); ?>" <?php echo 'archive' == $this->view ? 'class="current"' : ''; ?>><?php echo __( 'Closed', INCSUB_SUPPORT_LANG_DOMAIN ); ?> <span class="count">(<?php echo $tickets_count['closed']; ?>)</span></a></li>
 				</ul>
 			<?php
 
