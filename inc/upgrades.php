@@ -73,11 +73,15 @@ function incsub_support_check_for_upgrades() {
 			incsub_support_upgrade_1981();
 		}
 
+		if ( version_compare( $saved_version, '2.0beta.0' ) < 0 ) {
+			
+			
+		}
+
 		update_site_option( 'incsub_support_version', INCSUB_SUPPORT_PLUGIN_VERSION );
 	}
 
 }
-
 
 /**
  * Sets a new system based on roles instead of capabilities

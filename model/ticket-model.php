@@ -682,15 +682,14 @@ class MU_Support_System_Ticket_Model {
 			$ticket_id
 		);
 
-		$wpdb->query($q);
+
+
+		
 
 		delete_transient( $this->tickets_count_cache_slug . 0 );
 		delete_transient( $this->tickets_count_cache_slug . get_current_user_id() );
 
-		if ( ! empty( $wpdb->rows_affected ) )
-			return true;
-		else
-			return false;
+		return $wpdb->query($q);
 
 	}
 
@@ -1088,6 +1087,31 @@ class MU_Support_System_Ticket_Model {
 
 		return $count;
 
+	}
+
+	public function get_filtered_tickets_count( $status, $category, $args = array() ) {
+		global $wpdb;
+
+		$where = array();
+		if ( $status !== false )
+			$where[] = $wpdb->prepare( "t.ticket_status = %d", $status );
+
+		if ( $category )
+			$where[] = $wpdb->prepare( "t.cat_id = %d", $category );
+
+		if ( isset( $args['user_in'] ) )
+			$where[] = $wpdb->prepare( "t.user_id = %d", $args['user_in'] );
+
+		if ( isset( $args['blog_id'] ) )
+			$where[] = $wpdb->prepare( "t.blog_id = %d", $args['blog_id'] );
+
+		if ( ! empty( $where ) )
+			$where = " WHERE " . implode( " AND ", $where );
+
+		return $wpdb->get_var( 
+			"SELECT COUNT( ticket_id ) FROM $this->tickets_table t
+			 $where"
+		);
 	}
 
 	public function get_ticket_category_name_beta( $cat_id ) {

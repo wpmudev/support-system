@@ -1,0 +1,996 @@
+# Translation of Support System in Portuguese (Portugal)
+# This file is distributed under the same license as the Support System package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2013-11-06 11:32+0100\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/0.1\n"
+"Project-Id-Version: Support System\n"
+"POT-Creation-Date: \n"
+"Last-Translator: Ignacio <igmoweb@gmail.com>\n"
+"Language-Team: \n"
+
+#: ../incsub-support.php:113
+msgid "New"
+msgstr "Novo"
+
+#: ../incsub-support.php:114
+msgid "In progress"
+msgstr "Em progresso"
+
+#: ../incsub-support.php:115
+msgid "Waiting on User to reply"
+msgstr "À espera de resposta do Utilizador"
+
+#: ../incsub-support.php:116
+msgid "Waiting on Admin to reply"
+msgstr "À espera de resposta da Administração"
+
+#: ../incsub-support.php:117
+msgid "Stalled"
+msgstr "Parado"
+
+#: ../incsub-support.php:118
+#: ../admin/pages/admin-main-menu.php:89
+#: ../admin/pages/network-main-menu.php:77
+msgid "Closed"
+msgstr "Fechado"
+
+#: ../incsub-support.php:122
+msgid "Low"
+msgstr "Baixa"
+
+#: ../incsub-support.php:123
+msgid "Normal"
+msgstr "Normal"
+
+#: ../incsub-support.php:124
+msgid "Elevated"
+msgstr "Elevado"
+
+#: ../incsub-support.php:125
+msgid "High"
+msgstr "Alta"
+
+#: ../incsub-support.php:126
+msgid "Critical"
+msgstr "Crítica"
+
+#: ../incsub-support.php:137
+msgid "Allow all users to see all tickets in a site"
+msgstr "Permitir a todos os utilizadores de verem os tickets num site"
+
+#: ../incsub-support.php:137
+msgid "Allow all users to see all tickets"
+msgstr "Permitir a visualização dos tickets a todos os utilizadores"
+
+#: ../incsub-support.php:138
+msgid "Allow only requestors to see their own tickets"
+msgstr "Permitir apenas os utilizadores de ver os seus próprios tickets"
+
+#: ../incsub-support.php:164
+#: ../admin/pages/network-main-menu.php:26
+msgid "Support"
+msgstr "Suporte"
+
+#: ../admin/pages/admin-faq-menu.php:25
+msgid "Frequently Asked Questions"
+msgstr "Perguntas Mais Frequentes"
+
+#: ../admin/pages/admin-faq-menu.php:26
+msgid "FAQ"
+msgstr "FAQ"
+
+#: ../admin/pages/admin-faq-menu.php:102
+msgid "%d questions"
+msgstr "%d questões"
+
+#: ../admin/pages/admin-faq-menu.php:129
+msgid "Was this solution helpful?"
+msgstr "Esta solução ajudou?"
+
+#: ../admin/pages/admin-faq-menu.php:130
+msgid "Yes"
+msgstr "Sim"
+
+#: ../admin/pages/admin-faq-menu.php:130
+msgid "No"
+msgstr "Não"
+
+#: ../admin/pages/admin-main-menu.php:29
+#: ../admin/pages/admin-new-ticket-menu.php:23
+#: ../admin/pages/admin-new-ticket-menu.php:24
+msgid "Add new ticket"
+msgstr "Adicionar novo ticket"
+
+#: ../admin/pages/admin-main-menu.php:41
+msgid "All Tickets"
+msgstr "Todos os Tickets"
+
+#: ../admin/pages/admin-main-menu.php:43
+msgid "Recent Tickets"
+msgstr "Tickets Recentes"
+
+#: ../admin/pages/admin-main-menu.php:87
+#: ../admin/pages/network-main-menu.php:75
+msgid "All"
+msgstr "Todos"
+
+#: ../admin/pages/admin-main-menu.php:88
+#: ../admin/pages/network-main-menu.php:76
+msgid "Opened"
+msgstr "Abertos"
+
+#: ../admin/pages/admin-new-ticket-menu.php:70
+msgid "* All fields are required."
+msgstr "* São necessários todos os campos"
+
+#: ../admin/pages/admin-new-ticket-menu.php:73
+msgid "(max: 100 characters)"
+msgstr "(máx: 100 caracteres)"
+
+#: ../admin/pages/admin-new-ticket-menu.php:74
+#: ../admin/pages/admin-single-ticket-menu.php:302
+#: ../admin/pages/network-single-ticket-menu.php:302
+#: ../admin/tables/admin-tickets-table.php:86
+msgid "Subject"
+msgstr "Assunto"
+
+#: ../admin/pages/admin-new-ticket-menu.php:82
+#: ../admin/pages/admin-single-ticket-menu.php:317
+#: ../admin/pages/network-single-ticket-menu.php:317
+#: ../admin/tables/admin-tickets-table.php:89
+#: ../admin/tables/faq-categories-table.php:14
+#: ../admin/tables/faqs-table.php:90
+#: ../admin/tables/ticket-categories-table.php:13
+msgid "Category"
+msgstr "Categoria"
+
+#: ../admin/pages/admin-new-ticket-menu.php:90
+#: ../admin/pages/admin-single-ticket-menu.php:227
+#: ../admin/pages/admin-single-ticket-menu.php:332
+#: ../admin/pages/network-single-ticket-menu.php:219
+#: ../admin/pages/network-single-ticket-menu.php:332
+#: ../admin/tables/admin-tickets-table.php:88
+msgid "Priority"
+msgstr "Prioridade"
+
+#: ../admin/pages/admin-new-ticket-menu.php:94
+msgid "Problem description"
+msgstr "Descrição do Problema"
+
+#: ../admin/pages/admin-new-ticket-menu.php:103
+#: ../admin/pages/admin-single-ticket-menu.php:372
+#: ../admin/pages/network-single-ticket-menu.php:391
+msgid "Upload a new file"
+msgstr "Enviar novo ficheiro"
+
+#: ../admin/pages/admin-new-ticket-menu.php:106
+#: ../admin/pages/admin-single-ticket-menu.php:375
+#: ../admin/pages/network-single-ticket-menu.php:394
+msgid "Attachments"
+msgstr "Anexos"
+
+#: ../admin/pages/admin-new-ticket-menu.php:115
+msgid "Submit new ticket"
+msgstr "Enviar novo ticket"
+
+#: ../admin/pages/admin-new-ticket-menu.php:116
+#: ../admin/pages/admin-single-ticket-menu.php:156
+#: ../admin/pages/network-single-ticket-menu.php:138
+msgid "Back to tickets list"
+msgstr "Voltar à lista de tickets"
+
+#: ../admin/pages/admin-new-ticket-menu.php:139
+msgid "Subject must not be empty"
+msgstr "O Assunto não pode estar vazio"
+
+#: ../admin/pages/admin-new-ticket-menu.php:143
+msgid "Not valid category"
+msgstr "Categoria inválida"
+
+#: ../admin/pages/admin-new-ticket-menu.php:147
+msgid "Not valid priority"
+msgstr "Prioridade inválida"
+
+#: ../admin/pages/admin-new-ticket-menu.php:151
+msgid "Message must not be empty"
+msgstr "A Mensagem não pode estar vazia"
+
+#: ../admin/pages/admin-new-ticket-menu.php:177
+msgid "Ticket Error: There was an error submitting your ticket. Please try again in a few minutes."
+msgstr "Erro ao enviar o ticket. Por favor tente novamente dentro de alguns minutos."
+
+#: ../admin/pages/admin-single-ticket-menu.php:29
+#: ../admin/pages/admin-single-ticket-menu.php:30
+#: ../admin/pages/network-single-ticket-menu.php:26
+#: ../admin/pages/network-single-ticket-menu.php:27
+msgid "Support Ticket"
+msgstr "Ticket de Suporte"
+
+#: ../admin/pages/admin-single-ticket-menu.php:39
+#: ../admin/pages/network-single-ticket-menu.php:36
+msgid "Ticket details"
+msgstr "Detalhes do Ticket"
+
+#: ../admin/pages/admin-single-ticket-menu.php:44
+#: ../admin/pages/admin-single-ticket-menu.php:384
+#: ../admin/pages/network-single-ticket-menu.php:41
+#: ../admin/pages/network-single-ticket-menu.php:401
+msgid "Update ticket"
+msgstr "Atualizar Ticket"
+
+#: ../admin/pages/admin-single-ticket-menu.php:146
+msgid "This ticket has been closed. Please, contact a Super Admin if you want to reopen it."
+msgstr "Este ticket foi fechado. Por favor, contate o administrador se pretender reabri-lo."
+
+#: ../admin/pages/admin-single-ticket-menu.php:148
+msgid "This ticket has been closed."
+msgstr "Este ticket foi fechado."
+
+#: ../admin/pages/admin-single-ticket-menu.php:182
+#: ../admin/pages/network-single-ticket-menu.php:164
+msgid "Ticket Subject"
+msgstr "Assunto do Ticket"
+
+#: ../admin/pages/admin-single-ticket-menu.php:183
+#: ../admin/pages/network-single-ticket-menu.php:165
+msgid "Current Status"
+msgstr "Estado Atual"
+
+#: ../admin/pages/admin-single-ticket-menu.php:184
+#: ../admin/pages/network-single-ticket-menu.php:166
+msgid "Created On (GMT)"
+msgstr "Creado em (GMT)"
+
+#: ../admin/pages/admin-single-ticket-menu.php:187
+#: ../admin/pages/network-single-ticket-menu.php:169
+msgid "Reporting User"
+msgstr "Utilizador"
+
+#: ../admin/pages/admin-single-ticket-menu.php:188
+#: ../admin/pages/network-single-ticket-menu.php:170
+msgid "Last Reply From"
+msgstr "Última Resposta De"
+
+#: ../admin/pages/admin-single-ticket-menu.php:189
+#: ../admin/pages/network-single-ticket-menu.php:171
+msgid "Last Updated (GMT)"
+msgstr "Última Actualização (GMT)"
+
+#: ../admin/pages/admin-single-ticket-menu.php:194
+#: ../admin/pages/network-single-ticket-menu.php:176
+msgid "Unknown"
+msgstr "Desconhecido"
+
+#: ../admin/pages/admin-single-ticket-menu.php:209
+#: ../admin/pages/network-single-ticket-menu.php:191
+msgid "Submitted from"
+msgstr "Enviado de"
+
+#: ../admin/pages/admin-single-ticket-menu.php:211
+#: ../admin/pages/network-single-ticket-menu.php:198
+#: ../admin/tables/admin-tickets-table.php:41
+msgid "Not yet assigned"
+msgstr "Ainda não atribuídos"
+
+#: ../admin/pages/admin-single-ticket-menu.php:212
+#: ../admin/pages/network-single-ticket-menu.php:205
+msgid "Staff Representative"
+msgstr "Representante do Staff"
+
+#: ../admin/pages/admin-single-ticket-menu.php:235
+#: ../admin/pages/network-single-ticket-menu.php:227
+msgid "Ticket closed"
+msgstr "Ticket Fechado"
+
+#: ../admin/pages/admin-single-ticket-menu.php:242
+#: ../admin/pages/network-single-ticket-menu.php:233
+#: ../admin/pages/network-support-settings-menu.php:175
+msgid "Save changes"
+msgstr "Gravar alterações"
+
+#: ../admin/pages/admin-single-ticket-menu.php:262
+msgid "Message added to ticket successfully"
+msgstr "A mensagem foi adicionada ao ticket com sucesso"
+
+#: ../admin/pages/admin-single-ticket-menu.php:294
+msgid "Add a new response"
+msgstr "Adicionar nova resposta"
+
+#: ../admin/pages/admin-single-ticket-menu.php:340
+#: ../admin/pages/network-single-ticket-menu.php:361
+msgid "Please provide as much information as possible, so that the user can understand the solution/request."
+msgstr "Por favor, forneça o máximo de informações possível, para que o utilizador possa entender a solução / pedido."
+
+#: ../admin/pages/admin-single-ticket-menu.php:345
+#: ../admin/pages/network-single-ticket-menu.php:366
+msgid "Add a reply"
+msgstr "Adicionar resposta"
+
+#: ../admin/pages/admin-single-ticket-menu.php:354
+#: ../admin/pages/network-single-ticket-menu.php:374
+msgid "Yes, close this ticket."
+msgstr "Sim, fechar este ticket."
+
+#: ../admin/pages/admin-single-ticket-menu.php:355
+#: ../admin/pages/network-single-ticket-menu.php:375
+msgid "Once a ticket is closed, users can no longer reply to (or update) it."
+msgstr "Uma vez que um ticket é fechado, os utilizadores não podem mais responder (ou atualizá-lo)."
+
+#: ../admin/pages/admin-single-ticket-menu.php:359
+#: ../admin/pages/network-single-ticket-menu.php:379
+msgid "Close Ticket?"
+msgstr "Fechar Ticket?"
+
+#: ../admin/pages/admin-single-ticket-menu.php:404
+#: ../admin/pages/network-single-ticket-menu.php:107
+msgid "The ticket you're trying to find does not exist."
+msgstr "O ticket que está a tentar procurar não existe."
+
+#: ../admin/pages/admin-single-ticket-menu.php:433
+#: ../admin/pages/network-single-ticket-menu.php:442
+msgid "Title cannot be empty"
+msgstr "O título não pode estar vazio."
+
+#: ../admin/pages/admin-single-ticket-menu.php:441
+#: ../admin/pages/network-single-ticket-menu.php:450
+msgid "Message cannot be empty"
+msgstr "A Mensagem não pode estar vazia"
+
+#: ../admin/pages/network-faq-categories-menu.php:25
+#: ../admin/pages/network-faq-categories-menu.php:26
+msgid "FAQ Categories"
+msgstr "Categorias FAQ"
+
+#: ../admin/pages/network-faq-categories-menu.php:66
+#: ../admin/pages/network-ticket-categories-menu.php:66
+msgid "A new category has been added"
+msgstr "Foi adicionado uma nova categoria"
+
+#: ../admin/pages/network-faq-categories-menu.php:87
+#: ../admin/pages/network-ticket-categories-menu.php:94
+msgid "Category name"
+msgstr "Nome da categoria"
+
+#: ../admin/pages/network-faq-categories-menu.php:117
+#: ../admin/pages/network-ticket-categories-menu.php:127
+msgid "Add new category"
+msgstr "Adicionar nova categoria"
+
+#: ../admin/pages/network-faq-categories-menu.php:121
+#: ../admin/pages/network-ticket-categories-menu.php:131
+msgid "Category Name"
+msgstr "Nome da categoria"
+
+#: ../admin/pages/network-faq-categories-menu.php:123
+msgid "The name is used to identify the category to which FAQ question relate"
+msgstr "O nome é usado para identificar a categoria para cada questão relacionada com as FAQ's"
+
+#: ../admin/pages/network-faq-categories-menu.php:125
+msgid "Add New Category"
+msgstr "Adicionar Nova Categoria"
+
+#: ../admin/pages/network-faq-categories-menu.php:138
+#: ../admin/pages/network-faq-categories-menu.php:160
+#: ../admin/pages/network-support-settings-menu.php:184
+#: ../admin/pages/network-ticket-categories-menu.php:156
+#: ../admin/pages/network-ticket-categories-menu.php:186
+msgid "Security check error"
+msgstr "Falha na validação de segurança"
+
+#: ../admin/pages/network-faq-categories-menu.php:166
+#: ../admin/pages/network-ticket-categories-menu.php:192
+msgid "Category name cannot be empty"
+msgstr "O nome da categoria não pode estar vazia"
+
+#: ../admin/pages/network-faq-manager-menu.php:19
+#: ../admin/pages/network-faq-manager-menu.php:20
+msgid "FAQ Manager"
+msgstr "Gerir FAQ´s"
+
+#: ../admin/pages/network-faq-manager-menu.php:29
+msgid "Add new FAQ question"
+msgstr "Adicionar nova questão às FAQ's"
+
+#: ../admin/pages/network-main-menu.php:25
+msgid "Support Ticket Management System"
+msgstr ""
+
+#: ../admin/pages/network-single-faq-question-menu.php:30
+#: ../admin/pages/network-single-faq-question-menu.php:31
+msgid "Add new FAQ Question"
+msgstr "Adicionar nova questão às FAQ's"
+
+#: ../admin/pages/network-single-faq-question-menu.php:34
+#: ../admin/pages/network-single-faq-question-menu.php:35
+msgid "Edit FAQ Question"
+msgstr "Editar questão da FAQ"
+
+#: ../admin/pages/network-single-faq-question-menu.php:88
+msgid "The question you're trying to find does not exist."
+msgstr "A pergunta que está a tentar encontrar não existe."
+
+#: ../admin/pages/network-single-faq-question-menu.php:145
+msgid "FAQ question updated"
+msgstr "Pergunta FAQ atualizada"
+
+#: ../admin/pages/network-single-faq-question-menu.php:152
+msgid "FAQ question created"
+msgstr "Pergunta FAQ criada"
+
+#: ../admin/pages/network-single-faq-question-menu.php:178
+msgid "Submit"
+msgstr "Enviar"
+
+#: ../admin/pages/network-single-faq-question-menu.php:179
+msgid "Back to FAQs list"
+msgstr "Voltar à lista das FAQs"
+
+#: ../admin/pages/network-single-faq-question-menu.php:208
+msgid "Question cannot be empty"
+msgstr "A Pergunta não pode estar vazia"
+
+#: ../admin/pages/network-single-faq-question-menu.php:240
+msgid "Error"
+msgstr "Erro"
+
+#: ../admin/pages/network-single-ticket-menu.php:133
+msgid "This ticket has been closed"
+msgstr "Este ticket foi fechado."
+
+#: ../admin/pages/network-single-ticket-menu.php:341
+msgid "Keep Responsibility For This Ticket"
+msgstr "Manter a responsabilidade neste Ticket"
+
+#: ../admin/pages/network-single-ticket-menu.php:342
+msgid "Give Up Responsibility To Allow Another Admin To Accept"
+msgstr "Desistir da responsabilidade deste ticket para permitir outro administrador aceitar"
+
+#: ../admin/pages/network-single-ticket-menu.php:344
+msgid "Accept Responsibility For This Ticket"
+msgstr "Aceitar a responsabilidade para este Ticket"
+
+#: ../admin/pages/network-single-ticket-menu.php:346
+msgid "Keep Current Admin, And Just Help Out With A Reply"
+msgstr "Manter o Administrador atual, e apenas ajudar com uma resposta"
+
+#: ../admin/pages/network-single-ticket-menu.php:353
+msgid "Ticket Responsibility"
+msgstr "Responsável do Ticket"
+
+#: ../admin/pages/network-support-settings-menu.php:24
+msgid "Support System Settings"
+msgstr "Configurações do Sistema de Suporte"
+
+#: ../admin/pages/network-support-settings-menu.php:25
+msgid "Settings"
+msgstr "Configurações"
+
+#: ../admin/pages/network-support-settings-menu.php:63
+msgid "Settings successfully saved"
+msgstr "As configurações foram gravadas com sucesso"
+
+#: ../admin/pages/network-support-settings-menu.php:65
+msgid "IMAP settings successfully tested."
+msgstr "Configurações IMAP testado com sucesso."
+
+#: ../admin/pages/network-support-settings-menu.php:75
+msgid "General Settings"
+msgstr "Configurações Gerais"
+
+#: ../admin/pages/network-support-settings-menu.php:81
+msgid "Change the text of the 'Support' menu item to anything you need."
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:83
+msgid "Support menu name"
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:88
+msgid "Support mail from name."
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:90
+msgid "Support from name"
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:95
+msgid "Support mail from address."
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:97
+msgid "Support from e-mail"
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:106
+msgid "If the ticket is not assigned to any staff member, This will be the Administrator who receives all emails with any updates about the ticket"
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:107
+msgid "Main Administrator"
+msgstr "Administrador Principal"
+
+#: ../admin/pages/network-support-settings-menu.php:110
+msgid "Permissions Settings"
+msgstr "Configuração de Permissões"
+
+#: ../admin/pages/network-support-settings-menu.php:123
+msgid "User roles that can open/see tickets."
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:133
+msgid "User roles that can see the FAQs <span class=\"description\">(uncheck all if you want to disable this feature)</span>"
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:140
+msgid "Check and select a minimum Pro Site Level to allow <strong>Support Tickets</strong> in a blog (if unchecked, Support will be available for any blog)"
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:144
+#: ../admin/pages/network-support-settings-menu.php:153
+msgid "Minimum Pro Site Level"
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:149
+msgid "Check and select a minimum Pro Site Level to allow <strong>Support FAQ</strong> in a blog (if unchecked, Support FAQ will be available for any blog)"
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:156
+msgid "Pro Sites Integration"
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:161
+msgid "Privacy Settings"
+msgstr "Configuração da Privacidade"
+
+#: ../admin/pages/network-support-settings-menu.php:169
+msgid "Privacy"
+msgstr "Privacidade"
+
+#: ../admin/pages/network-support-settings-menu.php:190
+msgid "Menu name must not be empty"
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:199
+msgid "Site name must not be empty"
+msgstr ""
+
+#: ../admin/pages/network-support-settings-menu.php:208
+msgid "Email must be a valid email"
+msgstr ""
+
+#: ../admin/pages/network-ticket-categories-menu.php:25
+#: ../admin/pages/network-ticket-categories-menu.php:26
+msgid "Tickets Categories"
+msgstr "Categorias de Tickets"
+
+#: ../admin/pages/network-ticket-categories-menu.php:101
+#: ../admin/pages/network-ticket-categories-menu.php:136
+#: ../admin/tables/ticket-categories-table.php:35
+msgid "Assign to user"
+msgstr "Atribuír ao utilizador"
+
+#: ../admin/pages/network-ticket-categories-menu.php:133
+msgid "The name is used to identify the category to which tickets relate"
+msgstr "O nome é usado para identificar a categoria de cada ticket relacionado"
+
+#: ../admin/pages/network-ticket-categories-menu.php:138
+msgid "Any new opened ticket with this category will be assigned to this user"
+msgstr ""
+
+#: ../admin/pages/network-ticket-categories-menu.php:213
+#: ../admin/tables/ticket-categories-table.php:98
+msgid "None"
+msgstr "Nenhum"
+
+#: ../admin/tables/admin-tickets-table.php:28
+#: ../admin/tables/faqs-table.php:23
+msgid "Ticket"
+msgstr "Ticket"
+
+#: ../admin/tables/admin-tickets-table.php:29
+#: ../admin/tables/faqs-table.php:24
+#: ../admin/tables/ticket-categories-table.php:36
+msgid "Tickets"
+msgstr "Tickets"
+
+#: ../admin/tables/admin-tickets-table.php:85
+msgid "Ticket ID"
+msgstr "Ticket ID"
+
+#: ../admin/tables/admin-tickets-table.php:87
+msgid "Status"
+msgstr "Estado"
+
+#: ../admin/tables/admin-tickets-table.php:90
+msgid "Staff Member"
+msgstr "Membro do Staff"
+
+#: ../admin/tables/admin-tickets-table.php:91
+msgid "Last updated (GMT)"
+msgstr "Última atualização (GMT)"
+
+#: ../admin/tables/admin-tickets-table.php:102
+#: ../admin/tables/faqs-table.php:103
+msgid "Filtering by category <a class=\"button\" href=\"%s\" title=\"remove filter\">Remove filter</a>"
+msgstr "Filtrar por categoria <a class=\"button\" href=\"%s\" title=\"remover filtro\">Remover filtro</a>"
+
+#: ../admin/tables/admin-tickets-table.php:113
+msgid "Filtering by status <a class=\"button\" href=\"%s\" title=\"remove filter\">Remove filter</a>"
+msgstr "Filtrar por estado <a class=\"button\" href=\"%s\" title=\"remover filtro\">Remover Filtro</a>"
+
+#: ../admin/tables/faq-categories-table.php:15
+#: ../admin/tables/ticket-categories-table.php:14
+msgid "Categories"
+msgstr "Categorias"
+
+#: ../admin/tables/faq-categories-table.php:34
+#: ../admin/tables/ticket-categories-table.php:33
+msgid "ID"
+msgstr "ID"
+
+#: ../admin/tables/faq-categories-table.php:35
+#: ../admin/tables/ticket-categories-table.php:34
+msgid "Name"
+msgstr "Nome"
+
+#: ../admin/tables/faq-categories-table.php:36
+msgid "FAQs"
+msgstr "FAQs"
+
+#: ../admin/tables/faq-categories-table.php:81
+#: ../admin/tables/faqs-table.php:63
+#: ../admin/tables/ticket-categories-table.php:81
+msgid "<a href=\"%s\">Edit</a>"
+msgstr "<a href=\"%s\">Editar</a>"
+
+#: ../admin/tables/faq-categories-table.php:85
+#: ../admin/tables/ticket-categories-table.php:85
+msgid "[Default category]"
+msgstr "[Categoria Pré-definida]"
+
+#: ../admin/tables/faq-categories-table.php:89
+#: ../admin/tables/faqs-table.php:64
+#: ../admin/tables/ticket-categories-table.php:89
+msgid "<a href=\"%s\">Delete</a>"
+msgstr "<a href=\"%s\">Apagar</a>"
+
+#: ../admin/tables/faq-categories-table.php:90
+#: ../admin/tables/ticket-categories-table.php:90
+msgid "<a href=\"%s\">Set as default</a>"
+msgstr "<a href=\"%s\">Definir como padrão</a>"
+
+#: ../admin/tables/faq-categories-table.php:111
+#: ../admin/tables/ticket-categories-table.php:119
+msgid "Delete"
+msgstr "Apagar"
+
+#: ../admin/tables/faqs-table.php:88
+msgid "Question ID"
+msgstr "Pergunta ID"
+
+#: ../admin/tables/faqs-table.php:89
+msgid "Question"
+msgstr "Pergunta"
+
+#: ../admin/tables/faqs-table.php:91
+msgid "Think is helpful"
+msgstr "Acho que é útil"
+
+#: ../admin/tables/faqs-table.php:92
+msgid "Think is not helpful"
+msgstr "Acho que não é útil"
+
+#: ../admin/tables/ticket-history-table.php:39
+msgid "Author"
+msgstr "Autor"
+
+#: ../admin/tables/ticket-history-table.php:40
+msgid "Ticket Message/Reply"
+msgstr "Ticket Mensagem/Responder"
+
+#: ../admin/tables/ticket-history-table.php:41
+msgid "Date/Time"
+msgstr "Data/Hora"
+
+#: ../admin/tables/ticket-history-table.php:59
+msgid "User"
+msgstr "Utilizador"
+
+#: ../admin/tables/ticket-history-table.php:75
+msgid "Create a FAQ from this response"
+msgstr "Criar um FAQ a partir desta resposta"
+
+#: ../admin/tables/ticket-history-table.php:76
+msgid "Create a FAQ"
+msgstr "Criar FAQ"
+
+#: ../admin/tables/ticket-history-table.php:96
+msgid "Download file"
+msgstr "Download do Ficheiro"
+
+#: ../admin/tables/tickets-table.php:105
+#: ../admin/tables/tickets-table.php:113
+msgid "<a href=\"%s\">Delete ticket</a>"
+msgstr "<a href=\"%s\">Apagar ticket</a>"
+
+#: ../admin/tables/tickets-table.php:106
+#: ../admin/tables/tickets-table.php:114
+msgid "<a href=\"%s\">Open ticket</a>"
+msgstr "<a href=\"%s\">Abrir ticket</a>"
+
+#: ../admin/tables/tickets-table.php:117
+msgid "<a href=\"%s\">Close ticket</a>"
+msgstr "<a href=\"%s\">Fechar ticket</a>"
+
+#: ../admin/tables/tickets-table.php:161
+msgid "Submitted From"
+msgstr "Enviado de"
+
+#: ../admin/tables/tickets-table.php:205
+msgid "Close"
+msgstr "Fechar"
+
+#: ../inc/mail-contents.php:43
+msgid "Ticket submitted: "
+msgstr "Ticket enviado:"
+
+#: ../inc/mail-contents.php:92
+msgid "New Support Ticket: "
+msgstr "Novo Ticket de Suporte"
+
+#: ../inc/mail-contents.php:140
+#: ../inc/mail-contents.php:182
+msgid "Ticket response notification: "
+msgstr "Adicionado nova resposta ao ticket: "
+
+#: ../inc/mail-contents.php:217
+msgid "Ticket closed notification: "
+msgstr "O seguinte ticket foi fechado:"
+
+#: ../inc/mail-contents.php:223
+msgid "***  DO NOT WRITE BELLOW THIS LINE  ***"
+msgstr "***  NÃO ESCREVA ABAIXO DESTA LINHA  ***"
+
+#: ../inc/mail-contents.php:225
+msgid "***  DO NOT REPLY TO THIS EMAIL  ***"
+msgstr "***  NÃO RESPONDA A ESTE EMAIL  ***"
+
+#: ../inc/mail-contents.php:231
+msgid ""
+"\n"
+"SUPPORT_FETCH_IMAP\n"
+"\n"
+"Subject: SUPPORT_SUBJECT\n"
+"Status: SUPPORT_STATUS\n"
+"Priority: SUPPORT_PRIORITY\n"
+"\n"
+"Your ticket has been submitted\n"
+"\n"
+"Visit: SUPPORT_LINK\n"
+"\n"
+"to reply or view the new ticket.\n"
+"\n"
+"Thanks,\n"
+"SUPPORT_SITE_NAME"
+msgstr ""
+"\n"
+"SUPPORT_FETCH_IMAP\n"
+"\n"
+"Assunto: SUPPORT_SUBJECT\n"
+"Estado: SUPPORT_STATUS\n"
+"Prioridade: SUPPORT_PRIORITY\n"
+"\n"
+"O seu Ticket foi enviado\n"
+"\n"
+"Visite: SUPPORT_LINK\n"
+"\n"
+"para responder ou ver o novo ticket.\n"
+"\n"
+"Obrigado,\n"
+"SUPPORT_SITE_NAME"
+
+#: ../inc/mail-contents.php:258
+msgid ""
+"\n"
+"SUPPORT_FETCH_IMAP\n"
+"\n"
+"Subject: SUPPORT_SUBJECT\n"
+"Status: SUPPORT_STATUS\n"
+"Priority: SUPPORT_PRIORITY\n"
+"\n"
+"A new ticket has been submitted\n"
+"\n"
+"Visit: SUPPORT_LINK\n"
+"\n"
+"to reply or view the new ticket.\n"
+"\n"
+"==============================================================\n"
+"\tBegin Ticket Message\n"
+"==============================================================\n"
+"\n"
+"SUPPORT_USER_NAME said:\n"
+"\n"
+"SUPPORT_MESSAGE\n"
+"\n"
+"==============================================================\n"
+"      End Ticket Message\n"
+"=============================================================="
+msgstr ""
+"\n"
+"SUPPORT_FETCH_IMAP\n"
+"\n"
+"Assunto: SUPPORT_SUBJECT\n"
+"Estado: SUPPORT_STATUS\n"
+"Prioridade: SUPPORT_PRIORITY\n"
+"\n"
+"Foi enviado um novo ticket\n"
+"\n"
+"Visite: SUPPORT_LINK\n"
+"\n"
+"para responder ou ver o novo ticket.\n"
+"\n"
+"==============================================================\n"
+"\tInício da Mensagem do Ticket\n"
+"==============================================================\n"
+"\n"
+"SUPPORT_USER_NAME disse:\n"
+"\n"
+"SUPPORT_MESSAGE\n"
+"\n"
+"==============================================================\n"
+"      Fim da Mensagem do Ticket\n"
+"=============================================================="
+
+#: ../inc/mail-contents.php:296
+msgid ""
+"\n"
+"\n"
+"***  DO NOT REPLY TO THIS EMAIL  ***\n"
+"\n"
+"Subject: SUPPORT_SUBJECT\n"
+"Status: SUPPORT_STATUS\n"
+"Priority: SUPPORT_PRIORITY\n"
+"\n"
+"Please log into your site and visit the support page to reply to this ticket, if needed.\n"
+"\n"
+"Visit: SUPPORT_LINK\n"
+"\n"
+"==============================================================\n"
+"     Begin Ticket Message\n"
+"==============================================================\n"
+"\n"
+"SUPPORT_RESPONSE_USER_NAME said:\n"
+"\n"
+"SUPPORT_MESSAGE\n"
+"\n"
+"==============================================================\n"
+"      End Ticket Message\n"
+"==============================================================\n"
+"\n"
+"Thanks,\n"
+"SUPPORT_SITE_NAME"
+msgstr ""
+"\n"
+"\n"
+"***  NÃO RESPONDA A ESTE EMAIL  ***\n"
+"\n"
+"Assunto: SUPPORT_SUBJECT\n"
+"Estado: SUPPORT_STATUS\n"
+"Prioridade: SUPPORT_PRIORITY\n"
+"\n"
+"Faça login em seu site e visite a página de suporte para responder a este ticket, se necessário.\n"
+"\n"
+"Visite: SUPPORT_LINK\n"
+"\n"
+"==============================================================\n"
+"     Início da Mensagem do Ticket\n"
+"==============================================================\n"
+"\n"
+"SUPPORT_RESPONSE_USER_NAME disse:\n"
+"\n"
+"SUPPORT_MESSAGE\n"
+"\n"
+"==============================================================\n"
+"      Fim da Mensagem do Ticket\n"
+"==============================================================\n"
+"\n"
+"Obrigado,\n"
+"SUPPORT_SITE_NAME"
+
+#: ../inc/mail-contents.php:337
+msgid ""
+"\n"
+"\n"
+"***  DO NOT REPLY TO THIS EMAIL  ***\n"
+"\n"
+"Subject: SUPPORT_SUBJECT\n"
+"Status: SUPPORT_STATUS\n"
+"Priority: SUPPORT_PRIORITY\n"
+"\n"
+"Please log into network admin and visit the support page to reply to this ticket, if needed.\n"
+"\n"
+"Visit: SUPPORT_LINK\n"
+"\n"
+"==============================================================\n"
+"     Begin Ticket Message\n"
+"==============================================================\n"
+"\n"
+"SUPPORT_RESPONSE_USER_NAME said:\n"
+"\n"
+"SUPPORT_MESSAGE\n"
+"\n"
+"==============================================================\n"
+"      End Ticket Message\n"
+"==============================================================\n"
+"\n"
+"Thanks"
+msgstr ""
+"\n"
+"\n"
+"***  NÂO RESPONDA A ESTE EMAIL  ***\n"
+"\n"
+"Assunto: SUPPORT_SUBJECT\n"
+"Estado: SUPPORT_STATUS\n"
+"Prioridade: SUPPORT_PRIORITY\n"
+"\n"
+"Faça login na área de administração da rede e visite a página de suporte para responder a este ticket, se necessário.\n"
+"\n"
+"Visite: SUPPORT_LINK\n"
+"\n"
+"==============================================================\n"
+"     Início da Mensagem do Ticket\n"
+"==============================================================\n"
+"\n"
+"SUPPORT_RESPONSE_USER_NAME said:\n"
+"\n"
+"SUPPORT_MESSAGE\n"
+"\n"
+"==============================================================\n"
+"      Fim da Mensagem do Ticket\n"
+"==============================================================\n"
+"\n"
+"Obrigado"
+
+#: ../inc/mail-contents.php:377
+msgid ""
+"\n"
+"\n"
+"SUPPORT_FETCH_IMAP\n"
+"\n"
+"Subject: SUPPORT_SUBJECT\n"
+"Priority: SUPPORT_PRIORITY\n"
+"\n"
+"The ticket has been closed.\n"
+"\n"
+"Ticket URL:\n"
+"\tSUPPORT_TICKET_URL"
+msgstr ""
+"\n"
+"\n"
+"SUPPORT_FETCH_IMAP\n"
+"\n"
+"Assunto: SUPPORT_SUBJECT\n"
+"Prioridade: SUPPORT_PRIORITY\n"
+"\n"
+"Este ticket foi fechado.\n"
+"\n"
+"Ticket URL:\n"
+"\tSUPPORT_TICKET_URL"
+
+#: ../inc/support-menu.php:97
+msgid "You are not allowed to view this page."
+msgstr "Você não tem permissão para visualizar esta página."
+
+#: ../model/model.php:1244
+msgid "General questions"
+msgstr "Questões gerais"
+
+#: ../model/model.php:1275
+msgid "General"
+msgstr "Geral"
+

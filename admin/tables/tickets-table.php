@@ -122,7 +122,7 @@ class MU_Support_Tickets_Table extends WP_List_Table {
     }
 
     function column_updated( $item ) {
-        return get_date_from_gmt( $item->ticket_updated, get_option("date_format") ." ". get_option("time_format") ); 
+        return get_date_from_gmt( $item->ticket_updated, get_option( "date_format" ) . " " . get_option( "time_format" ) ); 
     }
 
 
@@ -285,14 +285,19 @@ class MU_Support_Tickets_Table extends WP_List_Table {
 
         $data = incsub_support_get_tickets( $args );
 
-        $total_items = incsub_support_get_tickets_count();
+        if ( ! $this->filter_category && $this->filter_status === false ) {
+            $total_items = incsub_support_get_tickets_count();
 
-        if ( 'archive' == $this->status )
-            $total_items = $total_items['closed'];
-        elseif ( 'active' == $this->status )
-            $total_items = $total_items['opened'];
-        else
-            $total_items = $total_items['all'];
+            if ( 'archive' == $this->status )
+                $total_items = $total_items['closed'];
+            elseif ( 'active' == $this->status )
+                $total_items = $total_items['opened'];
+            else
+                $total_items = $total_items['all'];
+        }
+        else {
+            $total_items = incsub_support_get_filtered_tickets_count( $this->filter_status, $this->filter_category );
+        }
 
         $this->items = $data;
 

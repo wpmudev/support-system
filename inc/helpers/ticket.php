@@ -79,3 +79,10 @@ function incsub_support_get_tickets_count() {
 	return $counts;
 
 }
+
+
+function incsub_support_get_filtered_tickets_count( $status, $category, $args = array() ) {
+	$model = incsub_support_get_ticket_model();
+
+	return $model->get_filtered_tickets_count( $status, $category, $args );
+}

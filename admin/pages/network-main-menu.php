@@ -28,20 +28,25 @@ if ( ! class_exists( 'MU_Support_Network_Main_Menu' ) ) {
 			$this->menu_title = __('Support', INCSUB_SUPPORT_LANG_DOMAIN); 
 			$this->capability = $capability;
 			$this->menu_slug = 'ticket-manager';
-
-			$model = incsub_support_get_ticket_model();
 			
 			parent::__construct( $is_network );
 
 			add_action( 'init', array( &$this, 'get_new_tickets' ) );
+			add_action( 'admin_init', array( &$this, 'set_filter_vars' ) );
 
 			// Status of the screen
-			$this->filter_category = isset( $_POST['filter_category'] ) ? absint( $_POST['filter_category'] ) : false;
-			$this->filter_status = (  isset( $_POST['filter_status'] ) && array_key_exists( $_POST['filter_status'], MU_Support_System::$ticket_status ) ) ? $_POST['filter_status'] : false;
+			$this->filter_category = isset( $_REQUEST['filter_category'] ) ? absint( $_REQUEST['filter_category'] ) : false;
+			$this->filter_status = ( isset( $_REQUEST['filter_status'] ) && array_key_exists( $_REQUEST['filter_status'], MU_Support_System::$ticket_status ) ) ? $_REQUEST['filter_status'] : false;
 
 			$this->view = 'all';
-			if ( isset( $_GET['view'] ) && $this->filter_category === false && $this->filter_status === false && in_array( $_GET['view'], array( 'all', 'opened', 'closed' ) ) )
-				$this->view = $_GET['view'];
+			if ( 
+				isset( $_REQUEST['view'] ) 
+				&& $this->filter_category === false 
+				&& $this->filter_status === false 
+				&& in_array( $_REQUEST['view'], array( 'all', 'opened', 'closed' ) ) 
+			) {
+				$this->view = $_REQUEST['view'];
+			}
 
 			
 
@@ -64,8 +69,6 @@ if ( ! class_exists( 'MU_Support_Network_Main_Menu' ) ) {
 		 */
 		public function render_content() {
 
-			$model = incsub_support_get_ticket_model();
-
 		    $tickets_table = new MU_Support_Tickets_Table( $this->view, $this->filter_status, $this->filter_category );
 		    $tickets_table->prepare_items();
 
@@ -87,6 +90,23 @@ if ( ! class_exists( 'MU_Support_Network_Main_Menu' ) ) {
 		public function get_new_tickets() {
 			$model = incsub_support_get_ticket_model();
 			$this->count_update = $model->get_unchecked_tickets();
+		}
+
+		public function set_filter_vars() {
+			if ( isset( $_POST['support-filter-submit'] ) ) {
+
+				$redirect = $this->get_permalink();
+
+				if ( $this->filter_status !== false )
+					$redirect = add_query_arg( 'filter_status', $this->filter_status, $redirect );
+
+				if ( $this->filter_category )
+					$redirect = add_query_arg( 'filter_category', $this->filter_category, $redirect );
+
+				wp_redirect( $redirect );
+			}
+			
+			//wp_die();
 		}
 
 	}
