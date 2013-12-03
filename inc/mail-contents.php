@@ -227,7 +227,7 @@ function incsub_support_send_user_closed_mail( $ticket_id ) {
 
 function incsub_support_get_support_fetch_imap_message() {
 	if ( get_site_option( 'incsub_support_fetch_imap', 'disabled' ) == 'enabled' )
-		$support_fetch_imap = __( "***  DO NOT WRITE BELLOW THIS LINE  ***", INCSUB_SUPPORT_LANG_DOMAIN );
+		$support_fetch_imap = __( "***  DO NOT WRITE BELOW THIS LINE  ***", INCSUB_SUPPORT_LANG_DOMAIN );
 	else
 		$support_fetch_imap = __("***  DO NOT REPLY TO THIS EMAIL  ***", INCSUB_SUPPORT_LANG_DOMAIN );
 
