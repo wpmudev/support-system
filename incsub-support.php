@@ -6,7 +6,7 @@ Description: Support System for WordPress.
 Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub), Ignacio (Incsub)
 WDP ID: 36
 Network: true
-Version: 2.0beta
+Version: 1.9.9.1
 Author URI: http://premium.wpmudev.org
 Text Domain: incsub-support
 */
@@ -28,7 +28,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '2.0beta.0' );
+define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '1.9.9' );
 
 if ( ! defined( 'INCSUB_SUPPORT_LANG_DOMAIN' ) )
 	define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
@@ -41,7 +41,6 @@ define( 'INCSUB_SUPPORT_ASSETS_URL', INCSUB_SUPPORT_PLUGIN_URL . 'assets/' );
 if ( ! class_exists( 'MU_Support_System') ) {
 
 	class MU_Support_System {
-
 
 		// Current version of the plugin
 		public static $version = INCSUB_SUPPORT_PLUGIN_VERSION;
@@ -88,14 +87,14 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			incsub_support_group_settings_upgrade();
 
 			// Initializes plugin
-			add_action( 'init', array( &$this, 'init_plugin' ), 10 );
+			add_action( 'init', array( &$this, 'init_plugin' ) );
 
 			// Activation/Upgrades
 			register_activation_hook( __FILE__, array( &$this, 'activate' ) );
 			register_deactivation_hook( __FILE__, array( &$this, 'deactivate' ) );
 
 			// Is this an upgrade?
-			add_action( 'init', 'incsub_support_check_for_upgrades', 15 );
+			add_action( 'init', 'incsub_support_check_for_upgrades' );
 
 			add_action( 'plugins_loaded', array( &$this, 'load_text_domain' ) );
 
@@ -185,17 +184,12 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		 */
 		private function includes() {
 			// Model
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/model/model-loader.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/model/ticket-model.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/model/faq-model.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/model/model.php');
 
 			// Classes
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/ticket.php');
 
-			// Helpers
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/model.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/ticket.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/ticket-category.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers.php');
 
 			// Admin
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/support-menu.php');
@@ -225,10 +219,8 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		 * @since 1.8
 		 */
 		public function activate() {
-			$faq_model = incsub_support_get_faq_model();
-			$faq_model->create_tables();
-			$ticket_model = incsub_support_get_ticket_model();
-			$ticket_model->create_tables();
+			$model = MU_Support_System_Model::get_instance();
+			$model->create_tables();
 			update_site_option( 'incsub_support_version', self::$version );
 			update_site_option( 'incsub_support_settings', self::$settings );			
 		}
@@ -249,9 +241,6 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		 * Add actions for admin menus
 		 */
 		public function admin_menus() {
-
-			$model = incsub_support_get_ticket_model();
-			$model = incsub_support_get_faq_model();
 
 			if ( is_multisite() ) {
 				if ( is_network_admin() ) {
@@ -399,13 +388,13 @@ if ( ! class_exists( 'MU_Support_System') ) {
 				$admins = get_users( 
 					array( 
 						'role' => 'administrator',
-						'fields' => array( 'ID', 'user_nicename' )
+						'fields' => array( 'ID', 'user_login' )
 					)
 				);
 
 				$super_admins = array();
 				foreach ( $admins as $admin ) {
-					$super_admins[ $admin->ID ] = $admin->user_nicename;
+					$super_admins[ $admin->ID ] = $admin->user_login;
 				}
 
 			}

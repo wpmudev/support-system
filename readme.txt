@@ -3,7 +3,7 @@ Contributors: mohanjith,igmoweb
 Tags: support, ticket, faq
 Requires at least: 3.4
 Stable tag: trunk
-Tested up to: 3.6
+Tested up to: 3.8
 
 Support System for WordPress multi site. Now also for single sites.
 
@@ -12,6 +12,9 @@ Support System for WordPress multi site. Now also for single sites.
 Support System for WordPress multi site.. Now also for single sites.
 
 == ChangeLog ==
+
+= 1.9.9.1 =
+* Fixed issue while assigning an administrator to a ticket in single sites.
 
 = 1.9.9 =
 * Stripping slashes from FAQ questions.

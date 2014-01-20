@@ -1,5 +1,32 @@
 <?php
 
+function incsub_support_get_ticket( $ticket ) {
+
+	if ( is_a( $ticket, 'Incsub_Support_Ticket' ) ) {
+		$_ticket = $ticket;
+	} 
+	elseif ( is_object( $ticket ) ) {
+		$_ticket = new Incsub_Support_Ticket( $ticket );
+	} else {
+		$_ticket = Incsub_Support_Ticket::get_instance( $ticket );
+	}
+
+	if ( ! $_ticket )
+		return null;
+
+	return $_ticket;
+}
+
+function incsub_support_get_tickets( $ticket_ids ) {
+	$tickets = array();
+	foreach ( $ticket_ids as $ticket_id ) {
+		$tickets[] = incsub_support_get_ticket( absint( $ticket_id ) );
+	}
+
+	return $tickets;
+}
+
+
 class Incsub_Support_Ticket {
 
 	public $ticket_id;
@@ -42,7 +69,7 @@ class Incsub_Support_Ticket {
 		if ( ! $ticket_id )
 			return false;
 		
-		$model = incsub_support_get_ticket_model();
+		$model = incsub_support_get_model();
 
 		$_ticket = $model->get_ticket( $ticket_id );
 
@@ -70,13 +97,13 @@ class Incsub_Support_Ticket {
 	}
 
 	public function get_category_name() {
-		$model = incsub_support_get_ticket_model();
+		$model = incsub_support_get_model();
 
 		return $model->get_ticket_category_name_beta( $this->cat_id );
 	}
 
 	public function delete() {
-		$model = incsub_support_get_ticket_model();
+		$model = incsub_support_get_model();
 
 		if ( $model->is_ticket_archived( absint( $this->ticket_id ) ) )
             $model->delete_ticket( $this->ticket_id );
@@ -84,14 +111,14 @@ class Incsub_Support_Ticket {
     }
 
     public function open() {
-    	$model = incsub_support_get_ticket_model();
+    	$model = incsub_support_get_model();
 
     	if ( $model->is_ticket_archived( absint( $this->ticket_id ) ) )
             $model->open_ticket( $this->ticket_id );
     }
 
     public function close() {
-    	$model = incsub_support_get_ticket_model();
+    	$model = incsub_support_get_model();
 
     	if ( ! $model->is_ticket_archived( absint( $this->ticket_id ) ) )
             $model->close_ticket( $this->ticket_id );

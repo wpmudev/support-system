@@ -72,7 +72,7 @@ if ( ! class_exists( 'MU_Support_Network_Ticket_Categories' ) ) {
 			
 
 			if ( isset( $_GET['action'] ) && 'edit' == $_GET['action'] && isset( $_GET['category'] ) && $cat_id = absint( $_GET['category'] ) ) {
-				$model = incsub_support_get_ticket_model();
+				$model = MU_Support_System_Model::get_instance();
 				$cat_name = $model->get_ticket_category( $cat_id );
 
 				$user_id = $cat_name['user_id'];
@@ -156,7 +156,7 @@ if ( ! class_exists( 'MU_Support_Network_Ticket_Categories' ) ) {
 					wp_die( __( 'Security check error', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
 				if ( isset( $_POST['ticket_cat_name'] ) && ! empty( $_POST['ticket_cat_name'] ) && isset( $_POST['ticket_cat_id'] ) ) {
-					$model = incsub_support_get_ticket_model();
+					$model = MU_Support_System_Model::get_instance();
 					$user_id = 0;
 					if ( ! empty( $_POST['admin_user'] ) ) {
 						$user = get_user_by( 'login', $_POST['admin_user'] );			
@@ -199,7 +199,7 @@ if ( ! class_exists( 'MU_Support_Network_Ticket_Categories' ) ) {
 					$user_id = $user->ID;
 			}
 
-			$model = incsub_support_get_ticket_model();
+			$model = MU_Support_System_Model::get_instance();
 			$model->add_ticket_category( $category_name, $user_id );
 
 			return $category_name;

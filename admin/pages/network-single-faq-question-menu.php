@@ -81,7 +81,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_FAQ_Question_Menu' ) ) {
 
 			if ( 'edit' == $this->action ) {
 				// Editing a FAQ
-				$model = incsub_support_get_faq_model();
+				$model = MU_Support_System_Model::get_instance();
 				$faq_details = $model->get_faq_details( $faq_id );	
 				
 				if ( empty( $faq_details ) )
@@ -97,7 +97,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_FAQ_Question_Menu' ) ) {
 				);
 				if ( $this->ticket_id ) {
 					// Creating a new FAQ from a ticket message
-					$model = incsub_support_get_faq_model();
+					$model = MU_Support_System_Model::get_instance();
 					$ticket = $model->get_ticket_message_details( $this->ticket_id );
 					if ( $ticket ) {
 						$faq_details['question'] = trim( preg_replace( '/^Re:/i', '', $ticket['subject'], 1 ) );
@@ -133,7 +133,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_FAQ_Question_Menu' ) ) {
 		 */
 		private function the_faq_form( $current_faq ) {
 
-			$model = incsub_support_get_faq_model();
+			$model = MU_Support_System_Model::get_instance();
 			$categories = $model->get_faq_categories();
 
 			if ( $this->is_error() ) {
@@ -216,7 +216,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_FAQ_Question_Menu' ) ) {
 				$this->current_faq['cat_id'] = absint( $_POST['category'] );				
 
 				if ( ! $this->is_error() ) {
-					$model = incsub_support_get_faq_model();
+					$model = MU_Support_System_Model::get_instance();
 					if ( 'edit' == $this->action ) {
 						$model->update_faq_question(
 							$this->faq_id,

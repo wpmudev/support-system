@@ -47,7 +47,7 @@ if ( ! class_exists( 'MU_Support_Admin_FAQ_Menu' ) ) {
 				$faq_id = absint( $_POST['faq_id'] );
 				$vote = 'yes' == $_POST['vote'] ? true : false;
 
-				$model = incsub_support_get_faq_model();
+				$model = MU_Support_System_Model::get_instance();
 				$model->vote_faq_question( $faq_id, $vote );
 			}
 			die();
@@ -68,7 +68,7 @@ if ( ! class_exists( 'MU_Support_Admin_FAQ_Menu' ) ) {
 		 */
 		public function render_content() {
 
-			$model = incsub_support_get_faq_model();
+			$model = MU_Support_System_Model::get_instance();
 			$faq_categories = $model->get_faq_categories();
 
 			$is_search = false;

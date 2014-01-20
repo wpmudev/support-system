@@ -101,7 +101,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 		 */
 		private function get_current_ticket_details( $ticket_id ) {
 
-			$model = incsub_support_get_ticket_model();
+			$model = MU_Support_System_Model::get_instance();
 			$ticket_details = $model->get_ticket_details( $ticket_id );	
 			if ( empty( $ticket_details ) )
 				wp_die( __( "The ticket you're trying to find does not exist.", INCSUB_SUPPORT_LANG_DOMAIN ) );
@@ -127,7 +127,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 				$this->current_ticket['message'] = '';
 			}
 
-			$model = incsub_support_get_ticket_model();
+			$model = MU_Support_System_Model::get_instance();
 			if ( $model->is_ticket_archived( $this->current_ticket['ticket_id'] ) ) {
 				?>
 				<div class="error"><p><?php _e( 'This ticket has been closed', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p></div>
@@ -156,7 +156,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 		 * @param Array $current_ticket Current ticket Array
 		 */
 		private function the_ticket_details( $current_ticket ) {
-			$model = incsub_support_get_ticket_model();
+			$model = MU_Support_System_Model::get_instance();
 			
 			?>
 			<form method="post" action="">
@@ -273,7 +273,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 		 */
 		function the_ticket_form( $current_ticket ) {
 
-			$model = incsub_support_get_ticket_model();
+			$model = MU_Support_System_Model::get_instance();
 			$categories = $model->get_ticket_categories();
 			$closed = $model->is_ticket_archived( $this->current_ticket['ticket_id'] );
 
@@ -413,7 +413,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 		public function check_ticket_as_view() {
 			if ( is_super_admin() && isset( $_GET['page'] ) && $this->menu_slug == $_GET['page'] && isset( $_GET['tid'] ) ) {
 				$ticket_id = absint( $_GET['tid'] );
-				$model = incsub_support_get_ticket_model();
+				$model = MU_Support_System_Model::get_instance();
 				$model->check_ticket_as_viewed( $ticket_id );
 			}
 		}
@@ -482,7 +482,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 				}
 
 				if ( ! $this->is_error() ) {
-					$model = incsub_support_get_ticket_model();
+					$model = MU_Support_System_Model::get_instance();
 
 					$response_id = $model->add_ticket_response( $this->ticket_id, $this->current_ticket['title'], $this->current_ticket['message'], $this->current_ticket['attachments'] );
 
@@ -568,7 +568,7 @@ if ( ! class_exists( 'MU_Support_Network_Single_Ticket_Menu' ) ) {
 				$this->ticket_details = $this->get_current_ticket_details( $this->ticket_id );
 				$this->current_ticket = $this->ticket_details[0];
 
-				$model = incsub_support_get_ticket_model();
+				$model = MU_Support_System_Model::get_instance();
 				$possible_users = array_merge( MU_Support_System::get_super_admins(), array( 'empty', '' ) );
 				if ( isset( $_POST['super-admins'] ) && in_array( $_POST['super-admins'], $possible_users ) ) {
 					$user = get_user_by( 'login', $_POST['super-admins'] );

@@ -61,7 +61,7 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 					$this->render_errors();
 			}
 
-			$model = incsub_support_get_ticket_model();
+			$model = MU_Support_System_Model::get_instance();
 			$categories = $model->get_ticket_categories();
 			?>
 				<form method="post" action="" enctype="multipart/form-data">
@@ -151,7 +151,7 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 					$this->add_error( 'message', __( 'Message must not be empty', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
 				$this->current_ticket['admin_id'] = 0;
-				$model = incsub_support_get_ticket_model();
+				$model = MU_Support_System_Model::get_instance();
 				$ticket_category = $model->get_ticket_category( $this->current_ticket['cat_id'] );
 				$admin_id = 0;
 				if ( ! empty( $ticket_category['user_id'] ) && $user = get_user_by( 'id', $ticket_category['user_id'] ) )
@@ -170,7 +170,7 @@ if ( ! class_exists( 'MU_Support_Admin_New_Ticket' ) ) {
 
 				if ( ! $this->is_error() ) {
 
-					$model = incsub_support_get_ticket_model();
+					$model = MU_Support_System_Model::get_instance();
 					$ticket_id = $model->add_new_ticket( $this->current_ticket );
 
 					if ( ! $ticket_id ) {

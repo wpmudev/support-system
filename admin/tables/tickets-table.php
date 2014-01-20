@@ -10,12 +10,15 @@ class MU_Support_Tickets_Table extends WP_List_Table {
     // Status variables for filtering purposes
     private $status = false;
     private $category = false;
+    private $ticket_status = false;
 
-	function __construct( $view, $filter_status, $filter_category ){
-
+	function __construct( $view ){
         $this->status = $view;
-        $this->filter_status = $filter_status;
-        $this->filter_category = absint( $filter_category );
+        if ( isset( $_GET['category'] ) && absint( $_GET['category'] ) )
+            $this->category = absint( $_GET['category'] );
+
+        if ( isset( $_GET['ticket_status'] ) )
+            $this->ticket_status = absint( $_GET['ticket_status'] );
 
         //Set parent defaults
         parent::__construct( array(
@@ -46,11 +49,24 @@ class MU_Support_Tickets_Table extends WP_List_Table {
     }
 
     function column_status( $item ) {
-        return incsub_support_get_ticket_status_name( (int)$item->ticket_status );
+        $link = add_query_arg( 'ticket_status', absint( $item->ticket_status ) );
+        $link = remove_query_arg( 'view', $link );
+        return '<a href="' . $link . '">' . incsub_support_get_ticket_status_name( (int)$item->ticket_status ) . '</a>';
     }
 
     function column_category( $item ) {
-        return $item->get_category_name();
+        
+        $link = MU_Support_System::$network_main_menu->get_permalink();
+        $link = add_query_arg( 'view', $this->status, $link );
+        $link = add_query_arg( 'category', $item->cat_id, $link );
+
+        ob_start();
+            ?>
+                <a href="<?php echo $link; ?>">
+                    <?php echo $item->get_category_name(); ?>
+                </a>
+            <?php
+        return ob_get_clean();
     }
 
     function column_subject( $item ) {
@@ -122,7 +138,7 @@ class MU_Support_Tickets_Table extends WP_List_Table {
     }
 
     function column_updated( $item ) {
-        return get_date_from_gmt( $item->ticket_updated, get_option( "date_format" ) . " " . get_option( "time_format" ) ); 
+        return get_date_from_gmt( $item->ticket_updated, get_option("date_format") ." ". get_option("time_format") ); 
     }
 
 
@@ -147,19 +163,28 @@ class MU_Support_Tickets_Table extends WP_List_Table {
 
     function extra_tablenav( $which ) {
         if ( 'top' == $which) {
-            ?>
-                <div class="alignleft actions">
-                    <select name="filter_category">
-                        <?php $selected = $this->filter_category !== false ? $this->filter_category : false; ?>
-                        <?php incsub_support_ticket_categories_dropdown( $selected ); ?>
-                    </select>
-                    <select name="filter_status">
-                        <?php $selected = $this->filter_status !== false ? $this->filter_status : false; ?>
-                        <?php incsub_support_ticket_type_dropdown( $selected ); ?>
-                    </select>
-                    <input type="submit" name="support-filter-submit" id="support-filter-submit" class="button" value="<?php _e( 'Filter', INCSUB_SUPPORT_LANG_DOMAIN ); ?>">
-                </div>
-            <?php
+            if ( $this->category ) {
+                ?>
+                    <div class="alignleft actions">
+                        <?php 
+                            echo sprintf( __( 'Filtering by category <a class="button" href="%s" title="remove filter">Remove filter</a>', INCSUB_SUPPORT_LANG_DOMAIN ),
+                                        MU_Support_System::$network_main_menu->get_permalink()
+                                ); 
+                        ?>
+                    </div>
+                <?php
+            }
+            if ( is_integer( $this->ticket_status ) ) {
+                ?>
+                    <div class="alignleft actions">
+                        <?php 
+                            echo sprintf( __( 'Filtering by status <a class="button" href="%s" title="remove filter">Remove filter</a>', INCSUB_SUPPORT_LANG_DOMAIN ),
+                                        MU_Support_System::$network_main_menu->get_permalink()
+                                ); 
+                        ?>
+                    </div>
+                <?php
+            }
                 
         }
         
@@ -182,11 +207,10 @@ class MU_Support_Tickets_Table extends WP_List_Table {
         
     }
 
-
     function process_bulk_action() {
         
         //Detect when a bulk action is being triggered...
-        $model = incsub_support_get_ticket_model();
+        $model = MU_Support_System_Model::get_instance();
         $link = MU_Support_System::$network_main_menu->get_permalink();
 
         if( 'delete' === $this->current_action() ) {
@@ -269,37 +293,22 @@ class MU_Support_Tickets_Table extends WP_List_Table {
 
         $current_page = $this->get_pagenum();
 
-        $args = array(
-            'per_page'      => $per_page,
-            'page'          => $current_page
-        );
+        $model = incsub_support_get_model();
 
-        if ( $this->filter_category )
-            $args['category_in'] = $this->filter_category;
+        $args = array();
 
-        if ( $this->filter_status !== false )
-            $args['status'] = absint( $this->filter_status );
-        else
-            $args['status'] = $this->status;
+        // Are we filtering by category?
+        if ( $this->category )
+            $args['category'] = $this->category;
 
+        if ( is_integer( $this->ticket_status ) )
+            $args['ticket_status'] = $this->ticket_status;
 
-        $data = incsub_support_get_tickets( $args );
+        $args['type'] = $this->status;
+        $data = $model->get_tickets_beta( ( $current_page - 1 ) * $per_page, $per_page, $args );
 
-        if ( ! $this->filter_category && $this->filter_status === false ) {
-            $total_items = incsub_support_get_tickets_count();
-
-            if ( 'archive' == $this->status )
-                $total_items = $total_items['closed'];
-            elseif ( 'active' == $this->status )
-                $total_items = $total_items['opened'];
-            else
-                $total_items = $total_items['all'];
-        }
-        else {
-            $total_items = incsub_support_get_filtered_tickets_count( $this->filter_status, $this->filter_category );
-        }
-
-        $this->items = $data;
+        $total_items = $data['total'];
+        $this->items = $data['tickets'];
 
         $this->set_pagination_args( array(
             'total_items' => $total_items,                

@@ -125,7 +125,7 @@ class MU_Support_Ticket_Categories_Table extends WP_List_Table {
 
     function prepare_items() {
 
-        $model = incsub_support_get_ticket_model();
+        $model = MU_Support_System_Model::get_instance();
 
         if( 'delete' === $this->current_action() ) {
 
