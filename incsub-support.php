@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Support System
-Plugin URI: http://premium.wpmudev.org/project/support-system
-Description: Support System for WordPress.
-Author: S H Mohanjith (Incsub), Luke Poland (Incsub), Andrew Billits (Incsub), Ignacio (Incsub)
+Plugin URI: http://premium.wpmudev.org/project/support-system/
+Description: Set up an awesome support ticket system on any WordPress site, complete with FAQ.
+Author: WPMU DEV
 WDP ID: 36
 Network: true
 Version: 1.9.9.1
@@ -12,7 +12,9 @@ Text Domain: incsub-support
 */
 
 /*
-Copyright 2007-2011 Incsub (http://incsub.com)
+Copyright 2007-2014 Incsub (http://incsub.com)
+Author - Ignacio
+Contributors - S H Mohanjith, Luke Poland, Andrew Billits
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License (Version 2 - GPLv2) as published by
