@@ -13,6 +13,9 @@ Support System for WordPress multi site.. Now also for single sites.
 
 == ChangeLog ==
 
+= 1.9.9.2 =
+* Fixed date translations.
+
 = 1.9.9.1 =
 * Fixed issue while assigning an administrator to a ticket in single sites.
 

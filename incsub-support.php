@@ -6,7 +6,7 @@ Description: Set up an awesome support ticket system on any WordPress site, comp
 Author: WPMU DEV
 WDP ID: 36
 Network: true
-Version: 1.9.9.1
+Version: 1.9.9.2
 Author URI: http://premium.wpmudev.org
 Text Domain: incsub-support
 */
