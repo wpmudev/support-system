@@ -138,7 +138,7 @@ class MU_Support_Tickets_Table extends WP_List_Table {
     }
 
     function column_updated( $item ) {
-        return get_date_from_gmt( $item->ticket_updated, get_option("date_format") ." ". get_option("time_format") ); 
+        return incsub_support_get_translated_date( $item->ticket_updated ); 
     }
 
 

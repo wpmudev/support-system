@@ -80,7 +80,7 @@ class MU_Support_Ticket_History_Table extends WP_List_Table {
     }
 
     function column_date( $item ) {
-        return get_date_from_gmt( $item['message_date'], get_option("date_format") ." ". get_option("time_format") ); 
+        return incsub_support_get_translated_date( $item['message_date'] ); 
     }
 
     function column_message( $item ) {
