@@ -1,0 +1,5 @@
+<ul class="subsubsub">
+	<li class="all"><a href="<?php echo add_query_arg( 'status', 'all' ); ?>" <?php echo 'all' == $status ? 'class="current"' : ''; ?> ><?php echo __( 'All', INCSUB_SUPPORT_LANG_DOMAIN ); ?> <span class="count">(<?php echo $all_tickets_count; ?>)</span></a> |</li>
+	<li class="active"><a href="<?php echo add_query_arg( 'status', 'active' ); ?>" <?php echo 'active' == $status ? 'class="current"' : ''; ?> ><?php echo __( 'Opened', INCSUB_SUPPORT_LANG_DOMAIN ); ?> <span class="count">(<?php echo $active_tickets_count; ?>)</span></a> |</li>
+	<li class="archived"><a href="<?php echo add_query_arg( 'status', 'archive' ); ?>" <?php echo 'archive' == $status ? 'class="current"' : ''; ?>><?php echo __( 'Closed', INCSUB_SUPPORT_LANG_DOMAIN ); ?> <span class="count">(<?php echo $archived_tickets_count; ?>)</span></a></li>
+</ul>

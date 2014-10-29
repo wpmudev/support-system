@@ -72,6 +72,17 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		public static $admin_new_ticket_menu;
 		public static $admin_single_ticket_menu;
 		public static $admin_faq_menu;
+
+		public $admin;
+
+		private static $instance = null;
+
+		public function get_instance() {
+			if ( ! self::$instance )
+				self::$instance = new self();
+			
+			return self::$instance;
+		}
 		
 
 		/**
@@ -109,6 +120,12 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 
 		public function init_plugin() {
+
+			$this->model = incsub_support_get_model();
+
+			if ( is_admin() )
+				$this->admin = new Incsub_Support_Admin();
+
 			// Setting properties
 			self::$ticket_status = array(
 				0	=>	__( 'New', INCSUB_SUPPORT_LANG_DOMAIN ),
@@ -188,10 +205,18 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			// Model
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/model/model.php');
 
+			if ( is_admin() ) {
+				require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/admin/class-incsub-support-admin.php' );
+			}
+
 			// Classes
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/ticket.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/ticket-category.php');
 
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/general.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/ticket.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/ticket-category.php');
 
 			// Admin
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/support-menu.php');
@@ -463,7 +488,10 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 }
 
-$mu_support_system = new MU_Support_System();
+function incsub_support() {
+	return MU_Support_System::get_instance();	
+}
+$mu_support_system = incsub_support();
 
 
 

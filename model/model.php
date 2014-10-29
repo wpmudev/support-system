@@ -16,11 +16,11 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		/**
 		 * Tables
 		 */
-		private $tickets_messages_table;
-		private $faq_table;
-		private $faq_cats_table;
-		private $tickets_table;
-		private $tickets_cats_table;
+		public $tickets_messages_table;
+		public $faq_table;
+		public $faq_cats_table;
+		public $tickets_table;
+		public $tickets_cats_table;
 
 		/**
 		 * Database charset and collate
@@ -363,22 +363,6 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			);
 		}
 
-		public function get_ticket( $ticket_id ) {
-			global $wpdb, $current_site;
-
-			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
-
-			return $wpdb->get_row( 
-				$wpdb->prepare( 
-					"SELECT * FROM $this->tickets_table
-					WHERE site_id = %d
-					AND ticket_id = %d
-					LIMIT 1",
-					$current_site_id,
-					$ticket_id
-				)
-			);
-		}
 
 
 		/**

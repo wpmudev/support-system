@@ -1,31 +1,5 @@
 <?php
 
-function incsub_support_get_ticket( $ticket ) {
-
-	if ( is_a( $ticket, 'Incsub_Support_Ticket' ) ) {
-		$_ticket = $ticket;
-	} 
-	elseif ( is_object( $ticket ) ) {
-		$_ticket = new Incsub_Support_Ticket( $ticket );
-	} else {
-		$_ticket = Incsub_Support_Ticket::get_instance( $ticket );
-	}
-
-	if ( ! $_ticket )
-		return null;
-
-	return $_ticket;
-}
-
-function incsub_support_get_tickets( $ticket_ids ) {
-	$tickets = array();
-	foreach ( $ticket_ids as $ticket_id ) {
-		$tickets[] = incsub_support_get_ticket( absint( $ticket_id ) );
-	}
-
-	return $tickets;
-}
-
 
 class Incsub_Support_Ticket {
 
@@ -59,19 +33,35 @@ class Incsub_Support_Ticket {
 
 	public $view_by_superadmin = 0;
 
-	public $replies = array();
+	private $replies = array();
+
+	public $category = false;
 
 
 
-	public static function get_instance( $ticket_id, $add_replies = false ) {
+	public static function get_instance( $ticket_id ) {
+		global $wpdb, $current_site;
+
+		if ( is_object( $ticket_id ) )
+			return new self( $ticket_id );
 
 		$ticket_id = absint( $ticket_id );
 		if ( ! $ticket_id )
 			return false;
 		
-		$model = incsub_support_get_model();
+		$tickets_table = incsub_support()->model->tickets_table;
+		$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
-		$_ticket = $model->get_ticket( $ticket_id );
+		$_ticket = $wpdb->get_row( 
+			$wpdb->prepare( 
+				"SELECT * FROM $tickets_table
+				WHERE site_id = %d
+				AND ticket_id = %d
+				LIMIT 1",
+				$current_site_id,
+				$ticket_id
+			)
+		);	
 
 		if ( ! $_ticket )
 			return false;
@@ -85,6 +75,9 @@ class Incsub_Support_Ticket {
 	public function __construct( $ticket ) {
 		foreach ( get_object_vars( $ticket ) as $key => $value )
 			$this->$key = $value;
+
+		if ( $this->cat_id )
+			$this->category = incsub_support_get_ticket_category( $this->cat_id );
 	}
 
 	public function get_staff_name() {
@@ -97,10 +90,12 @@ class Incsub_Support_Ticket {
 	}
 
 	public function get_category_name() {
-		$model = incsub_support_get_model();
+		if ( ! is_object( $this->category ) )
+			return false;
 
-		return $model->get_ticket_category_name_beta( $this->cat_id );
+		return $this->category->cat_name;
 	}
+
 
 	public function delete() {
 		$model = incsub_support_get_model();
