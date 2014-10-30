@@ -66,7 +66,7 @@ function incsub_support_get_tickets_b( $args = array() ) {
 
 	if ( $category )
 		$where[] = $wpdb->prepare( "t.cat_id = %d", $category );
-	
+
 	if ( $priority )
 		$where[] = $wpdb->prepare( "t.cat_id = %d", $priority );
 
@@ -107,14 +107,145 @@ function incsub_support_get_tickets_b( $args = array() ) {
 	
 }
 
+function incsub_support_get_ticket_b( $ticket ) {
+	$ticket = Incsub_Support_Ticket::get_instance( $ticket );
+	return $ticket;
+}
+
 function incsub_support_get_tickets_count( $args = array() ) {
 	$args['count'] = true;
 	$args['per_page'] = -1;
 	return incsub_support_get_tickets_b( $args );
 }
 
+function incsub_support_delete_ticket( $ticket_id ) {
+	global $wpdb;
 
-function incsub_support_get_ticket_b( $ticket ) {
-	$ticket = Incsub_Support_Ticket::get_instance( $ticket );
-	return $ticket;
+
+	$wpdb->update(
+		$this->tickets_table,
+		array( 'ticket_status' => 5 ),
+		array( 'ticket_id' => $ticket_id ),
+		array( '%d' ),
+		array( '%d' )
+	);
+	wp_die();
 }
+
+function incsub_support_close_ticket( $ticket_id ) {
+	$ticket = incsub_support_get_ticket_b( $ticket_id );
+	if ( ! $ticket )
+		return false;
+
+	// Is already closed?
+	if ( 5 == $ticket->ticket_status )
+		return true;
+
+	$result = incsub_support_ticket_transition_status( $ticket_id, 5 );
+
+	if ( $result )
+		incsub_support_send_user_closed_mail( $ticket_id );
+
+	return $result;
+}
+
+function incsub_support_open_ticket( $ticket_id ) {
+	$ticket = incsub_support_get_ticket_b( $ticket_id );
+	if ( ! $ticket )
+		return false;
+
+	// Is already opened?
+	if ( 5 != $ticket->ticket_status )
+		return true;
+
+	$result = incsub_support_ticket_transition_status( $ticket_id, 0 );
+
+	return $result;
+}
+
+function incsub_support_ticket_transition_status( $ticket_id, $status ) {
+	$plugin = incsub_support();
+	$all_status = array_keys( $plugin::$ticket_status );
+
+	if ( ! in_array( $status, $all_status ) )
+		return false;
+
+	$ticket = incsub_support_get_ticket_b( $ticket_id );
+	if ( ! $ticket )
+		return false;
+	
+	$current_status = $ticket->ticket_status;
+	if ( $current_status == $status )
+		return false;
+	
+	incsub_support_update_ticket( $ticket_id, array( 'ticket_status' => $status ) );
+
+	return true;
+}
+
+function incsub_support_delete_ticket_b( $ticket_id ) {
+	global $wpdb;
+
+	$ticket = incsub_support_get_ticket_b( $ticket_id );
+
+	if ( ! $ticket )
+		return false;
+
+	if ( ! $ticket->is_closed() )
+		return false;
+
+	$plugin = incsub_support();
+	$tickets_table = $plugin->model->tickets_table;
+	$tickets_messages_table = $plugin->model->tickets_messages_table;
+
+	$wpdb->query( 
+		$wpdb->prepare( 
+			"DELETE FROM $tickets_table
+			 WHERE ticket_id = %d",
+		     $ticket_id
+	     )
+	);
+
+	$wpdb->query( 
+		$wpdb->prepare( 
+			"DELETE FROM $tickets_messages_table
+			 WHERE ticket_id = %d",
+		     $ticket_id
+	     )
+	);
+
+	return true;
+}
+
+function incsub_support_update_ticket( $ticket_id, $args ) {
+	global $wpdb;
+
+	$ticket = incsub_support_get_ticket_b( $ticket_id );
+	if ( ! $ticket )
+		return false;
+
+	$fields = array( 'site_id' => '%d', 'blog_id' => '%d', 'cat_id' => '%d', 'user_id' => '%d', 'admin_id' => '%d', 'last_reply_id' => '%d', 
+		'ticket_type' => '%d', 'ticket_priority' => '%d', 'title' => '%s', 'view_by_superadmin' => '%d', 'ticket_status' => '%d' );
+
+	$update = array();
+	$update_wildcards = array();
+	foreach ( $fields as $field => $wildcard ) {
+		if ( isset( $args[ $field ] ) ) {
+			$update[ $field ] = $args[ $field ];
+			$update_wildcards[] = $wildcard;
+		}
+	}
+
+	$tickets_table = incsub_support()->model->tickets_table;
+
+	$wpdb->update(
+		$tickets_table,
+		$update,
+		array( 'ticket_id' => $ticket_id ),
+		$update_wildcards,
+		array( '%s' )
+	);
+
+}
+
+

@@ -1,0 +1,61 @@
+.ticket-priority-0:before {
+	color:gray;
+}
+.ticket-priority-1:before {
+	color:green;
+}
+.ticket-priority-2:before {
+	color:#7272EF;
+}
+.ticket-priority-3:before {
+	color:#DA7126;
+}
+.ticket-priority-4:before {
+	color:#D00000;
+}
+#support-tickets .dashicons-before:before {
+	font-size: 16px;
+	line-height: 1.2;
+}
+
+table.ticketshistory .support-system-reply-subject {
+	margin-top:0;
+}
+
+table.ticketshistory th.column-poster {
+	width:200px;
+}
+
+table.ticketshistory th.column-message {
+	width:65%;
+}
+
+table.ticketshistory th.column-date {
+	width:15%;
+}
+table.ticketshistory th.column-create_faq {
+	width:10%;
+}
+
+table.ticketshistory .ticket-acttachments-wrap {
+	background: #EBEBEB; 
+	padding: 0 15px; 
+	margin-top: 20px; 
+	display: inline-block; 
+	margin-bottom: 20px; 
+	border:1px solid #DADADA; 
+	border-radius:3px
+}
+
+.support-system-add-reply-subtitle {
+	margin-top:0;
+}
+
+.support-system-error {
+	margin-top:50px;
+	border-left: 4px solid #dd3d36;
+	background: #fff;
+	-webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+	box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+	padding: 1px 12px;
+}

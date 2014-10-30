@@ -29,10 +29,15 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
         $value = '';
         switch ( $column_name ) {
             case 'id'           : $value = (int)$item->ticket_id; break;
-            case 'priority'     : $value = incsub_support_get_ticket_priority_name( (int)$item->ticket_priority ); break;
             case 'staff'        : $value = $item->get_staff_name(); break;              
         }
         return $value;
+    }
+
+    function column_priority( $item ) {
+        $priority_name = incsub_support_get_ticket_priority_name( (int)$item->ticket_priority );
+        $class = 'dashicons-before dashicons-marker ticket-priority-' . $item->ticket_priority;
+        return '<span class="' . $class . '"> ' . $priority_name . '</span>';
     }
 
     function column_cb($item){
@@ -44,9 +49,30 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
     }
 
     function column_status( $item ) {
-        $link = add_query_arg( 'ticket_status', absint( $item->ticket_status ) );
-        $link = remove_query_arg( 'view', $link );
-        return '<a href="' . $link . '">' . incsub_support_get_ticket_status_name( (int)$item->ticket_status ) . '</a>';
+        $status_name = incsub_support_get_ticket_status_name( (int)$item->ticket_status );
+        $class = 'dashicons-before ';
+
+        switch ( $item->ticket_status ) {
+            case 0: { $class .= 'dashicons-star-filled'; break; }
+            case 1: { $class .= 'dashicons-format-status'; break; }
+            case 2: { $class .= 'dashicons-id'; break; }
+            case 3: { $class .= 'dashicons-businessman'; break; }
+            case 4: { $class .= 'dashicons-backup'; break; }
+            case 5: { $class .= 'dashicons-no'; break; }
+        } 
+
+        $plugin = incsub_support();
+        $plugin::$ticket_status = array(
+                0   =>  __( 'New', INCSUB_SUPPORT_LANG_DOMAIN ),
+                1   =>  __( 'In progress', INCSUB_SUPPORT_LANG_DOMAIN ),
+                2   =>  __( 'Waiting on User to reply', INCSUB_SUPPORT_LANG_DOMAIN ),
+                3   =>  __( 'Waiting on Admin to reply', INCSUB_SUPPORT_LANG_DOMAIN ),
+                4   =>  __( 'Stalled', INCSUB_SUPPORT_LANG_DOMAIN ),
+                5   =>  __( 'Closed', INCSUB_SUPPORT_LANG_DOMAIN )
+            );
+
+
+        return '<span class="' . $class . '"> ' . $status_name . '</span>';
     }
 
     function column_category( $item ) {
@@ -57,9 +83,11 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
 
         // Link to the single ticket page
         $link = add_query_arg(
-            'tid',
-            (int)$item->ticket_id,
-            MU_Support_System::$network_single_ticket_menu->get_permalink()
+            array( 
+                'tid' => (int)$item->ticket_id,
+                'action' => 'edit'
+            ),
+            incsub_support()->admin->menus['network_support_menu']->get_menu_url()
         );
 
         $delete_link = add_query_arg( 
@@ -86,7 +114,7 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
                 'delete'    => sprintf( __( '<a href="%s">Delete ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_link ),
                 'open'      => sprintf( __( '<a href="%s">Open ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $open_link )
             );
-            return '<a href="' . $link . '">' . stripslashes_deep( $item->title ) . '</a>' . $this->row_actions($actions); 
+            
         }
         else {
             $actions = array();
@@ -97,8 +125,10 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
             else {
                 $actions['close'] = sprintf( __( '<a href="%s">Close ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $close_link );
             }
-            return '<a href="' . $link . '">' . stripslashes_deep( $item->title ) . '</a>' . $this->row_actions($actions); 
+
         }
+
+        return '<a href="' . $link . '">' . stripslashes_deep( $item->title ) . '</a>' . $this->row_actions($actions); 
         
     }
 
@@ -171,7 +201,8 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
 
         $actions = array(
             'delete'    => __( 'Delete', INCSUB_SUPPORT_LANG_DOMAIN ),
-            'close'    => __( 'Close', INCSUB_SUPPORT_LANG_DOMAIN )
+            'close'    => __( 'Close', INCSUB_SUPPORT_LANG_DOMAIN ),
+            'open'      => __( 'Open', INCSUB_SUPPORT_LANG_DOMAIN )
         );
 
         if ( 'archive' == $this->status ) {
@@ -179,6 +210,7 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
         }
         elseif ( 'active' == $this->status ) {
             unset( $actions['delete'] );
+            unset( $actions['open'] );
         }
 
         return $actions;
@@ -209,32 +241,29 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
         }
 
         if( 'open' === $this->current_action() ) {
-            if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) ) {
-                $tickets = incsub_support_get_tickets( $_POST['ticket'] );
-                foreach ( $tickets as $ticket )
-                    $ticket->open();
-            }
-            elseif ( isset( $_GET['tid'] ) && is_numeric( $_GET['tid'] ) ) {
-                $ticket = incsub_support_get_ticket( $_GET['tid'] );
-                if ( $ticket )
-                    $ticket->open();
+            $ids = array();
+            
+            if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) )
+                $ids = $_POST['ticket'];
+            elseif ( isset( $_GET['tid'] ) && is_numeric( $_GET['tid'] ) )
+                $ids = array( $_GET['tid'] );
+
+            $ids = array_map( 'absint', $ids );
+            foreach ( $ids as $id ) {
+                incsub_support_open_ticket( $id );
             }
         }
 
         if( 'close' === $this->current_action() ) {
-            if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) ) {
-                $tickets = incsub_support_get_tickets( $_POST['ticket'] );
-                foreach ( $tickets as $ticket ) {
-                    $ticket->close();
-                    incsub_support_send_user_closed_mail( $ticket->ticket_id );
-                }
-            }
-            elseif ( isset( $_GET['tid'] ) && is_numeric( $_GET['tid'] ) ) {
-                $ticket = incsub_support_get_ticket( $_GET['tid'] );
-                if ( $ticket ) {
-                    $ticket->close();
-                    incsub_support_send_user_closed_mail( $ticket->ticket_id );
-                }
+            $ids = array();
+            if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) )
+                $ids = $_POST['ticket'];
+            elseif ( isset( $_GET['tid'] ) && is_numeric( $_GET['tid'] ) )
+                $ids = array( $_GET['tid'] );
+
+            $ids = array_map( 'absint', $ids );
+            foreach ( $ids as $id ) {
+                incsub_support_close_ticket( $id );
             }
         }
 

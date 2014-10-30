@@ -37,11 +37,15 @@ function incsub_support_ticket_categories_dropdown( $args = array() ) {
 		'name' => 'ticket-cat',
 		'id' => 'ticket-cat',
 		'show_empty' => __( 'Select a category', INCSUB_SUPPORT_LANG_DOMAIN ),
-		'selected' => ''
+		'selected' => '',
+		'echo' => true
 	);
 	$args = wp_parse_args( $args, $defaults );
 
 	extract( $args );
+
+	if ( ! $echo )
+		ob_start();
 
 	$cats = incsub_support_get_ticket_categories();
 
@@ -57,4 +61,7 @@ function incsub_support_ticket_categories_dropdown( $args = array() ) {
 
 		</select>
 	<?php
+
+	if ( ! $echo )
+		return ob_get_clean();
 }

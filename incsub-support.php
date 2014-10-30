@@ -77,7 +77,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 		private static $instance = null;
 
-		public function get_instance() {
+		public static function get_instance() {
 			if ( ! self::$instance )
 				self::$instance = new self();
 			
@@ -91,8 +91,6 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		 * @since 1.8
 		 */
 		public function __construct() {
-
-
 
 			// Include needed files
 			$this->includes();
@@ -212,11 +210,14 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			// Classes
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/ticket.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/ticket-category.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/ticket-reply.php');
 
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/general.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/ticket.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/ticket-category.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/ticket-reply.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/template.php');
 
 			// Admin
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/support-menu.php');

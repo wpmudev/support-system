@@ -194,12 +194,13 @@ function incsub_support_send_admin_reply_mail( $admin_user, $response_user, $tic
  */
 function incsub_support_send_user_closed_mail( $ticket_id ) {
 
-	$ticket = incsub_support_get_ticket( $ticket_id );
-
+	$ticket = incsub_support_get_ticket_b( $ticket_id );
 	if ( ! $ticket )
-		return;
+		return false;
 
 	$creator = get_userdata( $ticket->user_id );
+	if ( ! $creator )
+		return false;
 	
 	$headers = incsub_support_get_email_headers();
 

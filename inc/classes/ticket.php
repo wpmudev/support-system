@@ -33,7 +33,7 @@ class Incsub_Support_Ticket {
 
 	public $view_by_superadmin = 0;
 
-	private $replies = array();
+	private $replies = null;
 
 	public $category = false;
 
@@ -73,11 +73,41 @@ class Incsub_Support_Ticket {
 	}
 
 	public function __construct( $ticket ) {
-		foreach ( get_object_vars( $ticket ) as $key => $value )
+		foreach ( get_object_vars( $ticket ) as $key => $value ) {
+			if ( 'ticket_priority' === $key )
+				$value = absint( $value );
+			
 			$this->$key = $value;
+		}
 
 		if ( $this->cat_id )
 			$this->category = incsub_support_get_ticket_category( $this->cat_id );
+	}
+
+	public function __get( $name ) {
+		if ( 'last_reply_user_id' === $name ) {
+			$replies = $this->get_replies();
+			end( $replies );
+			$last_reply = current( $replies );
+			if ( ! $last_reply->user_id && ! $last_reply->admin_id ) {
+				return false;
+			}
+			elseif( $last_reply->user_id ) {
+				return $last_reply->user_id;
+			}
+			elseif( $last_reply->admin_id ) {
+				return $last_reply->admin_id;
+			}
+		}
+
+		return false;
+	}
+
+	public function get_replies() {
+		if ( $this->replies === null )
+			$this->replies = incsub_support_get_ticket_replies( $this->ticket_id );
+
+		return $this->replies;
 	}
 
 	public function get_staff_name() {
@@ -85,6 +115,24 @@ class Incsub_Support_Ticket {
 
 		if ( ! $user )
 			return __( 'Not yet assigned', INCSUB_SUPPORT_LANG_DOMAIN );
+
+		return $user->display_name;
+	}
+
+	public function get_staff_login() {
+		$user = get_userdata( $this->admin_id );
+
+		if ( ! $user )
+			return false;
+
+		return $user->user_login;
+	}
+
+	public function get_user_name() {
+		$user = get_userdata( $this->user_id );
+
+		if ( ! $user )
+			return __( 'User not found', INCSUB_SUPPORT_LANG_DOMAIN );
 
 		return $user->display_name;
 	}
@@ -97,26 +145,8 @@ class Incsub_Support_Ticket {
 	}
 
 
-	public function delete() {
-		$model = incsub_support_get_model();
-
-		if ( $model->is_ticket_archived( absint( $this->ticket_id ) ) )
-            $model->delete_ticket( $this->ticket_id );
-
-    }
-
-    public function open() {
-    	$model = incsub_support_get_model();
-
-    	if ( $model->is_ticket_archived( absint( $this->ticket_id ) ) )
-            $model->open_ticket( $this->ticket_id );
-    }
-
-    public function close() {
-    	$model = incsub_support_get_model();
-
-    	if ( ! $model->is_ticket_archived( absint( $this->ticket_id ) ) )
-            $model->close_ticket( $this->ticket_id );
+    public function is_closed() {
+    	return $this->ticket_status == 5;
     }
 
 }
