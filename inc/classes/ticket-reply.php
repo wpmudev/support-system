@@ -16,7 +16,7 @@ class Incsub_Support_Ticket_Reply {
 
 	public $subject = '';
 
-	public $message = '';
+	private $message = '';
 
 	public $attachments = array();
 
@@ -60,6 +60,12 @@ class Incsub_Support_Ticket_Reply {
 			}
 
 			$this->$key = $value;
+		}
+	}
+
+	public function __get( $name ) {
+		if ( $name == 'message' ) {
+			return apply_filters( 'the_content', $this->message, 0 );
 		}
 	}
 

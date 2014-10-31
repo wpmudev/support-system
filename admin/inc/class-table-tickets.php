@@ -221,10 +221,6 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
 
     function process_bulk_action() {
         
-        //Detect when a bulk action is being triggered...
-        $model = MU_Support_System_Model::get_instance();
-        $link = MU_Support_System::$network_main_menu->get_permalink();
-
         if( 'delete' === $this->current_action() ) {
 
             if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) ) {

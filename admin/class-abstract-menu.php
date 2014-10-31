@@ -54,8 +54,17 @@ abstract class Incsub_Support_Admin_Menu {
 		add_action( 'load-' . $this->page_id, array( $this, 'on_load' ) );
 	}
 
-	protected function add_submenu_page( $parent_slug, $menu_title, $page_title, $cap, $icon ) {
+	protected function add_submenu_page( $parent_slug, $menu_title, $page_title, $cap ) {
+		$this->page_id = add_submenu_page( 
+			$parent_slug,
+			$page_title,
+			$menu_title,
+			$cap,
+			$this->slug,
+			array( $this, 'render_page' ) 
+		);
 
+		add_action( 'load-' . $this->page_id, array( $this, 'on_load' ) );
 	}
 
 	public function get_menu_url() {

@@ -43,6 +43,7 @@ function incsub_support_get_tickets_b( $args = array() ) {
 		'per_page' => get_option( 'posts_per_page' ),
 		'page' => 1,
 		'status' => 'all',
+		'view_by_superadmin' => null,
 		'blog_id' => false,
 		'user_in' => false,
 		'category' => false,
@@ -75,27 +76,50 @@ function incsub_support_get_tickets_b( $args = array() ) {
 
 	if ( ! empty( $user_in ) && is_array( $user_in ) ) {
 		$user_in = array_map( 'absint', $user_in );
-		$where[] = "AND t.user_id IN (" . implode( ',', $user_in ) . ")";
+		$where[] = "t.user_id IN (" . implode( ',', $user_in ) . ")";
 	}
+
+	if ( $view_by_superadmin !== null )
+		$where[] = $wpdb->prepare( "t.view_by_superadmin = %d", $view_by_superadmin );
 
 	$tickets_table = incsub_support()->model->tickets_table;
 
 	$order = strtoupper( $order );
 	$order = "ORDER BY $orderby $order";
 
+	$limit = '';
 	if ( $per_page > -1 )
 		$limit = $wpdb->prepare( "LIMIT %d, %d", intval( ( $page - 1 ) * $per_page ), intval( $per_page ) );
 
 	$where = "WHERE " . implode( ' AND ', $where );
 
 	if ( $count ) {
-		$results = $wpdb->get_var( "SELECT COUNT(ticket_id) FROM $tickets_table t $where" );
+		$query = "SELECT COUNT(ticket_id) FROM $tickets_table t $where";
+
+		$key = md5( $query );
+		$cache_key = "incsub_support_get_tickets_count:$key";
+		$results = wp_cache_get( $cache_key, 'support_system_tickets' );
+
+		if ( $results === false ){
+			$results = $wpdb->get_var( $query );
+			wp_cache_set( $cache_key, $results, 'support_system_tickets' );
+		}
+
 		return $results;
 	}
 	else {
-		$results = $wpdb->get_results( "SELECT * FROM $tickets_table t $where $order $limit" );
-		if ( empty( $results ) )
-			return array();
+		$query = "SELECT * FROM $tickets_table t $where $order $limit";
+
+		$key = md5( $query );
+		$cache_key = "incsub_support_get_tickets:$key";
+		$results = wp_cache_get( $cache_key, 'support_system_tickets' );
+
+		if ( $results === false ) {
+			$results = $wpdb->get_results( $query );
+			if ( empty( $results ) )
+				return array();
+			wp_cache_set( $cache_key, $results, 'support_system_tickets' );
+		}
 
 		$tickets = array();
 		foreach ( $results as $result ) {
@@ -115,7 +139,10 @@ function incsub_support_get_ticket_b( $ticket ) {
 function incsub_support_get_tickets_count( $args = array() ) {
 	$args['count'] = true;
 	$args['per_page'] = -1;
-	return incsub_support_get_tickets_b( $args );
+
+	$count = incsub_support_get_tickets_b( $args );
+
+	return $count;
 }
 
 function incsub_support_delete_ticket( $ticket_id ) {
@@ -243,7 +270,7 @@ function incsub_support_update_ticket( $ticket_id, $args ) {
 		$update,
 		array( 'ticket_id' => $ticket_id ),
 		$update_wildcards,
-		array( '%s' )
+		array( '%d' )
 	);
 
 }

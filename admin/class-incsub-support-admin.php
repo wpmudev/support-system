@@ -27,9 +27,9 @@ class Incsub_Support_Admin {
 	 */
 	private function add_menus() {
 		if ( is_multisite() ) {
-			if ( is_network_admin() && is_super_admin() ) {
+			if ( is_network_admin() && current_user_can( 'manage_network' ) ) {
 				$this->menus['network_support_menu'] = new Incsub_Support_Network_Menu( 'ticket-manager-b', true );
-				//new Incsub_Support_Network_Menu( 'ticket-manager-b', true );
+				$this->menus['network_ticket_categories_menu'] = new Incsub_Support_Network_Ticket_Categories( 'ticket-categories-b', true );
 			}
 			else {
 

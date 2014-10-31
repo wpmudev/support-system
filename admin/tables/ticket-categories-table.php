@@ -56,25 +56,32 @@ class MU_Support_Ticket_Categories_Table extends WP_List_Table {
     }
 
     function column_name( $item ) {
+
+        $base_url = remove_query_arg( 'added' );
+        $base_url = remove_query_arg( 'updated', $base_url );
+
         $delete_link = add_query_arg( 
             array( 
                 'action' => 'delete',
                 'category' => (int)$item['cat_id'] 
-            )
+            ),
+            $base_url
         );
 
         $set_default_link = add_query_arg( 
             array( 
                 'action' => 'set_default',
                 'category' => (int)$item['cat_id'] 
-            )
+            ),
+            $base_url
         );
 
         $edit_link = add_query_arg( 
             array( 
                 'action' => 'edit',
                 'category' => (int)$item['cat_id'] 
-            )
+            ),
+            $base_url
         );
 
         $actions = array(
@@ -121,25 +128,28 @@ class MU_Support_Ticket_Categories_Table extends WP_List_Table {
         return $actions;
     }
 
+    function process_bulk_action() {
+        if ( 'delete' === $this->current_action() ) {
+            $categories = array();
+            if ( ! empty( $_REQUEST['category'] ) && ! is_array( $_REQUEST['category'] ) )
+                $categories = array( absint( $_REQUEST['category'] ) );
+            elseif ( is_array( $_REQUEST['category'] ) )
+                $categories = array_map( 'absint', $_REQUEST['category'] );
+
+            foreach ( $categories as $cat_id )
+                incsub_support_delete_ticket_category( $cat_id );
+        }
+        if ( 'set_default' === $this->current_action() ) {
+            incsub_support_set_default_ticket_category( absint( $_GET['category'] ) );
+        }
+    }
+
  
 
     function prepare_items() {
 
-        $model = MU_Support_System_Model::get_instance();
-
-        if( 'delete' === $this->current_action() ) {
-
-            if ( isset( $_POST['category'] ) && is_array( $_POST['category'] ) ) {
-                foreach ( $_POST['category'] as $category )
-                    $model->delete_ticket_category( absint( $category ) );
-            }
-            elseif ( isset( $_GET['category'] ) && $category = absint( $_GET['category'] ) ) {
-                $model->delete_ticket_category( $category );
-            }
-        }
-        if( 'set_default' === $this->current_action() && isset( $_GET['category'] ) && $category = absint( $_GET['category'] ) ) {
-            $model->set_ticket_category_as_default( $category );
-        }
+        $this->process_bulk_action();
+        
 
     	$per_page = 7;
 

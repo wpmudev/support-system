@@ -1,223 +1,140 @@
 <?php
 
-/**
- * Support Network Main Menu
- */
+class Incsub_Support_Network_Ticket_Categories extends Incsub_Support_Admin_Menu {
 
-if ( ! class_exists( 'MU_Support_Network_Ticket_Categories' ) ) {
+	public function add_menu() {
+		parent::add_submenu_page(
+			'ticket-manager-b',
+			__( 'Ticket Categories', INCSUB_SUPPORT_LANG_DOMAIN ),
+			__( 'Ticket Categories', INCSUB_SUPPORT_LANG_DOMAIN ), 
+			'manage_network'
+		);
 
-	class Incsub_Support_Network_Ticket_Categories extends Incsub_Support_Admin {
-
-		/**
-		 * Status of the screen
-		 */
-		private $view;
-
-		/**
-		 * Constructor
-		 * 
-		 * @since 1.8
-		 */
-		public function __construct( $is_network = true, $capability = 'manage_network'  ) {
-
-			$this->includes();
-
-			$this->page_title = __('Tickets Categories', INCSUB_SUPPORT_LANG_DOMAIN); 
-			$this->menu_title = __('Tickets Categories', INCSUB_SUPPORT_LANG_DOMAIN); 
-			$this->capability = $capability;
-			$this->menu_slug = 'ticket-categories';
-			$this->parent = MU_Support_System::$network_main_menu->menu_slug;
-			$this->submenu = true;
-
-			parent::__construct( $is_network );
-
-			add_action( 'admin_init', array( &$this, 'edit_category' ) );
-
-		}
-
-		/**
-		 * Includes needed files
-		 *
-		 * @since 1.8
-		 */
-		private function includes() {
-			// Model
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/admin/tables/ticket-categories-table.php');
-		}
-
-		/**
-		 * Renders the page contents
-		 * 
-		 * @since 1.8
-		 */
-		public function render_content() {
-
-			$category_name = '';
-			if ( isset( $_POST['submit'] ) ) {
-				$category_name = $this->validate_form( $_POST );
-
-				if ( $this->is_error() ) {
-					$this->render_errors();
-				}
-				else {
-					$category_name = '';
-					?>
-						<div class="updated">
-							<p><?php _e( 'A new category has been added', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
-						</div>
-					<?php
-				}
-			}
-
-			
-
-			if ( isset( $_GET['action'] ) && 'edit' == $_GET['action'] && isset( $_GET['category'] ) && $cat_id = absint( $_GET['category'] ) ) {
-				$model = MU_Support_System_Model::get_instance();
-				$cat_name = $model->get_ticket_category( $cat_id );
-
-				$user_id = $cat_name['user_id'];
-				$user = get_user_by( 'id', $user_id );
-
-				$user_login = 0;
-				if ( $user )
-					$user_login = $user->data->user_login;
-
-				?>
-					<form id="categories-table-form" action="" method="post">
-						<table class="form-table">
-							<?php
-								ob_start();
-							?>	
-								<input type="text" name="ticket_cat_name" value="<?php echo esc_attr( $cat_name['cat_name'] ); ?>">
-								<input type="hidden" name="ticket_cat_id" value="<?php echo esc_attr( $cat_id ); ?>">
-							<?php
-								$this->render_row( __( 'Category name', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() );
-							?>
-							<?php
-								ob_start();
-							?>	
-								<?php $this->admin_users_dropdown( $user_login ); ?>
-							<?php
-								$this->render_row( __( 'Assign to user', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() );
-							?>
-						</table>
-						<?php wp_nonce_field( 'edit-ticket-category', '_wpnonce' ); ?>
-						<?php submit_button( null, 'primary', 'submit-edit-ticket-category' ); ?>
-					</form>
-				<?php
-			}
-			else {
-				$cats_table = new MU_Support_Ticket_Categories_Table();
-				$cats_table->prepare_items();
-			    ?>
-			    	<br class="clear">
-					<div id="col-container">
-						<div id="col-right">
-							<div class="col-wrap">
-								<div class="form-wrap">
-									<form id="categories-table-form" action="" method="post">
-										<?php $cats_table->display(); ?>
-									</form>
-								</div>
-							</div>
-						</div>
-						<div id="col-left">
-							<div class="col-wrap">
-								<div class="form-wrap">
-									<h3><?php _e( 'Add new category', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h3>
-									<form id="categories-table-form" action="" method="post">
-										<?php wp_nonce_field( 'add-ticket-category' ); ?>
-										<div class="form-field">
-											<label for="cat_name"><?php _e( 'Category Name', INCSUB_SUPPORT_LANG_DOMAIN ); ?></label>
-											<input name="cat_name" id="cat_name" type="text" value="<?php echo $category_name; ?>" size="40" aria-required="true"><br/>
-											<p><?php _e('The name is used to identify the category to which tickets relate', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
-										</div>
-										<div class="form-field">
-											<label for="admin_user"><?php _e( 'Assign to user', INCSUB_SUPPORT_LANG_DOMAIN ); ?></label>
-											<?php $this->admin_users_dropdown(); ?>
-											<p><?php _e( 'Any new opened ticket with this category will be assigned to this user', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
-										</div>
-										<p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Add New Category"></p>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
-			    <?php
-			}
-
-			
-		}
-
-
-		public function edit_category() {
-			if ( isset( $_POST['submit-edit-ticket-category'] ) ) {
-				if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'edit-ticket-category' ) )
-					wp_die( __( 'Security check error', INCSUB_SUPPORT_LANG_DOMAIN ) );
-
-				if ( isset( $_POST['ticket_cat_name'] ) && ! empty( $_POST['ticket_cat_name'] ) && isset( $_POST['ticket_cat_id'] ) ) {
-					$model = MU_Support_System_Model::get_instance();
-					$user_id = 0;
-					if ( ! empty( $_POST['admin_user'] ) ) {
-						$user = get_user_by( 'login', $_POST['admin_user'] );			
-						if ( $user )
-							$user_id = $user->ID;
-					}
-
-					$model->update_ticket_category( absint( $_POST['ticket_cat_id'] ), sanitize_text_field( $_POST['ticket_cat_name'] ), $user_id );
-				}
-
-				wp_redirect( $this->get_permalink() );
-
-			}
-		}
-
-		/**
-		 * Validates the Add category form
-		 * 
-		 * @since 1.8
-		 * 
-		 * @param Array $input $_POST Array 
-		 * 
-		 */
-		private function validate_form( $input ) {
-
-			if ( ! wp_verify_nonce( $input['_wpnonce'], 'add-ticket-category' ) )
-				wp_die( __( 'Security check error', INCSUB_SUPPORT_LANG_DOMAIN ) );
-
-			$category_name = '';
-			if ( isset( $_POST['cat_name'] ) ) {
-				$category_name = sanitize_text_field( $_POST['cat_name'] );
-				if ( empty( $category_name ) )
-					$this->add_error( 'category-name', __( 'Category name cannot be empty', INCSUB_SUPPORT_LANG_DOMAIN ) );
-			}
-
-			$user_id = 0;
-			if ( ! empty( $_POST['admin_user'] ) ) {
-				$user = get_user_by( 'login', $_POST['admin_user'] );
-				if ( $user )
-					$user_id = $user->ID;
-			}
-
-			$model = MU_Support_System_Model::get_instance();
-			$model->add_ticket_category( $category_name, $user_id );
-
-			return $category_name;
-
-		}
-
-		private function admin_users_dropdown( $selected = 0 ) {
-			$admin_users = MU_Support_System::get_super_admins();
-			?>
-				<select name="admin_user" id="admin_user">
-					<option value="" <?php selected( $selected, 0 ); ?>><?php _e( 'None', INCSUB_SUPPORT_LANG_DOMAIN ); ?></option>
-					<?php foreach ( $admin_users as $admin_user ): ?>
-						<option value="<?php echo $admin_user; ?>" <?php selected( $selected, $admin_user ); ?>><?php echo $admin_user; ?></option>
-					<?php endforeach; ?>
-				</select>
-			<?php
+		if ( isset( $_GET['action'] ) && isset( $_GET['category'] ) && 'edit' === $_GET['action'] ) {
+			if ( $ticket_category = incsub_support_get_ticket_category( absint( $_GET['category'] ) ) )
+				add_filter( 'support_system_admin_page_title', array( $this, 'set_edit_category_page_title' ) );
 		}
 
 	}
+
+	public function set_edit_category_page_title( $title ) {
+		$ticket_category = incsub_support_get_ticket_category( absint( $_GET['category'] ) );
+		return '<h2>' . sprintf( _x( 'Edit %s', 'Edit ticket category menu title', INCSUB_SUPPORT_LANG_DOMAIN ), $ticket_category->cat_name ) . '</h2>';
+	}
+
+	public function on_load() {
+		$edit = false;
+		$add = false;
+		if ( ( $edit = isset( $_POST['submit-edit-ticket-category'] ) || $add = isset( $_POST['submit-new-ticket-category'] ) ) && current_user_can( 'manage_network' ) ) {
+			$edit = isset( $_POST['submit-edit-ticket-category'] );
+			$add = isset( $_POST['submit-new-ticket-category'] );
+			
+			if ( $edit ) {
+				// Editing a category ?
+				$ticket_category_id = absint( $_POST['ticket_cat_id'] );
+				$ticket_category = incsub_support_get_ticket_category( $ticket_category_id );
+				if ( ! $ticket_category )
+					return;
+				check_admin_referer( 'edit-ticket-category-' . $ticket_category->cat_id );
+			}
+			elseif ( $add ) {
+				check_admin_referer( 'add-ticket-category' );
+			}
+			else {
+				return;
+			}
+
+			if ( empty( trim( $_POST['cat_name'] ) ) )
+				add_settings_error( 'support_system_submit_category', 'empty-category-name', __( 'Category name must not be empty', INCSUB_SUPPORT_LANG_DOMAIN ) );
+			else
+				$category_name = $_POST['cat_name'];
+
+			$user_id = 0;
+			if ( ! empty( $_POST['super-admins'] ) && $user = get_user_by( 'login', $_POST['super-admins'] ) )
+				$user_id = $user->ID;
+
+			if ( ! get_settings_errors( 'support_system_submit_category' ) ) {
+				if ( $add ) {
+					incsub_support_insert_ticket_category( $category_name, $user_id );
+					$redirect = add_query_arg( 'added', 'true', $this->get_menu_url() );
+					wp_redirect( $redirect );
+					exit();
+				}
+				elseif ( $edit ) {
+					incsub_support_update_ticket_category( $ticket_category->cat_id, array( 'cat_name' => $category_name, 'user_id' => $user_id ) );
+					$redirect = add_query_arg( 
+						array( 
+							'updated' => 'true',
+							'action' => 'edit',
+							'category' => $ticket_category->cat_id 
+						), $this->get_menu_url() 
+					);
+					wp_redirect( $redirect );
+					exit();
+				}
+			}
+		}
+		
+	}
+
+	public function render_inner_page() {
+		if ( isset( $_GET['category'] ) && $_GET['action'] == 'edit' ) {
+			$ticket_category = incsub_support_get_ticket_category( absint( $_GET['category'] ) );
+			if ( ! $ticket_category )
+				wp_die( __( 'The category does not exist', INCSUB_SUPPORT_LANG_DOMAIN ) );
+
+			$category_name = $ticket_category->cat_name;
+			if ( ! empty( $_POST['cat_name'] ) && trim( $_POST['cat_name'] ) )
+				$category_name = stripslashes_deep( $_POST['cat_name'] );
+
+			$user = get_userdata( $ticket_category->user_id );
+			if ( $user )
+				$user = $user->data->user_login;
+			else
+				$user = '';
+			if ( isset( $_POST['super-admins'] ) )
+				$user = $_POST['super-admins'];
+
+			$super_admins_dropdown = incsub_support_super_admins_dropdown( 
+				array( 
+					'show_empty' => __( 'None', INCSUB_SUPPORT_LANG_DOMAIN ) ,
+					'echo' => false,
+					'selected' => $user
+				) 
+			);
+
+			$updated = isset( $_GET['updated'] );
+
+			settings_errors( 'support_system_submit_category' );
+			include_once( 'views/edit-ticket-category.php' );
+		}
+		else {
+			include_once( 'inc/class-table-ticket-categories.php' );
+			$cats_table = new Incsub_Support_Ticket_Categories_Table();
+			$cats_table->prepare_items();
+
+			$category_name = '';
+			if ( isset( $_POST['cat_name'] ) )
+				$category_name = sanitize_text_field( stripslashes_deep( $_POST['cat_name'] ) );
+
+			$user = '';
+			if ( isset( $_POST['super-admins'] ) )
+				$user = $_POST['super-admins'];
+
+			$super_admins_dropdown = incsub_support_super_admins_dropdown( 
+				array( 
+					'show_empty' => __( 'None', INCSUB_SUPPORT_LANG_DOMAIN ) ,
+					'echo' => false,
+					'selected' => $user
+				) 
+			);
+
+			$added = isset( $_GET['added'] );
+
+			settings_errors( 'support_system_submit_category' );
+			include_once( 'views/network-ticket-categories.php' );
+		}
+	}
+
 
 }

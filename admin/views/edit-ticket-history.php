@@ -15,12 +15,13 @@
 		<?php ob_start(); ?>
 			<select name="responsibility" id="responsibility">
 				<?php if ( $ticket->admin_id == get_current_user_id() ): ?>
-					<option selected="selected" value="keep"><?php _e("Keep Responsibility For This Ticket", INCSUB_SUPPORT_LANG_DOMAIN); ?></option>
-					<option value="punt"><?php _e("Give Up Responsibility To Allow Another Admin To Accept", INCSUB_SUPPORT_LANG_DOMAIN); ?></option>
+					<option <?php selected( $responsibility, 'keep' ); ?> value="keep"><?php _e("Keep Responsibility For This Ticket", INCSUB_SUPPORT_LANG_DOMAIN); ?></option>
+					<option <?php selected( $responsibility, 'punt' ); ?> value="punt"><?php _e("Give Up Responsibility To Allow Another Admin To Accept", INCSUB_SUPPORT_LANG_DOMAIN); ?></option>
 				<?php else: ?>
-					<option selected="selected" value="accept"><?php _e("Accept Responsibility For This Ticket", INCSUB_SUPPORT_LANG_DOMAIN); ?></option>
+					<option <?php selected( $responsibility, 'accept' ); ?> value="accept"><?php _e("Accept Responsibility For This Ticket", INCSUB_SUPPORT_LANG_DOMAIN); ?></option>
+					<option <?php selected( $responsibility, 'keep' ); ?> value="keep"><?php _e("Keep ticket unassigned", INCSUB_SUPPORT_LANG_DOMAIN); ?></option>
 					<?php if ( ! empty( $ticket->admin_id ) ): ?>
-						<option value="help"><?php _e("Keep Current Admin, And Just Help Out With A Reply", INCSUB_SUPPORT_LANG_DOMAIN); ?></option>
+						<option <?php selected( $responsibility, 'help' ); ?> value="help"><?php _e("Keep Current Admin, And Just Help Out With A Reply", INCSUB_SUPPORT_LANG_DOMAIN); ?></option>
 					<?php endif; ?>
 				<?php endif; ?>
 			</select>

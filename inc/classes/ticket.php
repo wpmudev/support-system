@@ -52,19 +52,25 @@ class Incsub_Support_Ticket {
 		$tickets_table = incsub_support()->model->tickets_table;
 		$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
-		$_ticket = $wpdb->get_row( 
-			$wpdb->prepare( 
-				"SELECT * FROM $tickets_table
-				WHERE site_id = %d
-				AND ticket_id = %d
-				LIMIT 1",
-				$current_site_id,
-				$ticket_id
-			)
-		);	
+		$_ticket = wp_cache_get( $ticket_id, 'support_system_tickets' );
 
-		if ( ! $_ticket )
-			return false;
+		if ( ! $_ticket ) {
+			$_ticket = $wpdb->get_row( 
+				$wpdb->prepare( 
+					"SELECT * FROM $tickets_table
+					WHERE site_id = %d
+					AND ticket_id = %d
+					LIMIT 1",
+					$current_site_id,
+					$ticket_id
+				)
+			);	
+
+			if ( ! $_ticket )
+				return false;
+
+			wp_cache_add( $_ticket->ticket_id, $_ticket, 'support_system_tickets' );
+		}
 
 		$_ticket = new self( $_ticket );
 

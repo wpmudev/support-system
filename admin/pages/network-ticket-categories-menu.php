@@ -31,7 +31,7 @@ if ( ! class_exists( 'MU_Support_Network_Ticket_Categories' ) ) {
 
 			parent::__construct( $is_network );
 
-			add_action( 'admin_init', array( &$this, 'edit_category' ) );
+			//add_action( 'admin_init', array( &$this, 'edit_category' ) );
 
 		}
 

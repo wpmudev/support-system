@@ -22,9 +22,16 @@ class Incsub_Support_Network_Menu extends Incsub_Support_Admin_Menu {
 
 
 	public function add_menu() {
+		$unviewed_tickets = incsub_support_get_tickets_count( array( 'view_by_superadmin' => 0 ) );
+		
+		$menu_title = __( 'Support', INCSUB_SUPPORT_LANG_DOMAIN );
+		if ( $unviewed_tickets ) {
+			$warning_title = __( '%d unviewed tickets', INCSUB_SUPPORT_LANG_DOMAIN );
+			$menu_title .= " <span class='update-plugins count-$unviewed_tickets' title='$warning_title'><span class='update-count'>" . number_format_i18n( $unviewed_tickets ) . "</span></span>";	
+		}
 		parent::add_menu_page(
 			__( 'Support Ticket Management System', INCSUB_SUPPORT_LANG_DOMAIN ),
-			__( 'Support', INCSUB_SUPPORT_LANG_DOMAIN ), 
+			$menu_title, 
 			'manage_network',
 			'dashicons-sos'
 		);
@@ -133,46 +140,71 @@ class Incsub_Support_Network_Menu extends Incsub_Support_Admin_Menu {
 			if ( ! $ticket )
 				wp_die( __( 'The ticket does not exist', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
-			$args = array();
-			if ( isset( $_POST['cat_id'] ) ) {
-				$category = incsub_support_get_ticket_category( absint( $_POST['cat_id'] ) );
-				if ( $category )
-					$args['cat_id'] = $category->cat_id;
-			}
-
-			if ( isset( $_POST['ticket-priority'] ) ) {
-				$possible_values = array_keys( $plugin::$ticket_priority );
-				if ( in_array( absint( $_POST['ticket-priority'] ), $possible_values ) )
-					$args['ticket_priority'] = absint( $_POST['ticket-priority'] );
-			}
+			$reply_args = array();
 
 			$message = isset( $_POST['message-text'] ) ? wpautop( stripslashes_deep( $_POST['message-text'] ) ) : '';
 			if ( empty( $message ) )
 				add_settings_error( 'support_system_submit_reply', 'empty-message', __( 'Message cannot be empty', INCSUB_SUPPORT_LANG_DOMAIN ) );
 			else
-				$args['message'] = $message;
+				$reply_args['message'] = $message;
 
-			$responsibility = isset( $_POST['responsibility'] ) ? $_POST['responsibility'] : 'accept';
-			if ( in_array( $responsibility, $plugin::$responsibilities ) ) {
-				switch ( $responsibility ) {
-					case 'punt': { $args['admin_id'] = 0; break; }
-					case 'accept': { $args['admin_id'] = get_current_user_id(); break; }
-					default: { break; }
-				}
-			}
+			$reply_args['admin_id'] = get_current_user_id();
 
-			$status = isset( $_POST['closeticket'] ) ? 5 : 2;
-
-			// TODO: ATTACHMENTS
-
-			$args['title'] = 'Re: ' . stripslashes_deep( $ticket->title );
 
 			if ( ! get_settings_errors( 'support_system_submit_reply' ) ) {
+				$ticket_args = array();
+				if ( isset( $_POST['category'] ) ) {
+					$category = incsub_support_get_ticket_category( absint( $_POST['category'] ) );
+					if ( $category )
+						$ticket_args['cat_id'] = $category->cat_id;
+				}
+
+				if ( isset( $_POST['ticket-priority'] ) ) {
+					$possible_values = array_keys( $plugin::$ticket_priority );
+					if ( in_array( absint( $_POST['ticket-priority'] ), $possible_values ) )
+						$ticket_args['ticket_priority'] = absint( $_POST['ticket-priority'] );
+				}
+
+				
+
+				$responsibility = isset( $_POST['responsibility'] ) ? $_POST['responsibility'] : 'accept';
+				if ( in_array( $responsibility, $plugin::$responsibilities ) ) {
+					switch ( $responsibility ) {
+						case 'punt': { $ticket_args['admin_id'] = 0; break; }
+						case 'accept': { $ticket_args['admin_id'] = get_current_user_id(); break; }
+						default: { break; }
+					}
+				}
+
+				$status = isset( $_POST['closeticket'] ) ? 5 : 2;
 				if ( isset( $_POST['closeticket'] ) )
 					incsub_support_close_ticket( $ticket->ticket_id );
+				else
+					incsub_support_ticket_transition_status( $ticket->ticket_id, $status );
 
-				wp_die();
+				// TODO: ATTACHMENTS
+				if ( ! empty( $_FILES['attachments'] ) ) {
+					$files_uploaded = MU_Support_System::upload_attachments( $_FILES['attachments'] );					
+
+					if ( ! empty( $files_uploaded ) ) {
+						$this->current_ticket['attachments'] = array();
+						foreach( $files_uploaded as $file_uploaded ) {
+							$this->current_ticket['attachments'][] = $file_uploaded['url'];
+						}
+					}
+				}
+
+				// Order is important on this
+				incsub_support_update_ticket( $ticket->ticket_id, $ticket_args );
+				incsub_support_insert_ticket_reply( $ticket->ticket_id, $reply_args );
+
+				// Redirecting to ticket history
+				$link = add_query_arg( 'updated', 'true' );
+				wp_redirect( $link );
+				exit();
+
 			}
+		
 
 		}
 	}
@@ -186,6 +218,8 @@ class Incsub_Support_Network_Menu extends Incsub_Support_Admin_Menu {
 			if ( ! $ticket )
 				wp_die( __( 'The ticket does not exist', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
+			if ( ! $ticket->view_by_super_admin && is_super_admin() )
+				incsub_support_update_ticket( $ticket->ticket_id, array( 'view_by_superadmin' => 1 ) );
 
 			// Last reply user
 			$last_reply_user_name = '';
@@ -235,6 +269,9 @@ class Incsub_Support_Network_Menu extends Incsub_Support_Admin_Menu {
 			if ( ! $ticket )
 				wp_die( __( 'The ticket does not exist', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
+			if ( ! $ticket->view_by_super_admin && is_super_admin() )
+				incsub_support_update_ticket( $ticket->ticket_id, array( 'view_by_superadmin' => 1 ) );
+
 			$this->render_edit_ticket_tabs( $ticket );
 
 			include_once( 'inc/class-table-tickets-history.php' );
@@ -242,6 +279,26 @@ class Incsub_Support_Network_Menu extends Incsub_Support_Admin_Menu {
 			$ticket_history_table->set_ticket( absint( $_GET['tid'] ) );
 			$ticket_history_table->prepare_items();
 			$ticket_history_table->display();
+
+			if ( isset( $_POST['category'] ) )
+				$ticket->cat_id = absint( $_POST['category'] );
+
+			if ( isset( $_POST['ticket-priority'] ) )
+				$ticket->ticket_priority = absint( $_POST['ticket-priority'] );
+
+			if ( isset( $_POST['responsibility'] ) ) {
+				$responsibility = $_POST['responsibility'];
+			}
+			else {
+				if ( $ticket->admin_id == get_current_user_id() )
+					$responsibility = 'keep';
+				else
+					$responsibility = 'accept';
+			}
+
+			if ( isset( $_POST['closeticket'] ) )
+				$ticket->ticket_status = 5;
+
 
 			// Categories dropdown
 			$categories_dropdown = incsub_support_ticket_categories_dropdown(

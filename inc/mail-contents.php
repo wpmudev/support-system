@@ -139,7 +139,53 @@ function incsub_support_send_user_reply_mail( $user, $response_user, $ticket_id,
 
 	wp_mail( $user->user_email, __( "Ticket response notification: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $ticket['subject'], $mail_content, $headers );
 }
+function incsub_support_send_user_reply_mail_b( $ticket, $reply ) {
+	
+	$ticket_creator = get_userdata( $ticket->user_id );
+	if ( ! $ticket_creator )
+		return;
 
+	$poster_id = $reply->get_poster_id();
+	$poster = get_userdata( $poster_id );
+	if ( ! $poster )
+		return;
+
+	$headers = incsub_support_get_email_headers();
+
+	$visit_link = get_admin_url( $ticket->blog_id, 'admin.php' );
+	$visit_link = add_query_arg(
+		array( 
+			'tid' => $ticket->ticket_id,
+			'page' => 'single-ticket-manager'
+		),
+		$visit_link
+	);
+
+	if ( is_multisite() ) {
+		switch_to_blog( $ticket->blog_id );
+		$blogname = get_bloginfo( 'name' );
+		restore_current_blog();	
+	}
+	else {
+		$blogname = get_bloginfo( 'name' );
+	}
+	
+
+	// Email arguments
+	$args = array(
+		'title' 				=> $ticket->subject,
+		'visit_link' 			=> $visit_link,
+		'ticket_status'			=> incsub_support_get_ticket_status_name( $ticket->ticket_status ),
+		'ticket_priority'		=> incsub_support_get_ticket_priority_name( $ticket->ticket_priority ),
+		'ticket_message'		=> $reply->message,
+		'user_nicename'			=> $poster->display_name,
+		'site_name'				=> $blogname
+	);
+
+	$mail_content = incsub_support_user_get_reply_ticket_mail_content( $args );
+
+	wp_mail( $ticket_creator->user_email, __( "Ticket response notification: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $reply->subject, $mail_content, $headers );
+}
 
 /**
  * Send a mail to an admin when a update in a ticket has been submitted
@@ -180,6 +226,43 @@ function incsub_support_send_admin_reply_mail( $admin_user, $response_user, $tic
 	$mail_content = incsub_support_admin_get_reply_ticket_mail_content( $args );
 
 	wp_mail( $admin_user->user_email, __( "Ticket response notification: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $ticket['subject'], $mail_content, $headers );
+}
+function incsub_support_send_admin_reply_mail_b( $admin_user, $ticket, $reply ) {
+	
+	$headers = incsub_support_get_email_headers();
+
+	$poster_id = $reply->get_poster_id();
+	$poster = get_userdata( $poster_id );
+	if ( ! $poster )
+		return;
+
+	// Variables for the message
+	if ( is_multisite() )
+		$admin_url = network_admin_url( 'admin.php?page=ticket-manager-b' );
+	else
+		$admin_url = admin_url( 'admin.php?page=ticket-manager-b' );
+
+	$visit_link = add_query_arg(
+		array( 
+			'tid' => $ticket->ticket_id,
+			'action' => 'edit',
+		),
+		$admin_url
+	);
+
+	// Email arguments
+	$args = array(
+		'title' 				=> $reply->subject,
+		'visit_link' 			=> $visit_link,
+		'ticket_status'			=> incsub_support_get_ticket_status_name( $ticket->ticket_status ),
+		'ticket_priority'		=> incsub_support_get_ticket_priority_name( $ticket->ticket_priority ),
+		'ticket_message'		=> $reply->message,
+		'user_nicename'			=> $poster->display_name
+	);
+
+	$mail_content = incsub_support_admin_get_reply_ticket_mail_content( $args );
+
+	wp_mail( $admin_user->user_email, __( "Ticket response notification: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $reply->subject, $mail_content, $headers );
 }
 
 
