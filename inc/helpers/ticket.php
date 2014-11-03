@@ -51,7 +51,8 @@ function incsub_support_get_tickets_b( $args = array() ) {
 		'site_id' => $current_site_id,
 		'count' => false,
 		'orderby' => 'ticket_updated',
-		'order' => 'desc'
+		'order' => 'desc',
+		's' => false
 	);
 	$args = wp_parse_args( $args, $defaults );
 
@@ -68,8 +69,8 @@ function incsub_support_get_tickets_b( $args = array() ) {
 	if ( $category )
 		$where[] = $wpdb->prepare( "t.cat_id = %d", $category );
 
-	if ( $priority )
-		$where[] = $wpdb->prepare( "t.cat_id = %d", $priority );
+	if ( $priority !== false )
+		$where[] = $wpdb->prepare( "t.ticket_priority = %d", $priority );
 
 	if ( absint( $blog_id ) > 0 )
 		$where[] = $wpdb->prepare( "t.blog_id = %d", $blog_id );
@@ -82,6 +83,11 @@ function incsub_support_get_tickets_b( $args = array() ) {
 	if ( $view_by_superadmin !== null )
 		$where[] = $wpdb->prepare( "t.view_by_superadmin = %d", $view_by_superadmin );
 
+	if ( $s ) {
+		$s = '%' . $s . '%';
+		$where[] = $wpdb->prepare( "(t.title LIKE %s OR tm.message LIKE %s)", $s, $s );
+	}
+
 	$tickets_table = incsub_support()->model->tickets_table;
 
 	$order = strtoupper( $order );
@@ -93,8 +99,19 @@ function incsub_support_get_tickets_b( $args = array() ) {
 
 	$where = "WHERE " . implode( ' AND ', $where );
 
+	$join = '';
+	if ( $s ) {
+		$tickets_messages_table = incsub_support()->model->tickets_messages_table;
+		$join = "LEFT JOIN $tickets_messages_table tm ON t.ticket_id = tm.ticket_id";
+	}
+
+	$group = '';
+	if ( $s ) {
+		$group = "GROUP BY t.ticket_id";
+	}
+
 	if ( $count ) {
-		$query = "SELECT COUNT(ticket_id) FROM $tickets_table t $where";
+		$query = "SELECT COUNT(t.ticket_id) FROM $tickets_table t $join $where $group";
 
 		$key = md5( $query );
 		$cache_key = "incsub_support_get_tickets_count:$key";
@@ -108,7 +125,7 @@ function incsub_support_get_tickets_b( $args = array() ) {
 		return $results;
 	}
 	else {
-		$query = "SELECT * FROM $tickets_table t $where $order $limit";
+		$query = "SELECT t.* FROM $tickets_table t $join $where $group $order $limit";
 
 		$key = md5( $query );
 		$cache_key = "incsub_support_get_tickets:$key";
@@ -272,6 +289,175 @@ function incsub_support_update_ticket( $ticket_id, $args ) {
 		$update_wildcards,
 		array( '%d' )
 	);
+
+}
+
+function incsub_support_insert_ticket( $args = array() ) {
+	global $wpdb, $current_site;
+
+	$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
+
+	$default_category = incsub_support_get_default_ticket_category();
+	$defaults = array(
+		'ticket_priority' => 0,
+		'cat_id' => $default_category->cat_id,
+		'user_id' => get_current_user_id(),
+		'admin_id' => 0,
+		'site_id' => $current_site_id,
+		'blog_id' => get_current_blog_id(),
+		'view_by_superadmin' => 0,
+		'title' => '',
+		'message' => '',
+		'attachments' => array()
+	);
+
+	$args = wp_parse_args( $args, $defaults );
+
+	$args['last_reply_id'] = 0;
+	$args['ticket_type'] = 1;
+	$args['ticket_opened'] = current_time( 'mysql', true );
+	$args['ticket_status'] = 0;
+	$args['num_replies'] = 0;
+
+	$insert = array();
+	$insert_wildcards = array();
+
+	// SITE ID
+	$insert['site_id'] = $args['site_id']; 
+	$insert_wildcards[] = '%d'; 
+
+	// BLOG ID
+	if ( ! is_multisite() )
+		$insert['blog_id'] = $args['blog_id'];
+	elseif ( is_multisite() && get_blog_details( $args['blog_id'] ) )
+		$insert['blog_id'] = absint( $args['blog_id'] );
+	else
+		$insert['blog_id'] = get_current_blog_id();
+
+	$insert_wildcards[] = '%d'; 	
+
+	// CATEGORY
+	$category = incsub_support_get_ticket_category( absint( $args['cat_id'] ) );
+	if ( ! $category ) {
+		$insert['cat_id'] = $default_category->cat_id;
+	}
+	else {
+		$insert['cat_id'] = $category->cat_id;
+	}
+	$insert_wildcards[] = '%d';
+
+	// USER ID
+	$user = get_userdata( $args['user_id'] );
+	if ( ! $user && ! is_user_logged_in() )
+		$insert['user_id'] = 0;
+	elseif ( ! $user && is_user_logged_in() )
+		$insert['user_id'] = get_current_user_id();
+	else
+		$insert['user_id'] = $args['user_id'];
+
+	$insert_wildcards[] = '%d';
+
+	// ADMIN ID
+	$user = get_userdata( $args['admin_id'] );
+	if ( ! $user )
+		$insert['admin_id'] = 0;
+	else
+		$insert['admin_id'] = $args['admin_id'];
+
+	$insert_wildcards[] = '%d';
+
+	// LAST REPLY ID
+	$insert['last_reply_id'] = $args['last_reply_id']; 
+	$insert_wildcards[] = '%d'; 
+
+	// TICKET TYPE
+	$insert['ticket_type'] = $args['ticket_type']; 
+	$insert_wildcards[] = '%d'; 
+
+	// TICKET PRIORITY
+	$insert['ticket_priority'] = $args['ticket_priority']; 
+	$insert_wildcards[] = '%d'; 
+
+	// TICKET STATUS
+	$insert['ticket_status'] = $args['ticket_status']; 
+	$insert_wildcards[] = '%d'; 
+
+	// TICKET OPENED
+	$insert['ticket_opened'] = $args['ticket_opened']; 
+	$insert_wildcards[] = '%s'; 
+
+	// NUM REPLIES
+	$insert['num_replies'] = $args['num_replies']; 
+	$insert_wildcards[] = '%d'; 
+
+	// TITLE
+	if ( empty( $args['title'] ) )
+		return new WP_Error( 'empty_title', __( 'Ticket title must not be empty.', INCSUB_SUPPORT_LANG_DOMAIN ) );
+	$insert['title'] = $args['title']; 
+	$insert_wildcards[] = '%s'; 
+
+	// VIEW BY SUPERADMIN
+	$insert['view_by_superadmin'] = $args['view_by_superadmin']; 
+	$insert_wildcards[] = '%d'; 
+
+
+	// MESAGE
+	if ( empty( $args['message'] ) )
+		return new WP_Error( 'empty_message', __( 'Message must not be empty.', INCSUB_SUPPORT_LANG_DOMAIN ) );
+	$message = $args['message'];
+
+	$table = incsub_support()->model->tickets_table;
+	$wpdb->insert(
+		$table,
+		$insert,
+		$insert_wildcards
+	);
+
+	$ticket_id = $wpdb->insert_id;
+
+	if ( ! $ticket_id )
+		return new WP_Error( 'insert_error', __( 'Error inserting the ticket, please try again later.', INCSUB_SUPPORT_LANG_DOMAIN ) );
+
+	if ( ! is_array( $args['attachments'] ) )
+		$args['attachments'] = array();
+
+	// NOW ADD THE FIRST REPLY
+	$reply_args = array(
+		'site_id' => $args['site_id'],
+		'subject' => stripslashes_deep( $args['title'] ),
+		'message' => $message,
+		'message_date' => current_time( 'mysql', 1 ),
+		'attachments' => $args['attachments'],
+		'send_emails' => false
+	);
+
+	if ( is_super_admin( $args['user_id'] ) ) {
+		$reply_args['user_id'] = 0;
+		$reply_args['admin_id'] = $args['user_id'];
+	}
+	else {
+		$reply_args['admin_id'] = 0;
+		$reply_args['user_id'] = $args['user_id'];	
+	}
+
+	$result = incsub_support_insert_ticket_reply( $ticket_id, $reply_args );
+
+	if ( ! $result ) {
+		incsub_support_delete_ticket_b( $ticket_id );
+		return new WP_Error( 'insert_error', __( 'Error inserting the ticket, please try again later.', INCSUB_SUPPORT_LANG_DOMAIN ) );
+	}
+
+	// Current user data
+	$user = get_userdata( get_current_user_id() );
+
+	$ticket = incsub_support_get_ticket_b( $ticket_id );
+
+	// First, a mail for the user that has just opened the ticket
+	incsub_support_send_user_new_ticket_mail( $ticket );
+
+	// Now, a mail for the main Administrator
+	incsub_support_send_admin_new_ticket_mail( $ticket );
+
 
 }
 

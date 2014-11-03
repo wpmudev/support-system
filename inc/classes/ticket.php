@@ -35,6 +35,8 @@ class Incsub_Support_Ticket {
 
 	private $replies = null;
 
+	private $message = '';
+
 	public $category = false;
 
 
@@ -104,6 +106,18 @@ class Incsub_Support_Ticket {
 			elseif( $last_reply->admin_id ) {
 				return $last_reply->admin_id;
 			}
+		}
+
+		if ( 'message' === $name ) {
+			if ( ! empty( $this->message ) )
+				return $this->message;
+
+			$replies = $this->get_replies();
+			if ( ! empty( $replies ) )
+				$this->message = $this->replies[0]->message;
+
+			return $this->message;
+
 		}
 
 		return false;

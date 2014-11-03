@@ -55,6 +55,7 @@ class Incsub_Support_Tickets_History_Table extends WP_List_Table {
     }
 
     function column_create_faq( $item ) {
+        return '';
         ob_start();
         $link = MU_Support_System::$network_single_faq_question_menu->get_permalink();
         $link = add_query_arg( 'action', 'new', $link );
@@ -74,7 +75,9 @@ class Incsub_Support_Tickets_History_Table extends WP_List_Table {
     function column_message( $item ) {
         ob_start();
         ?>
-            <h3 class="support-system-reply-subject"><?php echo $item->subject; ?></h3>
+            <?php if ( $item->is_main_reply ): ?>
+                <h3 class="support-system-reply-subject"><?php echo $item->subject; ?></h3>
+            <?php endif; ?>
             <p><?php echo $item->message; ?></p>
             <?php if ( ! empty( $item->attachments ) ): ?>
                 <div class="ticket-acttachments-wrap">

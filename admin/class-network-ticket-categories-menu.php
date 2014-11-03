@@ -30,6 +30,9 @@ class Incsub_Support_Network_Ticket_Categories extends Incsub_Support_Admin_Menu
 			$add = isset( $_POST['submit-new-ticket-category'] );
 			
 			if ( $edit ) {
+				if ( ! incsub_support_current_user_can( 'update_ticket_category' ) )
+					return;
+
 				// Editing a category ?
 				$ticket_category_id = absint( $_POST['ticket_cat_id'] );
 				$ticket_category = incsub_support_get_ticket_category( $ticket_category_id );
@@ -38,6 +41,9 @@ class Incsub_Support_Network_Ticket_Categories extends Incsub_Support_Admin_Menu
 				check_admin_referer( 'edit-ticket-category-' . $ticket_category->cat_id );
 			}
 			elseif ( $add ) {
+				if ( ! incsub_support_current_user_can( 'insert_ticket_category' ) )
+					return;
+				
 				check_admin_referer( 'add-ticket-category' );
 			}
 			else {

@@ -7,19 +7,17 @@ if(!class_exists('WP_List_Table')){
 
 class Incsub_Support_Tickets_Table extends WP_List_Table {
 
-    // Status variables for filtering purposes
-    private $blog_id = false;
-    private $status = false;
-    private $priority = false;
-    private $category = false;
-
     function __construct( $args = array() ){
+
         //Set parent defaults
         parent::__construct( array(
             'singular'  => __( 'Ticket', INCSUB_SUPPORT_LANG_DOMAIN ),  
             'plural'    => __( 'Tickets', INCSUB_SUPPORT_LANG_DOMAIN ), 
             'ajax'      => false        
         ) );
+
+        $defaults = array_merge( $this->_args, array( 'status' => 'all' ) );
+        $this->_args = wp_parse_args( $args, $defaults );
         
     }
 
@@ -87,7 +85,7 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
                 'tid' => (int)$item->ticket_id,
                 'action' => 'edit'
             ),
-            incsub_support()->admin->menus['network_support_menu']->get_menu_url()
+            apply_filters( 'support_system_tickets_table_menu_url', '' )
         );
 
         $delete_link = add_query_arg( 
@@ -109,24 +107,29 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
             )
         );
 
-        if ( 'archive' == $this->status ) {
-            $actions = array(
-                'delete'    => sprintf( __( '<a href="%s">Delete ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_link ),
-                'open'      => sprintf( __( '<a href="%s">Open ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $open_link )
-            );
-            
+        $actions = array(
+            'delete'    => sprintf( __( '<a href="%s">Delete ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_link ),
+            'open'      => sprintf( __( '<a href="%s">Open ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $open_link ),
+            'close'     => sprintf( __( '<a href="%s">Close ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $close_link )
+        );
+
+        $status = $this->_args['status'];
+
+        if ( 'archive' == $status ) {
+            unset( $actions['close'] );       
         }
         else {
-            $actions = array();
             if ( 5 == (int)$item->ticket_status ) {
-                $actions['delete'] = sprintf( __( '<a href="%s">Delete ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_link );
-                $actions['open'] = sprintf( __( '<a href="%s">Open ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $open_link );
+                unset( $actions['close'] );    
             }
             else {
-                $actions['close'] = sprintf( __( '<a href="%s">Close ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $close_link );
+                unset( $actions['open'] );    
+                unset( $actions['delete'] );    
             }
 
         }
+
+        $actions = apply_filters( 'support_system_tickets_actions', $actions, $item );        
 
         return '<a href="' . $link . '">' . stripslashes_deep( $item->title ) . '</a>' . $this->row_actions($actions); 
         
@@ -168,6 +171,10 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
             'submitted' => __( 'Submitted From', INCSUB_SUPPORT_LANG_DOMAIN ),
             'updated'   => __( 'Last updated (GMT)', INCSUB_SUPPORT_LANG_DOMAIN )
         );
+
+        if ( ! $this->get_bulk_actions() )
+            unset( $columns['cb'] );
+        
         return apply_filters( 'support_network_ticket_columns', $columns );
     }
 
@@ -176,12 +183,12 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
 
             $cat_filter_args = array(
                 'show_empty' => __( 'View all categories', INCSUB_SUPPORT_LANG_DOMAIN ),
-                'selected' => absint( $this->category )
+                'selected' => isset( $_GET['category'] ) ? absint( $_GET['category'] ) : false
             );
 
             $priority_filter_args = array(
                 'show_empty' => __( 'All priorities', INCSUB_SUPPORT_LANG_DOMAIN ),
-                'selected' => $this->priority === false ? null : absint( $this->priority )
+                'selected' => isset( $_GET['priority'] ) ? absint( $_GET['priority'] ) : null
             );
 
             ?>
@@ -205,13 +212,22 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
             'open'      => __( 'Open', INCSUB_SUPPORT_LANG_DOMAIN )
         );
 
-        if ( 'archive' == $this->status ) {
+        if ( 'archive' == $this->_args['status'] ) {
             unset( $actions['close'] );
         }
-        elseif ( 'active' == $this->status ) {
+        elseif ( 'active' == $this->_args['status'] ) {
             unset( $actions['delete'] );
             unset( $actions['open'] );
         }
+
+        if ( ! incsub_support_current_user_can( 'update_ticket' ) )
+            $actions = array();
+
+        if ( ! incsub_support_current_user_can( 'delete_ticket' ) ) {
+            unset( $actions['delete'] );
+        }
+
+        $actions = apply_filters( 'support_system_tickets_bulk_actions', $actions );
 
         return $actions;
 
@@ -221,7 +237,7 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
 
     function process_bulk_action() {
         
-        if( 'delete' === $this->current_action() ) {
+        if( 'delete' === $this->current_action() && incsub_support_current_user_can( 'delete_ticket' ) ) {
 
             if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) ) {
                 $tickets = incsub_support_get_tickets( $_POST['ticket'] );
@@ -229,14 +245,14 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
                     $ticket->delete();
             }
             elseif ( isset( $_GET['tid'] ) && is_numeric( $_GET['tid'] ) ) {
-                $ticket = incsub_support_get_ticket( $_GET['tid'] );
+                $ticket = incsub_support_get_ticket_b( $_GET['tid'] );
                 if ( $ticket )
-                    $ticket->delete();
+                    incsub_support_delete_ticket_b( $ticket->ticket_id );
             }
 
         }
 
-        if( 'open' === $this->current_action() ) {
+        if( 'open' === $this->current_action() && incsub_support_current_user_can( 'update_ticket' ) ) {
             $ids = array();
             
             if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) )
@@ -250,7 +266,7 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
             }
         }
 
-        if( 'close' === $this->current_action() ) {
+        if( 'close' === $this->current_action() && incsub_support_current_user_can( 'update_ticket' ) ) {
             $ids = array();
             if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) )
                 $ids = $_POST['ticket'];
@@ -279,22 +295,6 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
         echo '</tr>';
     }
 
-    public function set_blog_id( $blog_id ) {
-        $this->blog_id = $blog_id;
-    }
-
-    public function set_status( $status ) {
-        $this->status = $status;
-    }
-
-    public function set_category( $category ) {
-        $this->category = $category;
-    }
-
-    public function set_priority( $priority ) {
-        $this->priority = $priority;
-    }
-    
 
     function prepare_items() {
 
@@ -319,24 +319,11 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
         $this->process_bulk_action();
         $current_page = $this->get_pagenum();        
 
-        $args = array();
-
-        // Are we filtering by category?
-        if ( $this->category )
-            $args['category'] = absint( $this->category );
-
-        if ( $this->priority !== false )
-            $args['priority'] = absint( $this->priority );
-
-        if ( $this->status )
-            $args['status'] = $this->status;
-            
-
-        $args['per_page'] = $per_page;
-        $args['page'] = $current_page;
-
-        if ( $blog_id = absint( $this->blog_id ) )
-            $args['blog_id'] = $blog_id;
+        $args = apply_filters( 'support_system_tickets_table_query_args', array(
+            'status' => $this->_args['status'],
+            'per_page' => $per_page,
+            'page' => $current_page
+        ) );
 
         $this->items = incsub_support_get_tickets_b( $args );
         $total_items = incsub_support_get_tickets_count( $args );

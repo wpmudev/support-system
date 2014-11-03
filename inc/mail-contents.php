@@ -42,6 +42,38 @@ function incsub_support_send_user_new_ticket_mail( $user, $ticket_id, $ticket ) 
 
 	wp_mail( $user->user_email, __( "Ticket submitted: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $ticket['subject'], $mail_content, $headers );
 }
+function incsub_support_send_user_new_ticket_mail_b( $ticket ) {
+
+	$ticket_creator = get_userdata( $ticket->user_id );
+	if ( ! $ticket_creator )
+		return;
+
+	$headers = incsub_support_get_email_headers();
+
+	$visit_link = get_admin_url( $ticket->blog_id, 'admin.php' );
+	$visit_link = add_query_arg(
+		array( 
+			'tid' => $ticket_id,
+			'page' => 'ticket-manager-b',
+			'action' => 'edit',
+			'tab' => 'history'
+		),
+		$visit_link
+	);
+
+	$plugin = incsub_support();
+	$args = array(
+		'support_fetch_imap' 	=> incsub_support_get_support_fetch_imap_message(),
+		'title' 				=> $ticket->title,
+		'visit_link' 			=> $visit_link,
+		'ticket_status'			=> incsub_support_get_ticket_status_name( $ticket->ticket_status ),
+		'ticket_priority'		=> incsub_support_get_ticket_priority_name( $ticket->ticket_priority ),
+		'site_name'				=> get_bloginfo( 'name' )
+	);
+	$mail_content = incsub_support_user_get_new_ticket_mail_content( $args );
+
+	wp_mail( $ticket_creator->user_email, __( "Ticket submitted: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $ticket->title, $mail_content, $headers );
+}
 
 /**
  * Send a mail to the main Administrator when a new
@@ -90,6 +122,50 @@ function incsub_support_send_admin_new_ticket_mail( $user, $ticket_id, $ticket )
 	}
 
 	wp_mail( $admin_email, __( "New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $ticket['subject'], $mail_content, $headers );
+}
+function incsub_support_send_admin_new_ticket_mail_b( $ticket ) {
+	
+	$headers = incsub_support_get_email_headers();
+
+	if ( is_multisite() )
+		$network_admin = network_admin_url( 'admin.php?page=ticket-manager-b' );
+	else
+		$network_admin = admin_url( 'admin.php?page=ticket-manager-b' );
+
+
+	$visit_link = add_query_arg(
+		array( 
+			'tid' => $ticket_id,
+			'action' => $edit,
+			'tab' => 'history'
+		),
+		$network_admin
+	);
+
+	$admin_id = $ticket->admin_id;
+	$user = get_userdata( $admin_id );
+	if ( ! $user ) {
+		$settings = incsub_support_get_settings();
+		$main_admin = $settings['incsub_support_main_super_admin'];
+		$user = get_user_by( 'login', $main_admin );
+		if ( ! $user )
+			return;
+	}
+
+	// Email arguments
+	$args = array(
+		'support_fetch_imap' 	=> incsub_support_get_support_fetch_imap_message(),
+		'title' 				=> $ticket->subject,
+		'visit_link' 			=> $visit_link,
+		'ticket_status'			=> incsub_support_get_ticket_status_name( $ticket->ticket_status ),
+		'ticket_priority'		=> incsub_support_get_ticket_priority_name( $ticket->ticket_priority ),
+		'ticket_message'		=> $ticket->message,
+		'user_nicename'			=> $user->display_name
+	);
+
+	$mail_content = incsub_support_admin_get_new_ticket_mail_content( $args );
+
+	wp_mail( $user->user_email, __( "New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $ticket->title, $mail_content, $headers );
 }
 
 /**

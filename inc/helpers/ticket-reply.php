@@ -27,8 +27,15 @@ function incsub_support_get_ticket_replies( $ticket_id ) {
 		$_replies = $results;
 
 	$replies = array();
+	$i = 0;
 	foreach ( $_replies as $_reply ) {
-		$replies[] = incsub_support_get_ticket_reply( $_reply );
+		$reply = incsub_support_get_ticket_reply( $_reply );
+
+		if ( $i === 0 )
+			$reply->is_main_reply = true;
+
+		$replies[] = $reply;
+		$i++;
 	}
 
 	return $replies;
@@ -56,7 +63,8 @@ function incsub_support_insert_ticket_reply( $ticket_id, $args = array() ) {
 		'subject' => 'Re: ' . stripslashes_deep( $ticket->title ),
 		'message' => '',
 		'message_date' => current_time( 'mysql', 1 ),
-		'attachments' => array()
+		'attachments' => array(),
+		'send_emails' => true
 	);
 
 	$args = wp_parse_args( $args, $defaults );
@@ -84,6 +92,12 @@ function incsub_support_insert_ticket_reply( $ticket_id, $args = array() ) {
 		return false;
 
 	$reply_id = $wpdb->insert_id;
+
+	if ( ! $reply_id )
+		return false;
+
+	if ( ! $send_emails )
+		return true;
 
 	$reply = incsub_support_get_ticket_reply( $reply_id );
 

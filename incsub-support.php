@@ -218,6 +218,8 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/ticket-category.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/ticket-reply.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/template.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/settings.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/capabilities.php');
 
 			// Admin
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/support-menu.php');

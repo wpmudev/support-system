@@ -20,6 +20,8 @@ class Incsub_Support_Ticket_Reply {
 
 	public $attachments = array();
 
+	public $is_main_reply = false;
+
 	public static function get_instance( $ticket_reply_id ) {
 		global $wpdb, $current_site;
 
