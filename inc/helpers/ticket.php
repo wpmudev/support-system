@@ -461,4 +461,27 @@ function incsub_support_insert_ticket( $args = array() ) {
 
 }
 
+function incsub_support_recount_ticket_replies( $ticket_id ) {
+	global $wpdb;
+	
+	$table = incsub_support()->model->tickets_table;
+	
+	$ticket = incsub_support_get_ticket_b( $ticket_id );
+
+	if ( ! $ticket )
+		return;
+	
+	$replies = $ticket->get_replies();
+
+	$num_replies = count( $replies ) - 1;
+	
+	$wpdb->update(
+		$table,
+		array( 'num_replies' => $num_replies ),
+		array( 'ticket_id' => $ticket_id ),
+		array( '%d' ),
+		array( '%d' )
+	);
+}
+
 

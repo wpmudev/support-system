@@ -1,0 +1,76 @@
+.support-system-ticket-title {
+	text-align:center;
+	border-bottom:1px solid #ABABAB;
+	padding-bottom:1.5rem;
+	margin-bottom:1.5rem;
+	width:70%;
+	margin:0 auto;
+}
+.support-system-main-reply {
+	width:70%;
+	margin:2.5rem auto 3rem;
+	overflow:hidden;
+}
+.support-system-main-reply .support-system-ticket-author {
+	float:left;
+	width:20%;
+}
+.support-system-main-reply .support-system-ticket-message {
+	float:left;
+	width:80%;
+	border-bottom:1px solid #DEDEDE;
+	margin-bottom:1rem;
+}
+
+.support-system-main-reply .support-system-ticket-date {
+	font-style: italic;
+}
+
+/** Ticket Replies **/
+.support-system-ticket-replies {
+	box-sizing: border-box;
+	width:70%;
+	padding-right:3rem;
+	clear:both;
+	float:left;
+}
+
+.support-system-ticket-replies .support-system-ticket-reply {
+	padding-top:2.5rem;
+	padding-bottom:2.5rem;
+	border-top:1px solid #DEDEDE;
+}
+.support-system-ticket-replies .support-system-ticket-reply:first-child {
+	padding-top:0;
+	border-top:none;
+}
+
+.support-system-ticket-replies .support-system-ticket-reply-author img {
+	margin-right:1.5rem;
+}
+
+
+/** Ticket Details **/
+.support-system-ticket-details {
+	box-sizing: border-box;
+	width:30%;
+	float:right;
+	padding: 15px;
+	background:#C2C2C2;
+	border: 1px solid #AEAEAE;
+}
+.support-system-ticket-details h3 {
+	margin-top:0;
+	margin-bottom:2rem;
+}
+.support-system-ticket-details ul {
+	list-style:none;
+	padding-left:1rem;
+}
+.support-system-ticket-details ul li {
+	margin-top:1rem;
+	color:#333;
+}
+.support-system-ticket-details ul li:first-child {
+	margin-top: 0;
+}

@@ -1,0 +1,8 @@
+{
+  "name": "incsub-support",
+  "version": "2.0",
+  "private": "true",
+  "dependencies": {
+    "foundation": "zurb/bower-foundation"
+  }
+}

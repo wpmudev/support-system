@@ -1,5 +1,30 @@
 <?php
 
+
+/**
+ * Translate dates
+ * 
+ * @param string $date The date
+ * @return string Date
+ */
+function incsub_support_get_translated_date( $date, $human_read = false ) {
+	// get the date from gmt date in Y-m-d H:i:s
+	$date_in_gmt = get_date_from_gmt($date);
+
+	if ( $human_read ) {
+		$from = mysql2date( 'U', $date_in_gmt, true );
+		$transl_date = human_time_diff( $from, current_time( 'timestamp' ) );
+	}
+	else {
+		$format = get_option("date_format") ." ". get_option("time_format");
+
+		//get it localised
+		$transl_date = mysql2date( $format, $date_in_gmt, true );
+	}
+
+	return $transl_date;
+}
+
 function incsub_support_get_model() {
 	return MU_Support_System_Model::get_instance();
 }

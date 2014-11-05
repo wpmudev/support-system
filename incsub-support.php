@@ -74,6 +74,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		public static $admin_faq_menu;
 
 		public $admin;
+		public $shortcodes = null;
 
 		private static $instance = null;
 
@@ -113,6 +114,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			add_action( 'init', array( &$this, 'admin_menus' ) );
 
 			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_styles' ) );
+			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_front_styles' ) );
 
 		}
 
@@ -120,6 +122,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		public function init_plugin() {
 
 			$this->model = incsub_support_get_model();
+			$this->query = new Incsub_Support_Query();
 
 			if ( is_admin() )
 				$this->admin = new Incsub_Support_Admin();
@@ -155,6 +158,9 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			);
 
 			self::$settings = wp_parse_args( get_site_option( 'incsub_support_settings' ), self::get_default_settings() );
+
+			if ( ( is_multisite() && is_main_site( get_current_blog_id() ) ) || ! is_multisite() )
+				$this->shortcodes = new Incsub_Support_Shortcodes();
 		}
 
 		public function load_text_domain() {
@@ -168,6 +174,10 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 		public function enqueue_styles() {
 			wp_enqueue_style( 'support-admin-icon', INCSUB_SUPPORT_ASSETS_URL . 'css/icon-styles.css', array(), '20130607' );
+		}
+
+		public function enqueue_front_styles() {
+			wp_enqueue_style( 'support-system', INCSUB_SUPPORT_ASSETS_URL . 'css/incsub-support.css' );
 		}
 
 		
@@ -208,11 +218,12 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			}
 
 			// Classes
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/ticket.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/ticket-category.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/ticket-reply.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-ticket.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-ticket-category.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-ticket-reply.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-shortcodes.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-query.php');
 
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/general.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/ticket.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/ticket-category.php');
