@@ -53,7 +53,7 @@ function incsub_support_send_user_new_ticket_mail_b( $ticket ) {
 	$visit_link = get_admin_url( $ticket->blog_id, 'admin.php' );
 	$visit_link = add_query_arg(
 		array( 
-			'tid' => $ticket_id,
+			'tid' => $ticket->ticket_id,
 			'page' => 'ticket-manager-b',
 			'action' => 'edit',
 			'tab' => 'history'
@@ -135,8 +135,8 @@ function incsub_support_send_admin_new_ticket_mail_b( $ticket ) {
 
 	$visit_link = add_query_arg(
 		array( 
-			'tid' => $ticket_id,
-			'action' => $edit,
+			'tid' => $ticket->ticket_id,
+			'action' => 'edit',
 			'tab' => 'history'
 		),
 		$network_admin

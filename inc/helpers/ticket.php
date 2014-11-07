@@ -280,6 +280,9 @@ function incsub_support_update_ticket( $ticket_id, $args ) {
 		}
 	}
 
+	if ( empty( $update ) )
+		return false;
+	
 	$tickets_table = incsub_support()->model->tickets_table;
 
 	$wpdb->update(
@@ -453,10 +456,10 @@ function incsub_support_insert_ticket( $args = array() ) {
 	$ticket = incsub_support_get_ticket_b( $ticket_id );
 
 	// First, a mail for the user that has just opened the ticket
-	incsub_support_send_user_new_ticket_mail( $ticket );
+	incsub_support_send_user_new_ticket_mail_b( $ticket );
 
 	// Now, a mail for the main Administrator
-	incsub_support_send_admin_new_ticket_mail( $ticket );
+	incsub_support_send_admin_new_ticket_mail_b( $ticket );
 
 
 }

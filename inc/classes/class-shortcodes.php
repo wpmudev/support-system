@@ -23,7 +23,7 @@ class Incsub_Support_Shortcodes {
 
 	private function start() {
 		incsub_support()->query->query();
-		echo '<div class="support-system">';
+		echo '<div id="support-system">';
 		ob_start();
 	}
 

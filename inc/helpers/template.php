@@ -53,6 +53,10 @@ function incsub_support_ticket_replies() {
 	incsub_support_get_template( 'ticket-replies', $ticket_id );
 }
 
+function incsub_support_tickets_list_filter() {
+	incsub_support_get_template( 'tickets-filter' );
+}
+
 function incsub_support_list_replies( $args = array() ) {
 	$defaults = array(
 		'avatar_size' => 32,
@@ -105,5 +109,93 @@ function incsub_support_list_replies( $args = array() ) {
 		return ob_get_clean();
 }
 
+function incsub_support_the_category_filter( $class = '' ) {
+	$selected = '';
+	if ( ! empty( $_REQUEST['ticket-cat'] ) && incsub_support_get_ticket_category( absint(  $_REQUEST['ticket-cat'] ) ) ) 
+		$selected = absint( $_REQUEST['ticket-cat'] );
 
+	$args = array(
+		'class' => $class,
+		'selected' => $selected
+	);
+
+	incsub_support_ticket_categories_dropdown( $args );
+}
+
+function incsub_support_the_search_input( $class = '' ) {
+	$search = ! empty( $_REQUEST['support-system-s'] ) ? stripslashes( $_REQUEST['support-system-s'] ) : '';
+	?>
+		<input type="text" placeholder="<?php esc_attr_e( 'Search tickets', INCSUB_SUPPORT_LANG_DOMAIN ); ?>" name="support-system-s" class="<?php echo esc_attr( $class ); ?>" value="<?php echo esc_attr( $search ); ?>"/>
+	<?php
+}
+
+function incsub_support_the_tickets_nav() {
+	$total_items = incsub_support()->query->found_tickets;
+	$total_pages = incsub_support()->query->total_pages;
+
+	if ( $total_pages == 1 )
+		return;
+
+	$current = incsub_support()->query->page;
+
+	$current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+
+	$output = '<span class="support-system-tickets-count">' . sprintf( _n( '1 item', '%s items', $total_items ), number_format_i18n( $total_items ) ) . '</span>';
+
+	$page_links = array();
+
+	$disable_first = $disable_last = '';
+	if ( $current == 1 )
+		$disable_first = ' disabled';
+
+	if ( $current == $total_pages )
+		$disable_last = ' disabled';
+
+	$page_links[] = sprintf( "<li><a class='%s' title='%s' href='%s'>%s</a></li>",
+		'first-page' . $disable_first,
+		esc_attr__( 'Go to the first page' ),
+		esc_url( remove_query_arg( 'support-sytem-page', $current_url ) ),
+		'&laquo;'
+	);
+
+	$page_links[] = sprintf( "<li><a class='%s' title='%s' href='%s'>%s</a></li>",
+		'prev-page' . $disable_first,
+		esc_attr__( 'Go to the previous page' ),
+		esc_url( add_query_arg( 'support-sytem-page', max( 1, $current-1 ), $current_url ) ),
+		'&lsaquo;'
+	);
+
+	$html_current_page = sprintf( "<span class='current-page' id='current-page-selector' type='text' name='support-sytem-page'>%d</span>", $current );
+
+	$html_total_pages = sprintf( "<span class='total-pages'>%s</span>", number_format_i18n( $total_pages ) );
+
+	$page_links[] = '<span class="paging-input">' . sprintf( _x( '%1$s of %2$s', 'paging' ), $html_current_page, $html_total_pages ) . '</span>';
+
+	$page_links[] = sprintf( "<li><a class='%s' title='%s' href='%s'>%s</a></li>",
+		'next-page' . $disable_last,
+		esc_attr__( 'Go to the next page' ),
+		esc_url( add_query_arg( 'support-sytem-page', min( $total_pages, $current+1 ), $current_url ) ),
+		'&rsaquo;'
+	);
+
+	$page_links[] = sprintf( "<li><a class='%s' title='%s' href='%s'>%s</a></li>",
+		'last-page' . $disable_last,
+		esc_attr__( 'Go to the last page' ),
+		esc_url( add_query_arg( 'support-sytem-page', $total_pages, $current_url ) ),
+		'&raquo;'
+	);
+
+	$pagination_links_class = 'pagination';
+
+	$output .= "\n<ul class='$pagination_links_class'>" . join( "\n", $page_links ) . '</ul>';
+
+	if ( $total_pages ) {
+		$page_class = $total_pages < 2 ? ' one-page' : '';
+	} else {
+		$page_class = ' no-pages';
+	}
+	$output = "<div class='support-system-pagination'>$output</div>";
+
+	echo $output;
+}
 

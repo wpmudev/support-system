@@ -30,9 +30,9 @@ function incsub_support_get_ticket_categories( $args = array() ) {
 	if ( $defcat !== null ) {
 		// This is an enum field type!!
 		if ( $defcat )
-			$where[] = $wpdb->prepare( "defcat = 2", $defcat );
+			$where[] = "defcat = 2";
 		else
-			$where[] = $wpdb->prepare( "defcat = 1", $defcat );
+			$where[] = "defcat = 1";
 	}	
 
 	$where = "WHERE " . implode( " AND ", $where );
@@ -95,6 +95,7 @@ function incsub_support_ticket_categories_dropdown( $args = array() ) {
 		'id' => 'ticket-cat',
 		'show_empty' => __( 'Select a category', INCSUB_SUPPORT_LANG_DOMAIN ),
 		'selected' => '',
+		'class' => '',
 		'echo' => true
 	);
 	$args = wp_parse_args( $args, $defaults );
@@ -107,7 +108,7 @@ function incsub_support_ticket_categories_dropdown( $args = array() ) {
 	$cats = incsub_support_get_ticket_categories();
 
 	?>
-		<select name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $id ); ?>">
+		<select class="<?php echo esc_attr( $class ); ?>" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $id ); ?>">
 			<?php if ( ! empty( $show_empty ) ): ?>	
 				<option value="" <?php selected( empty( $selected ) ); ?>><?php echo esc_html( $show_empty ); ?></option>
 			<?php endif; ?>

@@ -11,7 +11,7 @@ $namespace: "support-system";
 // Make sure the charset is set appropriately
 
 // Behold, here are all the Foundation components.
-.support-system {
+#support-system {
   @import "foundation/components/grid";
   //@import "foundation/components/accordion";
   @import "foundation/components/alert-boxes";
@@ -30,7 +30,7 @@ $namespace: "support-system";
   //@import "foundation/components/keystrokes";
   @import "foundation/components/labels";
   //@import "foundation/components/magellan";
-  //@import "foundation/components/orbit";
+  //@import "foundation/components/orbit"; 
   @import "foundation/components/pagination";
   @import "foundation/components/panels";
   //@import "foundation/components/pricing-tables";
@@ -51,11 +51,11 @@ $namespace: "support-system";
   @import "foundation/components/visibility";
 }
 
-.support-system {
+body #support-system {
   font-size: 100%;
 }
 /* line 396, ../../bower_components/foundation/scss/foundation/components/_global.scss */
-.support-system {
+body #support-system {
   padding: 0;
   margin: 0;
   font-weight: normal;
@@ -65,38 +65,52 @@ $namespace: "support-system";
   cursor: auto;
 }
 
-.support-system .support-system-ticket > li.support-system-ticket-author-data {
-  width:100px;
-}
 
 #support-system-single-ticket .support-system-ticket-author-data {
   width:150px;
 }
 
-.support-system h2.support-system-ticket-title {
+#support-system .support-system-tickets-list {
+  margin-left:0;
+}
+
+#support-system h2.support-system-ticket-title {
   margin-top:0;
   line-height: 1em;
 }
 
-.support-system ul.support-system-ticket-meta li {
-  font-size: rem-calc(19px);
+#support-system ul.support-system-ticket-meta li {
+  white-space: nowrap;
+  float:none;
+  display: inline-block;
+  font-size:rem-calc(11px);
 }
-.support-system .support-system-byauthor {
+
+#support-system li.support-system-ticket-content p:last-child {
+  margin-bottom: 1em;
+}
+#support-system .support-system-byauthor {
   text-transform: uppercase;
 }
 
-.support-system .support-system-tag {
+#support-system .support-system-tag {
   padding: 3px 4px;
   border:1px solid $iron;
   color:$steel;
 }
 
 #support-system-tickets ul.support-system-ticket {
-  padding-bottom:rem-calc(35px);
-  margin-bottom:rem-calc(45px);
+  margin-bottom:rem-calc(35px);
   border-bottom:1px solid $iron;
+  list-style:none;
+  margin-left:0;
 }
 
 #support-system-single-ticket .support-system-single-ticket-secondary {
   margin-top:rem-calc(50px);
+}
+
+input[type="submit"] {
+  background-repeat:none !important;
+  background-image:none !important;
 }

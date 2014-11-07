@@ -26,8 +26,15 @@ class Incsub_Support_Query {
 				'status' => 'open'
 			);
 
+			if ( $this->ticket_category_id )
+				$args['category'] = $this->ticket_category_id;
+
+			if ( stripslashes( $this->search ) )
+				$args['s'] = stripslashes( $this->search );
+
 			$this->tickets = incsub_support_get_tickets_b( $args );
 			$this->found_tickets = incsub_support_get_tickets_count( $args );
+			$this->total_pages = ceil( $this->found_tickets / $per_page );
 		}
 
 		$this->remaining_tickets = count( $this->tickets );
@@ -46,6 +53,7 @@ class Incsub_Support_Query {
 		$this->current_ticket = -1;
 		$this->ticket_category_id = 0;
 		$this->remaining_tickets = 0; 
+		$this->search = false;
 	}
 
 	public function parse() {
@@ -56,17 +64,18 @@ class Incsub_Support_Query {
 		}
 		else {
 			$this->is_tickets_index = true;
-			if ( $cat_id =$this->get_query_var( 'cat_id' ) ) {
+			if ( $cat_id =$this->get_query_var( 'ticket-cat' ) ) {
 				$this->is_ticket_category_index = true;	
 				$this->ticket_category_id = absint( $cat_id );
 			}
-			elseif ( $s = $this->get_query_var( 's' ) ) {
+			
+			if ( $s = $this->get_query_var( 'support-system-s' ) ) {
 				$this->is_search = true;
 				$this->search = $s;
 			}
 		}
 
-		$page = $this->get_query_var( 'page' );
+		$page = $this->get_query_var( 'support-sytem-page' );
 		$this->page = absint( $page ) ? absint( $page ) : 1;
 	}
 
@@ -154,7 +163,6 @@ function incsub_support_get_the_last_ticket_reply_url() {
 
 function incsub_support_get_the_ticket_updated_date() {
 	$ticket = incsub_support()->query->ticket;
-
 	return incsub_support_get_translated_date( $ticket->ticket_updated, true );
 }
 
@@ -192,8 +200,8 @@ function incsub_support_get_the_ticket_message() {
 
 function incsub_support_get_the_ticket_excerpt() {
 	$message = incsub_support_get_the_ticket_message();
-	$message = strip_tags( $message );
-	return wpautop( $message );
+	return wpautop( wp_trim_words( $message, 40, ' [...]' ) );
+	
 }
 
 function incsub_support_has_replies() {
@@ -205,10 +213,22 @@ function incsub_support_get_the_ticket_category() {
 	return $cat->cat_name;
 }
 
+function incsub_support_get_the_ticket_category_link() {
+	$cat = incsub_support_get_ticket_category( incsub_support()->query->ticket->cat_id );
+	$url = add_query_arg( 'ticket-cat', $cat->cat_id );
+	$url = remove_query_arg( 'support-system-s', $url );
+
+	return '<a href="' . esc_url( $url ) . '">' . $cat->cat_name . '</a>';
+}
+
 function incsub_support_get_the_ticket_priority() {
 	return incsub_support_get_ticket_priority_name( incsub_support()->query->ticket->ticket_priority );
 }
 
 function incsub_support_get_the_ticket_status() {
 	return incsub_support_get_ticket_status_name( incsub_support()->query->ticket->ticket_status );
+}
+
+function support_system_the_tickets_number() {
+	return incsub_support()->query->found_tickets;
 }

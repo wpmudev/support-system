@@ -49,6 +49,7 @@ class Incsub_Support_Admin_Support_Menu extends Incsub_Support_Parent_Support_Me
 	}
 
 	public function render_inner_page() {
+
 		$action = isset( $_GET['action'] ) ? $_GET['action'] : false;
 		$current_tab = $this->get_current_edit_ticket_tab();
 
@@ -101,8 +102,10 @@ class Incsub_Support_Admin_Support_Menu extends Incsub_Support_Parent_Support_Me
 			include( 'views/add-new-ticket.php' );
 		}
 		else {
+
 			$this->render_inner_page_tickets_table();
 		}
+
 	}
 
 	public function maybe_insert_new_ticket() {
@@ -116,10 +119,11 @@ class Incsub_Support_Admin_Support_Menu extends Incsub_Support_Parent_Support_Me
 			else
 				$args['message'] = wpautop( stripslashes_deep( $_POST['message-text'] ) );
 
-			if ( empty( $_POST['subject'] ) )
+			$title = strip_tags( stripslashes_deep( $_POST['subject'] ) );
+			if ( empty( $title ) )
 				add_settings_error( 'support_system_submit_new_ticket', 'empty_subject', __( 'Ticket subject must not be empty', INCSUB_SUPPORT_LANG_DOMAIN ) );
 			else
-				$args['title'] = strip_tags( stripslashes_deep( $_POST['message-text'] ) );
+				$args['title'] = $title;
 
 			$category = incsub_support_get_ticket_category( absint( $_POST['ticket-cat'] ) );
 			if ( ! $category ) {
