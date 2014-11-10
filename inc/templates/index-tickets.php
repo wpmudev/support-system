@@ -4,8 +4,6 @@
 		<?php incsub_support_tickets_list_filter(); ?>
 	</div>
 
-	<?php incsub_support_the_tickets_nav(); ?>
-
 	<hr/>
 
 	<?php if ( incsub_support_has_tickets() ): ?>
@@ -19,8 +17,17 @@
 					<li class="small-10 large-11 columns support-system-ticket-content">
 						<h2 class="support-system-ticket-title">
 							<a href="<?php echo esc_url( incsub_support_get_the_ticket_permalink() ); ?>" title="<?php echo esc_attr( incsub_support_get_the_ticket_title() ); ?>">
-								<?php echo incsub_support_get_the_ticket_title(); ?>
+								<?php echo incsub_support_get_the_ticket_title(); ?> 
 							</a>
+								<?php 
+									incsub_support_the_ticket_badges(
+										array(
+											'badge_base_class' => 'label',
+											'replies_badge_class' => 'secondary',
+											'status_badge_class' => 'success'
+										)
+									); 
+								?>
 						</h2>
 						<div class="support-system-ticket-message">
 							<?php echo incsub_support_get_the_ticket_excerpt(); ?>
@@ -37,5 +44,20 @@
 				</ul>
 			<?php endwhile; ?>
 		</ul>
+
+		<div class="row">
+			<div class="large-12 columns">
+				<?php 
+					incsub_support_paginate_links( 
+						array( 
+							'ul_class' => 'pagination right',
+							'current_class' => 'current',
+							'disabled_class' => 'unavailable',
+							'arrow_class' => 'arrow'
+						) 
+					); 
+				?>
+			</div>
+		</div>
 	<?php endif; ?>
 </div>

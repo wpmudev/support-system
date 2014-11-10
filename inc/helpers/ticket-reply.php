@@ -96,6 +96,8 @@ function incsub_support_insert_ticket_reply( $ticket_id, $args = array() ) {
 	if ( ! $reply_id )
 		return false;
 
+	incsub_support_recount_ticket_replies( $ticket_reply->ticket_id );
+
 	if ( ! $send_emails )
 		return true;
 
@@ -130,6 +132,32 @@ function incsub_support_insert_ticket_reply( $ticket_id, $args = array() ) {
 
 		}
 	}
+
+	return true;
+}
+
+function incsub_support_delete_ticket_reply( $reply_id ) {
+	global $wpdb, $current_site;
+
+	$ticket_reply = incsub_support_get_ticket_reply( $reply_id );
+	if ( ! $ticket_reply )
+		return false;
+
+	$ticket = incsub_support_get_ticket_b( $ticket_reply->ticket_id );
+	if ( ! $ticket )
+		return false;
+
+	$replies = $ticket->get_replies();
+	$main_reply = wp_list_filter( $replies, array( 'is_main_reply' => true ) );
+	if ( $main_reply->message_id == $reply_id ) {
+		// Do not allow to delete the main reply
+		return false;
+	}
+
+	$tickets_replies_table = $plugin->model->tickets_messages_table;
+
+	$wpdb->query( $wpdb->prepare( "DELETE FROM $tickets_replies_table WHERE message_id = %d", $reply_id ) );
+	incsub_support_recount_ticket_replies( $ticket_reply->ticket_id );
 
 	return true;
 }

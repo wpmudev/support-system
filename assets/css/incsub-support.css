@@ -3761,12 +3761,12 @@
   height: 1.84615rem;
   color: #222222;
   font-size: 1.07692rem;
-  margin-left: 0.38462rem;
+  margin-left: 0.07692rem;
 }
 /* line 110, ../../bower_components/foundation/scss/foundation/components/_pagination.scss */
 #support-system ul.pagination li a, #support-system ul.pagination li button {
   display: block;
-  padding: 0.07692rem 0.76923rem 0.07692rem;
+  padding: 0.07692rem 0.61538rem 0.07692rem;
   color: #999999;
   background: none;
   border-radius: 3px;
@@ -5148,4 +5148,9 @@ body #support-system {
 input[type="submit"] {
   background-repeat: none !important;
   background-image: none !important;
+}
+
+/* line 118, ../scss/incsub-support.scss */
+.support-system-ticket-title .label {
+  vertical-align: middle;
 }

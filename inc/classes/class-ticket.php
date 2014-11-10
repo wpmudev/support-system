@@ -44,8 +44,11 @@ class Incsub_Support_Ticket {
 	public static function get_instance( $ticket_id ) {
 		global $wpdb, $current_site;
 
-		if ( is_object( $ticket_id ) )
-			return new self( $ticket_id );
+		if ( is_object( $ticket_id ) ) {
+			$_ticket = new self( $ticket_id );
+			$_ticket = incsub_support_sanitize_ticket_fields( $_ticket );
+			return $_ticket;
+		}
 
 		$ticket_id = absint( $ticket_id );
 		if ( ! $ticket_id )
@@ -74,7 +77,12 @@ class Incsub_Support_Ticket {
 			wp_cache_add( $_ticket->ticket_id, $_ticket, 'support_system_tickets' );
 		}
 
+		if ( ! $_ticket )
+			return false;
+
 		$_ticket = new self( $_ticket );
+
+		$_ticket = incsub_support_sanitize_ticket_fields( $_ticket );
 
 		return $_ticket;
 

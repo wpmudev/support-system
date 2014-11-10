@@ -158,6 +158,10 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
         return incsub_support_get_translated_date( $item->ticket_updated ); 
     }
 
+    function column_replies( $item ) {
+        return $item->num_replies;
+    }
+
 
     function get_columns(){
         $columns = array(
@@ -169,6 +173,7 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
             'category'  => __( 'Category', INCSUB_SUPPORT_LANG_DOMAIN ),
             'staff'     => __( 'Staff Member', INCSUB_SUPPORT_LANG_DOMAIN ),
             'submitted' => __( 'Submitted From', INCSUB_SUPPORT_LANG_DOMAIN ),
+            'replies' => __( 'Replies no.', INCSUB_SUPPORT_LANG_DOMAIN ),
             'updated'   => __( 'Last updated (GMT)', INCSUB_SUPPORT_LANG_DOMAIN )
         );
 

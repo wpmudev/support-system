@@ -12,7 +12,7 @@
 					<input type="submit" class="button small" name="support-system-submit-filter" value="<?php esc_attr_e( 'Filter' , INCSUB_SUPPORT_LANG_DOMAIN ); ?>"/>
 				</div>
 				<div class="large-3 columns">
-					<h3 class="support-system-tickets-count"><?php printf( __( '%d tickets found', INCSUB_SUPPORT_LANG_DOMAIN ), support_system_the_tickets_number() ); ?></h3>
+					<h5 class="support-system-tickets-count text-right"><?php printf( __( '%d tickets', INCSUB_SUPPORT_LANG_DOMAIN ), support_system_the_tickets_number() ); ?></h5>
 				</div>
 			</div>
 		</form>

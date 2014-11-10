@@ -75,7 +75,7 @@ class Incsub_Support_Query {
 			}
 		}
 
-		$page = $this->get_query_var( 'support-sytem-page' );
+		$page = $this->get_query_var( 'support-system-page' );
 		$this->page = absint( $page ) ? absint( $page ) : 1;
 	}
 
@@ -217,6 +217,7 @@ function incsub_support_get_the_ticket_category_link() {
 	$cat = incsub_support_get_ticket_category( incsub_support()->query->ticket->cat_id );
 	$url = add_query_arg( 'ticket-cat', $cat->cat_id );
 	$url = remove_query_arg( 'support-system-s', $url );
+	$url = remove_query_arg( 'support-sytem-page', $url );
 
 	return '<a href="' . esc_url( $url ) . '">' . $cat->cat_name . '</a>';
 }

@@ -10,8 +10,11 @@ class Incsub_Support_Ticket_Category {
 	public static function get_instance( $cat_id ) {
 		global $wpdb, $current_site;
 
-		if ( is_object( $cat_id ) )
-			return new self( $cat_id );
+		if ( is_object( $cat_id ) ) {
+			$cat = new self( $cat_id );
+			$cat = incsub_support_sanitize_ticket_category_fields( $cat );
+			return $cat;
+		}
 
 		$cat_id = absint( $cat_id );
 		if ( ! $cat_id )
@@ -42,6 +45,8 @@ class Incsub_Support_Ticket_Category {
 		}
 
 		$_cat = new self( $_cat );
+
+		$_cat = incsub_support_sanitize_ticket_category_fields( $_cat );
 
 		return $_cat;
 

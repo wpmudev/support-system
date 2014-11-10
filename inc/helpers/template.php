@@ -129,73 +129,122 @@ function incsub_support_the_search_input( $class = '' ) {
 	<?php
 }
 
-function incsub_support_the_tickets_nav() {
-	$total_items = incsub_support()->query->found_tickets;
-	$total_pages = incsub_support()->query->total_pages;
 
-	if ( $total_pages == 1 )
-		return;
+function incsub_support_paginate_links( $args = '' ) {
+	global $wp_query, $wp_rewrite;
 
-	$current = incsub_support()->query->page;
+	$total = isset( incsub_support()->query->total_pages ) ? incsub_support()->query->total_pages : 0;
+	$current = isset( incsub_support()->query->page ) ? incsub_support()->query->page : 1;
 
 	$current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+	$pagenum_link = html_entity_decode( remove_query_arg( 'support-system-page', $current_url ) );
 
-	$output = '<span class="support-system-tickets-count">' . sprintf( _n( '1 item', '%s items', $total_items ), number_format_i18n( $total_items ) ) . '</span>';
-
-	$page_links = array();
-
-	$disable_first = $disable_last = '';
-	if ( $current == 1 )
-		$disable_first = ' disabled';
-
-	if ( $current == $total_pages )
-		$disable_last = ' disabled';
-
-	$page_links[] = sprintf( "<li><a class='%s' title='%s' href='%s'>%s</a></li>",
-		'first-page' . $disable_first,
-		esc_attr__( 'Go to the first page' ),
-		esc_url( remove_query_arg( 'support-sytem-page', $current_url ) ),
-		'&laquo;'
+	$defaults = array(
+		'ul_class' => 'support-system-pagination',
+		'disabled_class' => 'support-system-pag-disabled',
+		'arrow_class' => 'support-system-pag-arrow',
+		'current_class' => 'support-system-current',
+		'prev_text' => __( '&laquo; Previous', INCSUB_SUPPORT_LANG_DOMAIN ),
+		'next_text' => __( 'Next &raquo;', INCSUB_SUPPORT_LANG_DOMAIN ),
+		'end_size' => 1,
+		'mid_size' => 2,
+		'type' => 'plain',
+		'before_page_number' => '',
+		'after_page_number' => ''
 	);
 
-	$page_links[] = sprintf( "<li><a class='%s' title='%s' href='%s'>%s</a></li>",
-		'prev-page' . $disable_first,
-		esc_attr__( 'Go to the previous page' ),
-		esc_url( add_query_arg( 'support-sytem-page', max( 1, $current-1 ), $current_url ) ),
-		'&lsaquo;'
-	);
+	$args = wp_parse_args( $args, $defaults );
+	extract( $args );
 
-	$html_current_page = sprintf( "<span class='current-page' id='current-page-selector' type='text' name='support-sytem-page'>%d</span>", $current );
-
-	$html_total_pages = sprintf( "<span class='total-pages'>%s</span>", number_format_i18n( $total_pages ) );
-
-	$page_links[] = '<span class="paging-input">' . sprintf( _x( '%1$s of %2$s', 'paging' ), $html_current_page, $html_total_pages ) . '</span>';
-
-	$page_links[] = sprintf( "<li><a class='%s' title='%s' href='%s'>%s</a></li>",
-		'next-page' . $disable_last,
-		esc_attr__( 'Go to the next page' ),
-		esc_url( add_query_arg( 'support-sytem-page', min( $total_pages, $current+1 ), $current_url ) ),
-		'&rsaquo;'
-	);
-
-	$page_links[] = sprintf( "<li><a class='%s' title='%s' href='%s'>%s</a></li>",
-		'last-page' . $disable_last,
-		esc_attr__( 'Go to the last page' ),
-		esc_url( add_query_arg( 'support-sytem-page', $total_pages, $current_url ) ),
-		'&raquo;'
-	);
-
-	$pagination_links_class = 'pagination';
-
-	$output .= "\n<ul class='$pagination_links_class'>" . join( "\n", $page_links ) . '</ul>';
-
-	if ( $total_pages ) {
-		$page_class = $total_pages < 2 ? ' one-page' : '';
-	} else {
-		$page_class = ' no-pages';
+	// Who knows what else people pass in $args
+	$total = (int) $total;
+	if ( $total < 2 ) {
+		return;
 	}
-	$output = "<div class='support-system-pagination'>$output</div>";
 
-	echo $output;
+	$end_size = (int) $end_size; // Out of bounds?  Make it the default.
+
+	if ( $end_size < 1 ) {
+		$end_size = 1;
+	}
+
+	$mid_size = (int) $mid_size;
+	if ( $mid_size < 0 ) {
+		$mid_size = 2;
+	}
+
+	$r = '';
+	$page_links = array();
+	$dots = false;
+
+
+	if ( $current && 1 < $current ) {
+		$link = $pagenum_link;
+		if ( $current != 2 )
+			$link = add_query_arg( 'support-system-page', $current - 1, $link );
+
+		$page_links[] = '<li class="support-system-prev support-system-page-numbers"><a href="' . esc_url( $link ) . '">' . $prev_text . '</a></li>';
+	}
+
+	for ( $n = 1; $n <= $total; $n++ ) {
+		if ( $n == $current ) {
+			$link = $pagenum_link;
+			$link = add_query_arg( 'support-system-page', $n, $link );
+			$page_links[] = "<li class='support-system-page-numbers $current_class'><a href='" . esc_url( $link ) . "'>" . $before_page_number . number_format_i18n( $n ) . $after_page_number . "</a></li>";
+			$dots = true;
+		} 
+		else {
+			if ( $n <= $end_size || ( $current && $n >= $current - $mid_size && $n <= $current + $mid_size ) || $n > $total - $end_size ) {
+				$link = $pagenum_link;
+				if ( 1 != $n ) 
+					$link = add_query_arg( 'support-system-page', $n, $link );
+
+				$page_links[] = "<li class='support-system-page-numbers'><a href='" . esc_url( $link ) . "'>" . $before_page_number . number_format_i18n( $n ) . $after_page_number . "</a></li>";
+				$dots = true;
+			}
+			elseif ( $dots ) {
+				$page_links[] = '<li class="support-system-page-numbers support-system-dots ' . esc_attr( $disabled_class . " " . $arrow_class ) . '"><a href="">' . __( '&hellip;' ) . '</a></li>';
+				$dots = false;
+			}
+		}
+	}
+
+	if ( $current && ( $current < $total || -1 == $total ) ) {
+		$link = $pagenum_link;
+		$link = add_query_arg( 'support-system-page', $current + 1, $link );
+		$page_links[] = '<li class="support-system-next support-system-page-numbers"><a href="' . esc_url( $link ) . '">' . $next_text . '</a></li>';
+	}
+
+	$r .= "<ul class='" . $ul_class . "' role='menubar' aria-label='" .  esc_attr__( 'Pagination', INCSUB_SUPPORT_LANG_DOMAIN ) . "'>" . join( $page_links ) . "</ul>";
+
+	echo $r;
 }
+
+function incsub_support_the_ticket_badges( $args = array() ) {
+	$ticket = incsub_support()->query->ticket;
+
+	$defaults = array(
+		'badge_base_class' => 'support-system-badge',
+		'replies_badge_class' => 'support-system-replies-badge',
+		'status_badge_class' => 'support-system-closed-badge'
+	);
+
+	$args = wp_parse_args( $args, $defaults );
+	extract( $args );
+
+	$badges = array();
+
+	// Ticket status
+	$badges[] = '<span class="' . esc_attr( $badge_base_class . ' ' . $status_badge_class ) . '">' . incsub_support_get_ticket_status_name( $ticket->ticket_status ) . '</span>';	
+
+	// Replies number
+	$num_replies = number_format_i18n( $ticket->num_replies, 0 );
+	$badges[] = '<span class="' . esc_attr( $badge_base_class . ' ' . $replies_badge_class ) . '">' . esc_html( sprintf( _n( '1 reply', '%s replies', $num_replies , INCSUB_SUPPORT_LANG_DOMAIN ), $num_replies ) ) . '</span>';
+
+	$badges = implode( ' ', $badges );
+	echo $badges;
+}
+
+
+
 

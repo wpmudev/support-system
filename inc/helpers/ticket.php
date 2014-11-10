@@ -1,5 +1,18 @@
 <?php
 
+function incsub_support_sanitize_ticket_fields( $ticket ) {
+	$int_fields = array( 'ticket_id', 'site_id', 'blog_id', 'cat_id', 'user_id', 'admin_id', 
+		'last_reply_id', 'ticket_type', 'ticket_priority', 'ticket_status', 'num_replies' );
+
+	foreach ( get_object_vars( $ticket ) as $name => $value ) {
+		if ( in_array( $name, $int_fields ) )
+			$value = intval( $value );
+
+		$ticket->$name = $value;
+	}
+
+	return $ticket;
+}
 function incsub_support_get_ticket_status_name( $status_id ) {
 	return MU_Support_System::$ticket_status[ $status_id ];
 }
@@ -269,7 +282,7 @@ function incsub_support_update_ticket( $ticket_id, $args ) {
 		return false;
 
 	$fields = array( 'site_id' => '%d', 'blog_id' => '%d', 'cat_id' => '%d', 'user_id' => '%d', 'admin_id' => '%d', 'last_reply_id' => '%d', 
-		'ticket_type' => '%d', 'ticket_priority' => '%d', 'title' => '%s', 'view_by_superadmin' => '%d', 'ticket_status' => '%d' );
+		'ticket_type' => '%d', 'ticket_priority' => '%d', 'title' => '%s', 'view_by_superadmin' => '%d', 'ticket_status' => '%d', 'num_replies' => '%d' );
 
 	$update = array();
 	$update_wildcards = array();
@@ -477,14 +490,20 @@ function incsub_support_recount_ticket_replies( $ticket_id ) {
 	$replies = $ticket->get_replies();
 
 	$num_replies = count( $replies ) - 1;
+
+	$last_reply_id = end( $replies )->message_id;
 	
 	$wpdb->update(
 		$table,
-		array( 'num_replies' => $num_replies ),
+		array( 
+			'num_replies' => $num_replies,
+			'last_reply_id' => $last_reply_id
+		),
 		array( 'ticket_id' => $ticket_id ),
 		array( '%d' ),
 		array( '%d' )
 	);
 }
+
 
 

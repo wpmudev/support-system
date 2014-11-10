@@ -234,7 +234,7 @@ $h6-font-size: 1rem;
 // We use these to style paragraphs
 // $paragraph-font-family: inherit;
 // $paragraph-font-weight: $font-weight-normal;
-// $paragraph-font-size: 1.5rem;
+// $paragraph-font-size: rem-calc(16px);
 // $paragraph-line-height: 1.6;
 // $paragraph-margin-bottom: rem-calc(20);
 // $paragraph-aside-font-size: rem-calc(14);
@@ -926,10 +926,10 @@ $button-lrg: rem-calc(16);
 // $pagination-li-height: rem-calc(24);
 // $pagination-li-font-color: $jet;
 // $pagination-li-font-size: rem-calc(14);
-// $pagination-li-margin: rem-calc(5);
+$pagination-li-margin: rem-calc(1);
 
 // We use these for the pagination anchor links
-// $pagination-link-pad: rem-calc(1 10 1);
+$pagination-link-pad: rem-calc(1 8 1);
 // $pagination-link-font-color: $aluminum;
 // $pagination-link-active-bg: scale-color($white, $lightness: -10%);
 

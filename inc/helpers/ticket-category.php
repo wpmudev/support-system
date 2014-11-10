@@ -1,5 +1,18 @@
 <?php
 
+function incsub_support_sanitize_ticket_category_fields( $cat ) {
+	$int_fields = array( 'cat_id', 'user_id', 'site_id' );
+
+	foreach ( get_object_vars( $cat ) as $name => $value ) {
+		if ( in_array( $name, $int_fields ) )
+			$value = intval( $value );
+
+		$cat->$name = $value;
+	}
+
+	return $cat;
+}
+
 function incsub_support_get_ticket_category( $cat ) {
 	$cat = Incsub_Support_Ticket_Category::get_instance( $cat );
 	return $cat;
