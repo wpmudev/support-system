@@ -58,7 +58,19 @@ function incsub_support_tickets_list_filter() {
 }
 
 function incsub_support_reply_form() {
-	incsub_support_get_template( 'form', 'reply' );
+	ob_start();
+	?>
+		<form method="post" id="support-system-reply-form" action="#support-system-reply-form-wrap">
+			<?php incsub_support_reply_form_errors(); ?>
+			<?php incsub_support_editor( 'reply' ); ?>
+			<?php incsub_support_reply_form_fields(); ?>
+			<br/>
+			<input type="submit" name="support-system-submit-reply" class="button small" value="<?php esc_attr_e( 'Submit Reply', INCSUB_SUPPORT_LANG_DOMAIN ); ?>" />
+			
+		</form>
+	<?php
+
+	echo apply_filters( 'support_system_reply_form', ob_get_clean() );
 }
 
 function incsub_support_list_replies( $args = array() ) {
@@ -264,10 +276,10 @@ function incsub_support_the_ticket_badges( $args = array() ) {
 }
 
 
-function incsub_support_editor() {
+function incsub_support_editor( $type ) {
 	$content = '';
-	if ( isset( $_POST['support-system-reply-message'] ) )
-		$content = stripslashes_deep( $_POST['support-system-reply-message'] );
+	if ( isset( $_POST['support-system-' . $type . '-message'] ) )
+		$content = stripslashes_deep( $_POST['support-system-' . $type . '-message'] );
 
 	$settings = array(
 		'media_buttons' => false,
@@ -275,7 +287,7 @@ function incsub_support_editor() {
 		'textarea_rows' => 10,
 		'teeny' => true
 	);
-	wp_editor( $content, 'support-system-reply-message', $settings );
+	wp_editor( $content, 'support-system-' . $type . '-message', $settings );
 }
 
 function incsub_support_reply_form_fields() {
@@ -289,5 +301,5 @@ function incsub_support_reply_form_fields() {
 }
 
 function incsub_support_reply_form_errors() {
-	var_dump(incsub_support_get_errors( 'support-system-reply-form' ) );
+	incsub_support_get_errors( 'support-system-reply-form' );
 }

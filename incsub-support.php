@@ -223,6 +223,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-ticket-reply.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-shortcodes.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-query.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-faq.php');
 
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/general.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/ticket.php');
@@ -231,6 +232,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/template.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/settings.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/capabilities.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/faq.php');
 
 			// Admin
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/support-menu.php');

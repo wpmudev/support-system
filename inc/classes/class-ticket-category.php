@@ -30,10 +30,8 @@ class Incsub_Support_Ticket_Category {
 				$wpdb->prepare(
 					"SELECT *
 					FROM $table 
-					WHERE site_id = %d
-					AND cat_id = %d
+					WHERE cat_id = %d
 					LIMIT 1", 
-					$current_site_id,
 					$cat_id
 				) 
 			);

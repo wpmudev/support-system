@@ -15,10 +15,8 @@ function incsub_support_get_ticket_replies( $ticket_id ) {
 	$results = $wpdb->get_results( 
 		$wpdb->prepare( 
 			"SELECT * FROM $tickets_replies_table
-			WHERE site_id = %d
-			AND ticket_id = %d
+			WHERE ticket_id = %d
 			ORDER BY message_id ASC",
-			$current_site_id,
 			$ticket_id
 		)
 	);	
@@ -49,12 +47,20 @@ function incsub_support_get_ticket_reply( $ticket_reply ) {
 	return $ticket_reply;
 }
 
+/**
+ * Insert a new reply for a ticket
+ * 
+ * @param  int $ticket_id
+ * @param  array  $args
+ * @return int|boolean
+ */
 function incsub_support_insert_ticket_reply( $ticket_id, $args = array() ) {
 	global $wpdb, $current_site;
 
 	$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 	$ticket = incsub_support_get_ticket_b( absint( $ticket_id ) );
+
 	if ( ! $ticket )
 		return false;
 
@@ -74,6 +80,8 @@ function incsub_support_insert_ticket_reply( $ticket_id, $args = array() ) {
 	$plugin = incsub_support();
 	$tickets_replies_table = $plugin->model->tickets_messages_table;
 
+	$message = wp_filter_kses( $message );
+	
 	$result = $wpdb->insert(
 		$tickets_replies_table,
 		array(
@@ -138,6 +146,7 @@ function incsub_support_insert_ticket_reply( $ticket_id, $args = array() ) {
 	return $reply_id;
 }
 
+
 function incsub_support_delete_ticket_reply( $reply_id ) {
 	global $wpdb, $current_site;
 
@@ -150,13 +159,15 @@ function incsub_support_delete_ticket_reply( $reply_id ) {
 		return false;
 
 	$replies = $ticket->get_replies();
+
 	$main_reply = wp_list_filter( $replies, array( 'is_main_reply' => true ) );
+	$main_reply = $main_reply[0];
 	if ( $main_reply->message_id == $reply_id ) {
 		// Do not allow to delete the main reply
 		return false;
 	}
 
-	$tickets_replies_table = $plugin->model->tickets_messages_table;
+	$tickets_replies_table = incsub_support()->model->tickets_messages_table;
 
 	$wpdb->query( $wpdb->prepare( "DELETE FROM $tickets_replies_table WHERE message_id = %d", $reply_id ) );
 	incsub_support_recount_ticket_replies( $ticket_reply->ticket_id );

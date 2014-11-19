@@ -144,12 +144,14 @@ function incsub_support_ticket_categories_dropdown( $args = array() ) {
 		return ob_get_clean();
 }
 
-function incsub_support_insert_ticket_category( $name, $user_id = 0 ) {
+function incsub_support_insert_ticket_category( $name, $user_id = false ) {
 	global $wpdb, $current_site;
 
 	$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 	$tickets_cats_table = incsub_support()->model->tickets_cats_table;
+
+	$user_id = $user_id === false ? get_current_user_id() : absint( $user_id );
 
 	$name = trim( $name );
 	if ( empty( $name ) )
@@ -237,10 +239,13 @@ function incsub_support_get_default_ticket_category() {
 		return $default_category;
 
 	$results = incsub_support_get_ticket_categories( array( 'per_page' => 1, 'defcat' => 1 ) );
+
 	if ( isset( $results[0] ) ) {
 		wp_cache_set( 'support_system_default_ticket_category', $results[0], 'support_system_ticket_categories' );
 		return $results[0];
 	}
+
+
 
 	return false;
 }

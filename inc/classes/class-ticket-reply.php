@@ -33,15 +33,12 @@ class Incsub_Support_Ticket_Reply {
 			return false;
 		
 		$tickets_replies_table = incsub_support()->model->tickets_messages_table;
-		$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 		$_reply = $wpdb->get_row( 
 			$wpdb->prepare( 
 				"SELECT * FROM $tickets_replies_table
-				WHERE site_id = %d
-				AND message_id = %d
+				WHERE message_id = %d
 				LIMIT 1",
-				$current_site_id,
 				$ticket_reply_id
 			)
 		);	

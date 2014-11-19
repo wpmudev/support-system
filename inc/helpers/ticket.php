@@ -1,12 +1,25 @@
 <?php
 
+/**
+ * Sanitize the Incsub_Support_Ticket properties
+ * @param  Object $ticket The ticket Object
+ * @return Object the sanitized object
+ */
 function incsub_support_sanitize_ticket_fields( $ticket ) {
 	$int_fields = array( 'ticket_id', 'site_id', 'blog_id', 'cat_id', 'user_id', 'admin_id', 
 		'last_reply_id', 'ticket_type', 'ticket_priority', 'ticket_status', 'num_replies' );
 
+	$array_fields = array( 'attachments' );
+
 	foreach ( get_object_vars( $ticket ) as $name => $value ) {
 		if ( in_array( $name, $int_fields ) )
 			$value = intval( $value );
+
+		if ( in_array( $name, $array_fields ) ) {
+			$value = maybe_unserialize( $value );
+			if ( ! is_array( $value ) )
+				$value = array();
+		}
 
 		$ticket->$name = $value;
 	}
@@ -15,10 +28,23 @@ function incsub_support_sanitize_ticket_fields( $ticket ) {
 
 	return $ticket;
 }
+
+/**
+ * Get the ticket Status string name
+ * 
+ * @param  int $status_id
+ * @return string
+ */
 function incsub_support_get_ticket_status_name( $status_id ) {
 	return MU_Support_System::$ticket_status[ $status_id ];
 }
 
+/**
+ * Get the ticket Priority string name
+ * 
+ * @param  int $priority
+ * @return string
+ */
 function incsub_support_get_ticket_priority_name( $priority_id ) {
 	return MU_Support_System::$ticket_priority[ $priority_id ];
 }
@@ -49,6 +75,12 @@ function incsub_support_get_tickets( $ticket_ids ) {
 	return $tickets;
 }
 
+/**
+ * Get a set of tickets
+ * 
+ * @param  array  $args
+ * @return array
+ */
 function incsub_support_get_tickets_b( $args = array() ) {
 	global $wpdb, $current_site;
 
@@ -103,6 +135,12 @@ function incsub_support_get_tickets_b( $args = array() ) {
 		$where[] = $wpdb->prepare( "(t.title LIKE %s OR tm.message LIKE %s)", $s, $s );
 	}
 
+	$site_id = absint( $site_id );
+	if ( $site_id )
+		$where[] = $wpdb->prepare( "site_id = %d", $site_id );
+	else
+		$where[] = $wpdb->prepare( "site_id = %d", $current_site_id );
+
 	$tickets_table = incsub_support()->model->tickets_table;
 
 	$order = strtoupper( $order );
@@ -111,6 +149,8 @@ function incsub_support_get_tickets_b( $args = array() ) {
 	$limit = '';
 	if ( $per_page > -1 )
 		$limit = $wpdb->prepare( "LIMIT %d, %d", intval( ( $page - 1 ) * $per_page ), intval( $per_page ) );
+
+
 
 	$where = "WHERE " . implode( ' AND ', $where );
 
@@ -172,6 +212,12 @@ function incsub_support_get_tickets_b( $args = array() ) {
 	
 }
 
+/**
+ * Get a single ticket
+ * 
+ * @param  int|Object $ticket The ticket ID or a Incsub_Support_Ticket class object
+ * @return Object Incsub_Support_Ticket class object
+ */
 function incsub_support_get_ticket_b( $ticket ) {
 	$ticket = Incsub_Support_Ticket::get_instance( $ticket );
 
@@ -203,6 +249,14 @@ function incsub_support_delete_ticket( $ticket_id ) {
 	wp_die();
 }
 
+/**
+ * Close a ticket
+ * 
+ * Set the ticket status to 5
+ * 
+ * @param  int $ticket_id
+ * @return boolean
+ */
 function incsub_support_close_ticket( $ticket_id ) {
 	$ticket = incsub_support_get_ticket_b( $ticket_id );
 	if ( ! $ticket )
@@ -220,6 +274,14 @@ function incsub_support_close_ticket( $ticket_id ) {
 	return $result;
 }
 
+/**
+ * Close a ticket
+ * 
+ * Set the ticket status to 0
+ * 
+ * @param  int $ticket_id
+ * @return boolean
+ */
 function incsub_support_open_ticket( $ticket_id ) {
 	$ticket = incsub_support_get_ticket_b( $ticket_id );
 	if ( ! $ticket )
@@ -245,15 +307,23 @@ function incsub_support_ticket_transition_status( $ticket_id, $status ) {
 	if ( ! $ticket )
 		return false;
 	
-	$current_status = $ticket->ticket_status;
-	if ( $current_status == $status )
+	$old_status = $ticket->ticket_status;
+	if ( $old_status == $status )
 		return false;
 	
 	incsub_support_update_ticket( $ticket_id, array( 'ticket_status' => $status ) );
 
+	do_action( 'support_system_ticket_transition_status', $status, $old_status, $ticket_id );
+
 	return true;
 }
 
+/**
+ * Delete a ticket
+ * 
+ * @param  int $ticket_id
+ * @return Boolean
+ */
 function incsub_support_delete_ticket_b( $ticket_id ) {
 	global $wpdb;
 
@@ -286,11 +356,21 @@ function incsub_support_delete_ticket_b( $ticket_id ) {
 	);
 
 	$old_ticket = $ticket;
+
 	do_action( 'support_system_delete_ticket', $ticket_id, $old_ticket );
+
+	wp_cache_delete( $ticket_id, 'support_system_tickets' );
 
 	return true;
 }
 
+/**
+ * Update a ticket
+ * 
+ * @param  int $ticket_id
+ * @param  args $args
+ * @return boolean
+ */
 function incsub_support_update_ticket( $ticket_id, $args ) {
 	global $wpdb;
 
@@ -326,6 +406,8 @@ function incsub_support_update_ticket( $ticket_id, $args ) {
 	if ( ! $result )
 		return false;
 
+	wp_cache_delete( $ticket_id, 'support_system_tickets' );
+
 	$old_ticket = $ticket;
 	do_action( 'support_system_update_ticket', $ticket_id, $args, $old_ticket );
 
@@ -333,6 +415,25 @@ function incsub_support_update_ticket( $ticket_id, $args ) {
 
 }
 
+/**
+ * Insert a new ticket
+ * 
+ * @param array $args {
+ *     An array of elements that make up a ticket.
+ * 
+ *     @type int 'ticket_priority'    	The ticket priority.
+ *     @type int 'cat_id'             	The ticket category ID
+ *     @type int 'user_id'           	The creator (user) ID
+ *     @type int 'admin_id'           	0 if there's not a staff assigned, staff (user) ID otherwise
+ *     @type int 'site_id'           	Site ID, only for multinetwork sites otherwise = 1
+ *     @type int 'blog_id'            	Blog ID, only for network sites, otherwise = 1
+ *     @type int 'view_by_superadmin'   1 if the ticket has been viewed by a staff, 0 otherwise
+ *     @type string 'title'             The ticket title
+ *     @type string 'message          	The ticket content
+ *     @type array 'attachments'        Array of attachments URLs
+ * }
+ * @return mixed the new ticket ID, WP_Error otherwise
+ */
 function incsub_support_insert_ticket( $args = array() ) {
 	global $wpdb, $current_site;
 
@@ -446,7 +547,7 @@ function incsub_support_insert_ticket( $args = array() ) {
 	if ( empty( $args['message'] ) )
 		return new WP_Error( 'empty_message', __( 'Message must not be empty.', INCSUB_SUPPORT_LANG_DOMAIN ) );
 	$message = $args['message'];
-
+	
 	$table = incsub_support()->model->tickets_table;
 	$wpdb->insert(
 		$table,
@@ -493,9 +594,15 @@ function incsub_support_insert_ticket( $args = array() ) {
 	// Now, a mail for the main Administrator
 	incsub_support_send_admin_new_ticket_mail_b( $ticket );
 
+	return $ticket_id;
 
 }
 
+/**
+ * Make a recount of all replies in a ticket
+ * 
+ * @param  int $ticket_id
+ */
 function incsub_support_recount_ticket_replies( $ticket_id ) {
 	global $wpdb;
 	
@@ -510,18 +617,11 @@ function incsub_support_recount_ticket_replies( $ticket_id ) {
 
 	$num_replies = count( $replies ) - 1;
 
-	$last_reply_id = end( $replies )->message_id;
+	$last_reply = end( $replies );
+	$last_reply_id = $last_reply->is_main_reply ? 0 : $last_reply->message_id;
 	
-	$wpdb->update(
-		$table,
-		array( 
-			'num_replies' => $num_replies,
-			'last_reply_id' => $last_reply_id
-		),
-		array( 'ticket_id' => $ticket_id ),
-		array( '%d' ),
-		array( '%d' )
-	);
+	incsub_support_update_ticket( $ticket_id, array( 'num_replies' => $num_replies, 'last_reply_id' => $last_reply_id ) );
+
 }
 
 

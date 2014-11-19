@@ -55,7 +55,6 @@ class Incsub_Support_Ticket {
 			return false;
 		
 		$tickets_table = incsub_support()->model->tickets_table;
-		$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
 		$_ticket = wp_cache_get( $ticket_id, 'support_system_tickets' );
 
@@ -63,10 +62,8 @@ class Incsub_Support_Ticket {
 			$_ticket = $wpdb->get_row( 
 				$wpdb->prepare( 
 					"SELECT * FROM $tickets_table
-					WHERE site_id = %d
-					AND ticket_id = %d
+					WHERE ticket_id = %d
 					LIMIT 1",
-					$current_site_id,
 					$ticket_id
 				)
 			);	
@@ -89,10 +86,7 @@ class Incsub_Support_Ticket {
 	}
 
 	public function __construct( $ticket ) {
-		foreach ( get_object_vars( $ticket ) as $key => $value ) {
-			if ( 'ticket_priority' === $key )
-				$value = absint( $value );
-			
+		foreach ( get_object_vars( $ticket ) as $key => $value ) {			
 			$this->$key = $value;
 		}
 
@@ -132,8 +126,7 @@ class Incsub_Support_Ticket {
 	}
 
 	public function get_replies() {
-		if ( $this->replies === null )
-			$this->replies = incsub_support_get_ticket_replies( $this->ticket_id );
+		$this->replies = incsub_support_get_ticket_replies( $this->ticket_id );
 
 		return $this->replies;
 	}
