@@ -54,7 +54,7 @@ $namespace: "support-system";
 body #support-system {
   font-size: 100%;
 }
-/* line 396, ../../bower_components/foundation/scss/foundation/components/_global.scss */
+
 body #support-system {
   padding: 0;
   margin: 0;
@@ -65,11 +65,7 @@ body #support-system {
   cursor: auto;
 }
 
-
-#support-system-single-ticket .support-system-ticket-author-data {
-  width:150px;
-}
-
+/** Tickets Index **/
 #support-system .support-system-tickets-list {
   margin-left:0;
 }
@@ -106,15 +102,87 @@ body #support-system {
   margin-left:0;
 }
 
+#support-system-single-ticket .support-system-ticket ul {
+  list-style:none;  
+}
+#support-system-single-ticket .support-system-ticket ul {
+
+}
+
+/** Single ticket **/
+#support-system-single-ticket .support-system-ticket-author-data {
+  width:150px;
+}
+
 #support-system-single-ticket .support-system-single-ticket-secondary {
   margin-top:rem-calc(50px);
 }
 
-input[type="submit"] {
+#support-system-single-ticket .support-system-ticket-meta {
+  border-bottom:1px solid #DDD;
+  padding-bottom: 1em;
+}
+
+#support-system-single-ticket .support-system-ticket-meta li:first-child {
+  margin-left:0;
+}
+
+#support-system-single-ticket h1.support-system-ticket-title {
+  margin-bottom:3.5rem;
+}
+
+
+#support-system-single-ticket .support-system-ticket-reply-wrap {
+  background:#f7f7f7;
+  margin-bottom:2rem;
+  padding-top:1rem;
+  padding-left:1rem;
+  padding-right:1rem;
+}
+
+#support-system .support-system-reply-header > div {
+  float:left;
+}
+#support-system .support-system-reply-poster {
+  margin-left:1.5rem;
+}
+
+#support-system p.support-system-reply-date {
+  margin-top:1rem;
+  font-size:rem-calc(11px);
+}
+
+
+
+/** Others **/
+#support-system input[type="submit"] {
   background-repeat:none !important;
   background-image:none !important;
 }
 
+/** Badges **/
 .support-system-ticket-title .label {
   vertical-align: middle;
+}
+
+#support-system .wp-editor-container button,
+#support-system .wp-editor-container .button {
+  border:none;
+}
+
+/** Reply Form **/
+#support-system .wp-editor-container button,
+#support-system .wp-editor-container .button {
+  border:none;
+  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+  margin:0;
+  position: static;
+  padding: 2px 3px;
+  font-size: 14px;
+  background-color: transparent;
+  color:#333;
+}
+
+#support-system .wp-editor-wrap {
+  border:1px solid #C8C8C8;
 }

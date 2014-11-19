@@ -11,6 +11,8 @@ function incsub_support_sanitize_ticket_fields( $ticket ) {
 		$ticket->$name = $value;
 	}
 
+	$ticket = apply_filters( 'support_system_sanitize_ticket_fields', $ticket );
+
 	return $ticket;
 }
 function incsub_support_get_ticket_status_name( $status_id ) {
@@ -123,6 +125,11 @@ function incsub_support_get_tickets_b( $args = array() ) {
 		$group = "GROUP BY t.ticket_id";
 	}
 
+	$join = apply_filters( 'support_system_get_tickets_join', $join, $count );
+	$where = apply_filters( 'support_system_get_tickets_where', $where, $count );
+	$group = apply_filters( 'support_system_get_tickets_where', $group, $count );
+
+	$tickets = array();
 	if ( $count ) {
 		$query = "SELECT COUNT(t.ticket_id) FROM $tickets_table t $join $where $group";
 
@@ -135,7 +142,7 @@ function incsub_support_get_tickets_b( $args = array() ) {
 			wp_cache_set( $cache_key, $results, 'support_system_tickets' );
 		}
 
-		return $results;
+		$tickets = $results;
 	}
 	else {
 		$query = "SELECT t.* FROM $tickets_table t $join $where $group $order $limit";
@@ -156,13 +163,20 @@ function incsub_support_get_tickets_b( $args = array() ) {
 			$tickets[] = incsub_support_get_ticket_b( $result );
 		}
 
-		return $tickets;
+		
 	}
+
+	$tickets = apply_filters( 'support_system_get_tickets', $tickets, $args );
+
+	return $tickets;
 	
 }
 
 function incsub_support_get_ticket_b( $ticket ) {
 	$ticket = Incsub_Support_Ticket::get_instance( $ticket );
+
+	$ticket = apply_filters( 'support_system_get_ticket', $ticket );
+
 	return $ticket;
 }
 
@@ -271,6 +285,9 @@ function incsub_support_delete_ticket_b( $ticket_id ) {
 	     )
 	);
 
+	$old_ticket = $ticket;
+	do_action( 'support_system_delete_ticket', $ticket_id, $old_ticket );
+
 	return true;
 }
 
@@ -298,13 +315,21 @@ function incsub_support_update_ticket( $ticket_id, $args ) {
 	
 	$tickets_table = incsub_support()->model->tickets_table;
 
-	$wpdb->update(
+	$result = $wpdb->update(
 		$tickets_table,
 		$update,
 		array( 'ticket_id' => $ticket_id ),
 		$update_wildcards,
 		array( '%d' )
 	);
+
+	if ( ! $result )
+		return false;
+
+	$old_ticket = $ticket;
+	do_action( 'support_system_update_ticket', $ticket_id, $args, $old_ticket );
+
+	return true;
 
 }
 
@@ -444,17 +469,9 @@ function incsub_support_insert_ticket( $args = array() ) {
 		'message' => $message,
 		'message_date' => current_time( 'mysql', 1 ),
 		'attachments' => $args['attachments'],
-		'send_emails' => false
+		'send_emails' => false,
+		'poster_id' => $args['user_id']
 	);
-
-	if ( is_super_admin( $args['user_id'] ) ) {
-		$reply_args['user_id'] = 0;
-		$reply_args['admin_id'] = $args['user_id'];
-	}
-	else {
-		$reply_args['admin_id'] = 0;
-		$reply_args['user_id'] = $args['user_id'];	
-	}
 
 	$result = incsub_support_insert_ticket_reply( $ticket_id, $reply_args );
 
@@ -462,6 +479,8 @@ function incsub_support_insert_ticket( $args = array() ) {
 		incsub_support_delete_ticket_b( $ticket_id );
 		return new WP_Error( 'insert_error', __( 'Error inserting the ticket, please try again later.', INCSUB_SUPPORT_LANG_DOMAIN ) );
 	}
+
+	do_action( 'support_system_insert_ticket', $ticket_id, $args );
 
 	// Current user data
 	$user = get_userdata( get_current_user_id() );

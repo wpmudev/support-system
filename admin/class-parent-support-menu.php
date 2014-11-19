@@ -139,7 +139,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 			else
 				$reply_args['message'] = $message;
 
-			$reply_args['admin_id'] = get_current_user_id();
+			$reply_args['poster_id'] = get_current_user_id();
 
 
 			if ( ! get_settings_errors( 'support_system_submit_reply' ) ) {

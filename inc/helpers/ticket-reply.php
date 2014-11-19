@@ -38,12 +38,14 @@ function incsub_support_get_ticket_replies( $ticket_id ) {
 		$i++;
 	}
 
+	$replies = apply_filters( 'support_system_get_ticket_replies', $replies, $ticket_id );
 	return $replies;
 
 }
 
 function incsub_support_get_ticket_reply( $ticket_reply ) {
 	$ticket_reply = Incsub_Support_Ticket_Reply::get_instance( $ticket_reply );
+	$ticket_reply = apply_filters( 'support_system_get_ticket_reply', $ticket_reply );
 	return $ticket_reply;
 }
 
@@ -58,8 +60,7 @@ function incsub_support_insert_ticket_reply( $ticket_id, $args = array() ) {
 
 	$defaults = array(
 		'site_id' => $current_site_id,
-		'user_id' => 0,
-		'admin_id' => 0,
+		'poster_id' => 0,
 		'subject' => 'Re: ' . stripslashes_deep( $ticket->title ),
 		'message' => '',
 		'message_date' => current_time( 'mysql', 1 ),
@@ -78,8 +79,8 @@ function incsub_support_insert_ticket_reply( $ticket_id, $args = array() ) {
 		array(
 			'site_id' => $site_id,
 			'ticket_id' => absint( $ticket_id ),
-			'admin_id' => $admin_id,
-			'user_id' => $user_id,
+			'admin_id' => is_super_admin( $poster_id ) ? absint( $poster_id ) : 0,
+			'user_id' => is_super_admin( $poster_id ) ? 0 : absint( $poster_id ),
 			'subject' => $subject,
 			'message' => $message,
 			'message_date' => $message_date,
@@ -96,12 +97,13 @@ function incsub_support_insert_ticket_reply( $ticket_id, $args = array() ) {
 	if ( ! $reply_id )
 		return false;
 
-	incsub_support_recount_ticket_replies( $ticket_reply->ticket_id );
+	$reply = incsub_support_get_ticket_reply( $reply_id );
+	incsub_support_recount_ticket_replies( $reply->ticket_id );
+
+	do_action( 'support_system_insert_ticket_reply', $reply_id );
 
 	if ( ! $send_emails )
-		return true;
-
-	$reply = incsub_support_get_ticket_reply( $reply_id );
+		return $reply_id;
 
 	if ( empty( $ticket->admin_id ) ) {
 		$super_admin = $plugin::get_main_admin_details();
@@ -133,7 +135,7 @@ function incsub_support_insert_ticket_reply( $ticket_id, $args = array() ) {
 		}
 	}
 
-	return true;
+	return $reply_id;
 }
 
 function incsub_support_delete_ticket_reply( $reply_id ) {
@@ -158,6 +160,9 @@ function incsub_support_delete_ticket_reply( $reply_id ) {
 
 	$wpdb->query( $wpdb->prepare( "DELETE FROM $tickets_replies_table WHERE message_id = %d", $reply_id ) );
 	incsub_support_recount_ticket_replies( $ticket_reply->ticket_id );
+
+	$old_ticket_reply = $ticket_reply;
+	do_action( 'support_system_delete_ticket_reply', $reply_id, $old_ticket_reply );
 
 	return true;
 }

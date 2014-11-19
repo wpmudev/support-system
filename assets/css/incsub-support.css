@@ -1439,7 +1439,7 @@
 }
 /* line 117, ../../bower_components/foundation/scss/foundation/components/_alert-boxes.scss */
 #support-system .alert-box.radius {
-  border-radius: 3px;
+  border-radius: 0px;
 }
 /* line 118, ../../bower_components/foundation/scss/foundation/components/_alert-boxes.scss */
 #support-system .alert-box.round {
@@ -1986,7 +1986,7 @@
   border-width: 1px;
   background-color: #f4f4f4;
   border-color: gainsboro;
-  border-radius: 3px;
+  border-radius: 0px;
 }
 /* line 122, ../../bower_components/foundation/scss/foundation/components/_breadcrumbs.scss */
 #support-system .breadcrumbs > * {
@@ -2196,7 +2196,7 @@
 }
 /* line 237, ../../bower_components/foundation/scss/foundation/components/_buttons.scss */
 #support-system button.radius, #support-system .button.radius {
-  border-radius: 3px;
+  border-radius: 0px;
 }
 /* line 238, ../../bower_components/foundation/scss/foundation/components/_buttons.scss */
 #support-system button.round, #support-system .button.round {
@@ -2461,17 +2461,17 @@
 }
 /* line 118, ../../bower_components/foundation/scss/foundation/components/_button-groups.scss */
 #support-system .button-group.radius > *:first-child, #support-system .button-group.radius > *:first-child > a, #support-system .button-group.radius > *:first-child > button, #support-system .button-group.radius > *:first-child > .button {
-  -webkit-border-bottom-left-radius: 3px;
-  -webkit-border-top-left-radius: 3px;
-  border-bottom-left-radius: 3px;
-  border-top-left-radius: 3px;
+  -webkit-border-bottom-left-radius: 0px;
+  -webkit-border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-left-radius: 0px;
 }
 /* line 129, ../../bower_components/foundation/scss/foundation/components/_button-groups.scss */
 #support-system .button-group.radius > *:last-child, #support-system .button-group.radius > *:last-child > a, #support-system .button-group.radius > *:last-child > button, #support-system .button-group.radius > *:last-child > .button {
-  -webkit-border-bottom-right-radius: 3px;
-  -webkit-border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
-  border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 0px;
+  -webkit-border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-top-right-radius: 0px;
 }
 /* line 166, ../../bower_components/foundation/scss/foundation/components/_button-groups.scss */
 #support-system .button-group.radius.stack > * {
@@ -2507,17 +2507,17 @@
 }
 /* line 118, ../../bower_components/foundation/scss/foundation/components/_button-groups.scss */
 #support-system .button-group.radius.stack > *:first-child, #support-system .button-group.radius.stack > *:first-child > a, #support-system .button-group.radius.stack > *:first-child > button, #support-system .button-group.radius.stack > *:first-child > .button {
-  -webkit-top-left-radius: 3px;
-  -webkit-top-right-radius: 3px;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
+  -webkit-top-left-radius: 0px;
+  -webkit-top-right-radius: 0px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
 }
 /* line 129, ../../bower_components/foundation/scss/foundation/components/_button-groups.scss */
 #support-system .button-group.radius.stack > *:last-child, #support-system .button-group.radius.stack > *:last-child > a, #support-system .button-group.radius.stack > *:last-child > button, #support-system .button-group.radius.stack > *:last-child > .button {
-  -webkit-bottom-left-radius: 3px;
-  -webkit-bottom-right-radius: 3px;
-  border-bottom-left-radius: 3px;
-  border-bottom-right-radius: 3px;
+  -webkit-bottom-left-radius: 0px;
+  -webkit-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
 }
 @media only screen and (min-width: 40.063em) {
   /* line 167, ../../bower_components/foundation/scss/foundation/components/_button-groups.scss */
@@ -2540,17 +2540,17 @@
   }
   /* line 118, ../../bower_components/foundation/scss/foundation/components/_button-groups.scss */
   #support-system .button-group.radius.stack-for-small > *:first-child, #support-system .button-group.radius.stack-for-small > *:first-child > a, #support-system .button-group.radius.stack-for-small > *:first-child > button, #support-system .button-group.radius.stack-for-small > *:first-child > .button {
-    -webkit-border-bottom-left-radius: 3px;
-    -webkit-border-top-left-radius: 3px;
-    border-bottom-left-radius: 3px;
-    border-top-left-radius: 3px;
+    -webkit-border-bottom-left-radius: 0px;
+    -webkit-border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-top-left-radius: 0px;
   }
   /* line 129, ../../bower_components/foundation/scss/foundation/components/_button-groups.scss */
   #support-system .button-group.radius.stack-for-small > *:last-child, #support-system .button-group.radius.stack-for-small > *:last-child > a, #support-system .button-group.radius.stack-for-small > *:last-child > button, #support-system .button-group.radius.stack-for-small > *:last-child > .button {
-    -webkit-border-bottom-right-radius: 3px;
-    -webkit-border-top-right-radius: 3px;
-    border-bottom-right-radius: 3px;
-    border-top-right-radius: 3px;
+    -webkit-border-bottom-right-radius: 0px;
+    -webkit-border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
   }
 }
 @media only screen and (max-width: 40em) {
@@ -2588,17 +2588,17 @@
   }
   /* line 118, ../../bower_components/foundation/scss/foundation/components/_button-groups.scss */
   #support-system .button-group.radius.stack-for-small > *:first-child, #support-system .button-group.radius.stack-for-small > *:first-child > a, #support-system .button-group.radius.stack-for-small > *:first-child > button, #support-system .button-group.radius.stack-for-small > *:first-child > .button {
-    -webkit-top-left-radius: 3px;
-    -webkit-top-right-radius: 3px;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
+    -webkit-top-left-radius: 0px;
+    -webkit-top-right-radius: 0px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
   }
   /* line 129, ../../bower_components/foundation/scss/foundation/components/_button-groups.scss */
   #support-system .button-group.radius.stack-for-small > *:last-child, #support-system .button-group.radius.stack-for-small > *:last-child > a, #support-system .button-group.radius.stack-for-small > *:last-child > button, #support-system .button-group.radius.stack-for-small > *:last-child > .button {
-    -webkit-bottom-left-radius: 3px;
-    -webkit-bottom-right-radius: 3px;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
+    -webkit-bottom-left-radius: 0px;
+    -webkit-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
   }
 }
 /* line 176, ../../bower_components/foundation/scss/foundation/components/_button-groups.scss */
@@ -3242,18 +3242,18 @@
 /* line 404, ../../bower_components/foundation/scss/foundation/components/_forms.scss */
 #support-system .prefix.button.radius {
   border-radius: 0;
-  -webkit-border-bottom-left-radius: 3px;
-  -webkit-border-top-left-radius: 3px;
-  border-bottom-left-radius: 3px;
-  border-top-left-radius: 3px;
+  -webkit-border-bottom-left-radius: 0px;
+  -webkit-border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-left-radius: 0px;
 }
 /* line 405, ../../bower_components/foundation/scss/foundation/components/_forms.scss */
 #support-system .postfix.button.radius {
   border-radius: 0;
-  -webkit-border-bottom-right-radius: 3px;
-  -webkit-border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
-  border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 0px;
+  -webkit-border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-top-right-radius: 0px;
 }
 /* line 406, ../../bower_components/foundation/scss/foundation/components/_forms.scss */
 #support-system .prefix.button.round {
@@ -3442,43 +3442,43 @@
 #support-system input[type="url"].radius,
 #support-system input[type="color"].radius,
 #support-system textarea.radius {
-  border-radius: 3px;
+  border-radius: 0px;
 }
 /* line 445, ../../bower_components/foundation/scss/foundation/components/_forms.scss */
 #support-system form .row .prefix-radius.row.collapse input,
 #support-system form .row .prefix-radius.row.collapse textarea,
 #support-system form .row .prefix-radius.row.collapse select {
   border-radius: 0;
-  -webkit-border-bottom-right-radius: 3px;
-  -webkit-border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
-  border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 0px;
+  -webkit-border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-top-right-radius: 0px;
 }
 /* line 446, ../../bower_components/foundation/scss/foundation/components/_forms.scss */
 #support-system form .row .prefix-radius.row.collapse .prefix {
   border-radius: 0;
-  -webkit-border-bottom-left-radius: 3px;
-  -webkit-border-top-left-radius: 3px;
-  border-bottom-left-radius: 3px;
-  border-top-left-radius: 3px;
+  -webkit-border-bottom-left-radius: 0px;
+  -webkit-border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-left-radius: 0px;
 }
 /* line 451, ../../bower_components/foundation/scss/foundation/components/_forms.scss */
 #support-system form .row .postfix-radius.row.collapse input,
 #support-system form .row .postfix-radius.row.collapse textarea,
 #support-system form .row .postfix-radius.row.collapse select {
   border-radius: 0;
-  -webkit-border-bottom-left-radius: 3px;
-  -webkit-border-top-left-radius: 3px;
-  border-bottom-left-radius: 3px;
-  border-top-left-radius: 3px;
+  -webkit-border-bottom-left-radius: 0px;
+  -webkit-border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-left-radius: 0px;
 }
 /* line 452, ../../bower_components/foundation/scss/foundation/components/_forms.scss */
 #support-system form .row .postfix-radius.row.collapse .postfix {
   border-radius: 0;
-  -webkit-border-bottom-right-radius: 3px;
-  -webkit-border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
-  border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 0px;
+  -webkit-border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-top-right-radius: 0px;
 }
 /* line 457, ../../bower_components/foundation/scss/foundation/components/_forms.scss */
 #support-system form .row .prefix-round.row.collapse input,
@@ -3554,7 +3554,7 @@
 }
 /* line 353, ../../bower_components/foundation/scss/foundation/components/_forms.scss */
 #support-system select.radius {
-  border-radius: 3px;
+  border-radius: 0px;
 }
 /* line 354, ../../bower_components/foundation/scss/foundation/components/_forms.scss */
 #support-system select:hover {
@@ -3719,7 +3719,7 @@
 }
 /* line 96, ../../bower_components/foundation/scss/foundation/components/_labels.scss */
 #support-system .label.radius {
-  border-radius: 3px;
+  border-radius: 0px;
 }
 /* line 97, ../../bower_components/foundation/scss/foundation/components/_labels.scss */
 #support-system .label.round {
@@ -3769,7 +3769,7 @@
   padding: 0.07692rem 0.61538rem 0.07692rem;
   color: #999999;
   background: none;
-  border-radius: 3px;
+  border-radius: 0px;
   font-weight: normal;
   font-size: 1em;
   line-height: inherit;
@@ -3883,7 +3883,7 @@
 }
 /* line 88, ../../bower_components/foundation/scss/foundation/components/_panels.scss */
 #support-system .panel.radius {
-  border-radius: 3px;
+  border-radius: 0px;
 }
 /* line 204, ../../bower_components/foundation/scss/foundation/components/_switches.scss */
 #support-system .switch {
@@ -5078,7 +5078,6 @@ body #support-system {
   font-size: 100%;
 }
 
-/* line 396, ../../bower_components/foundation/scss/foundation/components/_global.scss */
 /* line 58, ../scss/incsub-support.scss */
 body #support-system {
   padding: 0;
@@ -5090,23 +5089,19 @@ body #support-system {
   cursor: auto;
 }
 
+/** Tickets Index **/
 /* line 69, ../scss/incsub-support.scss */
-#support-system-single-ticket .support-system-ticket-author-data {
-  width: 150px;
-}
-
-/* line 73, ../scss/incsub-support.scss */
 #support-system .support-system-tickets-list {
   margin-left: 0;
 }
 
-/* line 77, ../scss/incsub-support.scss */
+/* line 73, ../scss/incsub-support.scss */
 #support-system h2.support-system-ticket-title {
   margin-top: 0;
   line-height: 1em;
 }
 
-/* line 82, ../scss/incsub-support.scss */
+/* line 78, ../scss/incsub-support.scss */
 #support-system ul.support-system-ticket-meta li {
   white-space: nowrap;
   float: none;
@@ -5114,24 +5109,24 @@ body #support-system {
   font-size: 0.84615rem;
 }
 
-/* line 89, ../scss/incsub-support.scss */
+/* line 85, ../scss/incsub-support.scss */
 #support-system li.support-system-ticket-content p:last-child {
   margin-bottom: 1em;
 }
 
-/* line 92, ../scss/incsub-support.scss */
+/* line 88, ../scss/incsub-support.scss */
 #support-system .support-system-byauthor {
   text-transform: uppercase;
 }
 
-/* line 96, ../scss/incsub-support.scss */
+/* line 92, ../scss/incsub-support.scss */
 #support-system .support-system-tag {
   padding: 3px 4px;
   border: 1px solid #cccccc;
   color: #666666;
 }
 
-/* line 102, ../scss/incsub-support.scss */
+/* line 98, ../scss/incsub-support.scss */
 #support-system-tickets ul.support-system-ticket {
   margin-bottom: 2.69231rem;
   border-bottom: 1px solid #cccccc;
@@ -5139,18 +5134,97 @@ body #support-system {
   margin-left: 0;
 }
 
-/* line 109, ../scss/incsub-support.scss */
+/* line 105, ../scss/incsub-support.scss */
+#support-system-single-ticket .support-system-ticket ul {
+  list-style: none;
+}
+
+/** Single ticket **/
+/* line 113, ../scss/incsub-support.scss */
+#support-system-single-ticket .support-system-ticket-author-data {
+  width: 150px;
+}
+
+/* line 117, ../scss/incsub-support.scss */
 #support-system-single-ticket .support-system-single-ticket-secondary {
   margin-top: 3.84615rem;
 }
 
-/* line 113, ../scss/incsub-support.scss */
-input[type="submit"] {
+/* line 121, ../scss/incsub-support.scss */
+#support-system-single-ticket .support-system-ticket-meta {
+  border-bottom: 1px solid #DDD;
+  padding-bottom: 1em;
+}
+
+/* line 126, ../scss/incsub-support.scss */
+#support-system-single-ticket .support-system-ticket-meta li:first-child {
+  margin-left: 0;
+}
+
+/* line 130, ../scss/incsub-support.scss */
+#support-system-single-ticket h1.support-system-ticket-title {
+  margin-bottom: 3.5rem;
+}
+
+/* line 135, ../scss/incsub-support.scss */
+#support-system-single-ticket .support-system-ticket-reply-wrap {
+  background: #f7f7f7;
+  margin-bottom: 2rem;
+  padding-top: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* line 143, ../scss/incsub-support.scss */
+#support-system .support-system-reply-header > div {
+  float: left;
+}
+
+/* line 146, ../scss/incsub-support.scss */
+#support-system .support-system-reply-poster {
+  margin-left: 1.5rem;
+}
+
+/* line 150, ../scss/incsub-support.scss */
+#support-system p.support-system-reply-date {
+  margin-top: 1rem;
+  font-size: 0.84615rem;
+}
+
+/** Others **/
+/* line 158, ../scss/incsub-support.scss */
+#support-system input[type="submit"] {
   background-repeat: none !important;
   background-image: none !important;
 }
 
-/* line 118, ../scss/incsub-support.scss */
+/** Badges **/
+/* line 164, ../scss/incsub-support.scss */
 .support-system-ticket-title .label {
   vertical-align: middle;
+}
+
+/* line 169, ../scss/incsub-support.scss */
+#support-system .wp-editor-container button,
+#support-system .wp-editor-container .button {
+  border: none;
+}
+
+/** Reply Form **/
+/* line 175, ../scss/incsub-support.scss */
+#support-system .wp-editor-container button,
+#support-system .wp-editor-container .button {
+  border: none;
+  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+  margin: 0;
+  position: static;
+  padding: 2px 3px;
+  font-size: 14px;
+  background-color: transparent;
+  color: #333;
+}
+
+/* line 186, ../scss/incsub-support.scss */
+#support-system .wp-editor-wrap {
+  border: 1px solid #C8C8C8;
 }

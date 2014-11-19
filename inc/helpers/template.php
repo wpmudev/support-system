@@ -33,7 +33,7 @@ function incsub_support_get_template( $slug, $name = false ) {
 		}
 
 		if ( ! empty( $located ) ) {
-			load_template( $located );
+			load_template( $located, false );
 			break;
 		}
 	}
@@ -57,56 +57,74 @@ function incsub_support_tickets_list_filter() {
 	incsub_support_get_template( 'tickets-filter' );
 }
 
+function incsub_support_reply_form() {
+	incsub_support_get_template( 'form', 'reply' );
+}
+
 function incsub_support_list_replies( $args = array() ) {
-	$defaults = array(
-		'avatar_size' => 32,
-		'echo' => true,
-		'reply_class' => 'support-system-ticket-reply'
-	);
-
-	$args = wp_parse_args( $args, $defaults );
-	extract( $args );
-
 	$replies = incsub_support()->query->ticket->get_replies();
+
 	// Remove the main reply
 	unset( $replies[0] );
 
-	if ( ! $echo )
-		ob_start();
+
+	global $ticket_reply;
+
 	foreach ( $replies as $reply ) {
-		$user = get_userdata( $reply->get_poster_id() );
-		if ( ! $user ) {
-			$username = __( 'Unknown user', INCSUB_SUPPORT_LANG_DOMAIN );
-		}
-		else {
-			$username = $user->data->user_nicename;
-		}
+		$ticket_reply = $reply;		
 
-		$class = array();
-		$class[] = $reply_class;
-		if ( is_super_admin( $reply->admin_id ) )
-			$class[] = $reply_class . '-staff-reply';
+		incsub_support_get_template( 'ticket-reply' );
 
-		$class = implode( ' ', $class );
-
-		?>
-			<div class="<?php echo esc_attr( $class ); ?>" id="support-system-reply-<?php echo $reply->message_id; ?>">
-				<div class="<?php echo esc_attr( $reply_class ) . '-author'; ?>">
-					<?php echo get_avatar( $reply->get_poster_id(), $avatar_size ); ?>
-					<?php echo $username; ?>			
-				</div>
-				<div class="<?php echo esc_attr( $reply_class ) . '-message'; ?>">
-					<?php echo $reply->message; ?>			
-				</div>
-				<div class="<?php echo esc_attr( $reply_class ) . '-date'; ?>">
-					<?php echo incsub_support_get_translated_date( $reply->message_date ); ?>			
-				</div>
-			</div>
-		<?php
 	}
 
-	if ( ! $echo )
-		return ob_get_clean();
+}
+
+function incsub_support_the_reply_class() {
+	global $ticket_reply;
+
+	$class = array();
+	if ( is_multisite() && is_super_admin( $ticket_reply->get_poster_id() ) ) {
+		$class[] = 'support-system-reply-staff';
+	}
+
+	if ( ! is_multisite() && current_user_can( 'manage_options' ) )
+		$class[] = 'support-system-reply-staff';
+
+	return implode( ' ' , $class );
+}
+
+function incsub_support_get_the_reply_id() {
+	global $ticket_reply;
+	return $ticket_reply->message_id;
+}
+
+function incsub_support_get_the_poster_id() {
+	global $ticket_reply;
+	return $ticket_reply->get_poster_id();
+}
+
+function incsub_support_get_the_poster_username() {
+	global $ticket_reply;
+
+	$user = get_userdata( $ticket_reply->get_poster_id() );
+	if ( ! $user ) {
+		$username = __( 'Unknown user', INCSUB_SUPPORT_LANG_DOMAIN );
+	}
+	else {
+		$username = $user->data->user_nicename;
+	}
+
+	return $username;
+}
+
+function incsub_support_get_the_reply_message() {
+	global $ticket_reply;
+	return $ticket_reply->message;
+}
+
+function incsub_support_get_the_reply_date() {
+	global $ticket_reply;
+	return incsub_support_get_translated_date( $ticket_reply->message_date );
 }
 
 function incsub_support_the_category_filter( $class = '' ) {
@@ -246,5 +264,30 @@ function incsub_support_the_ticket_badges( $args = array() ) {
 }
 
 
+function incsub_support_editor() {
+	$content = '';
+	if ( isset( $_POST['support-system-reply-message'] ) )
+		$content = stripslashes_deep( $_POST['support-system-reply-message'] );
 
+	$settings = array(
+		'media_buttons' => false,
+		'quicktags' => false,
+		'textarea_rows' => 10,
+		'teeny' => true
+	);
+	wp_editor( $content, 'support-system-reply-message', $settings );
+}
 
+function incsub_support_reply_form_fields() {
+	$ticket = incsub_support()->query->ticket;
+	wp_nonce_field( 'support-system-submit-reply-' . $ticket->ticket_id . '-' . get_current_user_id() . '-' . get_current_blog_id() );
+	?>
+		<input type="hidden" name="support-system-reply-fields[user]" value="<?php echo get_current_user_id(); ?>" />
+		<input type="hidden" name="support-system-reply-fields[ticket]" value="<?php echo $ticket->ticket_id; ?>" />
+		<input type="hidden" name="support-system-reply-fields[blog]" value="<?php echo get_current_blog_id(); ?>" />
+	<?php
+}
+
+function incsub_support_reply_form_errors() {
+	var_dump(incsub_support_get_errors( 'support-system-reply-form' ) );
+}

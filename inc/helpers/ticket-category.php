@@ -10,11 +10,14 @@ function incsub_support_sanitize_ticket_category_fields( $cat ) {
 		$cat->$name = $value;
 	}
 
+	$cat = apply_filters( 'support_system_sanitize_ticket_category_fields', $cat );
+
 	return $cat;
 }
 
 function incsub_support_get_ticket_category( $cat ) {
 	$cat = Incsub_Support_Ticket_Category::get_instance( $cat );
+	$cat = apply_filters( 'support_system_get_ticket_category', $cat );
 	return $cat;
 }
 
@@ -94,6 +97,10 @@ function incsub_support_get_ticket_categories( $args = array() ) {
 
 		return $cats;
 	}
+
+	$cats = apply_filters( 'support_system_get_ticket_categories', $cats, $args );
+
+	return $cats;
 }
 
 function incsub_support_get_ticket_categories_count( $args = array() ) {
@@ -163,7 +170,11 @@ function incsub_support_insert_ticket_category( $name, $user_id = 0 ) {
 	if ( ! $res )
 		return false;
 
-	return $wpdb->insert_id;
+	$cat_id = $wpdb->insert_id;
+
+	do_action( 'support_system_insert_ticket_category', $cat_id );
+
+	return $cat_id;
 }
 
 function incsub_support_update_ticket_category( $ticket_category_id, $args = array() ) {
@@ -202,13 +213,21 @@ function incsub_support_update_ticket_category( $ticket_category_id, $args = arr
 
 	wp_cache_delete( $ticket_category_id, 'support_system_ticket_categories' );
 
-	return $wpdb->update(
+	$result = $wpdb->update(
 		$tickets_cats_table,
 		$update,
 		array( 'cat_id' => $ticket_category_id ),
 		$update_wildcards,
 		array( '%d' )
 	);
+
+	if ( ! $result )
+		return false;
+
+	$old_ticket_category = $ticket_category;
+	do_action( 'support_system_update_ticket_category', $ticket_category_id, $args, $old_ticket_category );
+
+	return true;
 }
 
 function incsub_support_get_default_ticket_category() {
@@ -250,6 +269,11 @@ function incsub_support_set_default_ticket_category( $ticket_category_id ) {
 	wp_cache_delete( 'support_system_default_ticket_category', 'support_system_ticket_categories' );
 	wp_cache_delete( $ticket_category_id, 'support_system_ticket_categories' );
 
+	if ( ! $result )
+		return false;
+
+	return true;
+
 }
 
 function incsub_support_delete_ticket_category( $ticket_category_id ) {
@@ -259,11 +283,11 @@ function incsub_support_delete_ticket_category( $ticket_category_id ) {
 
 	$ticket_category = incsub_support_get_ticket_category( $ticket_category_id );
 	if ( ! $ticket_category )
-		return;
+		return false;
 
 	// Don't allow to remove the default category
 	if ( $ticket_category->defcat )
-		return;
+		return false;
 
 	$default_category = incsub_support_get_default_ticket_category();
 
@@ -281,4 +305,9 @@ function incsub_support_delete_ticket_category( $ticket_category_id ) {
 	$wpdb->query( $wpdb->prepare( "DELETE FROM $tickets_cats_table WHERE cat_id = %d", $ticket_category_id ) );
 
 	wp_cache_delete( $ticket_category_id, 'support_system_ticket_categories' );
+
+	$old_ticket_category = $ticket_category;
+	do_action( 'support_system_delete_ticket_category', $ticket_category_id, $old_ticket_category );
+
+	return true;
 }

@@ -22,6 +22,7 @@ function incsub_support_get_translated_date( $date, $human_read = false ) {
 		$transl_date = mysql2date( $format, $date_in_gmt, true );
 	}
 
+	$transl_date = apply_filters( 'support_system_get_translated_date', $transl_date, $date, $human_read );
 	return $transl_date;
 }
 
@@ -93,5 +94,33 @@ function incsub_support_super_admins_dropdown( $args ) {
 
 	if ( ! $echo )
 		return ob_get_clean();
+}
+
+function incsub_support_get_errors( $setting ) {
+	global $support_system_errors;
+
+	if ( ! count( $support_system_errors ) )
+		return array();
+
+	if ( $setting ) {
+		$setting_errors = array();
+		foreach ( (array) $support_system_errors as $key => $details ) {
+			if ( $setting == $details['setting'] )
+				$setting_errors[] = $support_system_errors[ $key ];
+		}
+		return $setting_errors;
+	}
+
+	return $support_system_errors;
+}
+
+function incsub_support_add_error( $setting, $code, $message ) {
+	global $support_system_errors;
+
+	$support_system_errors[] = array(
+		'setting' => $setting,
+		'code'    => $code,
+		'message' => $message,
+	);
 }
 

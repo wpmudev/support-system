@@ -17,6 +17,7 @@ class Incsub_Support_Query {
 			if ( $ticket ) {
 				$this->found_tickets = 1;
 				$this->tickets = array( $ticket );
+				$this->ticket = $ticket;
 			}
 		}
 		elseif ( $this->is_tickets_index ) {
@@ -103,6 +104,10 @@ class Incsub_Support_Query {
 
 function incsub_support_the_ticket() {
 	incsub_support()->query->the_ticket();
+}
+
+function incsub_support_is_ticket_closed() {
+	return incsub_support()->query->ticket->is_closed();
 }
 
 function incsub_support_has_tickets() {

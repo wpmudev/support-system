@@ -1,23 +1,28 @@
 <div id="support-system-single-ticket">
 	<?php if ( incsub_support_has_tickets() ): incsub_support_the_ticket(); ?>
-		<div class="row support-system-single-ticket-primary">
-			<div class="large-12 columns <?php echo incsub_support_get_the_ticket_class(); ?>" id="support-system-ticket-<?php echo incsub_support_get_the_ticket_id(); ?>">
-				<ul class="small-block-grid-2 large-block-grid-2">
-					<li class="support-system-ticket-author-data">
+		<div class="support-system-ticket row <?php echo esc_attr( incsub_support_get_the_ticket_class() ); ?>" id="support-system-ticket-<?php echo incsub_support_get_the_ticket_id(); ?>">
+			<div class="large-12 columns">
+				<h1 class="text-center support-system-ticket-title"><?php echo incsub_support_get_the_ticket_title(); ?></h1>
+				<ul class="row">
+					<li class="large-2 columns">
 						<?php echo get_avatar( incsub_support_get_the_author_id(), 96 ); ?><br/>
-						<span class="support-system-ticket-author-name"><?php echo incsub_support_get_the_author(); ?></span>
 					</li>
-					<li class="support-system-ticket-title">
-						<h1><?php echo incsub_support_get_the_ticket_title(); ?></h1>
+					<li class="large-10 columns">
+						<ul class="inline-list support-system-ticket-meta">
+							<li class="first"><?php echo incsub_support_get_the_author(); ?></li>
+							<li><?php echo incsub_support_get_the_ticket_date(); ?></li>
+						</ul>
+						<div class="row support-system-ticket-message">
+							<?php echo incsub_support_get_the_ticket_message(); ?>
+						</div>
 					</li>
 				</ul>
-				<div class="support-system-ticket-message">
-					<?php echo incsub_support_get_the_ticket_message(); ?>
-				</div>
+
+				
 			</div>
 		</div>
 		<hr>
-		<div class="row support-system-single-ticket-secondary">
+		<div class="row">
 			<div class="support-system-ticket-replies large-8 columns">
 				<?php incsub_support_ticket_replies(); ?>
 			</div>

@@ -10,7 +10,7 @@
 
 		<ul class="support-system-tickets-list">
 			<?php while ( incsub_support_has_tickets() ): incsub_support_the_ticket(); ?>
-				<ul class="support-system-ticket row" id="support-ticket-<?php echo incsub_support_get_the_ticket_id(); ?>">
+				<ul class="support-system-ticket row <?php echo esc_attr( incsub_support_get_the_ticket_class() ); ?>" id="support-ticket-<?php echo incsub_support_get_the_ticket_id(); ?>">
 					<li class="small-2 large-1 columns support-system-ticket-author-data">
 						<?php echo get_avatar( incsub_support_get_the_author_id(), 48 ); ?>
 					</li>
