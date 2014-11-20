@@ -2,13 +2,15 @@
 
 class Incsub_Support_faq_Category {
 
-	public $faq_id = 0;
+	public $cat_id = 0;
 	
 	public $cat_name = '';
 	
 	private $defcat = false;
 	
 	public $user_id = 0;
+
+	public $qcount = 0;
 	
 
 	public static function get_instance( $faq_id ) {
@@ -34,7 +36,7 @@ class Incsub_Support_faq_Category {
 				$wpdb->prepare(
 					"SELECT *
 					FROM $table 
-					WHERE faq_id = %d
+					WHERE cat_id = %d
 					LIMIT 1", 
 					$faq_id
 				) 
@@ -43,7 +45,7 @@ class Incsub_Support_faq_Category {
 			if ( ! $_cat )
 				return false;
 
-			wp_cache_add( $_cat->faq_id, $_cat, 'support_system_faq_categories' );
+			wp_cache_add( $_cat->cat_id, $_cat, 'support_system_faq_categories' );
 		}
 
 		$_cat = new self( $_cat );
@@ -70,8 +72,8 @@ class Incsub_Support_faq_Category {
 	public function get_faqs_count() {
 		global $wpdb;
 
-		$table = incsub_support()->model->faqs_table;
+		$table = incsub_support()->model->faq_table;
 
-		return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT( faq_id ) FROM $table WHERE faq_id = %d", $this->faq_id ) );
+		return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT( faq_id ) FROM $table WHERE cat_id = %d", $this->cat_id ) );
 	}
 }

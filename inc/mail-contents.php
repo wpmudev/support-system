@@ -6,7 +6,7 @@
 
 function incsub_support_get_email_headers() {
 	$headers[] = 'MIME-Version: 1.0';
-	$headers[] = 'From: ' . MU_Support_System::$settings['incsub_support_from_name'] . ' <' . MU_Support_System::$settings['incsub_support_from_mail'] . '>';
+	$headers[] = 'From: ' . incsub_support_get_setting( 'incsub_support_from_name' ) . ' <' . incsub_support_get_setting( 'incsub_support_from_mail' ) . '>';
 
 	return $headers;
 }

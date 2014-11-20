@@ -462,31 +462,18 @@ function incsub_support_insert_ticket( $args = array() ) {
 	$args['num_replies'] = 0;
 
 	$insert = array();
-	$insert_wildcards = array();
 
 	// SITE ID
-	$insert['site_id'] = $args['site_id']; 
-	$insert_wildcards[] = '%d'; 
+	$insert['site_id'] = absint( $args['site_id'] ); 
 
 	// BLOG ID
 	if ( ! is_multisite() )
-		$insert['blog_id'] = $args['blog_id'];
+		$insert['blog_id'] = absint( $args['blog_id'] );
 	elseif ( is_multisite() && get_blog_details( $args['blog_id'] ) )
 		$insert['blog_id'] = absint( $args['blog_id'] );
 	else
 		$insert['blog_id'] = get_current_blog_id();
 
-	$insert_wildcards[] = '%d'; 	
-
-	// CATEGORY
-	$category = incsub_support_get_ticket_category( absint( $args['cat_id'] ) );
-	if ( ! $category ) {
-		$insert['cat_id'] = $default_category->cat_id;
-	}
-	else {
-		$insert['cat_id'] = $category->cat_id;
-	}
-	$insert_wildcards[] = '%d';
 
 	// USER ID
 	$user = get_userdata( $args['user_id'] );
@@ -495,64 +482,67 @@ function incsub_support_insert_ticket( $args = array() ) {
 	elseif ( ! $user && is_user_logged_in() )
 		$insert['user_id'] = get_current_user_id();
 	else
-		$insert['user_id'] = $args['user_id'];
-
-	$insert_wildcards[] = '%d';
+		$insert['user_id'] = absint( $args['user_id'] );
 
 	// ADMIN ID
 	$user = get_userdata( $args['admin_id'] );
 	if ( ! $user )
 		$insert['admin_id'] = 0;
 	else
-		$insert['admin_id'] = $args['admin_id'];
+		$insert['admin_id'] = absint( $args['admin_id'] );
 
-	$insert_wildcards[] = '%d';
+	// CATEGORY
+	$category = incsub_support_get_ticket_category( absint( $args['cat_id'] ) );
+	if ( ! $category ) {
+		$insert['cat_id'] = $default_category->cat_id;
+	}
+	else {
+		$insert['cat_id'] = $category->cat_id;
+		$assigned_staff = $category->user_id;
+		if ( get_userdata( $assigned_staff ) )
+			$insert['admin_id'] = $category->user_id;
+	}
 
 	// LAST REPLY ID
-	$insert['last_reply_id'] = $args['last_reply_id']; 
-	$insert_wildcards[] = '%d'; 
+	$insert['last_reply_id'] = absint( $args['last_reply_id'] ); 
 
 	// TICKET TYPE
-	$insert['ticket_type'] = $args['ticket_type']; 
+	$insert['ticket_type'] = absint( $args['ticket_type'] ); 
 	$insert_wildcards[] = '%d'; 
 
 	// TICKET PRIORITY
-	$insert['ticket_priority'] = $args['ticket_priority']; 
+	$insert['ticket_priority'] = absint( $args['ticket_priority'] ); 
 	$insert_wildcards[] = '%d'; 
 
 	// TICKET STATUS
-	$insert['ticket_status'] = $args['ticket_status']; 
+	$insert['ticket_status'] = absint( $args['ticket_status'] ); 
 	$insert_wildcards[] = '%d'; 
 
 	// TICKET OPENED
 	$insert['ticket_opened'] = $args['ticket_opened']; 
-	$insert_wildcards[] = '%s'; 
 
 	// NUM REPLIES
-	$insert['num_replies'] = $args['num_replies']; 
-	$insert_wildcards[] = '%d'; 
+	$insert['num_replies'] = absint( $args['num_replies'] ); 
 
 	// TITLE
 	if ( empty( $args['title'] ) )
 		return new WP_Error( 'empty_title', __( 'Ticket title must not be empty.', INCSUB_SUPPORT_LANG_DOMAIN ) );
-	$insert['title'] = $args['title']; 
-	$insert_wildcards[] = '%s'; 
+	$insert['title'] = wp_unslash( strip_tags( $args['title'] ) ); 
 
 	// VIEW BY SUPERADMIN
-	$insert['view_by_superadmin'] = $args['view_by_superadmin']; 
-	$insert_wildcards[] = '%d'; 
+	$view_by_superadmin = absint( $args['view_by_superadmin'] ); 
+	if ( $view_by_superadmin > 1 )
+		$view_by_superadmin = 0;
+	$insert['view_by_superadmin'] = $view_by_superadmin; 
 
 
-	// MESAGE
-	if ( empty( $args['message'] ) )
-		return new WP_Error( 'empty_message', __( 'Message must not be empty.', INCSUB_SUPPORT_LANG_DOMAIN ) );
-	$message = $args['message'];
+	wp_unslash( $insert );
 	
+	// Insert the ticket	
 	$table = incsub_support()->model->tickets_table;
 	$wpdb->insert(
 		$table,
-		$insert,
-		$insert_wildcards
+		$insert
 	);
 
 	$ticket_id = $wpdb->insert_id;
@@ -560,6 +550,12 @@ function incsub_support_insert_ticket( $args = array() ) {
 	if ( ! $ticket_id )
 		return new WP_Error( 'insert_error', __( 'Error inserting the ticket, please try again later.', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
+	// MESSAGE
+	if ( empty( $args['message'] ) )
+		return new WP_Error( 'empty_message', __( 'Message must not be empty.', INCSUB_SUPPORT_LANG_DOMAIN ) );
+	$message = $args['message'];
+
+	// ATTACHMENTS
 	if ( ! is_array( $args['attachments'] ) )
 		$args['attachments'] = array();
 

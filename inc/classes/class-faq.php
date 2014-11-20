@@ -21,6 +21,8 @@ class Incsub_Support_FAQ {
 
 	public $help_no = 0;
 
+	public $category = null;
+
 	public static function get_instance( $faq_id ) {
 		global $wpdb, $current_site;
 
@@ -72,8 +74,15 @@ class Incsub_Support_FAQ {
 			$this->$key = $value;
 		}
 
-		//if ( $this->cat_id )
-		//	$this->category = incsub_support_get_faq_category( $this->cat_id );
+		if ( $this->cat_id )
+			$this->category = incsub_support_get_faq_category( $this->cat_id );
+	}
+
+	public function get_category_name() {
+		if ( ! is_object( $this->category ) )
+			return false;
+
+		return $this->category->cat_name;
 	}
 
 }

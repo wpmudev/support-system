@@ -1,28 +1,21 @@
 <?php
 
 function incsub_support_get_settings() {
-	$settings = wp_parse_args( get_site_option( 'incsub_support_settings' ), incsub_support_get_default_settings() );
-	return apply_filters( 'support_system_get_settings', $settings );
+	return incsub_support()->settings->get_all();
+}
+
+function incsub_support_get_setting( $name ) {
+	return incsub_support()->settings->get( $name );
 }
 
 function incsub_support_get_default_settings() {
+	return incsub_support()->settings->get_default_settings();
+}
 
-	$plugin = incsub_support();
-	$super_admins = $plugin::get_super_admins();
-	
-	return apply_filters( 'support_system_default_settings', array(
-		'incsub_support_menu_name' => __( 'Support', INCSUB_SUPPORT_LANG_DOMAIN ),
-		'incsub_support_from_name' => get_bloginfo( 'blogname' ),
-		'incsub_support_from_mail' => get_bloginfo( 'admin_email' ),
-		'incsub_support_fetch_imap' => 'disabled',
-		'incsub_support_imap_frequency' => '',
-		'incsub_allow_only_pro_sites' => false,
-		'incsub_pro_sites_level' => '',
-		'incsub_allow_only_pro_sites_faq' => false,
-		'incsub_pro_sites_faq_level' => '',
-		'incsub_ticket_privacy' => 'all',
-		'incsub_support_tickets_role' => array( 'administrator', 'editor', 'author', 'contributor', 'subscriber' ),
-		'incsub_support_faqs_role' => array( 'administrator', 'editor', 'author', 'contributor', 'subscriber' ),
-		'incsub_support_main_super_admin' => key( $super_admins ) //First of the Super Admins
-	) );
+function incsub_support_get_support_page_url() {
+	$page = incsub_support()->settings->get( 'incsub_support_support_page' );
+	if ( 'page' === get_post_type( $settings['incsub_support_support_page'] ) )
+		return get_permalink( $settings['incsub_support_support_page'], $leavename );
+
+	return false;
 }

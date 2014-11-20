@@ -22,6 +22,8 @@ class Incsub_Support_Admin {
 		require_once( 'class-parent-support-menu.php' );
 		require_once( 'class-network-support-menu.php' );
 		require_once( 'class-network-ticket-categories-menu.php' );
+		require_once( 'class-network-faqs-menu.php' );
+		require_once( 'class-network-faq-categories-menu.php' );
 
 		// Admin
 		require_once( 'class-admin-support-menu.php' );
@@ -36,6 +38,8 @@ class Incsub_Support_Admin {
 			if ( is_network_admin() && current_user_can( 'manage_network' ) ) {
 				$this->menus['network_support_menu'] = new Incsub_Support_Network_Support_Menu( 'ticket-manager-b', true );
 				$this->menus['network_ticket_categories_menu'] = new Incsub_Support_Network_Ticket_Categories( 'ticket-categories-b', true );
+				$this->menus['network_faqs_menu'] = new Incsub_Support_Network_FAQ_Menu( 'support-faq-manager-b', true );
+				$this->menus['network_faq_categories'] = new Incsub_Support_Network_FAQ_Categories( 'faq-categories-b', true );
 			}
 			elseif ( ! is_network_admin() && is_admin() ) {
 

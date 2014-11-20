@@ -90,29 +90,29 @@ function incsub_support_set_new_roles() {
 	global $wp_roles;
 
 	$roles_settings = array( 
-		'incsub_support_tickets_role' => MU_Support_System::$settings['incsub_support_tickets_role'], 
-		'incsub_support_faqs_role' => MU_Support_System::$settings['incsub_support_faqs_role'] 
+		'incsub_support_tickets_role' => incsub_support_get_setting( 'incsub_support_tickets_role' ), 
+		'incsub_support_faqs_role' => incsub_support_get_setting( 'incsub_support_faqs_role' ) 
 	);
 
+	/**
 	foreach ( $roles_settings as $key => $value ) {
 		switch ( $value ) {
 			case 'manage_options':
-				MU_Support_System::$settings[ $key ] = array( 'administrator' );
+				incsub_support_get_setting(  $key  ) = array( 'administrator' );
 				break;
 			case 'publish_pages':
-				MU_Support_System::$settings[ $key ] = array( 'administrator', 'editor' );
+				incsub_support_get_setting(  $key  ) = array( 'administrator', 'editor' );
 				break;
 			case 'publish_posts':
-				MU_Support_System::$settings[ $key ] = array( 'administrator', 'editor', 'author' );
+				incsub_support_get_setting(  $key  ) = array( 'administrator', 'editor', 'author' );
 				break;
 			case 'edit_posts':
-				MU_Support_System::$settings[ $key ] = array( 'administrator', 'editor', 'author', 'contributor' );
+				incsub_support_get_setting(  $key  ) = array( 'administrator', 'editor', 'author', 'contributor' );
 				break;
 			case 'read':
-				MU_Support_System::$settings[ $key ] = array( 'administrator', 'editor', 'author', 'contributor', 'subscriber' );
+				incsub_support_get_setting(  $key  ) = array( 'administrator', 'editor', 'author', 'contributor', 'subscriber' );
 				break;
 		}
 	}
-
-	update_site_option( 'incsub_support_settings', MU_Support_System::$settings );
+	**/
 }

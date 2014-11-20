@@ -67,7 +67,7 @@ function incsub_support_insert_ticket_reply( $ticket_id, $args = array() ) {
 	$defaults = array(
 		'site_id' => $current_site_id,
 		'poster_id' => 0,
-		'subject' => 'Re: ' . stripslashes_deep( $ticket->title ),
+		'subject' => 'Re: ' . wp_unslash( $ticket->title ),
 		'message' => '',
 		'message_date' => current_time( 'mysql', 1 ),
 		'attachments' => array(),
@@ -80,7 +80,7 @@ function incsub_support_insert_ticket_reply( $ticket_id, $args = array() ) {
 	$plugin = incsub_support();
 	$tickets_replies_table = $plugin->model->tickets_messages_table;
 
-	$message = wp_filter_kses( $message );
+	$message = wp_kses( wp_unslash( $message ) );
 	
 	$result = $wpdb->insert(
 		$tickets_replies_table,

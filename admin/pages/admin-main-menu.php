@@ -22,7 +22,7 @@ if ( ! class_exists( 'MU_Support_Admin_Main_Menu' ) ) {
 
 			$this->includes();
 
-			$this->menu_title = MU_Support_System::$settings['incsub_support_menu_name'];
+			$this->menu_title = incsub_support_get_setting( 'incsub_support_menu_name' );
 			$this->capability = 'read';
 			$this->menu_slug = 'ticket-manager';
 			$this->add_new_link = array(
@@ -71,7 +71,7 @@ if ( ! class_exists( 'MU_Support_Admin_Main_Menu' ) ) {
 		    	'blog_id' => get_current_blog_id()
 		    );
 
-		    if ( 'requestor' == MU_Support_System::$settings['incsub_ticket_privacy'] )
+		    if ( 'requestor' == incsub_support_get_setting( 'incsub_ticket_privacy' ) )
 		    	$args['user_in'] = array( get_current_user_id() );
 
 			$all_tickets_count = $model->get_tickets( 'all', 0, 0, $args );

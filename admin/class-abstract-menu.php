@@ -42,6 +42,8 @@ abstract class Incsub_Support_Admin_Menu {
 		if ( ! $this->slug || ! $cap )
 			return;
 
+		$this->menu_title = $page_title;
+
 		$this->page_id = add_menu_page( 
 			$menu_title,
 			$page_title,
@@ -55,6 +57,7 @@ abstract class Incsub_Support_Admin_Menu {
 	}
 
 	protected function add_submenu_page( $parent_slug, $menu_title, $page_title, $cap ) {
+		$this->menu_title = $page_title;
 		$this->page_id = add_submenu_page( 
 			$parent_slug,
 			$page_title,
@@ -72,6 +75,10 @@ abstract class Incsub_Support_Admin_Menu {
 			return network_admin_url( 'admin.php?page=' . $this->slug );
 		else
 			return admin_url( 'admin.php?page=' . $this->slug );
+	}
+
+	public function get_menu_title() {
+		return $this->menu_title;
 	}
 
 	public function render_row( $title, $markup ) {

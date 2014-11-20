@@ -141,7 +141,7 @@ class Incsub_Support_Admin_Support_Menu extends Incsub_Support_Parent_Support_Me
 
 				$result = incsub_support_insert_ticket( $args );
 				if ( is_wp_error( $result ) ) {
-					add_settings_error( 'support_system_submit_new_ticket', 'insert_error', $result->get_message() );
+					add_settings_error( 'support_system_submit_new_ticket', 'insert_error', $result->get_error_message() );
 				}
 				else {
 					wp_redirect( $this->get_menu_url() );

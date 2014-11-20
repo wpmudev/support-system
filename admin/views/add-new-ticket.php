@@ -35,7 +35,7 @@
 	<p class="submit">
 		<?php wp_nonce_field( 'add-new-ticket' ); ?>
 		<?php submit_button( __( 'Submit new ticket', INCSUB_SUPPORT_LANG_DOMAIN ), 'primary', 'submit-new-ticket', false ); ?>
-		<a href="<?php echo MU_Support_System::$admin_main_menu->get_permalink(); ?>" class="button-secondary"><?php _e( 'Back to tickets list', INCSUB_SUPPORT_LANG_DOMAIN ); ?></a>
+		<a href="<?php echo esc_attr( $list_menu_url ); ?>" class="button-secondary"><?php _e( 'Back to tickets list', INCSUB_SUPPORT_LANG_DOMAIN ); ?></a>
 
 	</p>
 </form>

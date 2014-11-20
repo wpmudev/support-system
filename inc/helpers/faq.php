@@ -30,6 +30,108 @@ function incsub_support_get_faq( $faq ) {
 	return $faq;
 }
 
+function incsub_support_get_faqs( $args = array() ) {
+	global $wpdb, $current_site;
+
+	$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
+
+	$defaults = array(
+		'per_page' => get_option( 'posts_per_page' ),
+		'page' => 1,
+		'category' => false,
+		'site_id' => $current_site_id,
+		'orderby' => 'faq_id',
+		'order' => 'asc',
+		's' => false,
+		'count' => false
+	);
+	$args = wp_parse_args( $args, $defaults );
+
+	extract( $args );
+
+	$where = array();
+	$where[] = "1 = 1";
+
+	// Site ID
+	$site_id = absint( $site_id );
+	if ( $site_id )
+		$where[] = $wpdb->prepare( "site_id = %d", $site_id );
+	else
+		$where[] = $wpdb->prepare( "site_id = %d", $current_site_id );
+
+	// Search
+	if ( $s ) {
+		$s = '%' . $s . '%';
+		$where[] = $wpdb->prepare( "(question LIKE %s OR answer LIKE %s)", $s, $s );
+	}
+
+	if ( $category )
+		$where[] = $wpdb->prepare( "cat_id = %d", $category );
+
+	$order_query = '';
+	$order = strtoupper( $order );
+	$allowed_orderby = array( 'faq_id', 'question' );
+	$allowed_order = array( 'ASC', 'DESC' );
+	if ( in_array( $orderby, $allowed_orderby ) && in_array( $order, $allowed_order ) )
+		$order_query = "ORDER BY $orderby $order";
+
+	$limit = '';
+	if ( $per_page > -1 )
+		$limit = $wpdb->prepare( "LIMIT %d, %d", intval( ( $page - 1 ) * $per_page ), intval( $per_page ) );
+
+	$where = implode( ' AND ', $where );
+
+	$faqs_table = incsub_support()->model->faq_table;
+
+	$faqs = array();
+	if ( $count ) {
+		$query = "SELECT COUNT(faq_id) FROM $faqs_table WHERE $where";
+
+		$key = md5( $query );
+		$cache_key = "incsub_support_get_faqs_count:$key";
+		$results = wp_cache_get( $cache_key, 'support_system_faqs' );
+
+		if ( $results === false ){
+			$results = $wpdb->get_var( $query );
+			wp_cache_set( $cache_key, $results, 'support_system_faqs' );
+		}
+
+		$faqs = $results;
+	}
+	else {
+		$query = "SELECT * FROM $faqs_table WHERE $where $order_query $limit";
+
+		$key = md5( $query );
+		$cache_key = "incsub_support_get_faqs:$key";
+		$results = wp_cache_get( $cache_key, 'support_system_faqs' );
+
+		if ( $results === false ) {
+			$results = $wpdb->get_results( $query );
+			if ( empty( $results ) )
+				return array();
+			wp_cache_set( $cache_key, $results, 'support_system_faqs' );
+		}
+
+		$faqs = array_map( 'incsub_support_get_faq', $results );
+
+		
+	}
+
+	$faqs = apply_filters( 'support_system_get_faqs', $faqs, $args );
+
+	return $faqs;
+	
+}
+
+function incsub_support_get_faqs_count( $args = array() ) {
+	$args['count'] = true;
+	$args['per_page'] = -1;
+
+	$count = incsub_support_get_faqs( $args );
+
+	return $count;
+}
+
 /**
  * Insert a new FAQ
  * 
@@ -70,11 +172,14 @@ function incsub_support_insert_faq( $args = array() ) {
 	$insert_wildcards[] = '%d'; 
 
 	// CATEGORY
-	
+	$category = incsub_support_get_faq_category( absint( $args['cat_id'] ) );
+	if ( ! $category )
+		return new WP_Error( 'wrong_category', __( 'The category does not exist.', INCSUB_SUPPORT_LANG_DOMAIN ) );
+	$insert['cat_id'] = $category->cat_id;
+	$insert_wildcards[] = '%d'; 
 
 	// QUESTION
-	$question = stripslashes_deep( $args['question'] );
-	$question = strip_tags( $question );
+	$question = strip_tags( wp_unslash( $args['question'] ) );
 	if ( empty( $question ) )
 		return new WP_Error( 'empty_question', __( 'FAQ title must not be empty.', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
@@ -82,7 +187,7 @@ function incsub_support_insert_faq( $args = array() ) {
 	$insert_wildcards[] = '%s'; 
 
 	// ANSWER
-	$answer = stripslashes_deep( $args['answer'] );
+	$answer = wp_kses( wp_unslash( $args['answer'] ) );
 	if ( empty( $answer ) )
 		return new WP_Error( 'empty_answer', __( 'FAQ answer must not be empty.', INCSUB_SUPPORT_LANG_DOMAIN ) );
 

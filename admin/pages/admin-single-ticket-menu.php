@@ -126,7 +126,7 @@ if ( ! class_exists( 'MU_Support_Admin_Single_Ticket_Menu' ) ) {
 				wp_die( 'You do not have enough permissions to see the ticket', INCSUB_SUPPORT_LANG_DOMAIN );
 
 			if ( ! current_user_can( 'manage_options' ) ) {
-				$privacy = MU_Support_System::$settings['incsub_ticket_privacy'];
+				$privacy = incsub_support_get_setting('incsub_ticket_privacy');
 				if ( 'requestor' == $privacy  && $model->get_ticket_user_id( $this->ticket_id ) != get_current_user_id() ) {
 					wp_die( 'You do not have enough permissions to see the ticket', INCSUB_SUPPORT_LANG_DOMAIN );
 				}

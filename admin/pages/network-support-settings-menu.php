@@ -30,7 +30,7 @@ if ( ! class_exists( 'MU_Support_Network_Support_settings' ) ) {
 
 			parent::__construct( $is_network );
 
-			$this->settings = MU_Support_System::$settings;
+			$this->settings = incsub_support()->settings->get_all();
 
 			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
 
@@ -158,6 +158,18 @@ if ( ! class_exists( 'MU_Support_Network_Support_settings' ) ) {
 							?>
 						</table>
 
+						<h3><?php _e( 'Front', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h3>
+						<?php 
+							$dropdown = wp_dropdown_pages( 
+								array( 
+									'selected' => $this->settings['incsub_support_support_page'], 
+									'show_option_none' => __( '-- Select a page --', INCSUB_SUPPORT_LANG_DOMAIN ),
+									'name' => 'support_page_id',
+									'echo' => false
+								) 
+							); ?>
+						<?php $this->render_row( __( 'Support Page', INCSUB_SUPPORT_LANG_DOMAIN ), $dropdown ); ?>
+
 						<h3><?php _e( 'Privacy Settings', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h3>
 						<table class="form-table">
 							<?php ob_start(); ?>
@@ -219,6 +231,10 @@ if ( ! class_exists( 'MU_Support_Network_Support_settings' ) ) {
 			if ( isset( $input['privacy'] ) && array_key_exists( $input['privacy'], MU_Support_System::$privacy ) ) {
 				$this->settings['incsub_ticket_privacy'] = $input['privacy'];
 			}
+
+			// SUPPORT PAGE
+			if ( ! empty( $input['support_page_id'] ) && 'page' === get_post_type( $input['support_page_id'] ) )
+				$this->settings['incsub_support_support_page'] = absint( $input['support_page_id'] );
 
 			
 			// FETCH IMAP

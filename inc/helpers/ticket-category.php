@@ -190,8 +190,8 @@ function incsub_support_update_ticket_category( $ticket_category_id, $args = arr
 
 	$defaults = array(
 		'cat_name' => $ticket_category->cat_name,
-		'user_id' => 0,
-		'defcat' => 0
+		'user_id' => $ticket_category->user_id,
+		'defcat' => $ticket_category->defcat
 	);
 
 	$args = wp_parse_args( $args, $defaults );

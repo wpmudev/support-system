@@ -56,7 +56,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		public static $incsub_support_imap_ssl;
 
 		// Plugin settings
-		public static $settings = array();
+		public $settings = array();
 
 		// Network menus
 		public static $network_main_menu;
@@ -122,6 +122,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		public function init_plugin() {
 
 			$this->model = incsub_support_get_model();
+			$this->settings = new Incsub_Support_Settings();
 			$this->query = new Incsub_Support_Query();
 
 			if ( is_admin() )
@@ -156,8 +157,6 @@ if ( ! class_exists( 'MU_Support_System') ) {
 				'all' => is_multisite() ? __( 'Allow all users to see all tickets in a site', INCSUB_SUPPORT_LANG_DOMAIN ) : __( 'Allow all users to see all tickets', INCSUB_SUPPORT_LANG_DOMAIN ),
 				'requestor' => __( 'Allow only requestors to see their own tickets', INCSUB_SUPPORT_LANG_DOMAIN )
 			);
-
-			self::$settings = wp_parse_args( get_site_option( 'incsub_support_settings' ), self::get_default_settings() );
 
 			if ( ( is_multisite() && is_main_site( get_current_blog_id() ) ) || ! is_multisite() )
 				$this->shortcodes = new Incsub_Support_Shortcodes();
@@ -224,6 +223,8 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-shortcodes.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-query.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-faq.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-faq-category.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-settings.php');
 
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/general.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/ticket.php');
@@ -233,6 +234,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/settings.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/capabilities.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/faq.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/faq-category.php');
 
 			// Admin
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/support-menu.php');
@@ -303,26 +305,26 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 					$admin_ticket_menu_allowed = false;
 					// Tickets allowed?
-					foreach ( self::$settings['incsub_support_tickets_role'] as $ticket_role ) {
+					foreach ( $this->settings->get( 'incsub_support_tickets_role' ) as $ticket_role ) {
 						if ( $user_role == $ticket_role ) {
 							$admin_ticket_menu_allowed = true;
 							break;
 						}
 					}
 
-					if ( (boolean)self::$settings['incsub_allow_only_pro_sites'] && $admin_ticket_menu_allowed )
-						$admin_ticket_menu_allowed = function_exists( 'is_pro_site' ) && is_pro_site( get_current_blog_id(), absint( self::$settings['incsub_pro_sites_level'] ) );
+					if ( (boolean)$this->settings->get( 'incsub_allow_only_pro_sites' ) && $admin_ticket_menu_allowed )
+						$admin_ticket_menu_allowed = function_exists( 'is_pro_site' ) && is_pro_site( get_current_blog_id(), absint( $this->settings->get( 'incsub_pro_sites_level' ) ) );
 
 					// FAQs allowed?
 					$admin_faq_menu_allowed = false;
-					foreach ( self::$settings['incsub_support_faqs_role'] as $faq_role ) {
+					foreach ( $this->settings->get( 'incsub_support_faqs_role' ) as $faq_role ) {
 						if ( $user_role == $faq_role ) {
 							$admin_faq_menu_allowed = true;
 							break;
 						}
 					}
-					if ( self::$settings['incsub_allow_only_pro_sites_faq'] && $admin_faq_menu_allowed )
-						$admin_faq_menu_allowed = function_exists( 'is_pro_site' ) && is_pro_site( get_current_blog_id(), absint( self::$settings['incsub_pro_sites_faq_level'] ) );
+					if ( $this->settings->get( 'incsub_allow_only_pro_sites_faq' ) && $admin_faq_menu_allowed )
+						$admin_faq_menu_allowed = function_exists( 'is_pro_site' ) && is_pro_site( get_current_blog_id(), absint( $this->settings->get( 'incsub_pro_sites_faq_level' ) ) );
 
 					// If is not a Pro site we will not create the menu
 					if ( $admin_ticket_menu_allowed ) {
@@ -354,7 +356,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 					// Tickets allowed?
 					$admin_ticket_menu_allowed = false;
-					foreach ( self::$settings['incsub_support_tickets_role'] as $ticket_role ) {
+					foreach ( $this->settings->get( 'incsub_support_tickets_role' ) as $ticket_role ) {
 						if ( $user_role == $ticket_role ) {
 							$admin_ticket_menu_allowed = true;
 							break;
@@ -369,7 +371,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 					// FAQs allowed?
 					$admin_faq_menu_allowed = false;
-					foreach ( self::$settings['incsub_support_faqs_role'] as $faq_role ) {
+					foreach ( $this->settings->get( 'incsub_support_faqs_role' ) as $faq_role ) {
 						if ( $user_role == $faq_role ) {
 							$admin_faq_menu_allowed = true;
 							break;
@@ -446,7 +448,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		}
 
 		public static function get_main_admin_email() {
-			$administrator = MU_Support_System::$settings['incsub_support_main_super_admin'];
+			$administrator = incsub_support_get_setting( 'incsub_support_main_super_admin' );
 			$super_admins = MU_Support_System::get_super_admins();
 			$admin_login = $super_admins[ $administrator ];
 			$admin_user = get_user_by( 'login', $admin_login );
@@ -454,7 +456,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		}
 
 		public static function get_main_admin_details() {
-			$administrator = MU_Support_System::$settings['incsub_support_main_super_admin'];
+			$administrator = incsub_support_get_setting( 'incsub_support_main_super_admin' );
 			$super_admins = MU_Support_System::get_super_admins();
 			$admin_login = $super_admins[ $administrator ];
 			$admin_user = get_user_by( 'login', $admin_login );

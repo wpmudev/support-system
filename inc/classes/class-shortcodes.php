@@ -64,7 +64,7 @@ class Incsub_Support_Shortcodes {
 			if ( ! wp_verify_nonce( $_POST['_wpnonce'], $action ) )
 				wp_die( __( 'Security check error', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
-			$message = stripslashes_deep( $_POST['support-system-reply-message'] );
+			$message = $_POST['support-system-reply-message'];
 
 			if ( empty( $message ) )
 				wp_die( __( 'The reply message cannot be empty', INCSUB_SUPPORT_LANG_DOMAIN ) );
@@ -105,32 +105,49 @@ class Incsub_Support_Shortcodes {
 			if ( ! wp_verify_nonce( $_POST['_wpnonce'], $action ) )
 				wp_die( __( 'Security check error', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
-			$subject = wp_unslash( strip_tags( $_POST['support-system-ticket-subject'] ) );
+			$subject = $_POST['support-system-ticket-subject'];
 			if ( empty( $subject ) )
 				wp_die( __( 'Please, insert a subject for the ticket', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
-			$message = wp_unslash( $_POST['support-system-ticket-message'] );
+			$message = $_POST['support-system-ticket-message'];
 			if ( empty( $message ) )
 				wp_die( __( 'Please, insert a message for the ticket', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
-			var_dump($message);
-			wp_die();
+
+			$args = array(
+				'title' => $subject,
+				'message' => $message,
+			);
+			$ticket_id = incsub_support_insert_ticket( $args );
+
+			if ( is_wp_error( $ticket_id ) )
+				wp_die( $ticket_id->get_error_message() );
+
+			$redirect_to = incsub_support_get_support_page_url();
+			if ( $redirect_to ) {
+				wp_redirect( add_query_arg( 'tid', $ticket_id, $redirect_to ) );
+				exit;
+			}
+
 		}
 	}
 
 	function render_submit_ticket_form() {
 		$this->start();
-		?>
-			<h2><?php _e( 'Submit a new ticket', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h2>
-			<form method="post" id="support-system-ticket-form" action="#support-system-ticket-form-wrap">
-				<input type="text" name="support-system-ticket-subject" value="" placeholder="<?php esc_attr_e( 'Subject', INCSUB_SUPPORT_LANG_DOMAIN ); ?>"/>
-				<?php incsub_support_editor( 'ticket' ); ?>
-				<?php wp_nonce_field( 'support-system-submit-ticket-' . get_current_user_id() . '-' . get_current_blog_id() ); ?>
-				<br/>
-				<input type="submit" name="support-system-submit-ticket" class="button small" value="<?php esc_attr_e( 'Submit Ticket', INCSUB_SUPPORT_LANG_DOMAIN ); ?>" />
-				
-			</form>
-		<?php
+
+		if ( ! incsub_support()->query->is_single_ticket ) {
+			?>
+				<h2><?php _e( 'Submit a new ticket', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h2>
+				<form method="post" id="support-system-ticket-form" action="#support-system-ticket-form-wrap">
+					<input type="text" name="support-system-ticket-subject" value="" placeholder="<?php esc_attr_e( 'Subject', INCSUB_SUPPORT_LANG_DOMAIN ); ?>"/>
+					<?php incsub_support_editor( 'ticket' ); ?>
+					<?php wp_nonce_field( 'support-system-submit-ticket-' . get_current_user_id() . '-' . get_current_blog_id() ); ?>
+					<br/>
+					<input type="submit" name="support-system-submit-ticket" class="button small" value="<?php esc_attr_e( 'Submit Ticket', INCSUB_SUPPORT_LANG_DOMAIN ); ?>" />
+					
+				</form>
+			<?php
+		}
 		return $this->end();
 	}
 }
