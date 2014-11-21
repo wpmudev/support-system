@@ -264,10 +264,12 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		 * @since 1.8
 		 */
 		public function activate() {
-			$model = MU_Support_System_Model::get_instance();
+			$model = incsub_support_get_model();
 			$model->create_tables();
+
+			$settings = new Incsub_Support_Settings();
 			update_site_option( 'incsub_support_version', self::$version );
-			update_site_option( 'incsub_support_settings', self::$settings );			
+			update_site_option( 'incsub_support_settings', $settings->get_all() );			
 		}
 
 		/**
