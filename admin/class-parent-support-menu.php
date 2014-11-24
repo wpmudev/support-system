@@ -29,7 +29,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 	public function on_load() {
 
 		// Add screen options
-		add_screen_option( 'per_page', array( 'label' => __( 'Tickets per page', INCSUB_SBE_LANG_DOMAIN ), 'default' => 20, 'option' => 'incsub_support_tickets_per_page' ) );
+		add_screen_option( 'per_page', array( 'label' => __( 'Tickets per page', INCSUB_SUPPORT_PLUGIN_URL ), 'default' => 20, 'option' => 'incsub_support_tickets_per_page' ) );
 
 		// Check filtering
 		if ( isset( $_POST['filter_action'] ) || ! empty( $_POST['s'] ) ) {
@@ -200,6 +200,37 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 			}
 		
 
+		}
+
+		// Are we creating a FAQ based on a response?
+		if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] === 'create-faq-from-ticket' && isset( $_REQUEST['tid'] ) && isset( $_REQUEST['rid'] ) ) {
+			$ticket_id = absint( $_REQUEST['tid'] );
+			$reply_id = absint( $_REQUEST['rid'] );
+
+			check_admin_referer( 'create-faq-from-ticket-' . $ticket_id . '-' . $reply_id );
+
+			$ticket = incsub_support_get_ticket_b( $ticket_id );
+			if ( ! $ticket )
+				return;
+
+			$reply = incsub_support_get_ticket_reply( $reply_id );
+			if ( ! $reply )
+				return;
+
+			
+			$redirect_to = incsub_support()->admin->menus['network_faqs_menu']->get_menu_url();
+			$redirect_to = add_query_arg(
+				array(
+					'action' => 'add',
+					'tid' => $ticket_id,
+					'rid' => $reply_id
+				),
+				$redirect_to
+			);
+
+			wp_redirect( $redirect_to );
+			exit;
+			
 		}
 	}
 

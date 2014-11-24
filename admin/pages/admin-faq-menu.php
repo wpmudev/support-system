@@ -45,18 +45,19 @@ if ( ! class_exists( 'MU_Support_Admin_FAQ_Menu' ) ) {
 		public function vote_faq_question() {
 			if ( isset( $_POST['faq_id'] ) && isset( $_POST['vote'] ) && in_array( $_POST['vote'], array( 'yes', 'no' ) ) ) {
 				$faq_id = absint( $_POST['faq_id'] );
-				$vote = 'yes' == $_POST['vote'] ? true : false;
 
-				$model = MU_Support_System_Model::get_instance();
-				$model->vote_faq_question( $faq_id, $vote );
+				if ( $faq = incsub_support_get_faq( $faq_id ) ) {
+					$vote = 'yes' == $_POST['vote'] ? true : false;
+					incsub_support_vote_faq( $faq_id, $vote );
+				}
+
 			}
 			die();
 		}
 
 		public function enqueue_scripts( $hook ) {
 			if ( $this->page_id == $hook ) {
-				wp_register_script( 'mu-support-faq-js', INCSUB_SUPPORT_ASSETS_URL . 'js/faq.js', array(), '20130402' );
-				wp_enqueue_script( 'mu-support-faq-js' );
+				wp_enqueue_script( 'mu-support-faq-js', INCSUB_SUPPORT_PLUGIN_URL . '/admin/assets/js/faq.js', array(), '20130402' );
 			}
 		}
 

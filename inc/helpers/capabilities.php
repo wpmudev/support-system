@@ -43,6 +43,11 @@ function incsub_support_get_capabilities() {
 		'update_ticket_category',
 		'delete_ticket_category',
 
-		'manage_options'
+		'manage_options',
+
+		'insert_faq',
+		'delete_faq',
+		'update_faq',
+		'read_faq'
 	);
 }

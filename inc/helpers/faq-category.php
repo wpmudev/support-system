@@ -315,3 +315,15 @@ function incsub_support_delete_faq_category( $faq_category_id ) {
 
 	return true;
 }
+
+function incsub_support_count_faqs_on_category( $faq_category_id ) {
+	global $wpdb;
+
+	$faqs_table = incsub_support()->model->faq_table;
+
+	$faq_category = incsub_support_get_faq_category( $faq_category_id );
+	if ( ! $faq_category )
+		return false;
+
+	return absint( $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(faq_id) FROM $faqs_table WHERE cat_id = %d", $faq_category_id ) ) );
+}

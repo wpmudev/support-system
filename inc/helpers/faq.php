@@ -152,7 +152,7 @@ function incsub_support_insert_faq( $args = array() ) {
 
 	$defaults = array(
 		'site_id' => $current_site_id,
-		'cat_id' => 0,
+		'cat_id' => incsub_support_get_default_faq_category()->cat_id,
 		'question' => '',
 		'answer' => '',
 	);

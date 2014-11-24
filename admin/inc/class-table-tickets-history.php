@@ -36,9 +36,12 @@ class Incsub_Support_Tickets_History_Table extends WP_List_Table {
         $columns = array(
             'poster'        => __( 'Author', INCSUB_SUPPORT_LANG_DOMAIN ),
             'message'       => __( 'Ticket Message/Reply', INCSUB_SUPPORT_LANG_DOMAIN ),
-            'date'          => __( 'Date/Time', INCSUB_SUPPORT_LANG_DOMAIN ),
-            'create_faq'    => ''
+            'date'          => __( 'Date/Time', INCSUB_SUPPORT_LANG_DOMAIN )
         );
+
+        if ( incsub_support_current_user_can( 'insert_faq' ) ) {
+            $columns['create_faq'] = '';
+        }
 
         return $columns;
     }
@@ -55,11 +58,11 @@ class Incsub_Support_Tickets_History_Table extends WP_List_Table {
     }
 
     function column_create_faq( $item ) {
-        return '';
         ob_start();
-        $link = MU_Support_System::$network_single_faq_question_menu->get_permalink();
-        $link = add_query_arg( 'action', 'new', $link );
-        $link = add_query_arg( 'tid', absint( $item->message_id ), $link );
+        $link = add_query_arg( 'action', 'create-faq-from-ticket' );
+        $link = add_query_arg( 'tid', absint( $this->ticket_id ), $link );
+        $link = add_query_arg( 'rid', absint( $item->message_id ), $link );
+        $link = wp_nonce_url( $link, 'create-faq-from-ticket-' . $this->ticket_id . '-' . $item->message_id );
         ?>
             <a title="<?php _e( 'Create a FAQ from this response', INCSUB_SUPPORT_LANG_DOMAIN ); ?>"
                 href="<?php echo $link; ?>"><?php _e( 'Create a FAQ', INCSUB_SUPPORT_LANG_DOMAIN ); ?></a>

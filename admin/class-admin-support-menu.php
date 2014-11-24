@@ -24,6 +24,12 @@ class Incsub_Support_Admin_Support_Menu extends Incsub_Support_Parent_Support_Me
 			'dashicons-sos'
 		);
 
+		add_action( 'load-' . $this->page_id, array( $this, 'maybe_insert_new_ticket' ) );
+		add_action( 'load-' . $this->page_id, array( $this, 'set_filters' ) );
+
+	}
+
+	public function set_filters() {
 		if ( ! isset( $_GET['action'] ) && incsub_support_current_user_can( 'insert_ticket' ) )
 			add_filter( 'support_system_admin_page_title', array( $this, 'add_new_ticket_link' ) );
 
@@ -32,9 +38,6 @@ class Incsub_Support_Admin_Support_Menu extends Incsub_Support_Parent_Support_Me
 
 		if ( isset( $_GET['action'] ) && 'add' === $_GET['action'] )
 			add_filter( 'support_system_admin_page_title', array( $this, 'add_new_ticket_title' ) );
-
-		add_action( 'load-' . $this->page_id, array( $this, 'maybe_insert_new_ticket' ) );
-
 	}
 
 	public function add_new_ticket_link( $title ) {

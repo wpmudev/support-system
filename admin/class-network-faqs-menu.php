@@ -110,12 +110,24 @@ class Incsub_Support_Network_FAQ_Menu extends Incsub_Support_Admin_Menu {
 			);
 
 			$question = '';
-			if ( ! empty( $_POST['question'] ) )
+			if ( ! empty( $_POST['question'] ) ) {
 				$question = stripslashes_deep( $_POST['question'] );
+			}
+			elseif( ! empty( $_REQUEST['tid'] ) ) {
+				$ticket = incsub_support_get_ticket_b( $_REQUEST['tid'] );
+				if ( $ticket )
+					$question = $ticket->title;
+			}
 
 			$answer = '';
-			if ( ! empty( $_POST['answer'] ) )
+			if ( ! empty( $_POST['answer'] ) ) {
 				$answer = stripslashes_deep( $_POST['answer'] );
+			}
+			elseif ( ! empty( $_REQUEST['rid'] ) ) {
+				$reply = incsub_support_get_ticket_reply( $_REQUEST['rid'] );
+				if ( $reply )
+					$answer = $reply->message;
+			}
 
 			$list_menu_url = $this->get_menu_url();
 
@@ -135,7 +147,7 @@ class Incsub_Support_Network_FAQ_Menu extends Incsub_Support_Admin_Menu {
 
 	public function on_load() {
 		// Add screen options
-		add_screen_option( 'per_page', array( 'label' => __( 'FAQs per page', INCSUB_SBE_LANG_DOMAIN ), 'default' => 20, 'option' => 'incsub_support_faqs_per_page' ) );
+		add_screen_option( 'per_page', array( 'label' => __( 'FAQs per page', INCSUB_SUPPORT_LANG_DOMAIN ), 'default' => 20, 'option' => 'incsub_support_faqs_per_page' ) );
 
 		// Check filtering
 		if ( isset( $_POST['filter_action'] ) || ! empty( $_POST['s'] ) ) {

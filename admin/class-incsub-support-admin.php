@@ -27,6 +27,7 @@ class Incsub_Support_Admin {
 
 		// Admin
 		require_once( 'class-admin-support-menu.php' );
+		require_once( 'class-admin-faqs-menu.php' );
 	}
 
 
@@ -47,7 +48,6 @@ class Incsub_Support_Admin {
 				$user_role = isset( $user->roles[0] ) ? $user->roles[0] : ( is_super_admin() ? 'administrator' : '' );
 
 				$tickets_role = incsub_support_get_setting( 'incsub_support_tickets_role' );
-				var_dump(incsub_support_get_settings());
 				$admin_ticket_menu_allowed = false;
 
 				// Tickets allowed?
@@ -58,6 +58,7 @@ class Incsub_Support_Admin {
 					}
 				}
 
+				$settings = incsub_support_get_settings();
 				if ( (boolean)$settings['incsub_allow_only_pro_sites'] && $admin_ticket_menu_allowed )
 					$admin_ticket_menu_allowed = function_exists( 'is_pro_site' ) && is_pro_site( get_current_blog_id(), absint( $settings['incsub_pro_sites_level'] ) );
 
@@ -74,6 +75,7 @@ class Incsub_Support_Admin {
 					$admin_faq_menu_allowed = function_exists( 'is_pro_site' ) && is_pro_site( get_current_blog_id(), absint( $settings['incsub_pro_sites_faq_level'] ) );
 
 				$this->menus['admin_support_menu'] = new Incsub_Support_Admin_Support_Menu( 'ticket-manager-b' );
+				$this->menus['admin_faq_menu'] = new Incsub_Support_Admin_FAQ_Menu( 'support-faq-b' );
 				/**
 				// If is not a Pro site we will not create the menu
 				if ( $admin_ticket_menu_allowed ) {
