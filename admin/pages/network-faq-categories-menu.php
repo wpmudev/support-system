@@ -133,6 +133,7 @@ if ( ! class_exists( 'MU_Support_Network_FAQ_Categories' ) ) {
 		}
 
 		public function edit_category() {
+			return;
 			if ( isset( $_POST['submit-edit-faq-category'] ) ) {
 				if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'edit-faq-category' ) )
 					wp_die( __( 'Security check error', INCSUB_SUPPORT_LANG_DOMAIN ) );

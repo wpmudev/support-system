@@ -268,6 +268,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			$model->create_tables();
 
 			$settings = new Incsub_Support_Settings();
+
 			update_site_option( 'incsub_support_version', self::$version );
 			update_site_option( 'incsub_support_settings', $settings->get_all() );			
 		}
@@ -278,8 +279,8 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		 * @since 1.8
 		 */
 		public function deactivate() {
-			delete_site_option( 'incsub_support_version' );
-			delete_site_option( 'incsub_support_settings' );
+			//delete_site_option( 'incsub_support_version' );
+			//delete_site_option( 'incsub_support_settings' );
 		}
 
 		

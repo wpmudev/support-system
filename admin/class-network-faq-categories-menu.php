@@ -25,6 +25,7 @@ class Incsub_Support_Network_FAQ_Categories extends Incsub_Support_Admin_Menu {
 	public function on_load() {
 		$edit = false;
 		$add = false;
+
 		if ( ( $edit = isset( $_POST['submit-edit-faq-category'] ) || $add = isset( $_POST['submit-new-faq-category'] ) ) && current_user_can( 'manage_network' ) ) {
 			$edit = isset( $_POST['submit-edit-faq-category'] );
 			$add = isset( $_POST['submit-new-faq-category'] );

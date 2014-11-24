@@ -46,11 +46,12 @@ class Incsub_Support_Admin {
 				$user = get_userdata( get_current_user_id() );
 				$user_role = isset( $user->roles[0] ) ? $user->roles[0] : ( is_super_admin() ? 'administrator' : '' );
 
-				$settings = incsub_support_get_settings();
+				$tickets_role = incsub_support_get_setting( 'incsub_support_tickets_role' );
+				var_dump(incsub_support_get_settings());
 				$admin_ticket_menu_allowed = false;
 
 				// Tickets allowed?
-				foreach ( $settings['incsub_support_tickets_role'] as $ticket_role ) {
+				foreach ( $tickets_role as $ticket_role ) {
 					if ( $user_role == $ticket_role ) {
 						$admin_ticket_menu_allowed = true;
 						break;

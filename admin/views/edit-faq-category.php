@@ -8,7 +8,7 @@
 			<input type="text" name="cat_name" value="<?php echo esc_attr( $category_name ); ?>">
 		<?php $this->render_row( __( 'Category name', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); ?>
 	</table>
-	<input type="hidden" name="ticket_cat_id" value="<?php echo esc_attr( $faq_category->cat_id ); ?>">
-	<?php wp_nonce_field( 'edit-ticket-category-' . $faq_category->cat_id, '_wpnonce' ); ?>
-	<?php submit_button( null, 'primary', 'submit-edit-ticket-category' ); ?>
+	<input type="hidden" name="faq_cat_id" value="<?php echo esc_attr( $faq_category->cat_id ); ?>">
+	<?php wp_nonce_field( 'edit-faq-category-' . $faq_category->cat_id, '_wpnonce' ); ?>
+	<?php submit_button( null, 'primary', 'submit-edit-faq-category' ); ?>
 </form>

@@ -13,7 +13,8 @@ class Incsub_Support_Settings {
 	}
 
 	public function get_all() {
-		$settings = wp_parse_args( get_site_option( $this->options_name ), $this->get_default_settings() );
+		$settings = get_site_option( $this->options_name, array() );
+		return wp_parse_args( $settings, $this->get_default_settings() );
 	}
 
 	public function update( $new_settings ) {
@@ -23,7 +24,6 @@ class Incsub_Support_Settings {
 	public function get_default_settings() {
 		$plugin = incsub_support();
 		$super_admins = $plugin::get_super_admins();
-		
 		return apply_filters( 'support_system_default_settings', array(
 			'incsub_support_menu_name' => __( 'Support', INCSUB_SUPPORT_LANG_DOMAIN ),
 			'incsub_support_from_name' => get_bloginfo( 'blogname' ),
