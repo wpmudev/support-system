@@ -24,6 +24,7 @@ class Incsub_Support_Admin {
 		require_once( 'class-network-ticket-categories-menu.php' );
 		require_once( 'class-network-faqs-menu.php' );
 		require_once( 'class-network-faq-categories-menu.php' );
+		require_once( 'class-network-settings-menu.php' );
 
 		// Admin
 		require_once( 'class-admin-support-menu.php' );
@@ -35,14 +36,48 @@ class Incsub_Support_Admin {
 	 * Create the menu objects
 	 */
 	private function add_menus() {
+		$menus = array();
+		$network = false;
+
 		if ( is_multisite() ) {
-			if ( is_network_admin() && current_user_can( 'manage_network' ) ) {
-				$this->menus['network_support_menu'] = new Incsub_Support_Network_Support_Menu( 'ticket-manager-b', true );
-				$this->menus['network_ticket_categories_menu'] = new Incsub_Support_Network_Ticket_Categories( 'ticket-categories-b', true );
-				$this->menus['network_faqs_menu'] = new Incsub_Support_Network_FAQ_Menu( 'support-faq-manager-b', true );
-				$this->menus['network_faq_categories'] = new Incsub_Support_Network_FAQ_Categories( 'faq-categories-b', true );
+			if ( is_network_admin() && incsub_support_current_user_can( 'manage_options' ) ) {
+				$menus = apply_filters( 'incsub_support_menus', array(
+					'network_support_menu' => array(
+						'class' => 'Incsub_Support_Network_Support_Menu',
+						'slug' => 'ticket-manager-b'
+					),
+					'network_ticket_categories_menu' => array(
+						'class' => 'Incsub_Support_Network_Ticket_Categories',
+						'slug' => 'ticket-categories-b'
+					),
+					'network_faqs_menu' => array(
+						'class' => 'Incsub_Support_Network_FAQ_Menu',
+						'slug' => 'support-faq-manager-b'
+					),
+					'network_faq_categories_menu' => array(
+						'class' => 'Incsub_Support_Network_FAQ_Categories',
+						'slug' => 'faq-categories-b'
+					),
+					'network_settings_menu' => array(
+						'class' => 'Incsub_Support_Network_Settings_Menu',
+						'slug' => 'mu-support-settings-b'
+					)
+				) );
+
+				$network = true;
 			}
 			elseif ( ! is_network_admin() && is_admin() ) {
+
+				$menus = apply_filters( 'incsub_support_menus', array(
+					'admin_support_menu' => array(
+						'class' => 'Incsub_Support_Admin_Support_Menu',
+						'slug' => 'ticket-manager-b'
+					),
+					'admin_faq_menu' => array(
+						'class' => 'Incsub_Support_Admin_FAQ_Menu',
+						'slug' => 'support-faq-b'
+					)
+				) );
 
 				$user = get_userdata( get_current_user_id() );
 				$user_role = isset( $user->roles[0] ) ? $user->roles[0] : ( is_super_admin() ? 'administrator' : '' );
@@ -74,8 +109,6 @@ class Incsub_Support_Admin {
 				if ( $settings['incsub_allow_only_pro_sites_faq'] && $admin_faq_menu_allowed )
 					$admin_faq_menu_allowed = function_exists( 'is_pro_site' ) && is_pro_site( get_current_blog_id(), absint( $settings['incsub_pro_sites_faq_level'] ) );
 
-				$this->menus['admin_support_menu'] = new Incsub_Support_Admin_Support_Menu( 'ticket-manager-b' );
-				$this->menus['admin_faq_menu'] = new Incsub_Support_Admin_FAQ_Menu( 'support-faq-b' );
 				/**
 				// If is not a Pro site we will not create the menu
 				if ( $admin_ticket_menu_allowed ) {
@@ -90,6 +123,17 @@ class Incsub_Support_Admin {
 					$admin_faq_menu = new MU_Support_Admin_FAQ_Menu( false );
 				**/
 			}
+		}
+		else {
+
+		}
+
+		foreach ( $menus as $key => $menu ) {
+			if ( class_exists( $menu['class'] ) ) {
+				$args = array( 'slug' => $menu['slug'], 'is_network' => $network );
+	            $r = new ReflectionClass( $menu['class'] );
+	            $this->menus[ $key ] = $r->newInstanceArgs( $args );
+			} 
 		}
 	}
 }

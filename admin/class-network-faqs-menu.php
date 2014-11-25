@@ -8,6 +8,23 @@ class Incsub_Support_Network_FAQ_Menu extends Incsub_Support_Admin_Menu {
 		add_filter( 'set-screen-option', array( $this, 'save_screen_options' ), 10, 3 );
 
 
+		
+	}
+
+
+	public function add_menu() {		
+		parent::add_submenu_page(
+			'ticket-manager-b',
+			__( 'FAQ Manager', INCSUB_SUPPORT_LANG_DOMAIN ),
+			__( 'FAQ Manager', INCSUB_SUPPORT_LANG_DOMAIN ), 
+			'manage_network'
+		);
+
+		add_action( 'load-' . $this->page_id, array( $this, 'set_filters' ) );
+
+	}
+
+	public function set_filters() {
 		// FAQs table filters
 		add_filter( 'support_system_faqs_table_query_args', array( $this, 'set_faqs_table_query_args' ) );
 
@@ -21,17 +38,6 @@ class Incsub_Support_Network_FAQ_Menu extends Incsub_Support_Admin_Menu {
 
 		if ( isset( $_GET['action'] ) && 'add' === $_GET['action'] )
 			add_filter( 'support_system_admin_page_title', array( $this, 'add_new_faq_title' ) );
-	}
-
-
-	public function add_menu() {		
-		parent::add_submenu_page(
-			'ticket-manager-b',
-			__( 'FAQ Manager', INCSUB_SUPPORT_LANG_DOMAIN ),
-			__( 'FAQ Manager', INCSUB_SUPPORT_LANG_DOMAIN ), 
-			'manage_network'
-		);
-
 	}
 
 	public function add_new_faq_title( $title ) {

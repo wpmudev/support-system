@@ -96,8 +96,6 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			// Include needed files
 			$this->includes();
 
-			incsub_support_group_settings_upgrade();
-
 			// Initializes plugin
 			add_action( 'init', array( &$this, 'init_plugin' ) );
 
@@ -111,9 +109,8 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			add_action( 'plugins_loaded', array( &$this, 'load_text_domain' ) );
 
 			// Create Admin menus
-			add_action( 'init', array( &$this, 'admin_menus' ) );
+			//add_action( 'init', array( &$this, 'admin_menus' ) );
 
-			add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_styles' ) );
 			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_front_styles' ) );
 
 		}
@@ -171,9 +168,6 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			
 		}
 
-		public function enqueue_styles() {
-			wp_enqueue_style( 'support-admin-icon', INCSUB_SUPPORT_ASSETS_URL . 'css/icon-styles.css', array(), '20130607' );
-		}
 
 		public function enqueue_front_styles() {
 			wp_enqueue_style( 'support-system', INCSUB_SUPPORT_ASSETS_URL . 'css/incsub-support.css' );
@@ -235,24 +229,6 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/capabilities.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/faq.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/faq-category.php');
-
-			// Admin
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/support-menu.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/upgrades.php');
-
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/admin/pages/network-main-menu.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/admin/pages/network-ticket-categories-menu.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/admin/pages/network-single-ticket-menu.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/admin/pages/network-faq-manager-menu.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/admin/pages/network-single-faq-question-menu.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/admin/pages/network-faq-categories-menu.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/admin/pages/network-support-settings-menu.php');
-
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/admin/pages/admin-main-menu.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/admin/pages/admin-new-ticket-menu.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/admin/pages/admin-single-ticket-menu.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/admin/pages/admin-faq-menu.php');
-
 
 			// Mail templates
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/mail-contents.php');

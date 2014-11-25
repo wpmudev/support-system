@@ -2,17 +2,6 @@
 
 class Incsub_Support_Admin_Support_Menu extends Incsub_Support_Parent_Support_Menu {
 
-	public function __construct( $slug, $network = false ) {
-		parent::__construct( $slug, $network );
-		
-		// Tickets table filters
-		add_filter( 'support_system_tickets_table_query_args', array( $this, 'set_tickets_table_query_args' ) );
-		add_filter( 'support_system_support_menu_counts_args', array( $this, 'set_counts_args' ) );
-		add_filter( 'support_network_ticket_columns', array( $this, 'set_tickets_table_columns' ) );
-
-	}
-
-
 	public function add_menu() {
 		$settings = incsub_support_get_settings();
 		$menu_title = esc_html( $settings['incsub_support_menu_name'] );
@@ -38,6 +27,11 @@ class Incsub_Support_Admin_Support_Menu extends Incsub_Support_Parent_Support_Me
 
 		if ( isset( $_GET['action'] ) && 'add' === $_GET['action'] )
 			add_filter( 'support_system_admin_page_title', array( $this, 'add_new_ticket_title' ) );
+
+		// Tickets table filters
+		add_filter( 'support_system_tickets_table_query_args', array( $this, 'set_tickets_table_query_args' ) );
+		add_filter( 'support_system_support_menu_counts_args', array( $this, 'set_counts_args' ) );
+		add_filter( 'support_network_ticket_columns', array( $this, 'set_tickets_table_columns' ) );
 	}
 
 	public function add_new_ticket_link( $title ) {

@@ -4,6 +4,10 @@ class Incsub_Support_Settings {
 
 	public $options_name = 'incsub_support_settings';
 
+	public function __construct() {
+		add_filter( 'incsub_support_menus', array( $this, 'filter_menus' ) );
+	}
+
 	public function get( $name ) {
 		$settings = $this->get_all();
 		if ( isset( $settings[ $name ] ) )
@@ -18,7 +22,13 @@ class Incsub_Support_Settings {
 	}
 
 	public function update( $new_settings ) {
-		$settings = update_site_option( $new_settings );
+		$settings = update_site_option( $this->options_name, $new_settings );
+	}
+
+	public function set( $name, $value ) {
+		$settings = $this->get_all();
+		$settings[ $name ] = $value;
+		$this->update( $settings );
 	}
 
 	public function get_default_settings() {
@@ -38,8 +48,21 @@ class Incsub_Support_Settings {
 			'incsub_support_tickets_role' => array( 'administrator', 'editor', 'author', 'contributor', 'subscriber' ),
 			'incsub_support_faqs_role' => array( 'administrator', 'editor', 'author', 'contributor', 'subscriber' ),
 			'incsub_support_main_super_admin' => key( $super_admins ), //First of the Super Admins
-			'incsub_support_support_page' => 0
+			'incsub_support_support_page' => 0,
+			'incsub_support_blog_id' => is_multisite() ? BLOG_ID_CURRENT_SITE : 1
 		) );
+	}
+
+	public function filter_menus( $menus ) {
+		if ( is_multisite() && ! is_network_admin() ) {
+			$settings = $this->get_all();
+
+			if ( isset( $menus['admin_faq_menu'] ) && ! incsub_support_current_user_can( 'efwefw' ) ) {
+				unset( $menus['admin_faq_menu'] );
+			}
+		}
+
+		return $menus;
 	}
 
 }

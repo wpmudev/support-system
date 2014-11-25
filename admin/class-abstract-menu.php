@@ -53,6 +53,7 @@ abstract class Incsub_Support_Admin_Menu {
 			$icon 
 		);
 
+
 		add_action( 'load-' . $this->page_id, array( $this, 'on_load' ) );
 	}
 
