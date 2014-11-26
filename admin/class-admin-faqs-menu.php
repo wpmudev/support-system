@@ -5,14 +5,27 @@ class Incsub_Support_Admin_FAQ_Menu extends Incsub_Support_Admin_Menu {
 		parent::__construct( $slug, $network );
 	}
 
+	public function add_menu() {
 
-	public function add_menu() {		
-		parent::add_submenu_page(
-			'ticket-manager-b',
-			__( 'FAQ', INCSUB_SUPPORT_LANG_DOMAIN ),
-			__( 'Frequently Asked Questions', INCSUB_SUPPORT_LANG_DOMAIN ), 
-			'manage_options'
-		);
+		$menu_title = __( 'FAQ', INCSUB_SUPPORT_LANG_DOMAIN );
+		$page_title = __( 'Frequently Asked Questions', INCSUB_SUPPORT_LANG_DOMAIN );
+		
+		if ( apply_filters( 'support_system_add_faq_menu_as_submenu', true ) ) {
+			parent::add_submenu_page(
+				'ticket-manager-b',
+				$menu_title,
+				$page_title, 
+				'read'
+			);
+		}
+		else {
+			parent::add_menu_page(
+				$page_title, 
+				$menu_title,
+				'read',
+				'dashicons-sos'
+			);
+		}
 
 		add_action( 'load-' . $this->page_id, array( $this, 'set_filters' ) );
 

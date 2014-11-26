@@ -106,7 +106,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 			}
 
 			// Close ticket?
-			if ( isset( $_POST['close-ticket'] ) && incsub_support_current_user_can( 'update_ticket' ) ) {
+			if ( isset( $_POST['close-ticket'] ) && incsub_support_current_user_can( 'close_ticket' ) ) {
 				incsub_support_close_ticket( $ticket_id );
 			}
 			elseif ( incsub_support_current_user_can( 'update_ticket' ) ) {

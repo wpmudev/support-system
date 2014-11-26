@@ -9,7 +9,7 @@ class Incsub_Support_Admin_Support_Menu extends Incsub_Support_Parent_Support_Me
 		parent::add_menu_page(
 			$menu_title,
 			$menu_title, 
-			'manage_network',
+			'read',
 			'dashicons-sos'
 		);
 
@@ -160,9 +160,6 @@ class Incsub_Support_Admin_Support_Menu extends Incsub_Support_Parent_Support_Me
 		$args['category'] = $category;
 		$args['s'] = $s;
 		$args['blog_id'] = get_current_blog_id();
-
-		if ( 'requestor' === $settings['incsub_ticket_privacy'] && ! is_super_admin() && ! current_user_can( 'manage_options' ) )
-			$args['user_in'] = array( get_current_user_id() );
 
 		return $args;
 	}

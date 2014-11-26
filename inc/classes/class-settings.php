@@ -6,6 +6,8 @@ class Incsub_Support_Settings {
 
 	public function __construct() {
 		add_filter( 'incsub_support_menus', array( $this, 'filter_menus' ) );
+		add_filter( 'support_system_tickets_table_query_args', array( $this, 'filter_admin_tickets_table' ) );
+		add_filter( 'support_system_query_get_tickets_args', array( $this, 'filter_query' ) );
 	}
 
 	public function get( $name ) {
@@ -54,15 +56,40 @@ class Incsub_Support_Settings {
 	}
 
 	public function filter_menus( $menus ) {
-		if ( is_multisite() && ! is_network_admin() ) {
+		if ( ( is_multisite() && ! is_network_admin() ) || ! is_multisite() ) {
 			$settings = $this->get_all();
 
-			if ( isset( $menus['admin_faq_menu'] ) && ! incsub_support_current_user_can( 'efwefw' ) ) {
+			if ( isset( $menus['admin_faq_menu'] ) && ! incsub_support_current_user_can( 'read_faq' ) ) {
 				unset( $menus['admin_faq_menu'] );
+			}
+
+			if ( isset( $menus['admin_support_menu'] ) && ! incsub_support_current_user_can( 'read_ticket' ) ) {
+				unset( $menus['admin_support_menu'] );
+			}
+
+			if ( isset( $menus['admin_faq_menu'] ) && ! isset( $menus['admin_support_menu'] ) ) {
+				// The parent menu is not present but the child one, we need to change the child menu to be the main one
+				add_filter( 'support_system_add_faq_menu_as_submenu', '__return_false' );
 			}
 		}
 
 		return $menus;
+	}
+
+	public function filter_admin_tickets_table( $args ) {
+		$privacy = incsub_support_get_setting( 'incsub_ticket_privacy' );
+		if ( 'requestor' === $privacy && ! incsub_support_current_user_can( 'manage_options' ) )
+			$args['user_in'] = array( get_current_user_id() );
+
+		return $args;
+	}
+
+	public function filter_query( $args ) {
+		$privacy = incsub_support_get_setting( 'incsub_ticket_privacy' );
+		if ( 'requestor' === $privacy && ! incsub_support_current_user_can( 'manage_options' ) )
+			$args['user_in'] = array( get_current_user_id() );
+
+		return $args;
 	}
 
 }

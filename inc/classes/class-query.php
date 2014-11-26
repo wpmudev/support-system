@@ -33,6 +33,8 @@ class Incsub_Support_Query {
 			if ( stripslashes( $this->search ) )
 				$args['s'] = stripslashes( $this->search );
 
+
+			$args = apply_filters( 'support_system_query_get_tickets_args', $args, $this );
 			$this->tickets = incsub_support_get_tickets_b( $args );
 			$this->found_tickets = incsub_support_get_tickets_count( $args );
 			$this->total_pages = ceil( $this->found_tickets / $per_page );

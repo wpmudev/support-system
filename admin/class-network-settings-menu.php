@@ -137,11 +137,6 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 				}
 			}
 
-			if ( empty( $settings['incsub_support_tickets_role'] ) ) {
-				$default_settings = MU_Support_System::get_default_settings();
-				$settings['incsub_support_tickets_role'] = $default_settings['incsub_support_tickets_role'];
-			}
-
 
 			$settings['incsub_support_faqs_role'] = array();
 			if ( isset( $input['faqs_role'] ) && is_array( $input['faqs_role'] ) ) {

@@ -108,10 +108,14 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
         );
 
         $actions = array(
-            'delete'    => sprintf( __( '<a href="%s">Delete ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_link ),
-            'open'      => sprintf( __( '<a href="%s">Open ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $open_link ),
-            'close'     => sprintf( __( '<a href="%s">Close ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $close_link )
+            'delete'    => sprintf( __( '<a href="%s">Delete ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_link )
         );
+
+        if ( incsub_support_current_user_can( 'open_ticket' ) )
+            $actions['open'] = sprintf( __( '<a href="%s">Open ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $open_link );
+
+        if ( incsub_support_current_user_can( 'close_ticket' ) )
+            $actions['close'] = sprintf( __( '<a href="%s">Close ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $close_link );
 
         $status = $this->_args['status'];
 
@@ -210,12 +214,16 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
     }
 
     function get_bulk_actions() {
+        $actions = array();
 
-        $actions = array(
-            'delete'    => __( 'Delete', INCSUB_SUPPORT_LANG_DOMAIN ),
-            'close'    => __( 'Close', INCSUB_SUPPORT_LANG_DOMAIN ),
-            'open'      => __( 'Open', INCSUB_SUPPORT_LANG_DOMAIN )
-        );
+        if ( incsub_support_current_user_can( 'delete_ticket' ) )
+            $actions['delete'] = __( 'Delete', INCSUB_SUPPORT_LANG_DOMAIN );
+
+        if ( incsub_support_current_user_can( 'open_ticket' ) )
+            $actions['open'] = __( 'Open', INCSUB_SUPPORT_LANG_DOMAIN );
+
+        if ( incsub_support_current_user_can( 'close_ticket' ) )
+            $actions['close'] = __( 'Close', INCSUB_SUPPORT_LANG_DOMAIN );
 
         if ( 'archive' == $this->_args['status'] ) {
             unset( $actions['close'] );
@@ -223,13 +231,6 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
         elseif ( 'active' == $this->_args['status'] ) {
             unset( $actions['delete'] );
             unset( $actions['open'] );
-        }
-
-        if ( ! incsub_support_current_user_can( 'update_ticket' ) )
-            $actions = array();
-
-        if ( ! incsub_support_current_user_can( 'delete_ticket' ) ) {
-            unset( $actions['delete'] );
         }
 
         $actions = apply_filters( 'support_system_tickets_bulk_actions', $actions );
@@ -257,7 +258,7 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
 
         }
 
-        if( 'open' === $this->current_action() && incsub_support_current_user_can( 'update_ticket' ) ) {
+        if( 'open' === $this->current_action() && incsub_support_current_user_can( 'open_ticket' ) ) {
             $ids = array();
             
             if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) )
@@ -271,7 +272,7 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
             }
         }
 
-        if( 'close' === $this->current_action() && incsub_support_current_user_can( 'update_ticket' ) ) {
+        if( 'close' === $this->current_action() && incsub_support_current_user_can( 'close_ticket' ) ) {
             $ids = array();
             if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) )
                 $ids = $_POST['ticket'];

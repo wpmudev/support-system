@@ -232,6 +232,9 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 			// Mail templates
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/mail-contents.php');
+
+			// Upgrades
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/upgrades.php');
 		}
 
 		/**
