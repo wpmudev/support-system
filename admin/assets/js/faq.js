@@ -21,7 +21,13 @@ jQuery(document).ready(function($) {
 		});
 	});
 
-	$( '.faq-category-question' ).hide();
+	$( '.faq-category-wrap' )
+		.hide()
+		.find( '.postbox' )
+			.addClass( 'closed' )
+			.find( '.inside' )
+				.hide();
+
 	
 
 	$( '.faq-category' ).click( function( e ) {
@@ -29,18 +35,24 @@ jQuery(document).ready(function($) {
 
 		var cat_id = $(this).data('cat-id');
 
-		$( '.faq-category-question' ).fadeOut();
+		$( '.faq-category-wrap' ).fadeOut();
 		$( '#faq-category-' + cat_id ).fadeIn();
 	});
 
-	$('.faq-category-answer').hide();
-	$('.faq-question-selector').click( function(e) {
+	$('.faq-category-wrap .postbox').find( '.handlediv, .hndle' ).click( function(e) {
 		e.preventDefault();
 
-		var faq_id = $(this).data('faq-id');
-		$('.faq-category-answer').slideUp();
+		var postbox = $(this).parent();
+		postbox.find('.inside').toggle();
+		
+		if ( postbox.hasClass( 'closed' ) ) {
+			postbox.removeClass( 'closed' );
+		}
+		else {
+			postbox.addClass( 'closed' );
+		}
 
-		$( '#faq-answer-' + faq_id ).slideDown();
+
 
 	});
 });

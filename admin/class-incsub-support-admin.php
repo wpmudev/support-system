@@ -29,6 +29,10 @@ class Incsub_Support_Admin {
 		// Admin
 		require_once( 'class-admin-support-menu.php' );
 		require_once( 'class-admin-faqs-menu.php' );
+
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+			require_once( 'inc/ajax.php' );
+		}
 	}
 
 

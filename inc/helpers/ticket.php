@@ -137,14 +137,19 @@ function incsub_support_get_tickets_b( $args = array() ) {
 
 	$site_id = absint( $site_id );
 	if ( $site_id )
-		$where[] = $wpdb->prepare( "site_id = %d", $site_id );
+		$where[] = $wpdb->prepare( "t.site_id = %d", $site_id );
 	else
-		$where[] = $wpdb->prepare( "site_id = %d", $current_site_id );
+		$where[] = $wpdb->prepare( "t.site_id = %d", $current_site_id );
 
 	$tickets_table = incsub_support()->model->tickets_table;
 
+	$allowed_orderby = array( 'ticket_updated', 'title', 'cat_id', 'admin_id', 'blog_id', 'num_replies', 'ticket_priority', 'ticket_status' );
+	$allowed_order = array( 'DESC', 'ASC' );
+	$order_query = '';
 	$order = strtoupper( $order );
-	$order = "ORDER BY $orderby $order";
+	if ( in_array( $orderby, $allowed_orderby ) && in_array( $order, $allowed_order ) ) {
+		$order_query = "ORDER BY $orderby $order";
+	}
 
 	$limit = '';
 	if ( $per_page > -1 )
@@ -171,7 +176,7 @@ function incsub_support_get_tickets_b( $args = array() ) {
 
 	$tickets = array();
 	if ( $count ) {
-		$query = "SELECT COUNT(t.ticket_id) FROM $tickets_table t $join $where $group";
+		$query = "SELECT COUNT(tickets.ticket_id) FROM (SELECT t.ticket_id FROM $tickets_table t $join $where $group) tickets";
 
 		$key = md5( $query );
 		$cache_key = "incsub_support_get_tickets_count:$key";
@@ -185,7 +190,7 @@ function incsub_support_get_tickets_b( $args = array() ) {
 		$tickets = $results;
 	}
 	else {
-		$query = "SELECT t.* FROM $tickets_table t $join $where $group $order $limit";
+		$query = "SELECT t.* FROM $tickets_table t $join $where $group $order_query $limit";
 
 		$key = md5( $query );
 		$cache_key = "incsub_support_get_tickets:$key";

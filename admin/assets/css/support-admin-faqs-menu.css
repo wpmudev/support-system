@@ -1,0 +1,28 @@
+.js .postbox .handlediv:before {
+	content: '\f142';
+}
+
+.js .postbox.closed .handlediv:before {
+	content: '\f140';
+}
+
+.js .postbox .inside {
+	overflow:hidden;
+}
+
+.js .postbox .handlediv:before {
+	right: 12px;
+	font: 400 20px/1 dashicons;
+	speak: none;
+	display: inline-block;
+	padding: 8px 10px;
+	top: 0;
+	position: relative;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-decoration: none!important;
+}
+
+.js .postbox .hndle {
+	cursor:pointer;
+}

@@ -66,17 +66,58 @@ class Incsub_Support_FAQS_Table extends WP_List_Table {
     }
 
     function column_helpful( $item ) {
+
         if ( $item->help_yes + $item->help_no == 0 )
-            return '0.00 %';
+            $value = 0;
         else
-            return number_format_i18n( ( $item->help_yes / ( $item->help_yes + $item->help_no ) )  * 100, 2 ) . ' %';
+            $value = number_format_i18n( ( $item->help_yes / ( $item->help_yes + $item->help_no ) )  * 100, 0 );
+
+        $class = '';
+        if ( $value >= 80 )
+            $class = 'incsub-support-meter-high';
+        elseif ( $value < 80 && $value >= 40 )
+            $class = 'incsub-support-meter-mid';
+        else
+            $class = 'incsub-support-meter-low';
+
+        ob_start();
+        ?>
+        <div class="incsub-support-meter">
+            <?php if ( ! $value ): ?>
+                0 %
+            <?php else: ?>
+                <span class="incsub-support-meter-yes" style="width: <?php echo $value; ?>%"><?php echo $value; ?> %</span>
+            <?php endif; ?>
+        </div>
+        <?php
+        return ob_get_clean();
+        
     }
 
     function column_no_helpful( $item ) {
         if ( $item->help_yes + $item->help_no == 0 )
-            return '0.00 %';
+            $value = 0;
         else
-            return number_format_i18n( ( $item->help_no / ( $item->help_yes + $item->help_no ) )  * 100, 2 ) . ' %';
+            $value = number_format_i18n( ( $item->help_no / ( $item->help_yes + $item->help_no ) )  * 100, 0 );
+
+        $class = '';
+        if ( $value >= 80 )
+            $class = 'incsub-support-meter-low';
+        elseif ( $value < 80 && $value >= 40 )
+            $class = 'incsub-support-meter-mid';
+        else
+            $class = 'incsub-support-meter-high';
+
+        ob_start();
+        ?>
+        <div class="incsub-support-meter">
+            <?php if ( ! $value ): ?>
+                0 %
+            <?php else: ?>
+                <span class="incsub-support-meter-no" style="width: <?php echo $value; ?>%"><?php echo $value; ?> %</span>
+            <?php endif; ?>
+        </div>
+        <?php return ob_get_clean();
     }
 
 

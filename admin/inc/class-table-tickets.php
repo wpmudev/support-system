@@ -187,6 +187,19 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
         return apply_filters( 'support_network_ticket_columns', $columns );
     }
 
+    protected function get_sortable_columns() {
+        return array(
+            'subject'       => array( 'title', false ),
+            'status'        => array( 'ticket_status', false ),
+            'priority'      => array( 'ticket_priority', false ),
+            'staff'         => array( 'admin_id', false ),
+            'category'      => array( 'cat_id', false ),
+            'replies'       => array( 'num_replies', false ),
+            'submitted'       => array( 'blog_id', false ),
+            'updated'       => array( 'ticket_updated', true )
+        );
+    }
+
     function extra_tablenav( $which ) {
         if ( 'top' == $which) {
 
@@ -325,11 +338,22 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
         $this->process_bulk_action();
         $current_page = $this->get_pagenum();        
 
-        $args = apply_filters( 'support_system_tickets_table_query_args', array(
+        $args = array(
             'status' => $this->_args['status'],
             'per_page' => $per_page,
             'page' => $current_page
-        ) );
+        );
+
+        $orderby = isset( $_GET['orderby'] ) ? $_GET['orderby'] : false;
+        $order = isset( $_GET['order'] ) ? $_GET['order'] : false;
+
+        if ( $orderby )
+            $args['orderby'] = $orderby;
+
+        if ( $order )
+            $args['order'] = $order;
+
+        $args = apply_filters( 'support_system_tickets_table_query_args', $args );
 
         $this->items = incsub_support_get_tickets_b( $args );
         $total_items = incsub_support_get_tickets_count( $args );

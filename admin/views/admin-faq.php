@@ -51,15 +51,13 @@
 </div>
 
 <div id="faq-category-details" class="metabox-holder">
-	<div class="postbox">
-		<h3 class="hndle"><span><?php _e( 'Select a question', INCSUB_SUPPORT_LANG_DOMAIN ); ?></span></h3>
-		<div class="inside">
-			<?php foreach ( $faq_categories as $category ): ?>
-
-				<div id="faq-category-<?php echo $category->cat_id; ?>" class="faq-category-question">
-
-					<?php foreach ( $category->answers as $faq ): ?>
-
+	<?php foreach ( $faq_categories as $category ): ?>
+		<div id="faq-category-<?php echo $category->cat_id; ?>" class="faq-category-wrap">
+			<?php foreach ( $category->answers as $faq ): ?>
+				<div class="postbox closed" data-faq-id="<?php echo $faq->faq_id; ?>">
+					<div class="handlediv" title="<?php _e( 'Click to toggle' ); ?>"><br></div>
+					<h3 class="hndle"><span><?php echo $faq->question; ?></span></h3>
+					<div class="inside">
 		    			<?php 
 		    				add_filter( 'the_content', 'wptexturize'        );
 							add_filter( 'the_content', 'convert_smilies'    );
@@ -72,18 +70,17 @@
 		    				$answer = apply_filters( 'the_content', $answer ); 
 						?>
 
-						<h4 class="faq-question-title"><a href="#" class="faq-question-selector" data-faq-id="<?php echo $faq->faq_id; ?>"><?php echo stripslashes_deep( $faq->question ); ?></a></h4>
-
-						<div class="faq-category-answer" id="faq-answer-<?php echo $faq->faq_id; ?>">
+						<div id="faq-answer-<?php echo $faq->faq_id; ?>">
 							<?php echo ( $answer ); ?>
-							<p class="submit" data-faq-id="<?php echo $faq->faq_id; ?>"><?php _e( 'Was this solution helpful?', INCSUB_SUPPORT_LANG_DOMAIN ); ?> 
+							<p class="submit" data-faq-id="<?php echo $faq->faq_id; ?>">
+								<h4><u><?php _e( 'Was this solution helpful?', INCSUB_SUPPORT_LANG_DOMAIN ); ?></u></h4>
 								<?php echo '<button class="button-primary vote-button" data-vote="yes"> ' . __( 'Yes', INCSUB_SUPPORT_LANG_DOMAIN ) . '</button> <button href="#" class="button vote-button" data-vote="no"> ' . __( 'No', INCSUB_SUPPORT_LANG_DOMAIN ) . '</button>'; ?>
 								<img style="display:none; margin-left:10px;vertical-align:middle" src="<?php echo INCSUB_SUPPORT_ASSETS_URL . 'images/ajax-loader.gif'; ?>">
 							</p>
-						</div>
-					<?php endforeach; ?>
+						</div>						
+					</div>
 				</div>
 			<?php endforeach; ?>
 		</div>
-	</div>
+	<?php endforeach; ?>
 </div>

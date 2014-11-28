@@ -32,30 +32,18 @@ class Incsub_Support_Admin_FAQ_Menu extends Incsub_Support_Admin_Menu {
 	}
 
 	public function set_filters() {
-		add_action( 'wp_ajax_vote_faq_question', array( &$this, 'vote_faq_question' ) );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'enqueue_styles' ) );
 	}
 
 	public function enqueue_scripts( $hook ) {
 		wp_enqueue_script( 'mu-support-faq-js', INCSUB_SUPPORT_PLUGIN_URL . '/admin/assets/js/faq.js', array(), '20130402' );
 	}
 
-	/**
-	 * Votes a question via AJAX
-	 * 
-	 * @since 1.8
-	 */
-	public function vote_faq_question() {
-		if ( isset( $_POST['faq_id'] ) && isset( $_POST['vote'] ) && in_array( $_POST['vote'], array( 'yes', 'no' ) ) ) {
-
-			$faq_id = absint( $_POST['faq_id'] );
-
-			$vote = 'yes' == $_POST['vote'] ? true : false;
-
-			incsub_support_vote_faq( $faq_id );
-		}
-		die();
+	public function enqueue_styles( $hook ) {
+		wp_enqueue_style( 'mu-support-faq-css', INCSUB_SUPPORT_PLUGIN_URL . '/admin/assets/css/support-admin-faqs-menu.css', array(), '20130402' );
 	}
+
 
 	public function render_inner_page() {
 		$faq_categories = incsub_support_get_faq_categories();

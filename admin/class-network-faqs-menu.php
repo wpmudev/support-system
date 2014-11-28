@@ -38,6 +38,12 @@ class Incsub_Support_Network_FAQ_Menu extends Incsub_Support_Admin_Menu {
 
 		if ( isset( $_GET['action'] ) && 'add' === $_GET['action'] )
 			add_filter( 'support_system_admin_page_title', array( $this, 'add_new_faq_title' ) );
+
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
+	}
+
+	public function enqueue_styles() {
+		wp_enqueue_style( 'mu-support-faq-css', INCSUB_SUPPORT_PLUGIN_URL . '/admin/assets/css/support-faqs-menu.css', array(), '20130402' );
 	}
 
 	public function add_new_faq_title( $title ) {
