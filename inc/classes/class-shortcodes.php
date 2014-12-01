@@ -144,8 +144,9 @@ class Incsub_Support_Shortcodes {
 					<?php wp_nonce_field( 'support-system-submit-ticket-' . get_current_user_id() . '-' . get_current_blog_id() ); ?>
 					<br/>
 					<input type="submit" name="support-system-submit-ticket" class="button small" value="<?php esc_attr_e( 'Submit Ticket', INCSUB_SUPPORT_LANG_DOMAIN ); ?>" />
-					
+					<div class="support-system-attachments"></div>
 				</form>
+				
 			<?php
 		}
 		return $this->end();

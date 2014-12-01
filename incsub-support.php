@@ -112,6 +112,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			//add_action( 'init', array( &$this, 'admin_menus' ) );
 
 			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_front_styles' ) );
+			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_front_scripts' ) );
 
 		}
 
@@ -171,6 +172,10 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 		public function enqueue_front_styles() {
 			wp_enqueue_style( 'support-system', INCSUB_SUPPORT_ASSETS_URL . 'css/incsub-support.css' );
+		}
+
+		public function enqueue_front_scripts() {
+			wp_enqueue_script( 'support-attachments', INCSUB_SUPPORT_PLUGIN_URL . '/assets/js/attachments.js', array( 'jquery' ) );
 		}
 
 		
@@ -443,45 +448,6 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			$admin_login = $super_admins[ $administrator ];
 			$admin_user = get_user_by( 'login', $admin_login );
 			return $admin_user;
-		}
-
-		public static function upload_attachments( $attachments ) {
-
-			global $current_user;
-
-			$files_keys = array_keys( $attachments['name'] );
-
-			$files_uploaded = array();
-
-			$upload_cap = $current_user->allcaps['unfiltered_upload'];
-			$current_user->allcaps['unfiltered_upload'] = true;
-
-			$allowed_file_types = apply_filters( 'incsub_support_allowed_mime_types', array(
-				'jpg' =>'image/jpg',
-				'jpeg' =>'image/jpeg', 
-				'gif' => 'image/gif', 
-				'png' => 'image/png',
-				'zip' => 'application/zip',
-				'gz|gzip' => 'application/x-gzip',
-				'rar' => 'application/rar',
-				'pdf' => 'application/pdf'
-			) );
-
-			foreach ( $files_keys as $key ) {
-				$file = array(
-					'name'		=> $attachments['name'][ $key ],
-					'type'		=> $attachments['type'][ $key ],
-					'tmp_name'	=> $attachments['tmp_name'][ $key ],
-					'error'		=> $attachments['error'][ $key ],
-					'size'		=> $attachments['size'][ $key ]
-				);
-				$uploaded = wp_handle_upload( $file, $overrides = array('test_form' => false, 'mimes' => $allowed_file_types) );
-				if ( ! isset( $uploaded['error'] ) )
-					$files_uploaded[] = $uploaded;
-			}
-			$current_user->allcaps['unfiltered_upload'] = $upload_cap;
-
-			return $files_uploaded;
 		}
 
 	}

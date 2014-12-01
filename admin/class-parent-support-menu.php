@@ -21,7 +21,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 
 	public function enqueue_scripts( $page_id ) {
 		if ( $page_id === $this->page_id )
-			wp_enqueue_script( 'support-attachments', INCSUB_SUPPORT_PLUGIN_URL . '/admin/assets/js/attachments.js', array( 'jquery' ) );
+			wp_enqueue_script( 'support-attachments', INCSUB_SUPPORT_PLUGIN_URL . '/assets/js/attachments.js', array( 'jquery' ) );
 	}
 
 	public function save_screen_options( $status, $option, $value ) {
@@ -131,7 +131,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 
 		// Are we adding a reply?
 		if ( isset( $_POST['submit-ticket-reply'] ) ) {
-			wp_die(var_dump($_FILES));
+
 			$ticket_id = absint( $_POST['ticket_id'] );
 			check_admin_referer( 'add-ticket-reply-' . $ticket_id );
 
@@ -165,7 +165,6 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 						$ticket_args['ticket_priority'] = absint( $_POST['ticket-priority'] );
 				}
 
-				
 
 				$responsibility = isset( $_POST['responsibility'] ) ? $_POST['responsibility'] : 'accept';
 				if ( in_array( $responsibility, $plugin::$responsibilities ) ) {
@@ -183,14 +182,11 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 					incsub_support_ticket_transition_status( $ticket->ticket_id, $status );
 
 				// TODO: ATTACHMENTS
-				if ( ! empty( $_FILES['attachments'] ) ) {
-					$files_uploaded = MU_Support_System::upload_attachments( $_FILES['attachments'] );					
+				if ( ! empty( $_FILES['support-attachment'] ) ) {
+					$files_uploaded = incsub_support_upload_ticket_attachments( $_FILES['support-attachment'] );					
 
 					if ( ! empty( $files_uploaded ) ) {
-						$this->current_ticket['attachments'] = array();
-						foreach( $files_uploaded as $file_uploaded ) {
-							$this->current_ticket['attachments'][] = $file_uploaded['url'];
-						}
+						$reply_args['attachments'] = wp_list_pluck( $files_uploaded, 'url' );
 					}
 				}
 

@@ -59,3 +59,57 @@ table.ticketshistory .ticket-acttachments-wrap {
 	box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
 	padding: 1px 12px;
 }
+
+.support-attachments button:before {
+	content: "\f502";
+	font-family: 'dashicons';
+}
+
+.wp-core-ui .support-attachments button {
+	color: #FFF;
+	border-color: #407138;
+	background: #529348;
+	-webkit-box-shadow: inset 0 1px 0 #5CA351,0 1px 0 rgba(0,0,0,.08);
+	box-shadow: inset 0 1px 0 #5CA351,0 1px 0 rgba(0,0,0,.08);
+}
+
+.wp-core-ui .support-attachments button:hover {
+	background: #5DA152;
+	border-color: #374434;
+	color:white;
+}
+
+.wp-core-ui .support-attachments button:active,
+.wp-core-ui .support-attachments button:focus {
+	background: #5DA152;
+	border-color: #407138;
+	color:white;
+}
+
+.support-attachments .remove-file:before {
+	content: "\f335";
+	font-family: 'dashicons';
+	vertical-align: middle;
+}
+
+.wp-core-ui .remove-file {
+	margin-left:1em;
+	color: #FFF;
+	border-color: #992727;
+	background: #B53737;
+	-webkit-box-shadow: inset 0 1px 0 #DD4343,0 1px 0 rgba(0,0,0,.08);
+	box-shadow: inset 0 1px 0 #DD4343,0 1px 0 rgba(0,0,0,.08);
+}
+
+.wp-core-ui .remove-file:hover {
+	background: #C03A3A;
+	border-color: #5E1717;
+	color: white;
+}
+
+.wp-core-ui .remove-file:active,
+.wp-core-ui .remove-file:focus {
+	background: #C03A3A;
+	border-color: #5E1717;
+	color: white;
+}

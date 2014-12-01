@@ -62,11 +62,22 @@ function incsub_support_reply_form() {
 	?>
 		<form method="post" id="support-system-reply-form" action="#support-system-reply-form-wrap">
 			<?php incsub_support_reply_form_errors(); ?>
+			<div class="support-system-attachments"></div>
 			<?php incsub_support_editor( 'reply' ); ?>
 			<?php incsub_support_reply_form_fields(); ?>
 			<br/>
 			<input type="submit" name="support-system-submit-reply" class="button small" value="<?php esc_attr_e( 'Submit Reply', INCSUB_SUPPORT_LANG_DOMAIN ); ?>" />
-			
+			<script>
+				jQuery(document).ready(function($) {
+					$('.support-system-attachments').incsub_support_attachments({
+						button_text: " <?php _e( 'Add files...', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
+						button_class: 'button tiny success',
+						remove_file_title: "<?php esc_attr_e( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
+						remove_link_class: "button tiny alert",
+						remove_link_text: " <?php _e( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
+					});
+				});
+			</script>
 		</form>
 	<?php
 

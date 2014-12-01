@@ -35,12 +35,14 @@
 
 	$.fn.incsub_support_attachments.defaults = {
 		button_text: 'Add files...',
-		button_class: 'button-secondary',
+		button_class: '',
 		first_slot: 0,
 		slot_name: 'support-attachment',
 		current_files: [],
 		files_list_id: 'support-attachments-list',
-		remove_file_title: 'Remove file'
+		remove_file_title: 'Remove file',
+		remove_link_class: '',
+		remove_link_text: '[x]'
 	};
 
 	$.fn.incsub_support_attachments.addFileSlot = function( clicked_button ) {
@@ -57,9 +59,9 @@
 		});
 
 		var remove_file_link = $( '<a>', {
-			class: 'remove-file',
+			class: 'remove-file ' + settings.remove_link_class,
 			'data-remove-file': settings.slot_name + '-' + current_slot,
-			text: '[x]',
+			text: settings.remove_link_text,
 			href: '',
 			title: settings.remove_file_title
 		});
@@ -90,7 +92,3 @@
 	};
  
 }( jQuery ));
-
-jQuery(document).ready(function($) {
-	$('.support-attachments').incsub_support_attachments();
-});
