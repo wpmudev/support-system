@@ -6,6 +6,9 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 		parent::__construct( $slug, $network );
 		add_filter( 'set-screen-option', array( $this, 'save_screen_options' ), 10, 3 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
+
+		if ( $this->get_current_edit_ticket_tab() === 'history' )
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		
 		// Tickets table filters
 		add_filter( 'support_system_tickets_table_menu_url', array( $this, 'get_menu_url' ) );
@@ -14,6 +17,11 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 	public function enqueue_styles( $page_id ) {
 		if ( $page_id === $this->page_id )
 			wp_enqueue_style( 'support-menu-styles', INCSUB_SUPPORT_PLUGIN_URL . '/admin/assets/css/support-menu.css' );
+	}
+
+	public function enqueue_scripts( $page_id ) {
+		if ( $page_id === $this->page_id )
+			wp_enqueue_script( 'support-attachments', INCSUB_SUPPORT_PLUGIN_URL . '/admin/assets/js/attachments.js', array( 'jquery' ) );
 	}
 
 	public function save_screen_options( $status, $option, $value ) {
@@ -123,6 +131,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 
 		// Are we adding a reply?
 		if ( isset( $_POST['submit-ticket-reply'] ) ) {
+			wp_die(var_dump($_FILES));
 			$ticket_id = absint( $_POST['ticket_id'] );
 			check_admin_referer( 'add-ticket-reply-' . $ticket_id );
 

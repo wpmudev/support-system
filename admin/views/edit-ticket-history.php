@@ -45,10 +45,7 @@
 		<?php endif; ?>
 
 		<?php ob_start(); ?>
-			<ul id="attachments-list">
-				
-			</ul>
-			<a href="" id="submit-new-attachment" class="button-secondary"><?php _e( 'Upload a new file', INCSUB_SUPPORT_LANG_DOMAIN ); ?></a>
+			<div class="support-attachments"></div>
 		<?php $this->render_row( __( 'Attachments', INCSUB_SUPPORT_LANG_DOMAIN ),  ob_get_clean() ); ?>
 		
 		<input type="hidden" name="ticket_id" value="<?php echo $ticket->ticket_id; ?>" />
