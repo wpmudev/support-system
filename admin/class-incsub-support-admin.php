@@ -25,6 +25,7 @@ class Incsub_Support_Admin {
 		require_once( 'class-network-faqs-menu.php' );
 		require_once( 'class-network-faq-categories-menu.php' );
 		require_once( 'class-network-settings-menu.php' );
+		require_once( 'class-network-welcome-menu.php' );
 
 		// Admin
 		require_once( 'class-admin-support-menu.php' );
@@ -65,6 +66,10 @@ class Incsub_Support_Admin {
 					'network_settings_menu' => array(
 						'class' => 'Incsub_Support_Network_Settings_Menu',
 						'slug' => 'mu-support-settings-b'
+					),
+					'network_welcome' => array(
+						'class' => 'Incsub_Support_Welcome_Menu',
+						'slug' => 'mu-support-welcome'
 					)
 				) );
 

@@ -8,6 +8,7 @@ class Incsub_Support_Settings {
 		add_filter( 'incsub_support_menus', array( $this, 'filter_menus' ) );
 		add_filter( 'support_system_tickets_table_query_args', array( $this, 'filter_admin_tickets_table' ) );
 		add_filter( 'support_system_query_get_tickets_args', array( $this, 'filter_query' ) );
+		add_filter( 'support_system_add_editor_shortcodes', array( $this, 'toggle_editor_shortcode_button' ) );
 	}
 
 	public function get( $name ) {
@@ -51,7 +52,9 @@ class Incsub_Support_Settings {
 			'incsub_support_faqs_role' => array( 'administrator', 'editor', 'author', 'contributor', 'subscriber' ),
 			'incsub_support_main_super_admin' => key( $super_admins ), //First of the Super Admins
 			'incsub_support_support_page' => 0,
-			'incsub_support_blog_id' => is_multisite() ? BLOG_ID_CURRENT_SITE : 1
+			'incsub_support_create_new_ticket_page' => 0,
+			'incsub_support_blog_id' => false,
+			'incsub_support_activate_front' => false
 		) );
 	}
 
@@ -91,5 +94,29 @@ class Incsub_Support_Settings {
 
 		return $args;
 	}
+
+	public function toggle_editor_shortcode_button( $current ) {
+
+		if ( ! $this->get( 'incsub_support_activate_front' ) )
+			return false;
+
+		if ( ! is_admin() )
+			return false;
+		
+		if ( ! incsub_support_current_user_can( 'manage_options' ) )
+			return false;
+
+		if ( is_multisite() ) {
+			$blog_id = $this->get( 'incsub_support_blog_id' );
+			if ( $blog_id != get_current_blog_id() )
+				return false;
+
+			if ( is_network_admin() )
+				return false;
+		}
+
+
+		return $current;
+	} 
 
 }

@@ -6,7 +6,7 @@ Description: Set up an awesome support ticket system on any WordPress site, comp
 Author: WPMU DEV
 WDP ID: 36
 Network: true
-Version: 1.9.9.1
+Version: 2.0alpha1
 Author URI: http://premium.wpmudev.org
 Text Domain: incsub-support
 */
@@ -30,7 +30,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '1.9.9' );
+define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '2.0alpha1' );
 
 if ( ! defined( 'INCSUB_SUPPORT_LANG_DOMAIN' ) )
 	define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
@@ -254,7 +254,9 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			$settings = new Incsub_Support_Settings();
 
 			update_site_option( 'incsub_support_version', self::$version );
-			update_site_option( 'incsub_support_settings', $settings->get_all() );			
+			update_site_option( 'incsub_support_settings', $settings->get_all() );	
+
+			set_transient( 'incsub_support_welcome', true );		
 		}
 
 		/**

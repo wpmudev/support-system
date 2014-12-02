@@ -124,5 +124,8 @@ function incsub_support_add_error( $setting, $code, $message ) {
 	);
 }
 
+function incsub_support_get_version() {
+	return INCSUB_SUPPORT_PLUGIN_VERSION;
+}
 
 

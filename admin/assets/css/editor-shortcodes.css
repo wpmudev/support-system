@@ -1,0 +1,15 @@
+i.mce-i-mce-i-incsub-support-sos {
+	position: relative;
+}
+
+i.mce-i-mce-i-incsub-support-sos:before {
+	font-family: 'dashicons';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	content: "\f468";
+	font-size:20px;
+}

@@ -7,6 +7,8 @@ class Incsub_Support_Shortcodes {
 	public function __construct() {
 		$this->init();
 		$this->register_shortcodes();
+
+		$this->init_tiny_mce_button();
 	}
 
 	private function init() {
@@ -151,4 +153,34 @@ class Incsub_Support_Shortcodes {
 		}
 		return $this->end();
 	}
+
+	// TinyMCE buttons ( Thanks to Woocommerce Shortcodes plugin: https://wordpress.org/plugins/woocommerce-shortcodes/)
+	function init_tiny_mce_button() {
+		if ( apply_filters( 'support_system_add_editor_shortcodes', true ) ) {
+			add_action( 'admin_head', array( $this, 'add_shortcode_button' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_editor_admin_scripts' ) );
+		}
+	}
+
+	function add_shortcode_button() {
+		if ( 'true' == get_user_option( 'rich_editing' ) ) {
+			add_filter( 'mce_external_plugins', array( $this, 'add_shortcode_tinymce_plugin' ) );
+			add_filter( 'mce_buttons', array( $this, 'register_shortcode_button' ) );
+		}
+	}
+
+	public function add_shortcode_tinymce_plugin( $plugins ) {
+		$plugins['incsub_support_shortcodes'] = INCSUB_SUPPORT_PLUGIN_URL . '/admin/assets/js/editor-shortcodes.js';
+		return $plugins;
+	}
+
+	public function register_shortcode_button( $buttons ) {
+		array_push( $buttons, '|', 'incsub_support_shortcodes' );
+		return $buttons;
+	}
+
+	public function enqueue_editor_admin_scripts() {
+		wp_enqueue_style( 'incsub-support-shortcodes', INCSUB_SUPPORT_PLUGIN_URL . '/admin/assets/css/editor-shortcodes.css' );
+	}
+
 }
