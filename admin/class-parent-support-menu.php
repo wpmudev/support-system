@@ -7,7 +7,8 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 		add_filter( 'set-screen-option', array( $this, 'save_screen_options' ), 10, 3 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
 
-		if ( $this->get_current_edit_ticket_tab() === 'history' )
+		$action = isset( $_GET['action'] ) ? $_GET['action'] : false;
+		if ( $this->get_current_edit_ticket_tab() === 'history' || $action === 'add' )
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		
 		// Tickets table filters

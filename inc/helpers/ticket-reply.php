@@ -80,7 +80,7 @@ function incsub_support_insert_ticket_reply( $ticket_id, $args = array() ) {
 	$plugin = incsub_support();
 	$tickets_replies_table = $plugin->model->tickets_messages_table;
 
-	$message = wp_kses( wp_unslash( $message ) );
+	$message = wp_kses_post( wp_unslash( $message ) );
 	
 	$result = $wpdb->insert(
 		$tickets_replies_table,

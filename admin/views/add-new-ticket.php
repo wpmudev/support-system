@@ -22,11 +22,9 @@
 		<ul id="attachments-list">
 		
 		</ul>			
-			<button id="submit-new-attachment" class="button-secondary"><?php _e( 'Upload a new file', INCSUB_SUPPORT_LANG_DOMAIN ); ?></button>
-			<?php
-			$markup = ob_get_clean();
-			$this->render_row( __( 'Attachments', INCSUB_SUPPORT_LANG_DOMAIN ),  $markup ); 
-		?>
+			<?php ob_start(); ?>
+				<div class="support-attachments"></div>
+			<?php $this->render_row( __( 'Attachments', INCSUB_SUPPORT_LANG_DOMAIN ),  ob_get_clean() ); ?>
 
 		<?php do_action( 'support_new_ticket_fields' ); ?>
 		
@@ -35,7 +33,18 @@
 	<p class="submit">
 		<?php wp_nonce_field( 'add-new-ticket' ); ?>
 		<?php submit_button( __( 'Submit new ticket', INCSUB_SUPPORT_LANG_DOMAIN ), 'primary', 'submit-new-ticket', false ); ?>
-		<a href="<?php echo esc_attr( $list_menu_url ); ?>" class="button-secondary"><?php _e( 'Back to tickets list', INCSUB_SUPPORT_LANG_DOMAIN ); ?></a>
 
 	</p>
 </form>
+
+<script>
+	jQuery(document).ready(function($) {
+		$('.support-attachments').incsub_support_attachments({
+			button_text: " <?php _e( 'Add files...', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
+			button_class: 'button-secondary',
+			remove_file_title: "<?php esc_attr_e( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
+			remove_link_class: "button-secondary",
+			remove_link_text: " <?php _e( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
+		});
+	});
+</script>

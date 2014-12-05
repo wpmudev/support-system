@@ -187,7 +187,7 @@ function incsub_support_insert_faq( $args = array() ) {
 	$insert_wildcards[] = '%s'; 
 
 	// ANSWER
-	$answer = wp_kses( wp_unslash( $args['answer'] ) );
+	$answer = wp_kses_post( wp_unslash( $args['answer'] ) );
 	if ( empty( $answer ) )
 		return new WP_Error( 'empty_answer', __( 'FAQ answer must not be empty.', INCSUB_SUPPORT_LANG_DOMAIN ) );
 

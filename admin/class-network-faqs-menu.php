@@ -94,7 +94,7 @@ class Incsub_Support_Network_FAQ_Menu extends Incsub_Support_Admin_Menu {
 
 			$answer = '';
 			if ( ! empty( $_POST['answer'] ) )
-				$answer = wp_kses( stripslashes_deep( $_POST['answer'] ) );
+				$answer = wp_kses_post( stripslashes_deep( $_POST['answer'] ) );
 			else
 				$answer = $faq->answer;
 
