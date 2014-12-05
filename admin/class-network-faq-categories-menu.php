@@ -51,7 +51,8 @@ class Incsub_Support_Network_FAQ_Categories extends Incsub_Support_Admin_Menu {
 				return;
 			}
 
-			if ( empty( trim( $_POST['cat_name'] ) ) )
+			$cat_name = trim( $_POST['cat_name'] );
+			if ( empty( $cat_name ) )
 				add_settings_error( 'support_system_submit_category', 'empty-category-name', __( 'Category name must not be empty', INCSUB_SUPPORT_LANG_DOMAIN ) );
 			else
 				$category_name = $_POST['cat_name'];

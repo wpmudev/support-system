@@ -25,7 +25,7 @@ class Incsub_Support_Welcome_Menu extends Incsub_Support_Admin_Menu {
 
 		$file .= '.css';
 
-		wp_enqueue_style( 'support-system-welcome', admin_url( 'css/' . $file ) );
+		wp_enqueue_style( 'support-system-welcome-custom', INCSUB_SUPPORT_PLUGIN_URL . 'admin/assets/css/support-welcome.css');
 	}
 
 
