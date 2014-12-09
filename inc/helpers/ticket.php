@@ -654,6 +654,9 @@ function incsub_support_upload_ticket_attachments( $attachments ) {
 			'error'		=> $attachments['error'][ $key ],
 			'size'		=> $attachments['size'][ $key ]
 		);
+
+		if ( ! function_exists( 'wp_handle_upload' ) ) 
+			require_once( ABSPATH . 'wp-admin/includes/file.php' );
 		$uploaded = wp_handle_upload( $file, $overrides = array('test_form' => false, 'mimes' => $allowed_file_types) );
 		if ( ! isset( $uploaded['error'] ) )
 			$files_uploaded[] = $uploaded;

@@ -3,18 +3,21 @@
 function incsub_support_current_user_can( $cap = '' ) {
 	$user_id = get_current_user_id();
 
-	if ( ( is_multisite() && is_super_admin() ) || ( ! is_multisite() && current_user_can( 'manage_options' ) ) )
+	return incsub_support_user_can( $user_id, $cap );
+
+}
+
+function incsub_support_user_can( $user_id, $cap = '' ) {
+	if ( ( is_multisite() && is_super_admin( $user_id ) ) || ( ! is_multisite() && user_can( $user_id, 'manage_options' ) ) )
 		return true;
 
 	$settings = incsub_support_get_settings();
 
-	if ( is_user_logged_in() ) {
-		$user = get_userdata( $user_id );
-		$user_role = isset( $user->roles[0] ) ? $user->roles[0] : '';
-	}
-	else {
+	$user = get_userdata( $user_id );
+	if ( ! $user )
 		$user_role = 'support-guest';
-	}
+	else 
+		$user_role = isset( $user->roles[0] ) ? $user->roles[0] : '';
 
 	if ( 'insert_ticket' === $cap || 'read_ticket' === $cap  ) {
 		if ( in_array( $user_role, $settings['incsub_support_tickets_role'] ) )
@@ -42,7 +45,6 @@ function incsub_support_current_user_can( $cap = '' ) {
 		return false;
 
 	return false;
-
 }
 
 function incsub_support_get_capabilities() {

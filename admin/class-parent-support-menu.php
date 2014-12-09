@@ -182,7 +182,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 				elseif ( incsub_support_current_user_can( 'update_ticket' ) )
 					incsub_support_ticket_transition_status( $ticket->ticket_id, $status );
 
-				// TODO: ATTACHMENTS
+				// Attachments
 				if ( ! empty( $_FILES['support-attachment'] ) ) {
 					$files_uploaded = incsub_support_upload_ticket_attachments( $_FILES['support-attachment'] );					
 

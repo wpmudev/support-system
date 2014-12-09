@@ -23,7 +23,7 @@ function incsub_support_update_settings( $value ) {
 function incsub_support_get_support_page_url() {
 	$page = incsub_support()->settings->get( 'incsub_support_support_page' );
 	if ( 'page' === get_post_type( $settings['incsub_support_support_page'] ) )
-		return get_permalink( $settings['incsub_support_support_page'], $leavename );
+		return get_permalink( incsub_support()->settings->get('incsub_support_support_page') );
 
 	return false;
 }

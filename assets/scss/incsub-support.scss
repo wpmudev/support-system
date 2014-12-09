@@ -8,6 +8,8 @@ $namespace: "support-system";
 @import "compass/utilities";
 @import "settings";
 
+$reply_background:#f7f7f7;
+
 // Make sure the charset is set appropriately
 
 // Behold, here are all the Foundation components.
@@ -133,7 +135,7 @@ body #support-system {
 
 
 #support-system-single-ticket .support-system-ticket-reply-wrap {
-  background:#f7f7f7;
+  background:$reply_background;
   margin-bottom:2rem;
   padding-top:1rem;
   padding-left:1rem;
@@ -185,4 +187,20 @@ body #support-system {
 
 #support-system .wp-editor-wrap {
   border:1px solid #C8C8C8;
+}
+
+#support-system .support-system-reply-attachments {
+  background:darken( $reply_background, 3% );
+  border: 1px solid darken( $reply_background, 10% );
+  padding:rem-calc( 15px ) rem-calc( 20px );
+  margin-bottom:rem-calc(15px);
+
+  h5 {
+    font-size: rem-calc( 13px );
+  }
+
+  ul {
+    margin-bottom:0;
+    list-style: circle;
+  }
 }

@@ -85,7 +85,6 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 
 			$create_page_url = admin_url( 'post-new.php?post_type=page' );
 			$view_page_url = get_permalink( $support_pages_dropdown_args['selected'] );
-			var_dump($view_page_url);
 
 			$pages_dropdowns = true;
 		}
@@ -112,6 +111,8 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 		if ( $pages_dropdowns ) {
 			$support_pages_dropdown .= '<a href="' . esc_url( $create_page_url ) . '" target="_blank" class="button-primary support-create-page">' . esc_html__( 'Create new page', INCSUB_SUPPORT_LANG_DOMAIN ) . '</a>';
 			$support_pages_dropdown .= '<a href="' . esc_url( $view_page_url ) . '" target="_blank" class="button-secondary support-view-page">' . esc_html__( 'View page', INCSUB_SUPPORT_LANG_DOMAIN ) . '</a>';
+			$support_pages_dropdown .= '<br/><span class="description">' . __( 'Remember to insert <code>[support-system-tickets-index]</code> shortcode in this page', INCSUB_SUPPORT_LANG_DOMAIN ) . '</span>';
+			$submit_ticket_pages_dropdown .= '<br/><span class="description">' . __( 'Remember to insert <code>[support-system-submit-ticket-form]</code> shortcode in this page', INCSUB_SUPPORT_LANG_DOMAIN ) . '</span>';
 		}
 
 		$errors = get_settings_errors( 'incsub-support-settings' );

@@ -1,3 +1,16 @@
+#support-attachments-list {
+	margin:0;
+}
+
+#support-attachments-list li {
+	padding-bottom:10px;
+}
+#support-attachments-list li:last-child {
+	border-bottom: 1px solid #BABABA;
+	margin-bottom: 10px;
+}
+
+
 .ticket-priority-0:before {
 	color:gray;
 }

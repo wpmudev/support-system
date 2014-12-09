@@ -83,6 +83,15 @@ class Incsub_Support_Shortcodes {
 				'poster_id' => get_current_user_id(),
 				'message' => $message
 			);
+
+			if ( ! empty( $_FILES['support-attachment'] ) ) {
+				$files_uploaded = incsub_support_upload_ticket_attachments( $_FILES['support-attachment'] );					
+
+				if ( ! empty( $files_uploaded ) ) {
+					$args['attachments'] = wp_list_pluck( $files_uploaded, 'url' );
+				}
+			}
+
 			$result = incsub_support_insert_ticket_reply( $ticket_id, $args );
 
 			if ( ! $result )
@@ -98,7 +107,7 @@ class Incsub_Support_Shortcodes {
 
 		}
 
-		if ( isset( $_POST['support-system-submit-ticket'] ) && incsub_support_current_user_can( 'insert_reply' ) ) {
+		if ( isset( $_POST['support-system-submit-ticket'] ) && incsub_support_current_user_can( 'insert_ticket' ) ) {
 
 			$user_id = get_current_user_id();
 			$blog_id = get_current_blog_id();
@@ -115,11 +124,33 @@ class Incsub_Support_Shortcodes {
 			if ( empty( $message ) )
 				wp_die( __( 'Please, insert a message for the ticket', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
+			$priority = absint( $_POST['support-system-ticket-priority'] );
 
 			$args = array(
 				'title' => $subject,
 				'message' => $message,
+				'priority' => $priority
 			);
+
+			if ( ! empty( $_FILES['support-attachment'] ) ) {
+				$files_uploaded = incsub_support_upload_ticket_attachments( $_FILES['support-attachment'] );					
+
+				if ( ! empty( $files_uploaded ) ) {
+					$args['attachments'] = wp_list_pluck( $files_uploaded, 'url' );
+				}
+			}
+
+			if ( absint( $_POST['support-system-ticket-category'] ) ) {
+				$args['cat_id'] = absint( $_POST['support-system-ticket-category'] );
+			}
+
+			if ( ! empty( $_POST['support-system-ticket-blog'] ) ) {
+				$blog_id = absint( $_POST['support-system-ticket-blog'] );
+				$list = wp_list_pluck( get_blogs_of_user( $user_id ), 'userblog_id' );
+				if ( in_array( $blog_id, $list ) )
+					$args['blog_id'] = $blog_id;
+			}
+
 			$ticket_id = incsub_support_insert_ticket( $args );
 
 			if ( is_wp_error( $ticket_id ) )
@@ -140,14 +171,40 @@ class Incsub_Support_Shortcodes {
 		if ( ! incsub_support()->query->is_single_ticket ) {
 			?>
 				<h2><?php _e( 'Submit a new ticket', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h2>
-				<form method="post" id="support-system-ticket-form" action="#support-system-ticket-form-wrap">
+				<form method="post" id="support-system-ticket-form" action="#support-system-ticket-form-wrap" enctype="multipart/form-data">
+					
 					<input type="text" name="support-system-ticket-subject" value="" placeholder="<?php esc_attr_e( 'Subject', INCSUB_SUPPORT_LANG_DOMAIN ); ?>"/>
+					<br/>
+					<?php incsub_support_priority_dropdown( array( 'name' => 'support-system-ticket-priority', 'echo' => true ) ); ?><br/>
+					<?php incsub_support_ticket_categories_dropdown( array( 'name' => 'support-system-ticket-category', 'echo' => true ) ); ?><br/>
+					
+					<br/>
+					<label for="support-system-ticket-blog">
+						<?php _e( 'Are you reporting a ticket for a specific site?', INCSUB_SUPPORT_LANG_DOMAIN ); ?>
+						<?php incsub_support_user_sites_dropdown( array( 'name' => 'support-system-ticket-blog', 'echo' => true ) ); ?>
+					</label>
+					
+					<div class="support-system-attachments"></div>
+
 					<?php incsub_support_editor( 'ticket' ); ?>
 					<?php wp_nonce_field( 'support-system-submit-ticket-' . get_current_user_id() . '-' . get_current_blog_id() ); ?>
 					<br/>
+
 					<input type="submit" name="support-system-submit-ticket" class="button small" value="<?php esc_attr_e( 'Submit Ticket', INCSUB_SUPPORT_LANG_DOMAIN ); ?>" />
-					<div class="support-system-attachments"></div>
+					
 				</form>
+
+				<script>
+					jQuery(document).ready(function($) {
+						$('.support-system-attachments').incsub_support_attachments({
+							button_text: " <?php _e( 'Add files...', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
+							button_class: 'button tiny success',
+							remove_file_title: "<?php esc_attr_e( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
+							remove_link_class: "button tiny alert",
+							remove_link_text: " <?php _e( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
+						});
+					});
+				</script>
 				
 			<?php
 		}

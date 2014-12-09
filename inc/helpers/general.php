@@ -33,14 +33,17 @@ function incsub_support_get_model() {
 function incsub_support_priority_dropdown( $args ) {
 	$defaults = array(
 		'name' => 'ticket-priority',
-		'id' => 'ticket-priority',
-		'show_empty' => __( 'Select a priority', INCSUB_SUPPORT_LANG_DOMAIN ),
+		'id' => false,
+		'show_empty' => __( '-- Select a priority --', INCSUB_SUPPORT_LANG_DOMAIN ),
 		'selected' => null,
 		'echo' => true
 	);
 	$args = wp_parse_args( $args, $defaults );
 
 	extract( $args );
+
+	if ( ! $id )
+		$id = $name;
 
 	if ( ! $echo )
 		ob_start();

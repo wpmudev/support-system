@@ -132,6 +132,14 @@ class Incsub_Support_Admin_Support_Menu extends Incsub_Support_Parent_Support_Me
 
 			$args['ticket_priority'] = isset( $_POST['ticket-priority'] ) ? absint( $_POST['ticket-priority'] ) : 0;
 
+			if ( ! empty( $_FILES['support-attachment'] ) ) {
+				$files_uploaded = incsub_support_upload_ticket_attachments( $_FILES['support-attachment'] );					
+
+				if ( ! empty( $files_uploaded ) ) {
+					$args['attachments'] = wp_list_pluck( $files_uploaded, 'url' );
+				}
+			}
+
 			if ( ! get_settings_errors( 'support_system_submit_new_ticket' ) ) {
 				if ( is_super_admin() )
 					$args['view_by_superadmin'] = 1;
@@ -141,7 +149,15 @@ class Incsub_Support_Admin_Support_Menu extends Incsub_Support_Parent_Support_Me
 					add_settings_error( 'support_system_submit_new_ticket', 'insert_error', $result->get_error_message() );
 				}
 				else {
-					wp_redirect( $this->get_menu_url() );
+					$redirect_to = add_query_arg(
+						array(
+							'action' => 'edit',
+							'tid' => $result,
+							'tab' => 'history'
+						),
+						$this->get_menu_url()
+					);
+					wp_redirect( $redirect_to );
 					exit();
 				}
 			}

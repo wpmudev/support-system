@@ -60,7 +60,7 @@ function incsub_support_tickets_list_filter() {
 function incsub_support_reply_form() {
 	ob_start();
 	?>
-		<form method="post" id="support-system-reply-form" action="#support-system-reply-form-wrap">
+		<form method="post" id="support-system-reply-form" action="#support-system-reply-form-wrap" enctype="multipart/form-data">
 			<?php incsub_support_reply_form_errors(); ?>
 			<div class="support-system-attachments"></div>
 			<?php incsub_support_editor( 'reply' ); ?>
@@ -148,6 +148,21 @@ function incsub_support_get_the_reply_message() {
 function incsub_support_get_the_reply_date() {
 	global $ticket_reply;
 	return incsub_support_get_translated_date( $ticket_reply->message_date );
+}
+
+function incsub_support_reply_has_attachments() {
+	global $ticket_reply;
+
+	if ( ! empty( $ticket_reply->attachments ) && is_array( $ticket_reply->attachments ) )
+		return true;
+
+	return false;
+}
+
+function incsub_support_get_the_reply_attachments() {
+	global $ticket_reply;
+
+	return $ticket_reply->attachments;
 }
 
 function incsub_support_the_category_filter( $class = '' ) {
@@ -309,6 +324,48 @@ function incsub_support_reply_form_fields() {
 		<input type="hidden" name="support-system-reply-fields[ticket]" value="<?php echo $ticket->ticket_id; ?>" />
 		<input type="hidden" name="support-system-reply-fields[blog]" value="<?php echo get_current_blog_id(); ?>" />
 	<?php
+}
+
+function incsub_support_user_sites_dropdown( $args = array() ) {
+	
+	$defaults = array(
+		'name' => 'support-system-user-sites',
+		'id' => false,
+		'echo' => false,
+		'user_id' => false,
+		'selected' => ''
+	);
+
+	$args = wp_parse_args( $args, $defaults );
+	extract( $args );
+
+	if ( ! $id )
+		$id = $name;
+
+	if ( ! $user_id )
+		$user_id = get_current_user_id();
+
+	if ( ! $echo )
+		ob_start();
+
+	if ( is_multisite() && incsub_support_user_can( $user_id, 'insert_ticket' ) ) {
+		$list = wp_list_pluck( get_blogs_of_user( $user_id ), 'blogname' );
+		?>
+			<select name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $id ); ?>">
+				<option value="" <?php selected( empty( $selected ) ); ?>><?php _e( '-- Default site --', INCSUB_SUPPORT_LANG_DOMAIN ); ?></option>
+				<?php foreach ( $list as $blog_id => $blog_name ): ?>
+					<option value="<?php echo $blog_id; ?>" <?php selected( $selected == $blog_id ); ?>><?php echo $blog_name; ?></option>
+				<?php endforeach; ?>
+			</select>
+		<?php
+	}
+	else {
+		echo '';
+	}
+
+	if ( ! $echo )
+		return ob_get_clean();
+
 }
 
 function incsub_support_reply_form_errors() {

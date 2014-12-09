@@ -8,7 +8,7 @@
 		)
 	); ?>
 <?php else: ?>
-	<h2 class="text-center"><?php _e( 'There are no replies yet', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h2>
+	<h2 class="subheader"><small><?php _e( 'There are no replies yet', INCSUB_SUPPORT_LANG_DOMAIN ); ?></small></h2>
 <?php endif; ?>
 
 <?php if ( ! incsub_support_is_ticket_closed() && incsub_support_current_user_can( 'insert_reply' ) ): ?>
