@@ -16,6 +16,10 @@
 	
 	<div id="front-options" class="<?php echo $front_active ? '' : 'disabled'; ?>">
 		<table class="form-table">
+			
+			<?php ob_start(); ?>
+				<input type="checkbox" name="use_default_styles" value="true" <?php checked( $use_default_styles ); ?>/>
+			<?php $this->render_row( __( 'Use Support System styles', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); ?>
 
 			<?php if ( is_multisite() ): ?>
 				<?php ob_start(); ?>

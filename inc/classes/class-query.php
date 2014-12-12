@@ -131,7 +131,6 @@ function incsub_support_get_the_ticket_class() {
 	$ticket = incsub_support()->query->ticket;
 
 	$class = array();
-	$class[] = "support-system-single-ticket";
 	$class[] = "support-system-ticket-priority-" . $ticket->ticket_priority;
 	$class[] = "support-system-ticket-category-" . $ticket->cat_id;
 	$class[] = "support-system-ticket-staff-" . $ticket->admin_id;

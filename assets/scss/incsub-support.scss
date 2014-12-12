@@ -189,7 +189,8 @@ body #support-system {
   border:1px solid #C8C8C8;
 }
 
-#support-system .support-system-reply-attachments {
+#support-system .support-system-reply-attachments,
+#support-system .support-system-ticket-attachments {
   background:darken( $reply_background, 3% );
   border: 1px solid darken( $reply_background, 10% );
   padding:rem-calc( 15px ) rem-calc( 20px );
@@ -203,4 +204,11 @@ body #support-system {
     margin-bottom:0;
     list-style: circle;
   }
+}
+
+#support-system #support-attachments-list {
+  border-top:1px solid $iron;
+  list-style:none;
+  margin-left:0;
+  padding-top: 15px;
 }

@@ -115,6 +115,8 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 			$submit_ticket_pages_dropdown .= '<br/><span class="description">' . __( 'Remember to insert <code>[support-system-submit-ticket-form]</code> shortcode in this page', INCSUB_SUPPORT_LANG_DOMAIN ) . '</span>';
 		}
 
+		$use_default_styles = $settings['incsub_support_use_default_settings'];
+
 		$errors = get_settings_errors( 'incsub-support-settings' );
 		include_once( 'views/network-settings-front.php' );
 	}
@@ -253,7 +255,19 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 			$settings['incsub_support_blog_id'] = false;
 			$settings['incsub_support_support_page'] = 0;
 			$settings['incsub_support_create_new_ticket_page'] = 0;
+			$settings['incsub_support_use_default_settings'] = true;
 		}
+
+		// FRONT STYLES
+		$is_active = $settings['incsub_support_activate_front'];
+
+		if ( $is_active ) {
+			if ( isset( $input['use_default_styles'] ) )
+				$settings['incsub_support_use_default_settings'] = true;
+			else
+				$settings['incsub_support_use_default_settings'] = false;
+		}
+		
 		
 		// BLOG ID
 		$current_blog_id = $settings['incsub_support_blog_id'];

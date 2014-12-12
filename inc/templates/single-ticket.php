@@ -15,6 +15,18 @@
 						<div class="row support-system-ticket-message">
 							<?php echo incsub_support_get_the_ticket_message(); ?>
 						</div>
+
+						<?php $attachments = incsub_support_get_the_ticket_attachments(); ?>
+						<?php if ( ! empty( $attachments ) ): ?>
+							<div class="row support-system-ticket-attachments">
+								<h5><?php _e( 'Attachments', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h5>
+								<ul>
+									<?php foreach ( $attachments as $attachment ): ?>
+										<li><a href="<?php echo esc_url( $attachment ); ?>" title="<?php printf( esc_attr__( 'Download %s attachment', INCSUB_SUPPORT_LANG_DOMAIN ), basename( $attachment ) ); ?>"><?php echo basename( $attachment ); ?></a></li>
+									<?php endforeach; ?>		
+								</ul>
+							</div>
+						<?php endif; ?>
 					</li>
 				</ul>
 

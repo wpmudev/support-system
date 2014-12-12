@@ -9,6 +9,7 @@ class Incsub_Support_Settings {
 		add_filter( 'support_system_tickets_table_query_args', array( $this, 'filter_admin_tickets_table' ) );
 		add_filter( 'support_system_query_get_tickets_args', array( $this, 'filter_query' ) );
 		add_filter( 'support_system_add_editor_shortcodes', array( $this, 'toggle_editor_shortcode_button' ) );
+		add_filter( 'support_system_front_stylesheet', array( $this, 'set_front_stylesheet' ), 1 );
 	}
 
 	public function get( $name ) {
@@ -54,7 +55,8 @@ class Incsub_Support_Settings {
 			'incsub_support_support_page' => 0,
 			'incsub_support_create_new_ticket_page' => 0,
 			'incsub_support_blog_id' => false,
-			'incsub_support_activate_front' => false
+			'incsub_support_activate_front' => false,
+			'incsub_support_use_default_settings' => true
 		) );
 	}
 
@@ -118,5 +120,15 @@ class Incsub_Support_Settings {
 
 		return $current;
 	} 
+
+	function set_front_stylesheet( $stylesheet ) {
+		if ( ! incsub_support_is_support_page() && ! incsub_support_is_new_ticket_page() )
+			return false;
+
+		if ( $this->get( 'incsub_support_use_default_settings' ) )
+			return INCSUB_SUPPORT_ASSETS_URL . 'css/incsub-support.css';
+		else
+			return false;
+	}
 
 }

@@ -422,9 +422,9 @@ $h6-font-size: 1rem;
 
 // We use these to build padding for buttons.
 $button-tny: rem-calc(6);
-$button-sml: rem-calc(10);
-$button-med: rem-calc(13);
-$button-lrg: rem-calc(16);
+$button-sml: rem-calc(9);
+$button-med: rem-calc(12);
+$button-lrg: rem-calc(15);
 
 // We use this to control the display property.
 // $button-display: inline-block;
@@ -616,7 +616,7 @@ $button-lrg: rem-calc(16);
 
 // We use these to style the labels in different ways
 // $form-label-pointer: pointer;
-// $form-label-font-size: rem-calc(14);
+$form-label-font-size: rem-calc(11);
 // $form-label-font-weight: $font-weight-normal;
 // $form-label-line-height: 1.5;
 // $form-label-font-color: scale-color($black, $lightness: 30%);
@@ -624,7 +624,7 @@ $button-lrg: rem-calc(16);
 // $form-label-bottom-margin: 0;
 // $input-font-family: inherit;
 // $input-font-color: rgba(0,0,0,0.75);
-// $input-font-size: rem-calc(14);
+$input-font-size: rem-calc(11);
 // $input-bg-color: $white;
 // $input-focus-bg-color: scale-color($white, $lightness: -2%);
 // $input-border-color: scale-color($white, $lightness: -20%);
@@ -640,7 +640,7 @@ $button-lrg: rem-calc(16);
 // $fieldset-border-style: solid;
 // $fieldset-border-width: 1px;
 // $fieldset-border-color: $gainsboro;
-// $fieldset-padding: rem-calc(20);
+$fieldset-padding: rem-calc(10);
 // $fieldset-margin: rem-calc(18 0);
 
 // We use these to style the legends when you use them

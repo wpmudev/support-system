@@ -48,6 +48,18 @@ function support_system_get_template_locations() {
 	) );
 }
 
+function incsub_support_get_the_ticket_attachments() {
+	$ticket_id = incsub_support()->query->ticket->ticket_id;
+	$ticket = incsub_support_get_ticket_b( $ticket_id );
+
+	if ( ! $ticket )
+		return array();
+
+	$replies = $ticket->get_replies();
+	$main_reply = wp_list_filter( $replies, array( 'is_main_reply' => true ) );
+	return $main_reply[0]->attachments;
+}
+
 function incsub_support_ticket_replies() {
 	$ticket_id = incsub_support()->query->ticket->ticket_id;
 	incsub_support_get_template( 'ticket-replies', $ticket_id );
@@ -371,3 +383,4 @@ function incsub_support_user_sites_dropdown( $args = array() ) {
 function incsub_support_reply_form_errors() {
 	incsub_support_get_errors( 'support-system-reply-form' );
 }
+

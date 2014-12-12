@@ -171,7 +171,9 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 
 		public function enqueue_front_styles() {
-			wp_enqueue_style( 'support-system', INCSUB_SUPPORT_ASSETS_URL . 'css/incsub-support.css' );
+			$stylesheet = apply_filters( 'support_system_front_stylesheet', false );
+			if ( $stylesheet )
+				wp_enqueue_style( 'support-system', $stylesheet );
 		}
 
 		public function enqueue_front_scripts() {
