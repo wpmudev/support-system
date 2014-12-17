@@ -182,18 +182,6 @@
 	Support_System.libs.faqs = {
 		name: 'Support System FAQS',
 		version: '2.0',
-		defaults: {
-			container_selector: '',
-			button_text: 'Add files...',
-			button_class: '',
-			first_slot: 0,
-			slot_name: 'support-attachment',
-			current_files: [],
-			files_list_id: 'support-attachments-list',
-			remove_file_title: 'Remove file',
-			remove_link_class: '',
-			remove_link_text: '[x]'
-		},
 
 		init: function() {
 			$( '.vote-button' ).click( function(e) {
@@ -216,6 +204,8 @@
 				});
 			});
 
+			$('.faq-category-wrap' ).hide();
+
 			$( '.faq-category-question' ).hide();
 			
 
@@ -224,13 +214,14 @@
 
 				var cat_id = $(this).data('cat-id');
 
-				$( '.faq-category-question' ).fadeOut();
+				$( '.faq-category-wrap' ).hide();
 				$( '#faq-category-' + cat_id ).fadeIn();
 			});
 
 			$('.faq-category-answer').hide();
-			$('.faq-question-selector').click( function(e) {
-				e.preventDefault();
+			$('.faq-category-wrap .postbox .hndle').click( function(e) {
+				$('.faq-category-wrap .postbox').addClass('closed');
+				$(this).parent().animate().toggleClass( 'closed' );
 
 				var faq_id = $(this).data('faq-id');
 				$('.faq-category-answer').slideUp();
