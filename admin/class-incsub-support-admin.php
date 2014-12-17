@@ -133,8 +133,33 @@ class Incsub_Support_Admin {
 				**/
 			}
 		}
-		else {
-
+		elseif ( ! is_multisite() && is_admin() ) {
+			$menus = apply_filters( 'incsub_support_menus', array(
+				'network_support_menu' => array(
+					'class' => 'Incsub_Support_Network_Support_Menu',
+					'slug' => 'ticket-manager-b'
+				),
+				'network_ticket_categories_menu' => array(
+					'class' => 'Incsub_Support_Network_Ticket_Categories',
+					'slug' => 'ticket-categories-b'
+				),
+				'network_faqs_menu' => array(
+					'class' => 'Incsub_Support_Network_FAQ_Menu',
+					'slug' => 'support-faq-manager-b'
+				),
+				'network_faq_categories_menu' => array(
+					'class' => 'Incsub_Support_Network_FAQ_Categories',
+					'slug' => 'faq-categories-b'
+				),
+				'network_settings_menu' => array(
+					'class' => 'Incsub_Support_Network_Settings_Menu',
+					'slug' => 'mu-support-settings-b'
+				),
+				'network_welcome' => array(
+					'class' => 'Incsub_Support_Welcome_Menu',
+					'slug' => 'mu-support-welcome'
+				)
+			) );
 		}
 
 		foreach ( $menus as $key => $menu ) {

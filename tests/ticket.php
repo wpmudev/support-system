@@ -55,7 +55,7 @@ class Support_Ticket extends WP_UnitTestCase {
 
         $this->assertNotInstanceOf( 'WP_Error', $ticket_id );
 
-        $ticket = incsub_support_get_ticket_b( $ticket_id );
+        $ticket = incsub_support_get_ticket( $ticket_id );
 
         $this->assertContains( $args['message'], $ticket->message );
         $this->assertEquals( $ticket->cat_id, incsub_support_get_default_ticket_category()->cat_id );
@@ -89,7 +89,7 @@ class Support_Ticket extends WP_UnitTestCase {
         );
 
         $ticket_id = incsub_support_insert_ticket( $args );
-        $this->assertNotContains( incsub_support_get_ticket_b( $ticket_id )->message, '<script>' );
+        $this->assertNotContains( incsub_support_get_ticket( $ticket_id )->message, '<script>' );
 
         $args = array(
             'title' => 'Ticket title',
@@ -97,7 +97,7 @@ class Support_Ticket extends WP_UnitTestCase {
         );
 
         $ticket_id = incsub_support_insert_ticket( $args );
-        var_dump(incsub_support_get_ticket_b( $ticket_id ));
+        var_dump(incsub_support_get_ticket( $ticket_id ));
     }
 
 
@@ -118,7 +118,7 @@ class Support_Ticket extends WP_UnitTestCase {
 
         $this->assertTrue( $result );
 
-        $ticket = incsub_support_get_ticket_b( $ticket_id );
+        $ticket = incsub_support_get_ticket( $ticket_id );
         $this->assertEquals( $ticket->user_id, $new_user_id );
     }
 
@@ -132,7 +132,7 @@ class Support_Ticket extends WP_UnitTestCase {
 
         incsub_support_close_ticket( $ticket_id );
 
-        $this->assertTrue( incsub_support_get_ticket_b( $ticket_id )->is_closed() );
+        $this->assertTrue( incsub_support_get_ticket( $ticket_id )->is_closed() );
     }
 
     function test_open_ticket() {
@@ -147,7 +147,7 @@ class Support_Ticket extends WP_UnitTestCase {
 
         incsub_support_open_ticket( $ticket_id );
 
-        $this->assertFalse( incsub_support_get_ticket_b( $ticket_id )->is_closed() );
+        $this->assertFalse( incsub_support_get_ticket( $ticket_id )->is_closed() );
     }
 
     function test_delete_ticket() {
@@ -159,10 +159,10 @@ class Support_Ticket extends WP_UnitTestCase {
         $ticket_id = incsub_support_insert_ticket( $args );
 
         incsub_support_close_ticket( $ticket_id );
-        $result = incsub_support_delete_ticket_b( $ticket_id );
+        $result = incsub_support_delete_ticket( $ticket_id );
         
         $this->assertTrue( $result );
-        $this->assertFalse( incsub_support_get_ticket_b( $ticket_id ) );
+        $this->assertFalse( incsub_support_get_ticket( $ticket_id ) );
 
         // Check that there are no replies for that ticket
         $replies = incsub_support_get_ticket_replies( $ticket_id );

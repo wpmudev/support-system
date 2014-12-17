@@ -7,7 +7,7 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 			'ticket-manager-b',
 			__( 'Settings', INCSUB_SUPPORT_LANG_DOMAIN ),
 			__( 'Support System Settings', INCSUB_SUPPORT_LANG_DOMAIN ), 
-			'manage_network'
+			is_multisite() ? 'manage_network' : 'manage_options'
 		);
 
 	}

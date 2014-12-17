@@ -59,7 +59,7 @@ function incsub_support_insert_ticket_reply( $ticket_id, $args = array() ) {
 
 	$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
-	$ticket = incsub_support_get_ticket_b( absint( $ticket_id ) );
+	$ticket = incsub_support_get_ticket( absint( $ticket_id ) );
 
 	if ( ! $ticket )
 		return false;
@@ -154,7 +154,7 @@ function incsub_support_delete_ticket_reply( $reply_id ) {
 	if ( ! $ticket_reply )
 		return false;
 
-	$ticket = incsub_support_get_ticket_b( $ticket_reply->ticket_id );
+	$ticket = incsub_support_get_ticket( $ticket_reply->ticket_id );
 	if ( ! $ticket )
 		return false;
 

@@ -53,7 +53,7 @@ class Support_Ticket extends WP_UnitTestCase {
         );
         $reply_id = incsub_support_insert_ticket_reply( $ticket_id, $reply_args );
         
-        $ticket = incsub_support_get_ticket_b( $ticket_id );
+        $ticket = incsub_support_get_ticket( $ticket_id );
 
         $this->assertEquals( $ticket->last_reply_id, $reply_id );
         $this->assertEquals( $ticket->num_replies, 1 );
@@ -79,7 +79,7 @@ class Support_Ticket extends WP_UnitTestCase {
         $result = incsub_support_delete_ticket_reply( $reply_id );
         $this->assertTrue( $result );
 
-        $ticket = incsub_support_get_ticket_b( $ticket_id );
+        $ticket = incsub_support_get_ticket( $ticket_id );
 
         $this->assertEquals( $ticket->last_reply_id, 0 );
         $this->assertEquals( $ticket->num_replies, 0 );

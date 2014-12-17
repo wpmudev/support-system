@@ -83,7 +83,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 			if ( ! incsub_support_current_user_can( 'update_ticket' ) )
 				return;
 
-			$ticket = incsub_support_get_ticket_b( $ticket_id );
+			$ticket = incsub_support_get_ticket( $ticket_id );
 			if ( ! $ticket )
 				wp_die( __( 'The ticket does not exist', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
@@ -138,7 +138,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 			check_admin_referer( 'add-ticket-reply-' . $ticket_id );
 
 			$plugin = incsub_support();
-			$ticket = incsub_support_get_ticket_b( $ticket_id );
+			$ticket = incsub_support_get_ticket( $ticket_id );
 			if ( ! $ticket )
 				wp_die( __( 'The ticket does not exist', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
@@ -216,7 +216,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 
 			check_admin_referer( 'create-faq-from-ticket-' . $ticket_id . '-' . $reply_id );
 
-			$ticket = incsub_support_get_ticket_b( $ticket_id );
+			$ticket = incsub_support_get_ticket( $ticket_id );
 			if ( ! $ticket )
 				return;
 
@@ -242,7 +242,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 	}
 
 	protected function render_inner_page_edit_details() {
-		$ticket = incsub_support_get_ticket_b( absint( $_GET['tid'] ) );
+		$ticket = incsub_support_get_ticket( absint( $_GET['tid'] ) );
 		if ( ! $ticket )
 			wp_die( __( 'The ticket does not exist', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
@@ -311,7 +311,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 	}
 
 	protected function render_inner_page_history() {
-		$ticket = incsub_support_get_ticket_b( absint( $_GET['tid'] ) );
+		$ticket = incsub_support_get_ticket( absint( $_GET['tid'] ) );
 		if ( ! $ticket )
 			wp_die( __( 'The ticket does not exist', INCSUB_SUPPORT_LANG_DOMAIN ) );
 

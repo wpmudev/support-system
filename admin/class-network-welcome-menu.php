@@ -7,7 +7,7 @@ class Incsub_Support_Welcome_Menu extends Incsub_Support_Admin_Menu {
 		$this->page_id = add_dashboard_page( 
 			$this->menu_title,
 			$this->menu_title,
-			'manage_network',
+			is_multisite() ? 'manage_network' : 'manage_options',
 			$this->slug,
 			array( $this, 'render_page' ) 
 		);

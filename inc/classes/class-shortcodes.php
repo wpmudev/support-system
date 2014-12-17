@@ -104,7 +104,7 @@ class Incsub_Support_Shortcodes {
 			if ( empty( $message ) )
 				wp_die( __( 'The reply message cannot be empty', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
-			$ticket = incsub_support_get_ticket_b( $ticket_id );
+			$ticket = incsub_support_get_ticket( $ticket_id );
 			
 			if ( ! $ticket )
 				wp_die( __( 'The ticket does not exist', INCSUB_SUPPORT_LANG_DOMAIN ) );

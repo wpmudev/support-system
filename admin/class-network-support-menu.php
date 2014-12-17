@@ -22,7 +22,7 @@ class Incsub_Support_Network_Support_Menu extends Incsub_Support_Parent_Support_
 		parent::add_menu_page(
 			__( 'Support Ticket Management System', INCSUB_SUPPORT_LANG_DOMAIN ),
 			$menu_title, 
-			'manage_network',
+			is_multisite() ? 'manage_network' : 'manage_options',
 			'dashicons-sos'
 		);
 

@@ -61,7 +61,7 @@ class Support_Ticket extends WP_UnitTestCase {
 
         $this->assertNotInstanceOf( 'WP_Error', $ticket_id );
 
-        $ticket = incsub_support_get_ticket_b( $ticket_id );
+        $ticket = incsub_support_get_ticket( $ticket_id );
 
         $this->assertContains( $args['message'], $ticket->message );
         $this->assertEquals( $ticket->cat_id, incsub_support_get_default_ticket_category()->cat_id );

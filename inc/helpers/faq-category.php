@@ -295,7 +295,7 @@ function incsub_support_delete_faq_category( $faq_category_id ) {
 
 	$default_category = incsub_support_get_default_faq_category();
 
-	$category_faqs = incsub_support_get_faqs_b(
+	$category_faqs = incsub_support_get_faqs(
 		array(
 			'per_page' => -1,
 			'category' => $faq_category_id

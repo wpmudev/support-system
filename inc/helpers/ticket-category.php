@@ -299,7 +299,7 @@ function incsub_support_delete_ticket_category( $ticket_category_id ) {
 
 	$default_category = incsub_support_get_default_ticket_category();
 
-	$category_tickets = incsub_support_get_tickets_b(
+	$category_tickets = incsub_support_get_tickets(
 		array(
 			'per_page' => -1,
 			'category' => $ticket_category_id

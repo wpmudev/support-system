@@ -264,9 +264,9 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
                     $ticket->delete();
             }
             elseif ( isset( $_GET['tid'] ) && is_numeric( $_GET['tid'] ) ) {
-                $ticket = incsub_support_get_ticket_b( $_GET['tid'] );
+                $ticket = incsub_support_get_ticket( $_GET['tid'] );
                 if ( $ticket )
-                    incsub_support_delete_ticket_b( $ticket->ticket_id );
+                    incsub_support_delete_ticket( $ticket->ticket_id );
             }
 
         }
@@ -355,7 +355,7 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
 
         $args = apply_filters( 'support_system_tickets_table_query_args', $args );
 
-        $this->items = incsub_support_get_tickets_b( $args );
+        $this->items = incsub_support_get_tickets( $args );
         $total_items = incsub_support_get_tickets_count( $args );
 
         $this->set_pagination_args( array(

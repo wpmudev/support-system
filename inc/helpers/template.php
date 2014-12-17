@@ -50,7 +50,7 @@ function support_system_get_template_locations() {
 
 function incsub_support_get_the_ticket_attachments() {
 	$ticket_id = incsub_support()->query->ticket->ticket_id;
-	$ticket = incsub_support_get_ticket_b( $ticket_id );
+	$ticket = incsub_support_get_ticket( $ticket_id );
 
 	if ( ! $ticket )
 		return array();

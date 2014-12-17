@@ -353,7 +353,7 @@ function incsub_support_send_admin_reply_mail_b( $admin_user, $ticket, $reply ) 
  */
 function incsub_support_send_user_closed_mail( $ticket_id ) {
 
-	$ticket = incsub_support_get_ticket_b( $ticket_id );
+	$ticket = incsub_support_get_ticket( $ticket_id );
 	if ( ! $ticket )
 		return false;
 

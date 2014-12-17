@@ -49,31 +49,6 @@ function incsub_support_get_ticket_priority_name( $priority_id ) {
 	return MU_Support_System::$ticket_priority[ $priority_id ];
 }
 
-function incsub_support_get_ticket( $ticket ) {
-
-	if ( is_a( $ticket, 'Incsub_Support_Ticket' ) ) {
-		$_ticket = $ticket;
-	} 
-	elseif ( is_object( $ticket ) ) {
-		$_ticket = new Incsub_Support_Ticket( $ticket );
-	} else {
-		$_ticket = Incsub_Support_Ticket::get_instance( $ticket );
-	}
-
-	if ( ! $_ticket )
-		return null;
-
-	return $_ticket;
-}
-
-function incsub_support_get_tickets( $ticket_ids ) {
-	$tickets = array();
-	foreach ( $ticket_ids as $ticket_id ) {
-		$tickets[] = incsub_support_get_ticket( absint( $ticket_id ) );
-	}
-
-	return $tickets;
-}
 
 /**
  * Get a set of tickets
@@ -81,7 +56,7 @@ function incsub_support_get_tickets( $ticket_ids ) {
  * @param  array  $args
  * @return array
  */
-function incsub_support_get_tickets_b( $args = array() ) {
+function incsub_support_get_tickets( $args = array() ) {
 	global $wpdb, $current_site;
 
 	$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
@@ -205,7 +180,7 @@ function incsub_support_get_tickets_b( $args = array() ) {
 
 		$tickets = array();
 		foreach ( $results as $result ) {
-			$tickets[] = incsub_support_get_ticket_b( $result );
+			$tickets[] = incsub_support_get_ticket( $result );
 		}
 
 		
@@ -223,7 +198,7 @@ function incsub_support_get_tickets_b( $args = array() ) {
  * @param  int|Object $ticket The ticket ID or a Incsub_Support_Ticket class object
  * @return Object Incsub_Support_Ticket class object
  */
-function incsub_support_get_ticket_b( $ticket ) {
+function incsub_support_get_ticket( $ticket ) {
 	$ticket = Incsub_Support_Ticket::get_instance( $ticket );
 
 	$ticket = apply_filters( 'support_system_get_ticket', $ticket );
@@ -235,23 +210,9 @@ function incsub_support_get_tickets_count( $args = array() ) {
 	$args['count'] = true;
 	$args['per_page'] = -1;
 
-	$count = incsub_support_get_tickets_b( $args );
+	$count = incsub_support_get_tickets( $args );
 
 	return $count;
-}
-
-function incsub_support_delete_ticket( $ticket_id ) {
-	global $wpdb;
-
-
-	$wpdb->update(
-		$this->tickets_table,
-		array( 'ticket_status' => 5 ),
-		array( 'ticket_id' => $ticket_id ),
-		array( '%d' ),
-		array( '%d' )
-	);
-	wp_die();
 }
 
 /**
@@ -263,7 +224,7 @@ function incsub_support_delete_ticket( $ticket_id ) {
  * @return boolean
  */
 function incsub_support_close_ticket( $ticket_id ) {
-	$ticket = incsub_support_get_ticket_b( $ticket_id );
+	$ticket = incsub_support_get_ticket( $ticket_id );
 	if ( ! $ticket )
 		return false;
 
@@ -288,7 +249,7 @@ function incsub_support_close_ticket( $ticket_id ) {
  * @return boolean
  */
 function incsub_support_open_ticket( $ticket_id ) {
-	$ticket = incsub_support_get_ticket_b( $ticket_id );
+	$ticket = incsub_support_get_ticket( $ticket_id );
 	if ( ! $ticket )
 		return false;
 
@@ -308,7 +269,7 @@ function incsub_support_ticket_transition_status( $ticket_id, $status ) {
 	if ( ! in_array( $status, $all_status ) )
 		return false;
 
-	$ticket = incsub_support_get_ticket_b( $ticket_id );
+	$ticket = incsub_support_get_ticket( $ticket_id );
 	if ( ! $ticket )
 		return false;
 	
@@ -329,10 +290,10 @@ function incsub_support_ticket_transition_status( $ticket_id, $status ) {
  * @param  int $ticket_id
  * @return Boolean
  */
-function incsub_support_delete_ticket_b( $ticket_id ) {
+function incsub_support_delete_ticket( $ticket_id ) {
 	global $wpdb;
 
-	$ticket = incsub_support_get_ticket_b( $ticket_id );
+	$ticket = incsub_support_get_ticket( $ticket_id );
 
 	if ( ! $ticket )
 		return false;
@@ -379,7 +340,7 @@ function incsub_support_delete_ticket_b( $ticket_id ) {
 function incsub_support_update_ticket( $ticket_id, $args ) {
 	global $wpdb;
 
-	$ticket = incsub_support_get_ticket_b( $ticket_id );
+	$ticket = incsub_support_get_ticket( $ticket_id );
 	if ( ! $ticket )
 		return false;
 
@@ -578,7 +539,7 @@ function incsub_support_insert_ticket( $args = array() ) {
 	$result = incsub_support_insert_ticket_reply( $ticket_id, $reply_args );
 
 	if ( ! $result ) {
-		incsub_support_delete_ticket_b( $ticket_id );
+		incsub_support_delete_ticket( $ticket_id );
 		return new WP_Error( 'insert_error', __( 'Error inserting the ticket, please try again later.', INCSUB_SUPPORT_LANG_DOMAIN ) );
 	}
 
@@ -587,7 +548,7 @@ function incsub_support_insert_ticket( $args = array() ) {
 	// Current user data
 	$user = get_userdata( get_current_user_id() );
 
-	$ticket = incsub_support_get_ticket_b( $ticket_id );
+	$ticket = incsub_support_get_ticket( $ticket_id );
 
 	// First, a mail for the user that has just opened the ticket
 	incsub_support_send_user_new_ticket_mail_b( $ticket );
@@ -609,7 +570,7 @@ function incsub_support_recount_ticket_replies( $ticket_id ) {
 	
 	$table = incsub_support()->model->tickets_table;
 	
-	$ticket = incsub_support_get_ticket_b( $ticket_id );
+	$ticket = incsub_support_get_ticket( $ticket_id );
 
 	if ( ! $ticket )
 		return;

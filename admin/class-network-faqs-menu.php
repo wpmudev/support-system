@@ -17,7 +17,7 @@ class Incsub_Support_Network_FAQ_Menu extends Incsub_Support_Admin_Menu {
 			'ticket-manager-b',
 			__( 'FAQ Manager', INCSUB_SUPPORT_LANG_DOMAIN ),
 			__( 'FAQ Manager', INCSUB_SUPPORT_LANG_DOMAIN ), 
-			'manage_network'
+			is_multisite() ? 'manage_network' : 'manage_options'
 		);
 
 		add_action( 'load-' . $this->page_id, array( $this, 'set_filters' ) );
@@ -126,7 +126,7 @@ class Incsub_Support_Network_FAQ_Menu extends Incsub_Support_Admin_Menu {
 				$question = stripslashes_deep( $_POST['question'] );
 			}
 			elseif( ! empty( $_REQUEST['tid'] ) ) {
-				$ticket = incsub_support_get_ticket_b( $_REQUEST['tid'] );
+				$ticket = incsub_support_get_ticket( $_REQUEST['tid'] );
 				if ( $ticket )
 					$question = $ticket->title;
 			}

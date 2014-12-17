@@ -7,7 +7,7 @@ class Incsub_Support_Network_FAQ_Categories extends Incsub_Support_Admin_Menu {
 			'ticket-manager-b',
 			__( 'FAQ Categories', INCSUB_SUPPORT_LANG_DOMAIN ),
 			__( 'FAQ Categories', INCSUB_SUPPORT_LANG_DOMAIN ), 
-			'manage_network'
+			is_multisite() ? 'manage_network' : 'manage_options'
 		);
 
 		if ( isset( $_GET['action'] ) && isset( $_GET['category'] ) && 'edit' === $_GET['action'] ) {
