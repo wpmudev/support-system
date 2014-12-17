@@ -21,8 +21,9 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 	}
 
 	public function enqueue_scripts( $page_id ) {
-		if ( $page_id === $this->page_id )
-			wp_enqueue_script( 'support-attachments', INCSUB_SUPPORT_PLUGIN_URL . '/assets/js/attachments.js', array( 'jquery' ) );
+		if ( $page_id === $this->page_id ) {
+			wp_enqueue_script( 'support-system', INCSUB_SUPPORT_PLUGIN_URL . '/assets/js/support-system.js', array( 'jquery' ), INCSUB_SUPPORT_PLUGIN_VERSION, true );
+		}
 	}
 
 	public function save_screen_options( $status, $option, $value ) {

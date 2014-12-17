@@ -37,11 +37,11 @@ class Incsub_Support_Admin_FAQ_Menu extends Incsub_Support_Admin_Menu {
 	}
 
 	public function enqueue_scripts( $hook ) {
-		wp_enqueue_script( 'mu-support-faq-js', INCSUB_SUPPORT_PLUGIN_URL . '/admin/assets/js/faq.js', array(), '20130402' );
+		wp_enqueue_script( 'support-system', INCSUB_SUPPORT_PLUGIN_URL . '/assets/js/support-system.js', array( 'jquery' ), INCSUB_SUPPORT_PLUGIN_VERSION );
 	}
 
 	public function enqueue_styles( $hook ) {
-		wp_enqueue_style( 'mu-support-faq-css', INCSUB_SUPPORT_PLUGIN_URL . '/admin/assets/css/support-admin-faqs-menu.css', array(), '20130402' );
+		wp_enqueue_style( 'mu-support-faq-css', INCSUB_SUPPORT_PLUGIN_URL . '/admin/assets/css/support-admin-faqs-menu.css', array( ), '20130402' );
 	}
 
 

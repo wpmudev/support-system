@@ -84,3 +84,9 @@
 		</div>
 	<?php endforeach; ?>
 </div>
+
+<script>
+	jQuery(document).ready(function($) {
+		$('.wrap').support_system();
+	});
+</script>

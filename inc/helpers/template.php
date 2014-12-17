@@ -65,8 +65,8 @@ function incsub_support_ticket_replies() {
 	incsub_support_get_template( 'ticket-replies', $ticket_id );
 }
 
-function incsub_support_tickets_list_filter() {
-	incsub_support_get_template( 'tickets-filter' );
+function incsub_support_tickets_list_nav() {
+	incsub_support_get_template( 'tickets-nav' );
 }
 
 function incsub_support_reply_form() {
@@ -79,17 +79,6 @@ function incsub_support_reply_form() {
 			<?php incsub_support_reply_form_fields(); ?>
 			<br/>
 			<input type="submit" name="support-system-submit-reply" class="button small" value="<?php esc_attr_e( 'Submit Reply', INCSUB_SUPPORT_LANG_DOMAIN ); ?>" />
-			<script>
-				jQuery(document).ready(function($) {
-					$('.support-system-attachments').incsub_support_attachments({
-						button_text: " <?php _e( 'Add files...', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
-						button_class: 'button tiny success',
-						remove_file_title: "<?php esc_attr_e( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
-						remove_link_class: "button tiny alert",
-						remove_link_text: " <?php _e( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
-					});
-				});
-			</script>
 		</form>
 	<?php
 

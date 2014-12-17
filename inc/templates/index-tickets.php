@@ -1,7 +1,7 @@
 <div id="support-system-tickets">
 
-	<div class="support-system-filter">
-		<?php incsub_support_tickets_list_filter(); ?>
+	<div id="support-system-filter">
+		<?php incsub_support_tickets_list_nav(); ?>
 	</div>
 
 	<hr/>

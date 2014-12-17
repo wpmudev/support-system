@@ -4,6 +4,8 @@ class Incsub_Support_Shortcodes {
 
 	public $shortcodes = array();
 
+	public static $add_scripts = false;
+
 	public function __construct() {
 		$this->init();
 		$this->register_shortcodes();
@@ -18,6 +20,36 @@ class Incsub_Support_Shortcodes {
 		) );
 
 		add_action( 'template_redirect', array( $this, 'process_forms' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'register_scripts' ) );
+
+		add_action( 'wp_enqueue_scripts', array( &$this, 'register_styles' ) );
+		add_action( 'wp_enqueue_scripts', array( &$this, 'register_scripts' ) );
+		add_action( 'wp_footer', array( &$this, 'enqueue_scripts' ) );
+	}
+
+	public function register_styles() {
+		$stylesheet = apply_filters( 'support_system_front_stylesheet', false );
+		if ( $stylesheet )
+			wp_register_style( 'support-system', $stylesheet, array(), INCSUB_SUPPORT_PLUGIN_VERSION );
+	}
+
+	public function register_scripts() {
+		wp_register_script( 'support-system', INCSUB_SUPPORT_PLUGIN_URL . '/assets/js/support-system.js', array( 'jquery' ), INCSUB_SUPPORT_PLUGIN_VERSION, true );
+		wp_register_script( 'support-system-init', INCSUB_SUPPORT_PLUGIN_URL . '/assets/js/support-system-init.js', array( 'support-system' ), INCSUB_SUPPORT_PLUGIN_VERSION, true );
+
+		$l10n = array(
+			'button_text' => __( 'Add files...', INCSUB_SUPPORT_LANG_DOMAIN ),
+			'remove_file_title' => __( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN ),
+			'remove_link_text' => __( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN )
+		);
+		wp_localize_script( 'support-system-init', 'support_system_i18n', $l10n );
+	}
+
+	public function enqueue_scripts() {
+		if ( self::$add_scripts ) {
+			wp_enqueue_script( 'support-system-init' );
+			wp_enqueue_style( 'support-system' );
+		}
 	}
 
 	public function register_shortcodes() {
@@ -27,6 +59,7 @@ class Incsub_Support_Shortcodes {
 	}
 
 	private function start() {
+		self::$add_scripts = true;
 		incsub_support()->query->query();
 		echo '<div id="support-system">';
 		ob_start();
@@ -35,7 +68,7 @@ class Incsub_Support_Shortcodes {
 	public function render_tickets_index() {
 
 		$this->start();
-		
+
 		if ( ! incsub_support_current_user_can( 'read_ticket' ) )
 			return $this->end();
 
@@ -193,18 +226,6 @@ class Incsub_Support_Shortcodes {
 					<input type="submit" name="support-system-submit-ticket" class="button small" value="<?php esc_attr_e( 'Submit Ticket', INCSUB_SUPPORT_LANG_DOMAIN ); ?>" />
 					
 				</form>
-
-				<script>
-					jQuery(document).ready(function($) {
-						$('.support-system-attachments').incsub_support_attachments({
-							button_text: " <?php _e( 'Add files...', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
-							button_class: 'button tiny success',
-							remove_file_title: "<?php esc_attr_e( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
-							remove_link_class: "button tiny alert",
-							remove_link_text: " <?php _e( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
-						});
-					});
-				</script>
 				
 			<?php
 		}

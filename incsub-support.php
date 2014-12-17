@@ -111,8 +111,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			// Create Admin menus
 			//add_action( 'init', array( &$this, 'admin_menus' ) );
 
-			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_front_styles' ) );
-			add_action( 'wp_enqueue_scripts', array( &$this, 'enqueue_front_scripts' ) );
+			
 
 		}
 
@@ -169,16 +168,6 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			
 		}
 
-
-		public function enqueue_front_styles() {
-			$stylesheet = apply_filters( 'support_system_front_stylesheet', false );
-			if ( $stylesheet )
-				wp_enqueue_style( 'support-system', $stylesheet );
-		}
-
-		public function enqueue_front_scripts() {
-			wp_enqueue_script( 'support-attachments', INCSUB_SUPPORT_PLUGIN_URL . '/assets/js/attachments.js', array( 'jquery' ) );
-		}
 
 		
 

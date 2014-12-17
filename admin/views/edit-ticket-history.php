@@ -58,12 +58,15 @@
 
 <script>
 	jQuery(document).ready(function($) {
-		$('.support-attachments').incsub_support_attachments({
-			button_text: " <?php _e( 'Add files...', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
-			button_class: 'button-secondary',
-			remove_file_title: "<?php esc_attr_e( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
-			remove_link_class: "button-secondary",
-			remove_link_text: " <?php _e( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
+		$('.wrap').support_system({
+			attachments: {
+				container_selector: '.support-attachments',
+				button_text: " <?php _e( 'Add files...', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
+				button_class: 'button-secondary',
+				remove_file_title: "<?php esc_attr_e( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
+				remove_link_class: "button-secondary",
+				remove_link_text: " <?php _e( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN ); ?>",
+			}
 		});
 	});
 </script>
