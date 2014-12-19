@@ -4,7 +4,7 @@ class Incsub_Support_Network_Ticket_Categories extends Incsub_Support_Admin_Menu
 
 	public function add_menu() {
 		parent::add_submenu_page(
-			'ticket-manager-b',
+			'ticket-manager',
 			__( 'Ticket Categories', INCSUB_SUPPORT_LANG_DOMAIN ),
 			__( 'Ticket Categories', INCSUB_SUPPORT_LANG_DOMAIN ), 
 			is_multisite() ? 'manage_network' : 'manage_options'
@@ -25,7 +25,7 @@ class Incsub_Support_Network_Ticket_Categories extends Incsub_Support_Admin_Menu
 	public function on_load() {
 		$edit = false;
 		$add = false;
-		if ( ( $edit = isset( $_POST['submit-edit-ticket-category'] ) || $add = isset( $_POST['submit-new-ticket-category'] ) ) && current_user_can( 'manage_network' ) ) {
+		if ( ( $edit = isset( $_POST['submit-edit-ticket-category'] ) || $add = isset( $_POST['submit-new-ticket-category'] ) ) ) {
 			$edit = isset( $_POST['submit-edit-ticket-category'] );
 			$add = isset( $_POST['submit-new-ticket-category'] );
 			

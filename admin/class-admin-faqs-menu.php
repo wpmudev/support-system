@@ -12,7 +12,7 @@ class Incsub_Support_Admin_FAQ_Menu extends Incsub_Support_Admin_Menu {
 		
 		if ( apply_filters( 'support_system_add_faq_menu_as_submenu', true ) ) {
 			parent::add_submenu_page(
-				'ticket-manager-b',
+				'ticket-manager',
 				$menu_title,
 				$page_title, 
 				'read'

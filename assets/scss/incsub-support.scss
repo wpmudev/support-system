@@ -54,8 +54,9 @@ $reply_background:#f7f7f7;
 }
 
 body #support-system {
-  font-size: 100%;
+  font-size:100%;
 }
+
 
 body #support-system {
   padding: 0;
@@ -75,6 +76,10 @@ body #support-system {
 #support-system h2.support-system-ticket-title {
   margin-top:0;
   line-height: 1em;
+  a {
+    text-decoration:none;
+    border-bottom:none;
+  }
 }
 
 #support-system ul.support-system-ticket-meta li {
@@ -211,4 +216,8 @@ body #support-system {
   list-style:none;
   margin-left:0;
   padding-top: 15px;
+}
+
+#support-system select[name="ticket-cat"] {
+  vertical-align:top;
 }

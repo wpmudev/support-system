@@ -49,23 +49,23 @@ class Incsub_Support_Admin {
 				$menus = apply_filters( 'incsub_support_menus', array(
 					'network_support_menu' => array(
 						'class' => 'Incsub_Support_Network_Support_Menu',
-						'slug' => 'ticket-manager-b'
+						'slug' => 'ticket-manager'
 					),
 					'network_ticket_categories_menu' => array(
 						'class' => 'Incsub_Support_Network_Ticket_Categories',
-						'slug' => 'ticket-categories-b'
+						'slug' => 'ticket-categories'
 					),
 					'network_faqs_menu' => array(
 						'class' => 'Incsub_Support_Network_FAQ_Menu',
-						'slug' => 'support-faq-manager-b'
+						'slug' => 'support-faq-manager'
 					),
 					'network_faq_categories_menu' => array(
 						'class' => 'Incsub_Support_Network_FAQ_Categories',
-						'slug' => 'faq-categories-b'
+						'slug' => 'faq-categories'
 					),
 					'network_settings_menu' => array(
 						'class' => 'Incsub_Support_Network_Settings_Menu',
-						'slug' => 'mu-support-settings-b'
+						'slug' => 'mu-support-settings'
 					),
 					'network_welcome' => array(
 						'class' => 'Incsub_Support_Welcome_Menu',
@@ -80,11 +80,11 @@ class Incsub_Support_Admin {
 				$menus = apply_filters( 'incsub_support_menus', array(
 					'admin_support_menu' => array(
 						'class' => 'Incsub_Support_Admin_Support_Menu',
-						'slug' => 'ticket-manager-b'
+						'slug' => 'ticket-manager'
 					),
 					'admin_faq_menu' => array(
 						'class' => 'Incsub_Support_Admin_FAQ_Menu',
-						'slug' => 'support-faq-b'
+						'slug' => 'support-faq'
 					)
 				) );
 
@@ -135,29 +135,33 @@ class Incsub_Support_Admin {
 		}
 		elseif ( ! is_multisite() && is_admin() ) {
 			$menus = apply_filters( 'incsub_support_menus', array(
-				'network_support_menu' => array(
-					'class' => 'Incsub_Support_Network_Support_Menu',
-					'slug' => 'ticket-manager-b'
+				'admin_support_menu' => array(
+					'class' => 'Incsub_Support_Admin_Support_Menu',
+					'slug' => 'ticket-manager'
 				),
 				'network_ticket_categories_menu' => array(
 					'class' => 'Incsub_Support_Network_Ticket_Categories',
-					'slug' => 'ticket-categories-b'
+					'slug' => 'ticket-categories'
 				),
 				'network_faqs_menu' => array(
 					'class' => 'Incsub_Support_Network_FAQ_Menu',
-					'slug' => 'support-faq-manager-b'
+					'slug' => 'support-faq-manager'
 				),
 				'network_faq_categories_menu' => array(
 					'class' => 'Incsub_Support_Network_FAQ_Categories',
-					'slug' => 'faq-categories-b'
+					'slug' => 'faq-categories'
 				),
 				'network_settings_menu' => array(
 					'class' => 'Incsub_Support_Network_Settings_Menu',
-					'slug' => 'mu-support-settings-b'
+					'slug' => 'mu-support-settings'
 				),
 				'network_welcome' => array(
 					'class' => 'Incsub_Support_Welcome_Menu',
 					'slug' => 'mu-support-welcome'
+				),
+				'admin_faq_menu' => array(
+					'class' => 'Incsub_Support_Admin_FAQ_Menu',
+					'slug' => 'support-faq'
 				)
 			) );
 		}

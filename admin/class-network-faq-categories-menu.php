@@ -4,7 +4,7 @@ class Incsub_Support_Network_FAQ_Categories extends Incsub_Support_Admin_Menu {
 
 	public function add_menu() {
 		parent::add_submenu_page(
-			'ticket-manager-b',
+			'ticket-manager',
 			__( 'FAQ Categories', INCSUB_SUPPORT_LANG_DOMAIN ),
 			__( 'FAQ Categories', INCSUB_SUPPORT_LANG_DOMAIN ), 
 			is_multisite() ? 'manage_network' : 'manage_options'
@@ -26,7 +26,7 @@ class Incsub_Support_Network_FAQ_Categories extends Incsub_Support_Admin_Menu {
 		$edit = false;
 		$add = false;
 
-		if ( ( $edit = isset( $_POST['submit-edit-faq-category'] ) || $add = isset( $_POST['submit-new-faq-category'] ) ) && current_user_can( 'manage_network' ) ) {
+		if ( ( $edit = isset( $_POST['submit-edit-faq-category'] ) || $add = isset( $_POST['submit-new-faq-category'] ) ) ) {
 			$edit = isset( $_POST['submit-edit-faq-category'] );
 			$add = isset( $_POST['submit-new-faq-category'] );
 			

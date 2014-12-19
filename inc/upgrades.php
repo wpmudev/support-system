@@ -76,6 +76,8 @@ function incsub_support_check_for_upgrades() {
 		}
 
 		update_site_option( 'incsub_support_version', INCSUB_SUPPORT_PLUGIN_VERSION );
+
+		set_transient( 'incsub_support_welcome', true );		
 	}
 
 }

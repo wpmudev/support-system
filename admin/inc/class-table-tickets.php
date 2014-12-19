@@ -306,7 +306,7 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
         $row_class = ( $row_class == '' ? ' class="alternate"' : '' );
 
         $background = '';
-        if ( ! $item->view_by_superadmin )
+        if ( ! $item->view_by_superadmin && incsub_support_current_user_can( 'manage_options' ) )
             $background .= 'style="background-color:#e8f3b9" ';
 
         echo '<tr ' . $background . $row_class . '>';

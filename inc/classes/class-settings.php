@@ -61,7 +61,7 @@ class Incsub_Support_Settings {
 	}
 
 	public function filter_menus( $menus ) {
-		if ( ( is_multisite() && ! is_network_admin() ) || ! is_multisite() ) {
+		if ( ( is_multisite() && ! is_network_admin() ) ) {
 			$settings = $this->get_all();
 
 			if ( isset( $menus['admin_faq_menu'] ) && ! incsub_support_current_user_can( 'read_faq' ) ) {
@@ -76,6 +76,33 @@ class Incsub_Support_Settings {
 				// The parent menu is not present but the child one, we need to change the child menu to be the main one
 				add_filter( 'support_system_add_faq_menu_as_submenu', '__return_false' );
 			}
+
+		}
+		elseif ( ! is_multisite() ) {
+			if ( isset( $menus['network_ticket_categories_menu'] ) && ! incsub_support_current_user_can( 'manage_options' ) )
+				unset( $menus['network_ticket_categories_menu'] );
+
+			if ( isset( $menus['admin_support_menu'] ) && ! incsub_support_current_user_can( 'read_ticket' ) )
+				unset( $menus['admin_support_menu'] );
+
+			if ( isset( $menus['network_faq_categories_menu'] ) && ! incsub_support_current_user_can( 'manage_options' ) )
+				unset( $menus['network_faq_categories_menu'] );
+
+			if ( isset( $menus['network_settings_menu'] ) && ! incsub_support_current_user_can( 'manage_options' ) )
+				unset( $menus['network_settings_menu'] );
+
+			if ( isset( $menus['network_faqs_menu'] ) && ! incsub_support_current_user_can( 'manage_options' ) )
+				unset( $menus['network_faqs_menu'] );
+
+			if ( isset( $menus['network_welcome'] ) && ! incsub_support_current_user_can( 'manage_options' ) )
+				unset( $menus['network_welcome'] );
+
+			if ( isset( $menus['admin_faq_menu'] ) && incsub_support_current_user_can( 'manage_options' ) )
+				unset( $menus['admin_faq_menu'] );
+
+			if ( isset( $menus['admin_faq_menu'] ) && ! incsub_support_current_user_can( 'read_faq' ) )
+				unset( $menus['admin_faq_menu'] );
+
 		}
 
 		return $menus;

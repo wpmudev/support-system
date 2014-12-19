@@ -54,7 +54,7 @@ function incsub_support_send_user_new_ticket_mail_b( $ticket ) {
 	$visit_link = add_query_arg(
 		array( 
 			'tid' => $ticket->ticket_id,
-			'page' => 'ticket-manager-b',
+			'page' => 'ticket-manager',
 			'action' => 'edit',
 			'tab' => 'history'
 		),
@@ -128,9 +128,9 @@ function incsub_support_send_admin_new_ticket_mail_b( $ticket ) {
 	$headers = incsub_support_get_email_headers();
 
 	if ( is_multisite() )
-		$network_admin = network_admin_url( 'admin.php?page=ticket-manager-b' );
+		$network_admin = network_admin_url( 'admin.php?page=ticket-manager' );
 	else
-		$network_admin = admin_url( 'admin.php?page=ticket-manager-b' );
+		$network_admin = admin_url( 'admin.php?page=ticket-manager' );
 
 
 	$visit_link = add_query_arg(
@@ -314,9 +314,9 @@ function incsub_support_send_admin_reply_mail_b( $admin_user, $ticket, $reply ) 
 
 	// Variables for the message
 	if ( is_multisite() )
-		$admin_url = network_admin_url( 'admin.php?page=ticket-manager-b' );
+		$admin_url = network_admin_url( 'admin.php?page=ticket-manager' );
 	else
-		$admin_url = admin_url( 'admin.php?page=ticket-manager-b' );
+		$admin_url = admin_url( 'admin.php?page=ticket-manager' );
 
 	$visit_link = add_query_arg(
 		array( 

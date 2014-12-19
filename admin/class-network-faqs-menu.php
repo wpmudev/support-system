@@ -14,7 +14,7 @@ class Incsub_Support_Network_FAQ_Menu extends Incsub_Support_Admin_Menu {
 
 	public function add_menu() {		
 		parent::add_submenu_page(
-			'ticket-manager-b',
+			'ticket-manager',
 			__( 'FAQ Manager', INCSUB_SUPPORT_LANG_DOMAIN ),
 			__( 'FAQ Manager', INCSUB_SUPPORT_LANG_DOMAIN ), 
 			is_multisite() ? 'manage_network' : 'manage_options'

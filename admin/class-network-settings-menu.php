@@ -4,7 +4,7 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 
 	public function add_menu() {		
 		parent::add_submenu_page(
-			'ticket-manager-b',
+			'ticket-manager',
 			__( 'Settings', INCSUB_SUPPORT_LANG_DOMAIN ),
 			__( 'Support System Settings', INCSUB_SUPPORT_LANG_DOMAIN ), 
 			is_multisite() ? 'manage_network' : 'manage_options'
@@ -223,6 +223,7 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 		}
 
 		// ROLES
+		$settings['incsub_support_tickets_role'] = array();
 		if ( isset( $input['tickets_role'] ) && is_array( $input['tickets_role'] ) ) {
 			foreach ( $input['tickets_role'] as $ticket_role ) {
 				if ( array_key_exists( $ticket_role, MU_Support_System::get_roles() ) )
@@ -230,7 +231,7 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 			}
 		}
 
-
+		$settings['incsub_support_faqs_role'] = array();
 		if ( isset( $input['faqs_role'] ) && is_array( $input['faqs_role'] ) ) {
 			foreach ( $input['faqs_role'] as $faq_role ) {
 				if ( array_key_exists( $faq_role, MU_Support_System::get_roles() ) )
