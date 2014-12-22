@@ -70,7 +70,7 @@ function incsub_support_priority_dropdown( $args ) {
 function incsub_support_super_admins_dropdown( $args ) {
 	$defaults = array(
 		'name' => 'super-admins',
-		'id' => 'super-admins',
+		'id' => false,
 		'show_empty' => __( 'Select a staff', INCSUB_SUPPORT_LANG_DOMAIN ),
 		'selected' => null,
 		'echo' => true
@@ -82,10 +82,13 @@ function incsub_support_super_admins_dropdown( $args ) {
 
 	extract( $args );
 
+	if ( ! $id )
+		$id = $name;
+
 	if ( ! $echo )
 		ob_start();
 	?>
-		<select name="super-admins">
+		<select name="<?php echo $name; ?>" id="<?php echo $id; ?>">
 			<?php if ( ! empty( $show_empty ) ): ?>	
 				<option value="" <?php selected( empty( $selected ) ); ?>><?php echo esc_html( $show_empty ); ?></option>
 			<?php endif; ?>

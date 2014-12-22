@@ -8,8 +8,8 @@ class Incsub_Support_faq_Category {
 	
 	private $defcat = false;
 	
-	public $user_id = 0;
-
+	public $site_id = 0;
+	
 	public $qcount = 0;
 	
 

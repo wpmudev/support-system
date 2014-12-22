@@ -188,7 +188,6 @@ function incsub_support_update_faq_category( $faq_category_id, $args = array() )
 
 	$defaults = array(
 		'cat_name' => $faq_category->cat_name,
-		'user_id' => $faq_category->user_id,
 		'defcat' => $faq_category->defcat,
 		'qcount' => $faq_category->qcount
 	);
@@ -205,9 +204,6 @@ function incsub_support_update_faq_category( $faq_category_id, $args = array() )
 
 	$update['cat_name'] = wp_unslash( $cat_name );
 	$update_wildcards[] = '%s';
-
-	$update['user_id'] = $user_id;
-	$update_wildcards[] = '%d';
 
 	if ( $defcat )
 		incsub_support_set_default_faq_category( $faq_category_id );

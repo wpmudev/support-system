@@ -189,8 +189,20 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 		}
 
 		// MAIN SUPER ADMIN
-		if ( isset( $input['super_admin'] ) )
+		if ( isset( $input['super_admin'] ) ) {
+			$plugin = incsub_support();
+			$possible_users = array_merge( $plugin::get_super_admins() );
+			$user = false;
+			if ( in_array( $input['super_admin'], $possible_users ) ) {
+				$user = get_user_by( 'login', $_POST['super_admin'] );
+				if ( $user )
+					$args['admin_id'] = $user->data->ID;
+			}
+
+			if ( empty( $input['super-admins'] ) )
+				$args['admin_id'] = 0;
 			$settings['incsub_support_main_super_admin'] = absint( $input['super_admin'] );
+		}
 
 		// PRIVACY
 		if ( isset( $input['privacy'] ) && array_key_exists( $input['privacy'], MU_Support_System::$privacy ) ) {
