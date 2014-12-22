@@ -73,7 +73,8 @@ function incsub_support_super_admins_dropdown( $args ) {
 		'id' => false,
 		'show_empty' => __( 'Select a staff', INCSUB_SUPPORT_LANG_DOMAIN ),
 		'selected' => null,
-		'echo' => true
+		'echo' => true,
+		'value' => 'username' // Or integer
 	);
 	$args = wp_parse_args( $args, $defaults );
 
@@ -92,8 +93,10 @@ function incsub_support_super_admins_dropdown( $args ) {
 			<?php if ( ! empty( $show_empty ) ): ?>	
 				<option value="" <?php selected( empty( $selected ) ); ?>><?php echo esc_html( $show_empty ); ?></option>
 			<?php endif; ?>
-			<?php foreach ( $super_admins as $user_name ): ?>
-				<option value="<?php echo esc_attr( $user_name ); ?>" <?php selected( $selected, $user_name ); ?>><?php echo $user_name; ?></option>
+			<?php foreach ( $super_admins as $key => $user_name ): ?>
+				<?php $option_value = $value === 'username' ? $user_name : $key; ?>
+				<?php $option_selected = selected( $selected, $option_value, false ); ?>
+				<option value="<?php echo esc_attr( $option_value ); ?>" <?php echo $option_selected; ?>><?php echo $user_name; ?></option>
 			<?php endforeach; ?>
 		</select>
 	<?php

@@ -6,7 +6,7 @@ Description: Set up an awesome support ticket system on any WordPress site, comp
 Author: WPMU DEV
 WDP ID: 36
 Network: true
-Version: 2.0beta1
+Version: 2.0beta2
 Author URI: http://premium.wpmudev.org
 Text Domain: incsub-support
 */
@@ -30,7 +30,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '2.0beta1' );
+define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '2.0beta2' );
 
 if ( ! defined( 'INCSUB_SUPPORT_LANG_DOMAIN' ) )
 	define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
@@ -169,30 +169,6 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		}
 
 
-		
-
-		public static function get_default_settings() {
-
-			$super_admins = self::get_super_admins();
-			
-			return array(
-				'incsub_support_menu_name' => __( 'Support', INCSUB_SUPPORT_LANG_DOMAIN ),
-				'incsub_support_from_name' => get_bloginfo( 'blogname' ),
-				'incsub_support_from_mail' => get_bloginfo( 'admin_email' ),
-				'incsub_support_fetch_imap' => 'disabled',
-				'incsub_support_imap_frequency' => '',
-				'incsub_allow_only_pro_sites' => false,
-				'incsub_pro_sites_level' => '',
-				'incsub_allow_only_pro_sites_faq' => false,
-				'incsub_pro_sites_faq_level' => '',
-				'incsub_ticket_privacy' => 'all',
-				'incsub_support_tickets_role' => array( 'administrator', 'editor', 'author', 'contributor', 'subscriber' ),
-				'incsub_support_faqs_role' => array( 'administrator', 'editor', 'author', 'contributor', 'subscriber' ),
-				'incsub_support_main_super_admin' => key( $super_admins ) //First of the Super Admins
-			);
-		}
-
-
 		/**
 		 * Includes needed files
 		 *
@@ -225,6 +201,9 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/capabilities.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/faq.php');
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/faq-category.php');
+
+			// Integration
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/integration/pro-sites.php');
 
 			// Mail templates
 			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/mail-contents.php');

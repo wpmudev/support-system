@@ -1,5 +1,7 @@
 <?php if ( $added ): ?>
 	<div class="updated"><p><?php _e( 'Category added', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p></div>
+<?php elseif ( $updated ): ?>
+	<div class="updated"><p><?php _e( 'Category updated', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p></div>
 <?php endif; ?>
 
 <br class="clear">

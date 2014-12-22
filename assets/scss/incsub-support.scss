@@ -221,3 +221,11 @@ body #support-system {
 #support-system select[name="ticket-cat"] {
   vertical-align:top;
 }
+
+@import "foundation/components/alert-boxes";
+#support-system .support-system-alert {
+  @include alert;
+  &.warning { @include alert-style($warning-color); }
+  &.alert { @include alert-style($alert-color); }
+  &.info { @include alert-style($info-color); }
+}

@@ -33,7 +33,8 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 			'id' => 'super_admin',
 			'show_empty' => false,
 			'selected' => $settings['incsub_support_main_super_admin'],
-			'echo' => false
+			'echo' => false,
+			'value' => 'integer'
 		);
 		$staff_dropdown = incsub_support_super_admins_dropdown( $args );
 		
@@ -42,10 +43,6 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 		$from_email = $settings['incsub_support_from_mail'];
 		$tickets_role = $settings['incsub_support_tickets_role'];
 		$faqs_role = $settings['incsub_support_faqs_role'];
-		$allow_only_pro_sites = $settings['incsub_allow_only_pro_sites'];
-		$pro_sites_level = $settings['incsub_pro_sites_level'];
-		$allow_only_pro_sites_faq = $settings['incsub_allow_only_pro_sites_faq'];
-		$pro_sites_faq_level = $settings['incsub_pro_sites_faq_level'];
 		$ticket_privacy = $settings['incsub_ticket_privacy'];
 		$roles = MU_Support_System::get_roles();
 
@@ -143,6 +140,8 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 				$validate_method = apply_filters( 'support_system_settings_validate_function', array( $this, 'validate_' . $tab . '_settings' ) );
 				$settings = call_user_func( $validate_method );
 
+				$settings = apply_filters( 'support_system_validate_' . $current_tab . '_settings', $settings );
+
 				if ( $settings && is_array( $settings ) ) {
 					incsub_support_update_settings( $settings );
 					if ( ! get_settings_errors( 'incsub-support-settings' ) ) {
@@ -191,17 +190,11 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 		// MAIN SUPER ADMIN
 		if ( isset( $input['super_admin'] ) ) {
 			$plugin = incsub_support();
-			$possible_users = array_merge( $plugin::get_super_admins() );
-			$user = false;
-			if ( in_array( $input['super_admin'], $possible_users ) ) {
-				$user = get_user_by( 'login', $_POST['super_admin'] );
-				if ( $user )
-					$args['admin_id'] = $user->data->ID;
-			}
-
-			if ( empty( $input['super-admins'] ) )
-				$args['admin_id'] = 0;
-			$settings['incsub_support_main_super_admin'] = absint( $input['super_admin'] );
+			$possible_values = $plugin::get_super_admins();
+			
+			$selected = absint( $input['super_admin'] );
+			if ( array_key_exists( $selected, $possible_values ) )
+				$settings['incsub_support_main_super_admin'] = absint( $selected );
 		}
 
 		// PRIVACY
@@ -214,25 +207,7 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 		if ( isset( $input['fetch_imap'] ) && array_key_exists( $input['fetch_imap'], MU_Support_System::$fetch_imap ) ) {
 			$settings['incsub_support_fetch_imap'] = $input['fetch_imap'];
 		}
-		
-		// PRO SITES OPTION
-		if ( isset( $input['pro_sites'] ) ) {
-			$settings['incsub_allow_only_pro_sites'] = true;
-			$settings['incsub_pro_sites_level'] = absint( $input['pro_sites_levels'] );
-		}
-		else {
-			$settings['incsub_allow_only_pro_sites'] = false;
-			$settings['incsub_pro_sites_level'] = '';
-		}
-
-		if ( isset( $input['pro_sites_faq'] ) ) {
-			$settings['incsub_allow_only_pro_sites_faq'] = true;
-			$settings['incsub_pro_sites_faq_level'] = absint( $input['pro_sites_faq_levels'] );
-		}
-		else {
-			$settings['incsub_allow_only_pro_sites_faq'] = false;
-			$settings['incsub_pro_sites_faq_level'] = '';
-		}
+				
 
 		// ROLES
 		$settings['incsub_support_tickets_role'] = array();

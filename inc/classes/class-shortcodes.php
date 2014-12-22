@@ -69,8 +69,20 @@ class Incsub_Support_Shortcodes {
 
 		$this->start();
 
-		if ( ! incsub_support_current_user_can( 'read_ticket' ) )
+		if ( ! incsub_support_current_user_can( 'read_ticket' ) ) {
+			if ( ! is_user_logged_in() )
+				$message = sprintf( __( 'You must <a href="%s">log in</a> to get support', INCSUB_SUPPORT_LANG_DOMAIN ), wp_login_url( get_permalink() ) );
+			else
+				$message = __( 'You don\'t have enough permissions to get support', INCSUB_SUPPORT_LANG_DOMAIN );
+			
+			$message = apply_filters( 'support_system_not_allowed_tickets_list_message', $message );
+			?>
+				<div class="support-system-alert warning">
+					<?php echo $message; ?>
+				</div>
+			<?php
 			return $this->end();
+		}
 
 		if ( incsub_support_is_tickets_index() )
 			incsub_support_get_template( 'index', 'tickets' );
@@ -177,6 +189,7 @@ class Incsub_Support_Shortcodes {
 				$args['cat_id'] = absint( $_POST['support-system-ticket-category'] );
 			}
 
+			$args['blog_id'] = $blog_id;
 			if ( ! empty( $_POST['support-system-ticket-blog'] ) ) {
 				$blog_id = absint( $_POST['support-system-ticket-blog'] );
 				$list = wp_list_pluck( get_blogs_of_user( $user_id ), 'userblog_id' );
@@ -198,8 +211,32 @@ class Incsub_Support_Shortcodes {
 		}
 	}
 
-	function render_submit_ticket_form() {
+	function render_submit_ticket_form( $atts ) {
 		$this->start();
+
+		if ( ! incsub_support_current_user_can( 'insert_ticket' ) ) {
+			if ( ! is_user_logged_in() )
+				$message = sprintf( __( 'You must <a href="%s">log in</a> to submit a new ticket', INCSUB_SUPPORT_LANG_DOMAIN ), wp_login_url( get_permalink() ) );
+			else
+				$message = __( 'You don\'t have enough permissions to submit a new ticket', INCSUB_SUPPORT_LANG_DOMAIN );
+			
+			$message = apply_filters( 'support_system_not_allowed_submit_ticket_form_message', $message );
+			?>
+				<div class="support-system-alert warning">
+					<?php echo $message; ?>
+				</div>
+			<?php
+			return $this->end();
+		}
+
+		$defaults = array(
+			'blog_field' => true
+		);
+
+		$atts = wp_parse_args( $atts, $defaults );
+		extract( $atts );
+
+		$blog_field = (bool)$blog_field;
 
 		if ( ! incsub_support()->query->is_single_ticket ) {
 			?>
@@ -212,10 +249,12 @@ class Incsub_Support_Shortcodes {
 					<?php incsub_support_ticket_categories_dropdown( array( 'name' => 'support-system-ticket-category', 'echo' => true ) ); ?><br/>
 					
 					<br/>
-					<label for="support-system-ticket-blog">
-						<?php _e( 'Are you reporting a ticket for a specific site?', INCSUB_SUPPORT_LANG_DOMAIN ); ?>
-						<?php incsub_support_user_sites_dropdown( array( 'name' => 'support-system-ticket-blog', 'echo' => true ) ); ?>
-					</label>
+					<?php if ( $blog_field && is_multisite() ): ?>
+						<label for="support-system-ticket-blog">
+							<?php _e( 'Are you reporting a ticket for a specific site?', INCSUB_SUPPORT_LANG_DOMAIN ); ?>
+							<?php incsub_support_user_sites_dropdown( array( 'name' => 'support-system-ticket-blog', 'echo' => true ) ); ?>
+						</label>
+					<?php endif; ?>
 					
 					<div class="support-system-attachments"></div>
 
@@ -244,6 +283,7 @@ class Incsub_Support_Shortcodes {
 		if ( 'true' == get_user_option( 'rich_editing' ) ) {
 			add_filter( 'mce_external_plugins', array( $this, 'add_shortcode_tinymce_plugin' ) );
 			add_filter( 'mce_buttons', array( $this, 'register_shortcode_button' ) );
+			add_filter( 'mce_external_languages', array( $this, 'add_tinymce_i18n' ) );
 		}
 	}
 
@@ -259,6 +299,12 @@ class Incsub_Support_Shortcodes {
 
 	public function enqueue_editor_admin_scripts() {
 		wp_enqueue_style( 'incsub-support-shortcodes', INCSUB_SUPPORT_PLUGIN_URL . '/admin/assets/css/editor-shortcodes.css' );
+	}
+
+	public function add_tinymce_i18n( $i18n ) {
+		$i18n['support_system_shortcodes'] = INCSUB_SUPPORT_PLUGIN_DIR . '/admin/inc/tinymce-shortcodes-i18n.php';
+
+		return $i18n;
 	}
 
 }

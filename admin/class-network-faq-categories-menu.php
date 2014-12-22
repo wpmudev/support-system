@@ -68,9 +68,7 @@ class Incsub_Support_Network_FAQ_Categories extends Incsub_Support_Admin_Menu {
 					incsub_support_update_faq_category( $faq_category->cat_id, array( 'cat_name' => $category_name, 'user_id' => $user_id ) );
 					$redirect = add_query_arg( 
 						array( 
-							'updated' => 'true',
-							'action' => 'edit',
-							'category' => $faq_category->cat_id 
+							'updated' => 'true'
 						), $this->get_menu_url() 
 					);
 					wp_redirect( $redirect );
@@ -107,6 +105,7 @@ class Incsub_Support_Network_FAQ_Categories extends Incsub_Support_Admin_Menu {
 				$category_name = sanitize_text_field( stripslashes_deep( $_POST['cat_name'] ) );
 
 			$added = isset( $_GET['added'] );
+			$updated = isset( $_GET['updated'] );
 
 			settings_errors( 'support_system_submit_category' );
 			include_once( 'views/network-faq-categories.php' );

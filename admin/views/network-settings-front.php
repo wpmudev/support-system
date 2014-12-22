@@ -36,6 +36,8 @@
 		
 
 	</div>
+
+	<?php do_action( 'support_sytem_front_settings' ); ?>
 		
 	<?php $this->render_submit_block(); ?>
 </form>

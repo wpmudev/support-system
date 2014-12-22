@@ -15,7 +15,7 @@ class Incsub_Support_Welcome_Menu extends Incsub_Support_Admin_Menu {
 
 		add_action( 'admin_head', array( $this, 'admin_head' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
-		add_action( 'admin_init', array( $this, 'redirect_to_here' ) );
+		add_action( 'admin_init', array( $this, 'redirect_to_here' ), 99 );
 	}
 
 	public function enqueue_styles() {

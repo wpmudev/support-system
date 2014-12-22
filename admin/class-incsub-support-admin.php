@@ -88,49 +88,6 @@ class Incsub_Support_Admin {
 					)
 				) );
 
-				$user = get_userdata( get_current_user_id() );
-				$user_role = isset( $user->roles[0] ) ? $user->roles[0] : ( is_super_admin() ? 'administrator' : '' );
-
-				$tickets_role = incsub_support_get_setting( 'incsub_support_tickets_role' );
-				$admin_ticket_menu_allowed = false;
-
-				// Tickets allowed?
-				foreach ( $tickets_role as $ticket_role ) {
-					if ( $user_role == $ticket_role ) {
-						$admin_ticket_menu_allowed = true;
-						break;
-					}
-				}
-
-				$settings = incsub_support_get_settings();
-				if ( (boolean)$settings['incsub_allow_only_pro_sites'] && $admin_ticket_menu_allowed )
-					$admin_ticket_menu_allowed = function_exists( 'is_pro_site' ) && is_pro_site( get_current_blog_id(), absint( $settings['incsub_pro_sites_level'] ) );
-
-				// FAQs allowed?
-				$admin_faq_menu_allowed = false;
-				foreach ( $settings['incsub_support_faqs_role'] as $faq_role ) {
-					if ( $user_role == $faq_role ) {
-						$admin_faq_menu_allowed = true;
-						break;
-					}
-				}
-
-				if ( $settings['incsub_allow_only_pro_sites_faq'] && $admin_faq_menu_allowed )
-					$admin_faq_menu_allowed = function_exists( 'is_pro_site' ) && is_pro_site( get_current_blog_id(), absint( $settings['incsub_pro_sites_faq_level'] ) );
-
-				/**
-				// If is not a Pro site we will not create the menu
-				if ( $admin_ticket_menu_allowed ) {
-					$admin_single_ticket_menu = new MU_Support_Admin_Single_Ticket_Menu();
-					$admin_new_ticket_menu = new MU_Support_Admin_New_Ticket_Menu();
-					$admin_main_menu = new MU_Support_Admin_Main_Menu();
-				}
-				
-				if ( ! $admin_ticket_menu_allowed && $admin_faq_menu_allowed )
-					$admin_faq_menu = new MU_Support_Admin_FAQ_Menu( true );
-				elseif ( $admin_ticket_menu_allowed && $admin_faq_menu_allowed )
-					$admin_faq_menu = new MU_Support_Admin_FAQ_Menu( false );
-				**/
 			}
 		}
 		elseif ( ! is_multisite() && is_admin() ) {

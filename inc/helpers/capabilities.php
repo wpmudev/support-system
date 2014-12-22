@@ -8,43 +8,59 @@ function incsub_support_current_user_can( $cap = '' ) {
 }
 
 function incsub_support_user_can( $user_id, $cap = '' ) {
-	if ( ( is_multisite() && is_super_admin( $user_id ) ) || ( ! is_multisite() && user_can( $user_id, 'manage_options' ) ) )
-		return true;
 
 	$settings = incsub_support_get_settings();
 
-	$user = get_userdata( $user_id );
-	if ( ! $user )
-		$user_role = 'support-guest';
-	else 
-		$user_role = isset( $user->roles[0] ) ? $user->roles[0] : '';
+	$user_can = false;
+	if ( ( is_multisite() && is_super_admin( $user_id ) ) || ( ! is_multisite() && user_can( $user_id, 'manage_options' ) ) ) {
+		$user_can = true;
+	}
+	else {
+		$user = get_userdata( $user_id );
+		if ( ! $user )
+			$user_role = 'support-guest';
+		else 
+			$user_role = isset( $user->roles[0] ) ? $user->roles[0] : '';
 
-	if ( 'insert_ticket' === $cap || 'read_ticket' === $cap  ) {
-		if ( in_array( $user_role, $settings['incsub_support_tickets_role'] ) )
-			return true;
+		switch ( $cap ) {
+			case 'insert_ticket':
+			case 'read_ticket': { 
+				if ( in_array( $user_role, $settings['incsub_support_tickets_role'] ) )
+					$user_can = true;
+				break; 
+			}
+			
+			case 'update_reply': { $user_can = false; break; }
 
+			case 'insert_ticket_category': 
+			case 'update_ticket_category': 
+			case 'delete_ticket_category': { 
+				$user_can = false;
+				break;
+			}
+
+			case 'read_faq': { 
+				if ( in_array( $user_role, $settings['incsub_support_faqs_role'] ) )
+					$user_can = true;
+				break; 
+			}
+
+			case 'open_ticket': 
+			case 'close_ticket': 
+			case 'delete_ticket': 
+			case 'update_ticket': { 
+				$user_can = false;
+				break;
+			}
+
+			case 'manage_options': { $user_can = false; break;}
+
+			default: { $user_can = false; break; }
+		}
 	}
 
-	if ( 'update_reply' === $cap )
-		return false;
+	return apply_filters( 'support_system_user_can', $user_can, $user_id, $cap );
 
-	if ( 'insert_reply' === $cap && in_array( $user_role, $settings['incsub_support_tickets_role'] ) )
-		return true;
-
-	if ( 'insert_ticket_category' === $cap || 'update_ticket_category' === $cap || 'delete_ticket_category' === $cap )
-		return false;
-
-	if ( 'read_faq' === $cap && in_array( $user_role, $settings['incsub_support_faqs_role'] ) ) {
-		return true;
-	}
-
-	if ( 'open_ticket' === $cap || 'close_ticket' === $cap || 'delete_ticket' === $cap || 'update_ticket' === $cap )
-		return false;
-
-	if ( 'manage_options' === $cap )
-		return false;
-
-	return false;
 }
 
 function incsub_support_get_capabilities() {

@@ -24,7 +24,7 @@
 		<div class="feature-section col two-col">
 			<div class="col-1">
 				<h3><?php _e( 'New frontend!', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h3>
-				<p><?php _e( 'Support System comes with Foundation 5 integrated. Foundation 5 is a consistent and bullet-proof CSS Framework that allows to display the front in the best way possible in most of the themes.', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
+				<p><?php printf( __( 'Support System comes with <a href="%s">Foundation 5</a> integrated. Foundation 5 is a consistent and bullet-proof CSS Framework that allows to display the front in the best way possible in most of the themes.', INCSUB_SUPPORT_LANG_DOMAIN ), 'http://foundation.zurb.com/' ); ?></p>
 			</div>
 			<div class="col-2 last-feature">
 				<img src="//s.w.org/images/core/4.0/media.jpg">
@@ -37,12 +37,12 @@
 		<div class="feature-section col three-col">
 		<h3>This section is still on development. Stay alert :)</h3>
 			<div>
-				<h4>Feature thing 1</h4>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+				<h4>Totally recoded</h4>
+				<p>Yes. We have completely refurbished home. More hooks, a better code, faster and more readable is now populating the plugin core.</p>
 			</div>
 			<div>
-				<h4>Feature thing 2</h4>
-				<p>Deleniti nobis labore, dolores error voluptas.</p>
+				<h4>Extensibility is the key</h4>
+				<p>We believe in making Support System extensible so you or your developer can add more and more features easily to the plugin.</p>
 			</div>
 			<div class="last-feature">
 				<h4>Feature thing 3</h4>

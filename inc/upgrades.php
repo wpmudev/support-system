@@ -11,7 +11,7 @@ function incsub_support_group_settings_upgrade() {
 	$saved_version = get_site_option( 'incsub_support_version', false );
 	if ( ! $saved_version || version_compare( $saved_version, '1.9' ) < 0 ) {
 		// We're going to group all settings into one option
-		$default_settings = MU_Support_System::get_default_settings();
+		$default_settings = incsub_support()->settings->get_default_settings();
 		$old_settings = array(
 			'incsub_support_menu_name' => get_site_option( 'incsub_support_menu_name', $default_settings['incsub_support_menu_name'] ),
 			'incsub_support_from_name' => get_site_option( 'incsub_support_from_name', $default_settings['incsub_support_from_name'] ),
