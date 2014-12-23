@@ -4,13 +4,12 @@ class Incsub_Support_Shortcodes {
 
 	public $shortcodes = array();
 
-	public static $add_scripts = false;
-
 	public function __construct() {
 		$this->init();
 		$this->register_shortcodes();
 
 		$this->init_tiny_mce_button();
+
 	}
 
 	private function init() {
@@ -46,7 +45,7 @@ class Incsub_Support_Shortcodes {
 	}
 
 	public function enqueue_scripts() {
-		if ( self::$add_scripts ) {
+		if ( is_support_system() ) {
 			wp_enqueue_script( 'support-system-init' );
 			wp_enqueue_style( 'support-system' );
 		}
@@ -59,8 +58,6 @@ class Incsub_Support_Shortcodes {
 	}
 
 	private function start() {
-		self::$add_scripts = true;
-		incsub_support()->query->query();
 		echo '<div id="support-system">';
 		ob_start();
 	}
@@ -169,7 +166,10 @@ class Incsub_Support_Shortcodes {
 			if ( empty( $message ) )
 				wp_die( __( 'Please, insert a message for the ticket', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
-			$priority = absint( $_POST['support-system-ticket-priority'] );
+			if ( isset(  $_POST['support-system-ticket-priority'] ) )
+				$priority = absint( $_POST['support-system-ticket-priority'] );
+			else
+				$priority = 0;
 
 			$args = array(
 				'title' => $subject,
@@ -185,7 +185,7 @@ class Incsub_Support_Shortcodes {
 				}
 			}
 
-			if ( absint( $_POST['support-system-ticket-category'] ) ) {
+			if ( isset( $_POST['support-system-ticket-category'] ) && absint( $_POST['support-system-ticket-category'] ) ) {
 				$args['cat_id'] = absint( $_POST['support-system-ticket-category'] );
 			}
 
@@ -230,7 +230,9 @@ class Incsub_Support_Shortcodes {
 		}
 
 		$defaults = array(
-			'blog_field' => true
+			'blog_field' => true,
+			'priority_field' => true,
+			'category_field' => true
 		);
 
 		$atts = wp_parse_args( $atts, $defaults );
@@ -245,8 +247,14 @@ class Incsub_Support_Shortcodes {
 					
 					<input type="text" name="support-system-ticket-subject" value="" placeholder="<?php esc_attr_e( 'Subject', INCSUB_SUPPORT_LANG_DOMAIN ); ?>"/>
 					<br/>
-					<?php incsub_support_priority_dropdown( array( 'name' => 'support-system-ticket-priority', 'echo' => true ) ); ?><br/>
-					<?php incsub_support_ticket_categories_dropdown( array( 'name' => 'support-system-ticket-category', 'echo' => true ) ); ?><br/>
+
+					<?php if ( $priority_field ): ?>
+						<?php incsub_support_priority_dropdown( array( 'name' => 'support-system-ticket-priority', 'echo' => true ) ); ?><br/>
+					<?php endif; ?>
+
+					<?php if ( $category_field ): ?>
+						<?php incsub_support_ticket_categories_dropdown( array( 'name' => 'support-system-ticket-category', 'echo' => true ) ); ?><br/>
+					<?php endif; ?>
 					
 					<br/>
 					<?php if ( $blog_field && is_multisite() ): ?>

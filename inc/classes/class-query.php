@@ -6,9 +6,19 @@ class Incsub_Support_Query {
 
 	private $args = array();
 
+	public $is_support_system = false;
+
+	public function __construct() {
+		add_filter( 'wp_title', array( $this, 'set_wp_title' ), 10, 2 );
+		add_action( 'template_redirect', array( $this, 'query' ) );
+	}
+
 	public function query() {
 		$this->init();
 		$this->parse();
+
+		if ( ! $this->is_support_system )
+			return;
 
 		$per_page = apply_filters( 'support_system_query_per_page', get_option( 'posts_per_page' ), $this );
 
@@ -44,10 +54,12 @@ class Incsub_Support_Query {
 	}
 
 	private function init() {
+		$this->is_support_system = false;
 		$this->is_tickets_index = false;
 		$this->is_single_ticket = false;
 		$this->is_search = false;
 		$this->is_ticket_category_index = false;
+		$this->is_submit_ticket_page = false;
 
 		$this->found_tickets = 0;
 		$this->found_replies = 0;
@@ -60,12 +72,18 @@ class Incsub_Support_Query {
 	}
 
 	public function parse() {
+		$settings = incsub_support_get_settings();
 
-		if ( $ticket_id = $this->get_query_var( 'tid' ) ) {
+		if ( is_multisite() && get_current_blog_id() != $settings['incsub_support_blog_id'] )
+			return;
+
+
+		if ( $ticket_id = $this->get_query_var( 'tid' ) && is_page( $settings['incsub_support_support_page'] ) ) {
 			$this->ticket_id = absint( $ticket_id );
 			$this->is_single_ticket = true;
+			$this->is_support_system = true;
 		}
-		else {
+		elseif ( is_page( $settings['incsub_support_support_page'] ) ) {
 			$this->is_tickets_index = true;
 			if ( $cat_id =$this->get_query_var( 'ticket-cat' ) ) {
 				$this->is_ticket_category_index = true;	
@@ -76,10 +94,13 @@ class Incsub_Support_Query {
 				$this->is_search = true;
 				$this->search = $s;
 			}
+			$this->is_support_system = true;
+		}
+		elseif( is_page( $settings['incsub_support_create_new_ticket_page'] ) ) {
+			$this->is_submit_ticket_page = true;
+			$this->is_support_system = true;
 		}
 
-		$page = $this->get_query_var( 'support-system-page' );
-		$this->page = absint( $page ) ? absint( $page ) : 1;
 	}
 
 	public function get_query_var( $name ) {
@@ -102,6 +123,18 @@ class Incsub_Support_Query {
 		return $this->ticket;
 	}
 
+	public function set_wp_title( $title, $sep ) {
+		if ( $this->is_single_ticket ) {
+			$title .= ' ' . $sep . ' ' . $this->ticket->title ;
+		}
+
+		return $title;
+	}
+
+}
+
+function is_support_system() {
+	return incsub_support()->query->is_support_system;
 }
 
 function incsub_support_the_ticket() {
