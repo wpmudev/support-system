@@ -9,6 +9,12 @@
 					editor.insertContent( '[support-system-tickets-index]' );
 				}
 			},
+			{
+				text: 'FAQs index',
+				onclick: function () {
+					editor.insertContent( '[support-system-faqs]' );
+				}
+			},
 		];
 
 
