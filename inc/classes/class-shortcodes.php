@@ -33,7 +33,7 @@ class Incsub_Support_Shortcodes {
 	}
 
 	public function register_scripts() {
-		wp_register_script( 'support-system', INCSUB_SUPPORT_PLUGIN_URL . '/assets/js/support-system.js', array( 'jquery' ), INCSUB_SUPPORT_PLUGIN_VERSION, true );
+		incsub_support_register_main_script();
 		wp_register_script( 'support-system-init', INCSUB_SUPPORT_PLUGIN_URL . '/assets/js/support-system-init.js', array( 'support-system' ), INCSUB_SUPPORT_PLUGIN_VERSION, true );
 
 		$l10n = array(

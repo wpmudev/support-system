@@ -3,12 +3,12 @@
 Install nodejs
 Install NPM
 Install Git
-Install Sass (3.4.2)
-Install Compass (0.12.7)
+Install Sass (3.3)
+Install Compass (1.0.1)
 
 
 
-sudo npm install bower gulp gulp-bower gulp-compass gulp-minify-css
+sudo npm install bower gulp gulp-bower gulp-compass gulp-minify-css del gulp-uglify gulp-rename
 
 First install: Will donwload Foundation framework
 gulp install

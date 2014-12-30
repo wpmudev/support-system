@@ -22,7 +22,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 
 	public function enqueue_scripts( $page_id ) {
 		if ( $page_id === $this->page_id ) {
-			wp_enqueue_script( 'support-system', INCSUB_SUPPORT_PLUGIN_URL . '/assets/js/support-system.js', array( 'jquery' ), INCSUB_SUPPORT_PLUGIN_VERSION, true );
+			incsub_support_enqueue_main_script();
 		}
 	}
 

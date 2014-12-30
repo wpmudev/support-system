@@ -37,7 +37,7 @@ class Incsub_Support_Admin_FAQ_Menu extends Incsub_Support_Admin_Menu {
 	}
 
 	public function enqueue_scripts( $hook ) {
-		wp_enqueue_script( 'support-system', INCSUB_SUPPORT_PLUGIN_URL . '/assets/js/support-system.js', array( 'jquery' ), INCSUB_SUPPORT_PLUGIN_VERSION );
+		incsub_support_enqueue_main_script();
 	}
 
 	public function enqueue_styles( $hook ) {
