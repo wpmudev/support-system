@@ -298,9 +298,6 @@ function incsub_support_delete_ticket( $ticket_id ) {
 	if ( ! $ticket )
 		return false;
 
-	if ( ! $ticket->is_closed() )
-		return false;
-
 	$plugin = incsub_support();
 	$tickets_table = $plugin->model->tickets_table;
 	$tickets_messages_table = $plugin->model->tickets_messages_table;

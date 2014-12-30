@@ -27,7 +27,7 @@
 				<p><?php printf( __( 'Support System comes with <a href="%s">Foundation 5</a> integrated. Foundation 5 is a consistent and bullet-proof CSS Framework that allows to display the front in the best way possible in most of the themes.', INCSUB_SUPPORT_LANG_DOMAIN ), 'http://foundation.zurb.com/' ); ?></p>
 			</div>
 			<div class="col-2 last-feature">
-				<img src="//s.w.org/images/core/4.0/media.jpg">
+				<img src="<?php echo INCSUB_SUPPORT_PLUGIN_URL . '/admin/assets/images/support-welcome-1.png'; ?>">
 			</div>
 		</div>
 	</div>
@@ -35,7 +35,6 @@
 	<div class="changelog under-the-hood">
 
 		<div class="feature-section col three-col">
-		<h3>This section is still on development. Stay alert :)</h3>
 			<div>
 				<h4>Totally recoded</h4>
 				<p>Yes. We have completely refurbished home. More hooks, a better code, faster and more readable is now populating the plugin core.</p>
@@ -45,8 +44,8 @@
 				<p>We believe in making Support System extensible so you or your developer can add more and more features easily to the plugin.</p>
 			</div>
 			<div class="last-feature">
-				<h4>Feature thing 3</h4>
-				<p>Doloremque minus maxime, ea consequuntur praesentium voluptatibus.</p>
+				<h4><?php _e( 'A better performance', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h4>
+				<p><?php _e( 'Support System 2.0 comes with an improved performance in all areas. Results are now cached for a better response and queries have been recoded from scratch', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
 			</div>
 		</div>
 

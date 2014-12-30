@@ -77,8 +77,8 @@ class Incsub_Support_Query {
 		if ( is_multisite() && get_current_blog_id() != $settings['incsub_support_blog_id'] )
 			return;
 
-
-		if ( $ticket_id = $this->get_query_var( 'tid' ) && is_page( $settings['incsub_support_support_page'] ) ) {
+		$ticket_id = $this->get_query_var( 'tid' );
+		if ( $ticket_id && is_page( $settings['incsub_support_support_page'] ) ) {
 			$this->ticket_id = absint( $ticket_id );
 			$this->is_single_ticket = true;
 			$this->is_support_system = true;
@@ -104,8 +104,10 @@ class Incsub_Support_Query {
 	}
 
 	public function get_query_var( $name ) {
-		if ( isset( $_REQUEST[ $name ] ) )
-			return $_REQUEST[ $name ];
+		if ( isset( $_REQUEST[ $name ] ) ) {
+			$value = $_REQUEST[ $name ];
+			return $value;
+		}
 
 		return false;
 	}
