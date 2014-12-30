@@ -53,7 +53,29 @@
 			support_system_menu.push({
 				text: ed.getLang( 'support_system_shortcodes.submit_ticket_form_text' ),
 				onclick: function () {
-					editor.insertContent( '[support-system-submit-ticket-form]' );
+					editor.windowManager.open({
+						title: ed.getLang( 'support_system_shortcodes.submit_ticket_form_submit_ticket_form_title' ),
+						body: [
+							{
+								type:    'checkbox',
+								name:    'category_field',
+								label:   ed.getLang( 'support_system_shortcodes.submit_ticket_form_category_field_label' ),
+								checked: true
+							},
+							{
+								type:    'checkbox',
+								name:    'priority_field',
+								label:   ed.getLang( 'support_system_shortcodes.submit_ticket_form_priority_field_label' ),
+								checked: true
+							}
+						],
+						onsubmit: function ( e ) {
+							var category_field = e.data.category_field ? '' : ' category_field="0"';
+							var priority_field = e.data.priority_field ? '' : ' priority_field="0"';
+
+							editor.insertContent( '[support-system-submit-ticket-form' + category_field + ' ' + priority_field + ']' );
+						}
+					});
 				}
 			});
 		}

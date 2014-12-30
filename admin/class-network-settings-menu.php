@@ -80,8 +80,11 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 			$support_pages_dropdown = wp_dropdown_pages( $support_pages_dropdown_args );
 			$submit_ticket_pages_dropdown = wp_dropdown_pages( $submit_ticket_pages_dropdown_args );
 
-			$create_page_url = admin_url( 'post-new.php?post_type=page' );
-			$view_page_url = get_permalink( $support_pages_dropdown_args['selected'] );
+			$create_list_page_url = admin_url( 'post-new.php?post_type=page' );
+			$view_list_page_url = get_permalink( $support_pages_dropdown_args['selected'] );
+
+			$create_ticket_form_page_url = admin_url( 'post-new.php?post_type=page' );
+			$view_ticket_form_page_url = get_permalink( $submit_ticket_pages_dropdown_args['selected'] );
 
 			$pages_dropdowns = true;
 		}
