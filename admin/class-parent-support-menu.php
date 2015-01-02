@@ -374,7 +374,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 
 		$errors = get_settings_errors( 'support_system_submit_reply' );
 
-		if ( incsub_support_current_user_can( 'insert_reply' ) )
+		if ( incsub_support_current_user_can( 'insert_reply' ) && ! $ticket->is_closed() )
 			include( 'views/edit-ticket-history.php' );
 	}
 

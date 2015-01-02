@@ -24,7 +24,8 @@ function incsub_support_user_can( $user_id, $cap = '' ) {
 
 		switch ( $cap ) {
 			case 'insert_ticket':
-			case 'read_ticket': { 
+			case 'read_ticket':
+			case 'insert_reply': { 
 				if ( in_array( $user_role, $settings['incsub_support_tickets_role'] ) )
 					$user_can = true;
 				break; 

@@ -75,11 +75,43 @@ function incsub_support_check_for_upgrades() {
 			$model->upgrade_1981();
 		}
 
+		if ( version_compare( $saved_version, '2.0beta4' ) < 0 ) {
+			incsub_support_upgrade_20beta4();
+		}
+
 		update_site_option( 'incsub_support_version', INCSUB_SUPPORT_PLUGIN_VERSION );
 
 		set_transient( 'incsub_support_welcome', true );		
 	}
 
+}
+
+function incsub_support_upgrade_20beta4() {
+	$settings = incsub_support_get_settings();
+	$super_admin = $settings['incsub_support_main_super_admin'];
+
+	if ( ! is_numeric( $super_admin ) ) {
+		$user = get_user_by( 'login', $super_admin );
+		$super_admins = MU_Support_System::get_super_admins();
+		if ( $user ) {
+			$user_id = $user->ID;
+			$found = false;
+			foreach ( $super_admins as $key => $value ) {
+				if ( $value === $super_admin )
+					$found = $key;
+			}
+
+			if ( $found !== false ) {
+				$settings['incsub_support_main_super_admin'] = $found;	
+			}
+			
+		}
+		else {
+			$settings['incsub_support_main_super_admin'] = key( $super_admins );
+		}
+	}
+
+	incsub_support_update_settings( $settings );
 }
 
 

@@ -174,7 +174,7 @@ class Incsub_Support_Shortcodes {
 			$args = array(
 				'title' => $subject,
 				'message' => $message,
-				'priority' => $priority
+				'ticket_priority' => $priority
 			);
 
 			if ( ! empty( $_FILES['support-attachment'] ) ) {

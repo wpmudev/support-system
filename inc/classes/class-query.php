@@ -143,7 +143,7 @@ function incsub_support_the_ticket() {
 	incsub_support()->query->the_ticket();
 }
 
-function incsub_support_is_ticket_closed() {
+function incsub_support_is_ticket_closed( $ticket_id = false ) {
 	return incsub_support()->query->ticket->is_closed();
 }
 
