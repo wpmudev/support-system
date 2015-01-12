@@ -98,6 +98,7 @@
 
 	    	var settings = this.settings;
 	    	var container = $( this.settings.container_selector );
+
       		if ( ! container.length )
       			return false;
 
