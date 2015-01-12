@@ -6,31 +6,33 @@ Description: Set up an awesome support ticket system on any WordPress site, comp
 Author: WPMU DEV
 WDP ID: 36
 Network: true
-Version: 2.0beta4
+Version: 2.0
+License: GPLv2
 Author URI: http://premium.wpmudev.org
 Text Domain: incsub-support
 */
 
 /*
-Copyright 2007-2014 Incsub (http://incsub.com)
-Author - Ignacio
-Contributors - S H Mohanjith, Luke Poland, Andrew Billits
+Copyright 2007-2015 Incsub (http://incsub.com)
+Author – Ignacio Cruz (igmoweb)
 
 This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License (Version 2 - GPLv2) as published by
+it under the terms of the GNU General Public License (Version 2 – GPLv2) as published by
 the Free Software Foundation.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+Foundation 5 License: See license-foundation.txt
 */
 
-define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '2.0beta4' );
+define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '2.0' );
 
 if ( ! defined( 'INCSUB_SUPPORT_LANG_DOMAIN' ) )
 	define('INCSUB_SUPPORT_LANG_DOMAIN', 'incsub-support');
@@ -111,7 +113,26 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			// Create Admin menus
 			//add_action( 'init', array( &$this, 'admin_menus' ) );
 
-			
+			//load dashboard notice
+			global $wpmudev_notices;
+			$wpmudev_notices[] = array(
+				'id'      => 36,
+				'name'    => 'Support System',
+				'screens' => array(
+					'toplevel_page_ticket-manager-network',
+					'support-2_page_ticket-categories-network',
+					'support-2_page_support-faq-manager-network',
+					'support-2_page_faq-categories-network',
+					'support-2_page_mu-support-settings-network',
+					'toplevel_page_ticket-manager',
+					'support_page_support-faq',
+					'support_page_ticket-categories',
+					'support_page_support-faq-manager',
+					'support_page_faq-categories',
+					'support_page_mu-support-settings'
+				)
+			);
+			include_once( INCSUB_SUPPORT_PLUGIN_DIR . '/dash-notice/wpmudev-dash-notification.php' );
 
 		}
 

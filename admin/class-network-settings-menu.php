@@ -20,6 +20,11 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 
 		$current_tab = $this->get_current_tab();
 
+		/**
+		 * Filters the function name that renders the tabs in the Settings screen
+		 * 
+		 * @param Array/String Function to execute
+		 */
 		$method = apply_filters( 'support_system_render_tab_function', array( $this, 'render_' . $current_tab . '_settings' ) );
 		call_user_func( $method );
 				
@@ -146,9 +151,20 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 		foreach ( $tabs as $tab => $name ) {
 			if ( isset( $_POST[ 'submit-' . $tab ] ) ) {
 				check_admin_referer( 'do-support-settings-' . $current_tab );
+
+				/**
+				 * Filters the function name that validates a settings group (tab)
+				 *
+				 * @param Array/String $function_name Function name that validates the settings tab
+				 */
 				$validate_method = apply_filters( 'support_system_settings_validate_function', array( $this, 'validate_' . $tab . '_settings' ) );
 				$settings = call_user_func( $validate_method );
 
+				/**
+				 * Filters the settings after they have been validated for a tab
+				 *
+				 * @param Array $settings Settings after being validated
+				 */
 				$settings = apply_filters( 'support_system_validate_' . $current_tab . '_settings', $settings );
 
 				if ( $settings && is_array( $settings ) ) {
@@ -294,9 +310,6 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 			$settings['incsub_support_create_new_ticket_page'] = false;
 
 		
-
-		
-
 		return $settings;
 	}
 		
@@ -312,6 +325,15 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 	}
 
 	protected function get_tabs() {
+		/**
+		 * Filters the settings tabs
+		 * 
+		 * @param Array $tabs The tabs array
+		 	array(
+				[tab_slug] => 'Tab label',
+				...
+		 	)
+		 */
 		return apply_filters( 'support_system_settings_tabs', array(
 			'general' => __( 'General', INCSUB_SUPPORT_LANG_DOMAIN ),
 			'front' => __( 'Front End', INCSUB_SUPPORT_LANG_DOMAIN )

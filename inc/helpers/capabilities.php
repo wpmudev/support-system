@@ -60,6 +60,13 @@ function incsub_support_user_can( $user_id, $cap = '' ) {
 		}
 	}
 
+	/**
+	 * Filters the permissions for a user
+	 * 
+	 * @param Boolean $user_can If the user is allowed to do something for a given capability
+	 * @param Integer $user_id User ID
+	 * @param String $cap Capability
+	 */
 	return apply_filters( 'support_system_user_can', $user_can, $user_id, $cap );
 
 }

@@ -36,15 +36,15 @@
 
 		<div class="feature-section col three-col">
 			<div>
-				<h4>Totally recoded</h4>
-				<p>Yes. We have completely refurbished home. More hooks, a better code, faster and more readable is now populating the plugin core.</p>
+				<h4><?php esc_html( _e( 'Totally recoded', INCSUB_SUPPORT_LANG_DOMAIN ) ); ?></h4>
+				<p><?php _e( 'Yes. We have completely refurbished home. More hooks, a better code, faster and more readable is now populating the plugin core.', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
 			</div>
 			<div>
-				<h4>Extensibility is the key</h4>
-				<p>We believe in making Support System extensible so you or your developer can add more and more features easily to the plugin.</p>
+				<h4><?php esc_html( _e( 'Extensibility is the key', INCSUB_SUPPORT_LANG_DOMAIN ) ); ?></h4>
+				<p><?php _e( 'We believe in making Support System extensible so you or your developer can add more and more features easily to the plugin.', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
 			</div>
 			<div class="last-feature">
-				<h4><?php _e( 'A better performance', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h4>
+				<h4><?php esc_html( _e( 'Better performance', INCSUB_SUPPORT_LANG_DOMAIN ) ); ?></h4>
 				<p><?php _e( 'Support System 2.0 comes with an improved performance in all areas. Results are now cached for a better response and queries have been recoded from scratch', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
 			</div>
 		</div>

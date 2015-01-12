@@ -614,3 +614,22 @@ function incsub_support_upload_ticket_attachments( $attachments ) {
 
 
 
+function incsub_support_get_edit_ticket_admin_url( $ticket_id ) {
+
+	if ( ! incsub_support_get_ticket( $ticket_id ) )
+		return '';
+
+	if ( is_multisite() )
+		$network_admin = network_admin_url( 'admin.php?page=ticket-manager' );
+	else
+		$network_admin = admin_url( 'admin.php?page=ticket-manager' );
+
+
+	return add_query_arg(
+		array( 
+			'tid' => $ticket_id,
+			'action' => 'edit',
+		),
+		$network_admin
+	);
+}

@@ -139,9 +139,9 @@ function incsub_support_get_version() {
 
 
 function incsub_support_register_main_script() {
-	$suffix = '';
+	$suffix = '.min';
 	if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG )
-		$suffix = '.min';
+		$suffix = '';
 
 	wp_register_script( 'support-system', INCSUB_SUPPORT_PLUGIN_URL . '/assets/js/support-system' . $suffix . '.js', array( 'jquery' ), incsub_support_get_version(), true );
 }
