@@ -35,7 +35,7 @@
 			<?php wp_editor( '', 'message-text', array( 'media_buttons' => true ) ); ?>
 		<?php $this->render_row(__( 'Add a reply', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); ?>
 
-		<?php if ( incsub_support_current_user_can( 'close_ticket' ) ): ?>
+		<?php if ( incsub_support_current_user_can( 'close_ticket', $ticket->ticket_id ) ): ?>
 			<?php ob_start(); ?>
 				<label for="closeticket">
 					<input type="checkbox" name="closeticket" id="closeticket" value="1" <?php checked( $ticket->is_closed() ); ?>/> <strong><?php _e( 'Yes, close this ticket.', INCSUB_SUPPORT_LANG_DOMAIN ); ?></strong><br />
