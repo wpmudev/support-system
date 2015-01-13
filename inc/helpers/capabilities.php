@@ -17,10 +17,12 @@ function incsub_support_user_can( $user_id, $cap = '' ) {
 	}
 	else {
 		$user = get_userdata( $user_id );
-		if ( ! $user )
+		if ( ! $user ) {
 			$user_role = 'support-guest';
-		else 
+		}
+		else {
 			$user_role = isset( $user->roles[0] ) ? $user->roles[0] : '';
+		}
 
 		switch ( $cap ) {
 			case 'insert_ticket':
@@ -47,7 +49,13 @@ function incsub_support_user_can( $user_id, $cap = '' ) {
 			}
 
 			case 'open_ticket': 
-			case 'close_ticket': 
+			case 'close_ticket': {
+				$user_can = false;
+				$args = array_slice( func_get_args(), 2 );
+				var_dump($args);
+				break;
+			}
+
 			case 'delete_ticket': 
 			case 'update_ticket': { 
 				$user_can = false;
