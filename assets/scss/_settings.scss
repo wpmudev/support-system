@@ -81,7 +81,7 @@ $include-html-global-classes: $include-html-classes;
 
 $row-width: 100%;
 // $total-columns: 12;
-// $column-gutter: rem-calc(30);
+$column-gutter: 30px;
 
 // c. Global
 // - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -195,7 +195,7 @@ $global-radius: 0px;
 // $include-html-type-classes: $include-html-classes;
 
 // We use these to control header font styles
-// $header-font-family: $body-font-family;
+$header-font-family: inherit;
 // $header-font-weight: $font-weight-normal;
 // $header-font-style: normal;
 // $header-font-color: $jet;
@@ -205,18 +205,18 @@ $global-radius: 0px;
 // $header-text-rendering: optimizeLegibility;
 
 // We use these to control header font sizes
-$h1-font-size: rem-calc(28);
-$h2-font-size: rem-calc(24);
-$h3-font-size: rem-calc(20);
-$h4-font-size: rem-calc(18);
-$h5-font-size: rem-calc(16);
-$h6-font-size: 1rem;
+$h1-font-size: 24px;
+$h2-font-size: 22px;
+$h3-font-size: 20px;
+$h4-font-size: 18px;
+$h5-font-size: 16px;
+$h6-font-size: $base-font-size;
 
 // We use these to control header size reduction on small screens
-// $h1-font-reduction: rem-calc(10) !default;
-// $h2-font-reduction: rem-calc(10) !default;
-// $h3-font-reduction: rem-calc(5) !default;
-// $h4-font-reduction: rem-calc(5) !default;
+$h1-font-reduction: $h1-font-size - 5px !default;
+$h2-font-reduction: $h2-font-size - 5px !default;
+$h3-font-reduction: $h3-font-size - 3px !default;
+$h4-font-reduction: $h4-font-size - 3px !default;
 // $h5-font-reduction: 0 !default;
 // $h6-font-reduction: 0 !default;
 
@@ -234,10 +234,10 @@ $h6-font-size: 1rem;
 // We use these to style paragraphs
 // $paragraph-font-family: inherit;
 // $paragraph-font-weight: $font-weight-normal;
-// $paragraph-font-size: rem-calc(16px);
+$paragraph-font-size: 13px;
 // $paragraph-line-height: 1.6;
-// $paragraph-margin-bottom: rem-calc(20);
-// $paragraph-aside-font-size: rem-calc(14);
+$paragraph-margin-bottom: 20px;
+$paragraph-aside-font-size: 11px;
 // $paragraph-aside-line-height: 1.35;
 // $paragraph-aside-font-style: italic;
 // $paragraph-text-rendering: optimizeLegibility;
@@ -421,8 +421,8 @@ $h6-font-size: 1rem;
 // $include-html-button-classes: $include-html-classes;
 
 // We use these to build padding for buttons.
-$button-tny: rem-calc(6);
-$button-sml: rem-calc(9);
+$button-tny: rem-calc(7);
+$button-sml: rem-calc(10);
 $button-med: rem-calc(12);
 $button-lrg: rem-calc(15);
 
@@ -434,10 +434,10 @@ $button-lrg: rem-calc(15);
 // $button-font-family: $body-font-family;
 // $button-font-color: $white;
 // $button-font-color-alt: $oil;
-// $button-font-tny: rem-calc(11);
-// $button-font-sml: rem-calc(13);
-// $button-font-med: rem-calc(16);
-// $button-font-lrg: rem-calc(20);
+$button-font-tny: 11px;
+$button-font-sml: 13px;
+$button-font-med: 15px;
+$button-font-lrg: 17px;
 // $button-font-weight: $font-weight-normal;
 // $button-font-align: center;
 
@@ -612,11 +612,11 @@ $button-lrg: rem-calc(15);
 // $include-html-form-classes: $include-html-classes;
 
 // We use this to set the base for lots of form spacing and positioning styles
-// $form-spacing: rem-calc(16);
+$form-spacing: 25px;
 
 // We use these to style the labels in different ways
 // $form-label-pointer: pointer;
-$form-label-font-size: rem-calc(11);
+$form-label-font-size: $paragraph-font-size;
 // $form-label-font-weight: $font-weight-normal;
 // $form-label-line-height: 1.5;
 // $form-label-font-color: scale-color($black, $lightness: 30%);
@@ -624,7 +624,7 @@ $form-label-font-size: rem-calc(11);
 // $form-label-bottom-margin: 0;
 // $input-font-family: inherit;
 // $input-font-color: rgba(0,0,0,0.75);
-$input-font-size: rem-calc(11);
+$input-font-size: 12px;
 // $input-bg-color: $white;
 // $input-focus-bg-color: scale-color($white, $lightness: -2%);
 // $input-border-color: scale-color($white, $lightness: -20%);
@@ -640,7 +640,7 @@ $input-font-size: rem-calc(11);
 // $fieldset-border-style: solid;
 // $fieldset-border-width: 1px;
 // $fieldset-border-color: $gainsboro;
-$fieldset-padding: rem-calc(10);
+// $fieldset-padding: rem-calc(10);
 // $fieldset-margin: rem-calc(18 0);
 
 // We use these to style the legends when you use them
@@ -779,11 +779,11 @@ $fieldset-padding: rem-calc(10);
 // $include-html-label-classes: $include-html-classes;
 
 // We use these to style the labels
-// $label-padding: rem-calc(4 8 4);
+$label-padding: 5px 5px 4px;
 // $label-radius: $global-radius;
 
 // We use these to style the label text
-// $label-font-sizing: rem-calc(11);
+$label-font-sizing: 11px;
 // $label-font-weight: $font-weight-normal;
 // $label-font-color: $oil;
 // $label-font-color-alt: $white;

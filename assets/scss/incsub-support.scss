@@ -25,7 +25,7 @@ $reply_background:#f7f7f7;
   //@import "foundation/components/dropdown";
   //@import "foundation/components/dropdown-buttons";
   //@import "foundation/components/flex-video";
-  @import "foundation/components/forms";
+  //@import "foundation/components/forms";
   //@import "foundation/components/icon-bar";
   @import "foundation/components/inline-lists";
   //@import "foundation/components/joyride";
@@ -48,13 +48,15 @@ $reply_background:#f7f7f7;
   //@import "foundation/components/thumbs";
   //@import "foundation/components/tooltips";
   //@import "foundation/components/top-bar";
-  @import "foundation/components/type";
+  //@import "foundation/components/type";
   //@import "foundation/components/offcanvas";
   @import "foundation/components/visibility";
+
+  @import "_type"; 
 }
 
 body #support-system {
-  font-size:100%;
+  font-size:$base-font-size;
 }
 
 
@@ -82,11 +84,15 @@ body #support-system {
   }
 }
 
+#support-system a {
+  border-bottom: none;
+}
+
 #support-system ul.support-system-ticket-meta li {
   white-space: nowrap;
   float:none;
   display: inline-block;
-  font-size:rem-calc(11px);
+  font-size:$paragraph-font-size - 0.2;
 }
 
 #support-system li.support-system-ticket-content p:last-child {
@@ -103,7 +109,7 @@ body #support-system {
 }
 
 #support-system-tickets ul.support-system-ticket {
-  margin-bottom:rem-calc(35px);
+  margin-bottom:35px;
   border-bottom:1px solid $iron;
   list-style:none;
   margin-left:0;
@@ -121,13 +127,11 @@ body #support-system {
   width:150px;
 }
 
-#support-system-single-ticket .support-system-single-ticket-secondary {
-  margin-top:rem-calc(50px);
-}
 
-#support-system-single-ticket .support-system-ticket-meta {
+#support-system #support-system-single-ticket .support-system-ticket-meta {
   border-bottom:1px solid #DDD;
-  padding-bottom: 1em;
+  padding-bottom: 15px;
+  margin-bottom:15px;
 }
 
 #support-system-single-ticket .support-system-ticket-meta li:first-child {
@@ -135,7 +139,7 @@ body #support-system {
 }
 
 #support-system-single-ticket h1.support-system-ticket-title {
-  margin-bottom:3.5rem;
+  margin-bottom:0px;
 }
 
 
@@ -156,7 +160,7 @@ body #support-system {
 
 #support-system p.support-system-reply-date {
   margin-top:1rem;
-  font-size:rem-calc(11px);
+  font-size:12px
 }
 
 
@@ -198,11 +202,11 @@ body #support-system {
 #support-system .support-system-ticket-attachments {
   background:darken( $reply_background, 3% );
   border: 1px solid darken( $reply_background, 10% );
-  padding:rem-calc( 15px ) rem-calc( 20px );
-  margin-bottom:rem-calc(15px);
+  padding:15px 20px;
+  margin-bottom:15px;
 
   h5 {
-    font-size: rem-calc( 13px );
+    font-size: 13px;
   }
 
   ul {
@@ -222,10 +226,21 @@ body #support-system {
   vertical-align:top;
 }
 
-@import "foundation/components/alert-boxes";
-#support-system .support-system-alert {
-  @include alert;
-  &.warning { @include alert-style($warning-color); }
-  &.alert { @include alert-style($alert-color); }
-  &.info { @include alert-style($info-color); }
+#support-system {
+  @import "foundation/components/alert-boxes";
+
+  .support-system-alert {
+    @include alert;
+    &.warning { @include alert-style($warning-color); }
+    &.alert { @include alert-style($alert-color); }
+    &.info { @include alert-style($info-color); }
+  }
+}
+
+#support-system img.avatar {
+  margin-top:0;
+}
+
+#support-system {
+  @import "forms";
 }

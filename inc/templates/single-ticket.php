@@ -8,7 +8,7 @@
 						<?php echo get_avatar( incsub_support_get_the_author_id(), 96 ); ?><br/>
 					</li>
 					<li class="large-10 columns">
-						<ul class="inline-list support-system-ticket-meta">
+						<ul class="row inline-list support-system-ticket-meta">
 							<li class="first"><?php echo incsub_support_get_the_author(); ?></li>
 							<li><?php echo incsub_support_get_the_ticket_date(); ?></li>
 						</ul>
