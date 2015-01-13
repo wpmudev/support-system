@@ -353,6 +353,11 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
         if ( $order )
             $args['order'] = $order;
 
+        /**
+         * Filters the query arguments in Tickets table
+         *
+         * @param Array $args Query arguments that will  be passed to incsub_support_get_tickets function
+         */
         $args = apply_filters( 'support_system_tickets_table_query_args', $args );
 
         $this->items = incsub_support_get_tickets( $args );

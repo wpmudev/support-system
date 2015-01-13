@@ -108,42 +108,10 @@ function incsub_support_insert_ticket_reply( $ticket_id, $args = array() ) {
 	$reply = incsub_support_get_ticket_reply( $reply_id );
 	incsub_support_recount_ticket_replies( $reply->ticket_id );
 
-	do_action( 'support_system_insert_ticket_reply', $reply_id );
-
-	if ( ! $send_emails )
-		return $reply_id;
-
-	if ( empty( $ticket->admin_id ) ) {
-		$super_admin = $plugin::get_main_admin_details();
-		incsub_support_send_user_reply_mail_b( $ticket, $reply );
-		incsub_support_send_admin_reply_mail_b( $super_admin, $ticket, $reply );
-
-	}
-	else {
-		if ( get_current_user_id() == absint( $ticket->admin_id ) ) {
-			// Response by assigned staff
-			// Send to creator
-			incsub_support_send_user_reply_mail_b( $ticket, $reply );
-		}
-		elseif ( get_current_user_id() == absint( $ticket->user_id ) ) {
-			// Response by creator
-			// Send to Staff
-			$staff = get_userdata( $ticket->admin_id );
-			incsub_support_send_admin_reply_mail_b( $staff, $ticket, $reply );
-		}
-		else {
-			// Response by none of them
-			// Send to Creator & Staff
-			$staff = get_userdata( $ticket->admin_id );
-			$creator = get_userdata( $ticket->user_id );
-
-			incsub_support_send_user_reply_mail_b( $ticket, $reply );
-			incsub_support_send_admin_reply_mail_b( $staff, $ticket, $reply );
-
-		}
-	}
+	do_action( 'support_system_insert_ticket_reply', $reply_id, $send_emails );
 
 	return $reply_id;
+
 }
 
 

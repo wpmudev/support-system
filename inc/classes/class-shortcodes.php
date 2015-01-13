@@ -26,12 +26,37 @@ class Incsub_Support_Shortcodes {
 		add_action( 'wp_enqueue_scripts', array( &$this, 'register_styles' ) );
 
 		add_action( 'wp_footer', array( &$this, 'enqueue_scripts' ) );
+
+		add_action( 'admin_bar_menu', array( &$this, 'set_admin_bar_fields' ), 300 );
+	}
+
+	public function set_admin_bar_fields( $wp_admin_bar ) {
+		if ( ! is_user_logged_in() || is_admin() )
+			return;
+
+		if ( incsub_support_is_single_ticket() && incsub_support_current_user_can( 'update_ticket' ) ) {
+			$wp_admin_bar->add_menu(
+				array(
+					'id' => 'support-system-edit-ticket',
+					'title' => __( 'Edit Ticket', INCSUB_SUPPORT_LANG_DOMAIN ),
+					'href' => incsub_support_get_edit_ticket_admin_url( incsub_support_get_the_ticket_id() )
+				)
+			);
+		}
+		
 	}
 
 	public function register_styles() {
+		/**
+		 * Filters the frontend stylsheet URL
+		 * 
+		 * @param String/Boolean $stylesheet Stylesheet URL
+		 */
 		$stylesheet = apply_filters( 'support_system_front_stylesheet', false );
 		if ( $stylesheet )
 			wp_register_style( 'support-system', $stylesheet, array(), INCSUB_SUPPORT_PLUGIN_VERSION );
+
+		wp_register_style( 'support-system-adminbar', INCSUB_SUPPORT_ASSETS_URL . 'css/admin-bar.css', array(), INCSUB_SUPPORT_PLUGIN_VERSION );
 	}
 
 	public function register_scripts() {
@@ -50,6 +75,7 @@ class Incsub_Support_Shortcodes {
 		if ( is_support_system() ) {
 			wp_enqueue_script( 'support-system-init' );
 			wp_enqueue_style( 'support-system' );
+			wp_enqueue_style( 'support-system-adminbar' );
 		}
 	}
 
@@ -59,6 +85,7 @@ class Incsub_Support_Shortcodes {
 	            $r = new ReflectionClass( $classname );
 	            $r->newInstanceArgs();
 	        }
+
 		}
 	}
 

@@ -98,6 +98,7 @@
 
 	    	var settings = this.settings;
 	    	var container = $( this.settings.container_selector );
+
       		if ( ! container.length )
       			return false;
 
@@ -187,8 +188,8 @@
 			$( '.vote-button' ).click( function(e) {
 				e.preventDefault();
 				var vote = $(this).data('vote');
+				var faq_id = $(this).data('faq-id');
 				var parent = $(this).parent();
-				var faq_id = parent.data('faq-id');
 				parent.find('button').attr( 'disabled', 'true' );
 
 				var loader = parent.find('img');

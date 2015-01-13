@@ -30,12 +30,18 @@ class Incsub_Support_FAQS_Table extends WP_List_Table {
     function column_question( $item ) {
 
         // Link to the single FAQ page
+        
+        /**
+         * Filters the FAQ Menu URL in the question column in FAQs table
+         * @var [type]
+         */
+        $menu_url = apply_filters( 'support_system_faqs_table_menu_url', '' );
         $link = add_query_arg(
             array( 
                 'fid' => (int)$item->faq_id,
                 'action' => 'edit'
             ),
-            apply_filters( 'support_system_faqs_table_menu_url', '' )
+            $menu_url
         );
 
         $delete_link = add_query_arg( 
@@ -45,11 +51,18 @@ class Incsub_Support_FAQS_Table extends WP_List_Table {
             )
         );
 
+        
         $actions = array(
             'edit'     => sprintf( __( '<a href="%s">Edit FAQ</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $link ),
             'delete'    => sprintf( __( '<a href="%s">Delete FAQ</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_link ),
         );
 
+        /**
+         * Filters the actions under FAQ title in FAQs table
+         * 
+         * @param Array $actions Array of actions
+         * @param Object $item Current FAQ Object
+         */
         $actions = apply_filters( 'support_system_faqs_actions', $actions, $item );        
 
         return '<a href="' . $link . '">' . $item->question . '</a>' . $this->row_actions($actions); 
@@ -163,6 +176,11 @@ class Incsub_Support_FAQS_Table extends WP_List_Table {
             unset( $actions['delete'] );
         }
 
+        /**
+         * Filters the bulk actions in FAQs table
+         * 
+         * @param Array $actions Current Bulk Actions
+         */
         $actions = apply_filters( 'support_system_faqs_bulk_actions', $actions );
 
         return $actions;
@@ -213,6 +231,11 @@ class Incsub_Support_FAQS_Table extends WP_List_Table {
         $this->process_bulk_action();
         $current_page = $this->get_pagenum();        
 
+        /**
+         * Filters the query arguments for the FAQs table
+         * 
+         * @param Array $args Query Arguments that will be passed to incsub_support_get_faqs function
+         */
         $args = apply_filters( 'support_system_faqs_table_query_args', array(
             'per_page' => $per_page,
             'page' => $current_page

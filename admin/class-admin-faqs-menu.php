@@ -10,6 +10,14 @@ class Incsub_Support_Admin_FAQ_Menu extends Incsub_Support_Admin_Menu {
 		$menu_title = __( 'FAQ', INCSUB_SUPPORT_LANG_DOMAIN );
 		$page_title = __( 'Frequently Asked Questions', INCSUB_SUPPORT_LANG_DOMAIN );
 		
+		/**
+		 * Filters the FAQ menu position
+		 * 
+		 * In some cases, tickets menu is not displayed so FAQ menu needs
+		 * to be a parent menu instead of a submenu
+		 * 
+		 * @param Boolean $value If set to true, FAQ menu will be a sunmenu. Otherwise, it will be a parent menu
+		 */
 		if ( apply_filters( 'support_system_add_faq_menu_as_submenu', true ) ) {
 			parent::add_submenu_page(
 				'ticket-manager',

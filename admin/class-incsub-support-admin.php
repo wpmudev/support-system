@@ -46,6 +46,18 @@ class Incsub_Support_Admin {
 
 		if ( is_multisite() ) {
 			if ( is_network_admin() && incsub_support_current_user_can( 'manage_options' ) ) {
+				/**
+				 * Filters the Support System Menus
+				 * 
+				 * @param Array $menus Support Sytem Menus array
+				 	array(
+				 		[menu_key] => array(
+							[class] => 'PHP Class name',
+							[slug] => 'WordPress Admin Menu Slug'
+				 		),
+				 		...
+				 	)
+				 */
 				$menus = apply_filters( 'incsub_support_menus', array(
 					'network_support_menu' => array(
 						'class' => 'Incsub_Support_Network_Support_Menu',
@@ -76,7 +88,18 @@ class Incsub_Support_Admin {
 				$network = true;
 			}
 			elseif ( ! is_network_admin() && is_admin() ) {
-
+				/**
+				 * Filters the Support System Menus
+				 * 
+				 * @param Array $menus Support Sytem Menus array
+				 	array(
+				 		[menu_key] => array(
+							[class] => 'PHP Class name',
+							[slug] => 'WordPress Admin Menu Slug'
+				 		),
+				 		...
+				 	)
+				 */
 				$menus = apply_filters( 'incsub_support_menus', array(
 					'admin_support_menu' => array(
 						'class' => 'Incsub_Support_Admin_Support_Menu',
@@ -91,6 +114,18 @@ class Incsub_Support_Admin {
 			}
 		}
 		elseif ( ! is_multisite() && is_admin() ) {
+			/**
+			 * Filters the Support System Menus
+			 * 
+			 * @param Array $menus Support Sytem Menus array
+			 	array(
+			 		[menu_key] => array(
+						[class] => 'PHP Class name',
+						[slug] => 'WordPress Admin Menu Slug'
+			 		),
+			 		...
+			 	)
+			 */
 			$menus = apply_filters( 'incsub_support_menus', array(
 				'admin_support_menu' => array(
 					'class' => 'Incsub_Support_Admin_Support_Menu',

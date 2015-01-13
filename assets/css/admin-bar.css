@@ -1,0 +1,8 @@
+#wpadminbar #wp-admin-bar-support-system-edit-ticket > .ab-item:before {
+	content: "\f468";
+	top: 2px;
+}
+
+#wpadminbar #wp-admin-bar-support-system-edit-ticket {
+	cursor:pointer;
+}

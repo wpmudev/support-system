@@ -20,6 +20,12 @@ class Incsub_Support_Query {
 		if ( ! $this->is_support_system )
 			return;
 
+		/**
+		 * Filters the number of tickets per page to be displayed in the front
+		 * 
+		 * @param Integer $tickets_per_page Tickets per page number. Default is posts_per_page option in wp_options table
+		 * @param Object $this Current Incsub_Support_Query Object
+		 */
 		$per_page = apply_filters( 'support_system_query_per_page', get_option( 'posts_per_page' ), $this );
 
 		if ( $this->is_single_ticket ) {
@@ -43,7 +49,12 @@ class Incsub_Support_Query {
 			if ( stripslashes( $this->search ) )
 				$args['s'] = stripslashes( $this->search );
 
-
+			/**
+			 * Filters the Tickets query Query arguments in the frontend
+			 * 
+			 * @param Array $args Query arguments that will be passed to incsub_support_get_tickets function
+			 * @param Object $this Current Incsub_Support_Query Object
+			 */
 			$args = apply_filters( 'support_system_query_get_tickets_args', $args, $this );
 			$this->tickets = incsub_support_get_tickets( $args );
 			$this->found_tickets = incsub_support_get_tickets_count( $args );
@@ -51,6 +62,7 @@ class Incsub_Support_Query {
 		}
 
 		$this->remaining_tickets = count( $this->tickets );
+
 	}
 
 	private function init() {
@@ -143,7 +155,7 @@ function incsub_support_the_ticket() {
 	incsub_support()->query->the_ticket();
 }
 
-function incsub_support_is_ticket_closed() {
+function incsub_support_is_ticket_closed( $ticket_id = false ) {
 	return incsub_support()->query->ticket->is_closed();
 }
 
@@ -171,6 +183,11 @@ function incsub_support_get_the_ticket_class() {
 	$class[] = "support-system-ticket-staff-" . $ticket->admin_id;
 	$class[] = "support-system-ticket-status-" . $ticket->ticket_status;
 
+	/**
+	 * Filters the HTML ticket class in the frontend
+	 * 
+	 * @param String $classes Ticket HTML classes
+	 */
 	return apply_filters( 'support_system_the_ticket_class', implode( ' ', $class ) );
 }
 
@@ -212,6 +229,14 @@ function incsub_support_get_the_ticket_date() {
 
 	$human_read = false;
 	$date = incsub_support_get_translated_date( $ticket->ticket_opened, $human_read );
+
+	/**
+	 * Filters the current ticket date in the front end
+	 * 
+	 * @param String $date Ticket date
+	 * @param Object $ticket Current Incsub_Support_Ticket Object
+	 * @param Object $human_read If the date is human readable
+	 */
 	return apply_filters( 'support_system_the_ticket_date', $date, $ticket, $human_read );
 }
 

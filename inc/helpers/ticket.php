@@ -234,8 +234,7 @@ function incsub_support_close_ticket( $ticket_id ) {
 
 	$result = incsub_support_ticket_transition_status( $ticket_id, 5 );
 
-	if ( $result )
-		incsub_support_send_user_closed_mail( $ticket_id );
+	do_action( 'support_system_close_ticket', $ticket_id );
 
 	return $result;
 }
@@ -498,7 +497,8 @@ function incsub_support_insert_ticket( $args = array() ) {
 		$view_by_superadmin = 0;
 	$insert['view_by_superadmin'] = $view_by_superadmin; 
 
-
+	do_action( 'support_system_before_insert_ticket', $insert );
+	
 	wp_unslash( $insert );
 	
 	// Insert the ticket	
@@ -541,17 +541,6 @@ function incsub_support_insert_ticket( $args = array() ) {
 	}
 
 	do_action( 'support_system_insert_ticket', $ticket_id, $args );
-
-	// Current user data
-	$user = get_userdata( get_current_user_id() );
-
-	$ticket = incsub_support_get_ticket( $ticket_id );
-
-	// First, a mail for the user that has just opened the ticket
-	incsub_support_send_user_new_ticket_mail_b( $ticket );
-
-	// Now, a mail for the main Administrator
-	incsub_support_send_admin_new_ticket_mail_b( $ticket );
 
 	return $ticket_id;
 
@@ -626,3 +615,22 @@ function incsub_support_upload_ticket_attachments( $attachments ) {
 
 
 
+function incsub_support_get_edit_ticket_admin_url( $ticket_id ) {
+
+	if ( ! incsub_support_get_ticket( $ticket_id ) )
+		return '';
+
+	if ( is_multisite() )
+		$network_admin = network_admin_url( 'admin.php?page=ticket-manager' );
+	else
+		$network_admin = admin_url( 'admin.php?page=ticket-manager' );
+
+
+	return add_query_arg(
+		array( 
+			'tid' => $ticket_id,
+			'action' => 'edit',
+		),
+		$network_admin
+	);
+}

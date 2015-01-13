@@ -1,5 +1,10 @@
 <?php
 
+add_action( 'support_system_insert_ticket', 'incsub_support_send_user_new_ticket_mail' );
+add_action( 'support_system_insert_ticket', 'incsub_support_send_admin_new_ticket_mail' );
+
+add_action( 'support_system_insert_ticket_reply', 'incsub_support_send_emails_on_ticket_reply', 10, 2 );
+
 /**
  * Functions that renders every mail involved in the system
  */
@@ -20,29 +25,12 @@ function incsub_support_get_email_headers() {
  * 
  * @since 1.9.5
  */
-function incsub_support_send_user_new_ticket_mail( $user, $ticket_id, $ticket ) {
+function incsub_support_send_user_new_ticket_mail( $ticket_id ) {
 
-	$headers = incsub_support_get_email_headers();
+	$ticket = incsub_support_get_ticket( $ticket_id );
 
-	$visit_link = add_query_arg(
-		'tid',
-		$ticket_id,
-		MU_Support_System::$admin_single_ticket_menu->get_permalink()
-	);
-
-	$args = array(
-		'support_fetch_imap' 	=> incsub_support_get_support_fetch_imap_message(),
-		'title' 				=> $ticket['subject'],
-		'visit_link' 			=> $visit_link,
-		'ticket_status'			=> MU_Support_System::$ticket_status[0],
-		'ticket_priority'		=> MU_Support_System::$ticket_priority[ $ticket['ticket_priority'] ],
-		'site_name'				=> get_bloginfo( 'name' )
-	);
-	$mail_content = incsub_support_user_get_new_ticket_mail_content( $args );
-
-	wp_mail( $user->user_email, __( "Ticket submitted: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $ticket['subject'], $mail_content, $headers );
-}
-function incsub_support_send_user_new_ticket_mail_b( $ticket ) {
+	if ( ! $ticket )
+		return;
 
 	$ticket_creator = get_userdata( $ticket->user_id );
 	if ( ! $ticket_creator )
@@ -72,7 +60,7 @@ function incsub_support_send_user_new_ticket_mail_b( $ticket ) {
 	);
 	$mail_content = incsub_support_user_get_new_ticket_mail_content( $args );
 
-	wp_mail( $ticket_creator->user_email, __( "Ticket submitted: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $ticket->title, $mail_content, $headers );
+	wp_mail( $ticket_creator->data->user_email, __( "Ticket submitted: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $ticket->title, $mail_content, $headers );
 }
 
 /**
@@ -85,46 +73,13 @@ function incsub_support_send_user_new_ticket_mail_b( $ticket ) {
  * 
  * @since 1.9.5
  */
-function incsub_support_send_admin_new_ticket_mail( $user, $ticket_id, $ticket ) {
+function incsub_support_send_admin_new_ticket_mail( $ticket_id ) {
 	
-	$headers = incsub_support_get_email_headers();
+	$ticket = incsub_support_get_ticket( $ticket_id );
 
-	// Variables for the message
-	if ( ! is_object( MU_Support_System::$network_single_ticket_menu ) )
-		$network_admin = new MU_Support_Network_Single_Ticket_Menu( true );
-	else
-		$network_admin = MU_Support_System::$network_single_ticket_menu;
+	if ( ! $ticket )
+		return;
 
-
-	$visit_link = add_query_arg(
-		'tid',
-		$ticket_id,
-		$network_admin->get_permalink()
-	);
-
-	// Email arguments
-	$args = array(
-		'support_fetch_imap' 	=> incsub_support_get_support_fetch_imap_message(),
-		'title' 				=> $ticket['subject'],
-		'visit_link' 			=> $visit_link,
-		'ticket_status'			=> MU_Support_System::$ticket_status[0],
-		'ticket_priority'		=> MU_Support_System::$ticket_priority[ $ticket['ticket_priority'] ],
-		'ticket_message'		=> $ticket['message'],
-		'user_nicename'			=> $user->display_name
-	);
-
-	$mail_content = incsub_support_admin_get_new_ticket_mail_content( $args );
-
-	$admin_email = MU_Support_System::get_main_admin_email();
-	if ( $ticket['admin_id'] ) {
-		$admin_user = get_user_by( 'id', $ticket['admin_id'] );
-		$admin_email = $admin_user->data->user_email;
-	}
-
-	wp_mail( $admin_email, __( "New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $ticket['subject'], $mail_content, $headers );
-}
-function incsub_support_send_admin_new_ticket_mail_b( $ticket ) {
-	
 	$headers = incsub_support_get_email_headers();
 
 	if ( is_multisite() )
@@ -147,6 +102,10 @@ function incsub_support_send_admin_new_ticket_mail_b( $ticket ) {
 	if ( ! $user ) {
 		$settings = incsub_support_get_settings();
 		$main_admin = $settings['incsub_support_main_super_admin'];
+		if ( is_numeric( $main_admin ) ) {
+			$super_admins = MU_Support_System::get_super_admins();
+			$main_admin = isset( $super_admins[ $main_admin ] ) ? $super_admins[ $main_admin ] : $main_admin;
+		}
 		$user = get_user_by( 'login', $main_admin );
 		if ( ! $user )
 			return;
@@ -155,7 +114,7 @@ function incsub_support_send_admin_new_ticket_mail_b( $ticket ) {
 	// Email arguments
 	$args = array(
 		'support_fetch_imap' 	=> incsub_support_get_support_fetch_imap_message(),
-		'title' 				=> $ticket->subject,
+		'title' 				=> $ticket->title,
 		'visit_link' 			=> $visit_link,
 		'ticket_status'			=> incsub_support_get_ticket_status_name( $ticket->ticket_status ),
 		'ticket_priority'		=> incsub_support_get_ticket_priority_name( $ticket->ticket_priority ),
@@ -168,6 +127,51 @@ function incsub_support_send_admin_new_ticket_mail_b( $ticket ) {
 	wp_mail( $user->user_email, __( "New Support Ticket: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $ticket->title, $mail_content, $headers );
 }
 
+
+function incsub_support_send_emails_on_ticket_reply( $reply_id, $send_emails ) {
+	if ( ! $send_emails )
+		return;
+
+	$reply = incsub_support_get_ticket_reply( $reply_id );
+	if ( ! $reply )
+		return;
+
+	$ticket = incsub_support_get_ticket( $reply->ticket_id );
+	if ( ! $ticket )
+		return;
+
+	if ( empty( $ticket->admin_id ) ) {
+		$plugin = incsub_support();
+		$super_admin = $plugin::get_main_admin_details();
+		incsub_support_send_user_reply_mail( $ticket, $reply );
+		incsub_support_send_admin_reply_mail( $super_admin, $ticket, $reply );
+
+	}
+	else {
+		if ( get_current_user_id() == absint( $ticket->admin_id ) ) {
+			// Response by assigned staff
+			// Send to creator
+			incsub_support_send_user_reply_mail( $ticket, $reply );
+		}
+		elseif ( get_current_user_id() == absint( $ticket->user_id ) ) {
+			// Response by creator
+			// Send to Staff
+			$staff = get_userdata( $ticket->admin_id );
+			incsub_support_send_admin_reply_mail( $staff, $ticket, $reply );
+		}
+		else {
+			// Response by none of them
+			// Send to Creator & Staff
+			$staff = get_userdata( $ticket->admin_id );
+			$creator = get_userdata( $ticket->user_id );
+
+			incsub_support_send_user_reply_mail( $ticket, $reply );
+			incsub_support_send_admin_reply_mail( $staff, $ticket, $reply );
+
+		}
+	}
+}
+
 /**
  * Send a mail to a user when a update in a ticket has been submitted
  * 
@@ -177,45 +181,7 @@ function incsub_support_send_admin_new_ticket_mail_b( $ticket ) {
  * 
  * @since 1.9.5
  */
-function incsub_support_send_user_reply_mail( $user, $response_user, $ticket_id, $ticket ) {
-	
-	$headers = incsub_support_get_email_headers();
-
-	$visit_link = get_admin_url( $ticket['blog_id'], 'admin.php' );
-	$visit_link = add_query_arg(
-		array( 
-			'tid' => $ticket_id,
-			'page' => 'single-ticket-manager'
-		),
-		$visit_link
-	);
-
-	if ( is_multisite() ) {
-		switch_to_blog( $ticket['blog_id'] );
-		$blogname = get_bloginfo( 'name' );
-		restore_current_blog();	
-	}
-	else {
-		$blogname = get_bloginfo( 'name' );
-	}
-	
-
-	// Email arguments
-	$args = array(
-		'title' 				=> $ticket['subject'],
-		'visit_link' 			=> $visit_link,
-		'ticket_status'			=> MU_Support_System::$ticket_status[0],
-		'ticket_priority'		=> MU_Support_System::$ticket_priority[ $ticket['ticket_priority'] ],
-		'ticket_message'		=> $ticket['message'],
-		'user_nicename'			=> $response_user->display_name,
-		'site_name'				=> $blogname
-	);
-
-	$mail_content = incsub_support_user_get_reply_ticket_mail_content( $args );
-
-	wp_mail( $user->user_email, __( "Ticket response notification: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $ticket['subject'], $mail_content, $headers );
-}
-function incsub_support_send_user_reply_mail_b( $ticket, $reply ) {
+function incsub_support_send_user_reply_mail( $ticket, $reply ) {
 	
 	$ticket_creator = get_userdata( $ticket->user_id );
 	if ( ! $ticket_creator )
@@ -232,7 +198,8 @@ function incsub_support_send_user_reply_mail_b( $ticket, $reply ) {
 	$visit_link = add_query_arg(
 		array( 
 			'tid' => $ticket->ticket_id,
-			'page' => 'single-ticket-manager'
+			'page' => 'ticket-manager',
+			'action' => 'edit'
 		),
 		$visit_link
 	);
@@ -249,7 +216,7 @@ function incsub_support_send_user_reply_mail_b( $ticket, $reply ) {
 
 	// Email arguments
 	$args = array(
-		'title' 				=> $ticket->subject,
+		'title' 				=> $ticket->title,
 		'visit_link' 			=> $visit_link,
 		'ticket_status'			=> incsub_support_get_ticket_status_name( $ticket->ticket_status ),
 		'ticket_priority'		=> incsub_support_get_ticket_priority_name( $ticket->ticket_priority ),
@@ -272,38 +239,7 @@ function incsub_support_send_user_reply_mail_b( $ticket, $reply ) {
  * 
  * @since 1.9.5
  */
-function incsub_support_send_admin_reply_mail( $admin_user, $response_user, $ticket_id, $ticket ) {
-	
-	$headers = incsub_support_get_email_headers();
-
-	// Variables for the message
-	if ( ! is_object( MU_Support_System::$network_single_ticket_menu ) )
-		$network_admin = new MU_Support_Network_Single_Ticket_Menu( true );
-	else
-		$network_admin = MU_Support_System::$network_single_ticket_menu;
-
-
-	$visit_link = add_query_arg(
-		'tid',
-		$ticket_id,
-		$network_admin->get_permalink()
-	);
-
-	// Email arguments
-	$args = array(
-		'title' 				=> $ticket['subject'],
-		'visit_link' 			=> $visit_link,
-		'ticket_status'			=> MU_Support_System::$ticket_status[0],
-		'ticket_priority'		=> MU_Support_System::$ticket_priority[ $ticket['ticket_priority'] ],
-		'ticket_message'		=> $ticket['message'],
-		'user_nicename'			=> $response_user->display_name
-	);
-
-	$mail_content = incsub_support_admin_get_reply_ticket_mail_content( $args );
-
-	wp_mail( $admin_user->user_email, __( "Ticket response notification: ", INCSUB_SUPPORT_LANG_DOMAIN ) . $ticket['subject'], $mail_content, $headers );
-}
-function incsub_support_send_admin_reply_mail_b( $admin_user, $ticket, $reply ) {
+function incsub_support_send_admin_reply_mail( $admin_user, $ticket, $reply ) {
 	
 	$headers = incsub_support_get_email_headers();
 
@@ -328,7 +264,7 @@ function incsub_support_send_admin_reply_mail_b( $admin_user, $ticket, $reply ) 
 
 	// Email arguments
 	$args = array(
-		'title' 				=> $reply->subject,
+		'title' 				=> $ticket->title,
 		'visit_link' 			=> $visit_link,
 		'ticket_status'			=> incsub_support_get_ticket_status_name( $ticket->ticket_status ),
 		'ticket_priority'		=> incsub_support_get_ticket_priority_name( $ticket->ticket_priority ),
@@ -351,6 +287,7 @@ function incsub_support_send_admin_reply_mail_b( $admin_user, $ticket, $reply ) 
  * 
  * @since 1.9.5
  */
+add_action( 'support_system_close_ticket', 'incsub_support_send_user_closed_mail' );
 function incsub_support_send_user_closed_mail( $ticket_id ) {
 
 	$ticket = incsub_support_get_ticket( $ticket_id );
@@ -367,7 +304,8 @@ function incsub_support_send_user_closed_mail( $ticket_id ) {
 	$visit_link = add_query_arg(
 		array( 
 			'tid' => $ticket->ticket_id,
-			'page' => 'single-ticket-manager'
+			'page' => 'ticket-manager',
+			'action' => 'edit'
 		),
 		$visit_link
 	);

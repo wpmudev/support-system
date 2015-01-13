@@ -52,7 +52,7 @@ class Incsub_Support_Settings {
 			'incsub_support_create_new_ticket_page' => 0,
 			'incsub_support_blog_id' => false,
 			'incsub_support_activate_front' => false,
-			'incsub_support_use_default_settings' => true
+			'incsub_support_use_default_settings' => true			
 		) );
 	}
 

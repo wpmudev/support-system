@@ -374,7 +374,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 
 		$errors = get_settings_errors( 'support_system_submit_reply' );
 
-		if ( incsub_support_current_user_can( 'insert_reply' ) )
+		if ( incsub_support_current_user_can( 'insert_reply' ) && ! $ticket->is_closed() )
 			include( 'views/edit-ticket-history.php' );
 	}
 
@@ -396,6 +396,12 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 	    if ( false !== $category ) 
 	    	$counts_args['category'] = absint( $category );
 
+	    /**
+	     * Filters the arguments that will be passed to the function that counts the tickets
+	     * in the admin page
+	     * 
+	     * @param Array $counts_args Count arguments
+	     */
 	    $counts_args = apply_filters( 'support_system_support_menu_counts_args', $counts_args );
 
 	    $all_tickets_count = incsub_support_get_tickets_count( $counts_args );

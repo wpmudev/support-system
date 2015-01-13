@@ -7,7 +7,7 @@ abstract class Incsub_Support_Admin_Menu {
 	public $network = false;
 
 	// Page ID
-	public $page_id;
+	public $page_id = null;
 
 	public function __construct( $slug, $network = false ) {
 		
@@ -26,7 +26,15 @@ abstract class Incsub_Support_Admin_Menu {
 	public function render_page() {
 		?>
 			<div class="wrap">
-				<?php echo apply_filters( 'support_system_admin_page_title', '<h2>' . esc_html( get_admin_page_title() ) . '</h2>' ); ?>
+				<?php 
+					/**
+					 * Filters the Support System Admin Pages Titles
+					 * 
+					 * @param string $admin_page_title The admin page title
+					 * @param string $page_id The admin page ID
+					 */
+					echo apply_filters( 'support_system_admin_page_title', '<h2>' . esc_html( get_admin_page_title() ) . '</h2>', $this->page_id ); 
+				?>
 
 				<?php $this->render_inner_page(); ?>
 			</div>
