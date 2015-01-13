@@ -16,12 +16,39 @@ function incsub_support_user_can( $user_id, $cap = '' ) {
 		$user_can = true;
 	}
 	else {
-		$user = get_userdata( $user_id );
-		if ( ! $user ) {
-			$user_role = 'support-guest';
-		}
-		else {
-			$user_role = isset( $user->roles[0] ) ? $user->roles[0] : '';
+
+		$cache_key = 'user_role_' . $user_id;
+		$user_role = wp_cache_get( $cache_key, 'support_system_user_role' );
+
+		if ( $user_role === false ) {
+			$user = get_userdata( $user_id );
+			if ( ! $user ) {
+				$user_role = 'support-guest';
+			}
+			else {
+				$user_role = isset( $user->roles[0] ) ? $user->roles[0] : '';
+				if ( is_multisite() ) {
+					// The user has not enough role in the Support blog.
+					// Let's see if he has enough roles in other sites
+					// This needs to be improved though
+					$user_blogs = get_blogs_of_user( $user_id );
+					$current_blog_id = get_current_blog_id();
+					foreach ( $user_blogs as $blog ) {
+						switch_to_blog( $blog->userblog_id );
+						$user = get_userdata( $user_id );
+						if ( isset( $user->roles[0] ) ) {
+							$user_role = $user->roles[0];
+							break;
+						}
+					}
+
+					switch_to_blog( $current_blog_id );
+				}
+
+			}
+
+			wp_cache_set( $cache_key, $user_role, 'support_system_user_role' );
+			
 		}
 
 		switch ( $cap ) {
