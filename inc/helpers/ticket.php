@@ -497,7 +497,8 @@ function incsub_support_insert_ticket( $args = array() ) {
 		$view_by_superadmin = 0;
 	$insert['view_by_superadmin'] = $view_by_superadmin; 
 
-
+	do_action( 'support_system_before_insert_ticket', $insert );
+	
 	wp_unslash( $insert );
 	
 	// Insert the ticket	

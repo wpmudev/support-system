@@ -3,7 +3,8 @@
 function incsub_support_current_user_can( $cap = '' ) {
 	$user_id = get_current_user_id();
 
-	return incsub_support_user_can( $user_id, $cap );
+	$args = array_merge( array( $user_id ), func_get_args() );
+	return call_user_func_array( 'incsub_support_user_can', $args );
 
 }
 
@@ -16,6 +17,7 @@ function incsub_support_user_can( $user_id, $cap = '' ) {
 		$user_can = true;
 	}
 	else {
+
 		$cache_key = 'user_role_' . $user_id;
 		$user_role = wp_cache_get( $cache_key, 'support_system_user_role' );
 
@@ -75,7 +77,24 @@ function incsub_support_user_can( $user_id, $cap = '' ) {
 			}
 
 			case 'open_ticket': 
-			case 'close_ticket': 
+			case 'close_ticket': {
+				$user_can = false;
+
+				if ( user_can( $user_id, 'manage_options' ) ) {
+					$user_can = true;
+					break;
+				}
+
+				$args = array_slice( func_get_args(), 2 );
+				if ( isset( $args[0] ) ) {
+					$ticket = incsub_support_get_ticket( $args[0] );
+					if ( $ticket ) {
+						$user_can = ( $ticket->user_id === $user_id || $ticket->admin_id === $user_id ) ? true : false;
+					}
+				}
+				break;
+			}
+
 			case 'delete_ticket': 
 			case 'update_ticket': { 
 				$user_can = false;
@@ -94,8 +113,9 @@ function incsub_support_user_can( $user_id, $cap = '' ) {
 	 * @param Boolean $user_can If the user is allowed to do something for a given capability
 	 * @param Integer $user_id User ID
 	 * @param String $cap Capability
+	 * @param Array $args Extra arguments passed to the function
 	 */
-	return apply_filters( 'support_system_user_can', $user_can, $user_id, $cap );
+	return apply_filters( 'support_system_user_can', $user_can, $user_id, $cap, func_get_args() );
 
 }
 

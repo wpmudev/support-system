@@ -111,10 +111,10 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
             'delete'    => sprintf( __( '<a href="%s">Delete ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_link )
         );
 
-        if ( incsub_support_current_user_can( 'open_ticket' ) )
+        if ( incsub_support_current_user_can( 'open_ticket', $item->ticket_id ) )
             $actions['open'] = sprintf( __( '<a href="%s">Open ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $open_link );
 
-        if ( incsub_support_current_user_can( 'close_ticket' ) )
+        if ( incsub_support_current_user_can( 'close_ticket', $item->ticket_id ) )
             $actions['close'] = sprintf( __( '<a href="%s">Close ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $close_link );
 
         $status = $this->_args['status'];
@@ -271,7 +271,7 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
 
         }
 
-        if( 'open' === $this->current_action() && incsub_support_current_user_can( 'open_ticket' ) ) {
+        if( 'open' === $this->current_action() ) {
             $ids = array();
             
             if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) )
@@ -281,11 +281,12 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
 
             $ids = array_map( 'absint', $ids );
             foreach ( $ids as $id ) {
-                incsub_support_open_ticket( $id );
+                if ( incsub_support_current_user_can( 'open_ticket', $id ) )
+                    incsub_support_open_ticket( $id );
             }
         }
 
-        if( 'close' === $this->current_action() && incsub_support_current_user_can( 'close_ticket' ) ) {
+        if( 'close' === $this->current_action() ) {
             $ids = array();
             if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) )
                 $ids = $_POST['ticket'];
@@ -294,7 +295,8 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
 
             $ids = array_map( 'absint', $ids );
             foreach ( $ids as $id ) {
-                incsub_support_close_ticket( $id );
+                if ( incsub_support_current_user_can( 'close_ticket', $id ) )
+                    incsub_support_close_ticket( $id );
             }
         }
 

@@ -18,7 +18,7 @@
 		<?php $this->render_row( __( 'Priority', INCSUB_SUPPORT_LANG_DOMAIN ),  $priorities_dropdown ); ?>
 		<?php $this->render_row( __( 'Category', INCSUB_SUPPORT_LANG_DOMAIN ),  $categories_dropdown ); ?>
 
-		<?php if ( incsub_support_current_user_can( 'close_ticket' ) ): ?>
+		<?php if ( incsub_support_current_user_can( 'close_ticket', $ticket->ticket_id ) ): ?>
 			<?php ob_start(); ?>
 				<input name="close-ticket" type="checkbox" <?php checked( $ticket->is_closed() ); ?> />
 			<?php $this->render_row( __( 'Ticket closed', INCSUB_SUPPORT_LANG_DOMAIN ),  ob_get_clean() ); ?>

@@ -80,9 +80,6 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 			$ticket_id = absint( $_POST['ticket_id'] );
 			check_admin_referer( 'update-ticket-details-' . $ticket_id );
 
-			if ( ! incsub_support_current_user_can( 'update_ticket' ) )
-				return;
-
 			$ticket = incsub_support_get_ticket( $ticket_id );
 			if ( ! $ticket )
 				wp_die( __( 'The ticket does not exist', INCSUB_SUPPORT_LANG_DOMAIN ) );
@@ -116,14 +113,17 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 			}
 
 			// Close ticket?
-			if ( isset( $_POST['close-ticket'] ) && incsub_support_current_user_can( 'close_ticket' ) ) {
+			if ( isset( $_POST['close-ticket'] ) && incsub_support_current_user_can( 'close_ticket', $ticket_id ) ) {
 				incsub_support_close_ticket( $ticket_id );
 			}
-			elseif ( incsub_support_current_user_can( 'update_ticket' ) ) {
+			elseif ( incsub_support_current_user_can( 'open_ticket', $ticket_id ) ) {
 				incsub_support_open_ticket( $ticket_id );
 			}
 
-			incsub_support_update_ticket( $ticket_id, $args );
+			if ( incsub_support_current_user_can( 'update_ticket' ) ) {
+				incsub_support_update_ticket( $ticket_id, $args );
+			}
+			
 
 			$redirect = add_query_arg( 'updated', 'true' );
 			wp_redirect( $redirect );
@@ -178,10 +178,10 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 				}
 
 				$status = isset( $_POST['closeticket'] ) ? 5 : 2;
-				if ( isset( $_POST['closeticket'] ) && incsub_support_current_user_can( 'update_ticket' ) )
+				if ( isset( $_POST['closeticket'] ) && incsub_support_current_user_can( 'close_ticket', $ticket->ticket_id ) )
 					incsub_support_close_ticket( $ticket->ticket_id );
-				elseif ( incsub_support_current_user_can( 'update_ticket' ) )
-					incsub_support_ticket_transition_status( $ticket->ticket_id, $status );
+				elseif ( incsub_support_current_user_can( 'open_ticket', $ticket->ticket_id ) )
+					incsub_support_open_ticket( $ticket->ticket_id );
 
 				// Attachments
 				if ( ! empty( $_FILES['support-attachment'] ) ) {
