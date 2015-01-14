@@ -213,10 +213,10 @@ $h5-font-size: 16px;
 $h6-font-size: $base-font-size;
 
 // We use these to control header size reduction on small screens
-$h1-font-reduction: $h1-font-size - 5px !default;
-$h2-font-reduction: $h2-font-size - 5px !default;
-$h3-font-reduction: $h3-font-size - 3px !default;
-$h4-font-reduction: $h4-font-size - 3px !default;
+$h1-font-reduction: 5px !default;
+$h2-font-reduction: 4px !default;
+$h3-font-reduction: 3px !default;
+$h4-font-reduction: 3px !default;
 // $h5-font-reduction: 0 !default;
 // $h6-font-reduction: 0 !default;
 
