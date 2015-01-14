@@ -5,7 +5,7 @@
 		<?php _e( 'Thanks for installing Support System!', INCSUB_SUPPORT_LANG_DOMAIN ); ?>					
 	</div>
 
-	<div class="wp-badge support-system-badge"><?php printf( __( 'Version %s', INCSUB_SUPPORT_LANG_DOMAIN ), incsub_support_get_version() ); ?></div>
+	<div class="wp-badge support-system-badge"><div class="badge-version"><?php printf( __( 'Version %s', INCSUB_SUPPORT_LANG_DOMAIN ), incsub_support_get_version() ); ?></div></div>
 
 	<p>
 		<a href="<?php echo $settings_url; ?>" class="button button-primary"><?php _e( 'Settings', INCSUB_SUPPORT_LANG_DOMAIN ); ?></a>

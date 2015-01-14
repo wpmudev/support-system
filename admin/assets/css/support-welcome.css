@@ -1,5 +1,12 @@
 .about-wrap .support-system-badge {
-	background: #D8D8D8 url(../images/support-system.jpg) no-repeat center -43px;
+	background: #D8D8D8 url(../images/support-system.png) no-repeat -122px -17px;
 	color:#333;
 	width:230px;
+}
+.badge-version {
+	background: #69A5A4;
+	padding: 11px;
+	border-top: 1px solid rgb(79, 124, 123);
+	color: white;
+	text-shadow: 1px 1px 0px #333;
 }
