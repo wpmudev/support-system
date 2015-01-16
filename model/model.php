@@ -17,6 +17,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 		 * Tables
 		 */
 		public $tickets_messages_table;
+		public $ticketmeta;
 		public $faq_table;
 		public $faq_cats_table;
 		public $tickets_table;
@@ -51,8 +52,11 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			$this->faq_table 				= $wpdb->base_prefix . 'support_faq';
 			$this->faq_cats_table 			= $wpdb->base_prefix . 'support_faq_cats';
 			$this->tickets_table 			= $wpdb->base_prefix . 'support_tickets';
+			$this->ticketmeta 				= $wpdb->base_prefix . 'support_ticketmeta';
 			$this->tickets_messages_table 	= $wpdb->base_prefix . 'support_tickets_messages';
 			$this->tickets_cats_table 		= $wpdb->base_prefix . 'support_tickets_cats';
+
+			$wpdb->support_ticketmeta = $this->ticketmeta;
 
 			 // Get the correct character collate
 			if ( ! empty($wpdb->charset) )
@@ -73,6 +77,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			$this->create_faq_table();
 			$this->create_faq_cats_table();
 			$this->create_tickets_table();
+			$this->create_ticketmeta_table();
 			$this->create_tickets_messages_table();
 			$this->create_tickets_cats_table();
 		}
@@ -172,6 +177,23 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			dbDelta($sql);
 
 		}
+
+		private function create_ticketmeta_table() {
+			global $wpdb;
+
+			$sql = "CREATE TABLE $this->ticketmeta (
+			  meta_id bigint(20) unsigned NOT NULL auto_increment,
+			  support_ticket_id bigint(20) unsigned NOT NULL default '0',
+			  meta_key varchar(255) default NULL,
+			  meta_value longtext,
+			  PRIMARY KEY  (meta_id),
+			  KEY ticket_id (ticket_id),
+			  KEY meta_key (meta_key)
+			) $this->db_charset_collate;";
+
+			dbDelta($sql);
+		}
+
 
 		/**
 		 * Creates/upgrade tickets messages table
