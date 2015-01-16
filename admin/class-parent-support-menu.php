@@ -117,7 +117,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 				incsub_support_close_ticket( $ticket_id );
 			}
 			elseif ( incsub_support_current_user_can( 'open_ticket', $ticket_id ) && $ticket->is_closed() ) {
-				incsub_support_open_ticket( $ticket_id );
+				incsub_support_restore_ticket_previous_status( $ticket_id );
 			}
 
 			if ( incsub_support_current_user_can( 'update_ticket' ) ) {

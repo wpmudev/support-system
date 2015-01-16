@@ -282,7 +282,7 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
             $ids = array_map( 'absint', $ids );
             foreach ( $ids as $id ) {
                 if ( incsub_support_current_user_can( 'open_ticket', $id ) )
-                    incsub_support_open_ticket( $id );
+                    incsub_support_restore_ticket_previous_status( $id );
             }
         }
 
