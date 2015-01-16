@@ -111,6 +111,12 @@ function incsub_support_send_admin_new_ticket_mail( $ticket_id ) {
 			return;
 	}
 
+	$poster = get_userdata( $ticket->user_id );
+	if ( ! $poster )
+		$poster_name = __( 'Unknown user', INCSUB_SUPPORT_LANG_DOMAIN );
+	else
+		$poster_name = $poster->display_name;
+
 	// Email arguments
 	$args = array(
 		'support_fetch_imap' 	=> incsub_support_get_support_fetch_imap_message(),
@@ -119,7 +125,7 @@ function incsub_support_send_admin_new_ticket_mail( $ticket_id ) {
 		'ticket_status'			=> incsub_support_get_ticket_status_name( $ticket->ticket_status ),
 		'ticket_priority'		=> incsub_support_get_ticket_priority_name( $ticket->ticket_priority ),
 		'ticket_message'		=> $ticket->message,
-		'user_nicename'			=> $user->display_name
+		'user_nicename'			=> $poster_name
 	);
 
 	$mail_content = incsub_support_admin_get_new_ticket_mail_content( $args );
