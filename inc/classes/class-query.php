@@ -113,6 +113,10 @@ class Incsub_Support_Query {
 			$this->is_support_system = true;
 		}
 
+		$page = $this->get_query_var( 'support-system-page' );
+		if ( ! empty( $page ) )
+			$this->page = absint( $page );
+
 	}
 
 	public function get_query_var( $name ) {

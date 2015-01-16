@@ -116,7 +116,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 			if ( isset( $_POST['close-ticket'] ) && incsub_support_current_user_can( 'close_ticket', $ticket_id ) ) {
 				incsub_support_close_ticket( $ticket_id );
 			}
-			elseif ( incsub_support_current_user_can( 'open_ticket', $ticket_id ) ) {
+			elseif ( incsub_support_current_user_can( 'open_ticket', $ticket_id ) && $ticket->is_closed() ) {
 				incsub_support_open_ticket( $ticket_id );
 			}
 
@@ -178,10 +178,14 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 				}
 
 				$status = isset( $_POST['closeticket'] ) ? 5 : 2;
+
+				if ( $ticket->admin_id && $ticket->user_id === get_current_user_id() ) {
+					$status = 3;
+				}
 				if ( isset( $_POST['closeticket'] ) && incsub_support_current_user_can( 'close_ticket', $ticket->ticket_id ) )
 					incsub_support_close_ticket( $ticket->ticket_id );
 				elseif ( incsub_support_current_user_can( 'open_ticket', $ticket->ticket_id ) )
-					incsub_support_open_ticket( $ticket->ticket_id );
+					incsub_support_ticket_transition_status( $ticket->ticket_id, $status );
 
 				// Attachments
 				if ( ! empty( $_FILES['support-attachment'] ) ) {

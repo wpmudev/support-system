@@ -4,11 +4,11 @@
 			<div class="large-12 columns">
 				<h1 class="text-center support-system-ticket-title"><?php echo incsub_support_get_the_ticket_title(); ?></h1>
 				<ul class="row">
-					<li class="large-2 columns">
+					<li class="small-3 large-2 columns">
 						<?php echo get_avatar( incsub_support_get_the_author_id(), 96 ); ?><br/>
 					</li>
-					<li class="large-10 columns">
-						<ul class="inline-list support-system-ticket-meta">
+					<li class="small-9 large-10 columns">
+						<ul class="row inline-list support-system-ticket-meta">
 							<li class="first"><?php echo incsub_support_get_the_author(); ?></li>
 							<li><?php echo incsub_support_get_the_ticket_date(); ?></li>
 						</ul>
