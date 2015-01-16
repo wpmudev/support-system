@@ -165,6 +165,15 @@ class Incsub_Support_Shortcodes {
 			if ( ! $result )
 				wp_die( __( 'There was an error while processing the form, please try again later', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
+			if ( $ticket->admin_id && $ticket->user_id === get_current_user_id() ) {
+				$status = 3;
+				incsub_support_ticket_transition_status( $ticket_id, $status );
+			}
+			elseif ( $ticket->admin_id && $ticket->admin_id === get_current_user_id() ) {
+				$status = 2;
+				incsub_support_ticket_transition_status( $ticket_id, $status );
+
+			}
 			
 			$url = add_query_arg( 'support-system-reply-added', 'true' );
 			$url = preg_replace( '/\#[a-zA-Z0-9\-]*$/', '', $url );
