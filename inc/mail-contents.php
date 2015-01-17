@@ -8,7 +8,7 @@ add_action( 'support_system_insert_ticket_reply', 'incsub_support_send_emails_on
 /**
  * Functions that renders every mail involved in the system
  */
-
+ 
 function incsub_support_get_email_headers() {
 	$headers[] = 'MIME-Version: 1.0';
 	$headers[] = 'From: ' . incsub_support_get_setting( 'incsub_support_from_name' ) . ' <' . incsub_support_get_setting( 'incsub_support_from_mail' ) . '>';
@@ -339,7 +339,7 @@ function incsub_support_get_support_fetch_imap_message() {
 }
 
 function incsub_support_user_get_new_ticket_mail_content( $args ) {
-	$content = __( '
+	$content = __( "
 SUPPORT_FETCH_IMAP
 
 Subject: SUPPORT_SUBJECT
@@ -353,7 +353,7 @@ Visit: SUPPORT_LINK
 to reply or view the new ticket.
 
 Thanks,
-SUPPORT_SITE_NAME', INCSUB_SUPPORT_LANG_DOMAIN );
+SUPPORT_SITE_NAME", INCSUB_SUPPORT_LANG_DOMAIN );
 
 	$content = str_replace( 'SUPPORT_FETCH_IMAP', $args['support_fetch_imap'], $content );
 	$content = str_replace( 'SUPPORT_SUBJECT', $args['title'], $content );
@@ -366,7 +366,7 @@ SUPPORT_SITE_NAME', INCSUB_SUPPORT_LANG_DOMAIN );
 }
 
 function incsub_support_admin_get_new_ticket_mail_content( $args ) {
-	$content = __( '
+	$content = __( "
 SUPPORT_FETCH_IMAP
 
 Subject: SUPPORT_SUBJECT
@@ -389,7 +389,7 @@ SUPPORT_MESSAGE
 
 ==============================================================
       End Ticket Message
-==============================================================', INCSUB_SUPPORT_LANG_DOMAIN );
+==============================================================", INCSUB_SUPPORT_LANG_DOMAIN );
 
 	$content = str_replace( 'SUPPORT_FETCH_IMAP', $args['support_fetch_imap'], $content );
 	$content = str_replace( 'SUPPORT_SUBJECT', $args['title'], $content );
@@ -404,7 +404,7 @@ SUPPORT_MESSAGE
 
 
 function incsub_support_user_get_reply_ticket_mail_content( $args ) {
-	$content = __( '
+	$content = __( "
 
 ***  DO NOT REPLY TO THIS EMAIL  ***
 
@@ -429,7 +429,7 @@ SUPPORT_MESSAGE
 ==============================================================
 
 Thanks,
-SUPPORT_SITE_NAME', INCSUB_SUPPORT_LANG_DOMAIN );
+SUPPORT_SITE_NAME", INCSUB_SUPPORT_LANG_DOMAIN );
 
 	$content = str_replace( 'SUPPORT_SUBJECT', $args['title'], $content );
 	$content = str_replace( 'SUPPORT_STATUS', $args['ticket_status'], $content );
@@ -445,7 +445,7 @@ SUPPORT_SITE_NAME', INCSUB_SUPPORT_LANG_DOMAIN );
 
 
 function incsub_support_admin_get_reply_ticket_mail_content( $args ) {
-	$content = __( '
+	$content = __( "
 
 ***  DO NOT REPLY TO THIS EMAIL  ***
 
@@ -469,7 +469,7 @@ SUPPORT_MESSAGE
       End Ticket Message
 ==============================================================
 
-Thanks', INCSUB_SUPPORT_LANG_DOMAIN );
+Thanks", INCSUB_SUPPORT_LANG_DOMAIN );
 
 	$content = str_replace( 'SUPPORT_SUBJECT', $args['title'], $content );
 	$content = str_replace( 'SUPPORT_STATUS', $args['ticket_status'], $content );
@@ -485,7 +485,7 @@ Thanks', INCSUB_SUPPORT_LANG_DOMAIN );
 
 function incsub_get_closed_ticket_mail_content( $args ) {
 
-	$content = __('
+	$content = __("
 
 SUPPORT_FETCH_IMAP
 
@@ -495,7 +495,7 @@ Priority: SUPPORT_PRIORITY
 The ticket has been closed.
 
 Ticket URL:
-	SUPPORT_TICKET_URL', INCSUB_SUPPORT_LANG_DOMAIN );
+	SUPPORT_TICKET_URL", INCSUB_SUPPORT_LANG_DOMAIN );
 
 	$content = str_replace( 'SUPPORT_FETCH_IMAP', $args['support_fetch_imap'], $content );
 	$content = str_replace( 'SUPPORT_SUBJECT', $args['title'], $content );
