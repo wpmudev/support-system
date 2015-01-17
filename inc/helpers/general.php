@@ -30,7 +30,7 @@ function incsub_support_get_model() {
 	return MU_Support_System_Model::get_instance();
 }
 
-function incsub_support_priority_dropdown( $args ) {
+function incsub_support_priority_dropdown( $args = array() ) {
 	$defaults = array(
 		'name' => 'ticket-priority',
 		'id' => false,
@@ -67,7 +67,7 @@ function incsub_support_priority_dropdown( $args ) {
 		return ob_get_clean();
 }
 
-function incsub_support_super_admins_dropdown( $args ) {
+function incsub_support_super_admins_dropdown( $args = array() ) {
 	$defaults = array(
 		'name' => 'super-admins',
 		'id' => false,

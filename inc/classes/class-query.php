@@ -283,6 +283,11 @@ function incsub_support_get_the_ticket_category() {
 	return $cat->cat_name;
 }
 
+function incsub_support_get_the_ticket_category_id() {
+	$cat = incsub_support_get_ticket_category( incsub_support()->query->ticket->cat_id );
+	return $cat->cat_id;	
+}
+
 function incsub_support_get_the_ticket_category_link() {
 	$cat = incsub_support_get_ticket_category( incsub_support()->query->ticket->cat_id );
 	$url = add_query_arg( 'ticket-cat', $cat->cat_id );
@@ -296,10 +301,18 @@ function incsub_support_get_the_ticket_priority() {
 	return incsub_support_get_ticket_priority_name( incsub_support()->query->ticket->ticket_priority );
 }
 
+function incsub_support_get_the_ticket_priority_id() {
+	return incsub_support()->query->ticket->ticket_priority;
+}
+
 function incsub_support_get_the_ticket_status() {
 	return incsub_support_get_ticket_status_name( incsub_support()->query->ticket->ticket_status );
 }
 
 function support_system_the_tickets_number() {
 	return incsub_support()->query->found_tickets;
+}
+
+function incsub_support_the_ticket_staff_name() {
+	return incsub_support()->query->ticket->get_staff_name();
 }

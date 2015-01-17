@@ -7,6 +7,67 @@ class Incsub_Support_Tickets_Index_Shortcode extends Incsub_Support_Shortcode {
 	}
 
 	public function process_form() {
+		if ( isset( $_POST['submit-ticket-details'] ) && incsub_support_current_user_can( 'update_ticket' ) ) {
+			$ticket_id = absint( $_POST['ticket_id'] );
+			$ticket = incsub_support_get_ticket( $ticket_id );
+			if ( ! $ticket )
+				return;
+
+			$action = 'submit-ticket-details-' . $ticket_id; 
+			if ( ! wp_verify_nonce( $_POST['_wpnonce'], $action ) )
+				wp_die( __( 'Security check error', INCSUB_SUPPORT_LANG_DOMAIN ) );
+
+			$category = absint( $_POST['ticket-cat'] );
+			$priority = absint( $_POST['ticket-priority'] );
+
+			$args = array(
+				'cat_id' => $category,
+				'ticket_priority' => $priority
+			);
+
+			$staff_name = $_POST['ticket-staff'];
+			$plugin = incsub_support();
+			$possible_users = array_merge( $plugin::get_super_admins() );
+			if ( in_array( $staff_name, $possible_users ) ) {
+				$user = get_user_by( 'login', $staff_name );
+				if ( $user )
+					$args['admin_id'] = $user->data->ID;
+			}
+
+			if ( empty( $staff_name ) )
+				$args['admin_id'] = 0;
+
+			$result = incsub_support_update_ticket( $ticket_id, $args );
+
+			if ( $result ) {
+				$url = add_query_arg( 'ticket-details-updated', 'true' );
+				wp_redirect( $url );
+				exit;
+			}
+
+			
+		}
+
+		if ( isset( $_POST['submit-close-ticket'] ) && incsub_support_current_user_can( 'close_ticket', incsub_support_get_the_ticket_id() ) ) {
+			$ticket_id = absint( $_POST['ticket_id'] );
+			$ticket = incsub_support_get_ticket( $ticket_id );
+			if ( ! $ticket )
+				return;
+
+			$action = 'submit-close-ticket-' . $ticket_id; 
+			if ( ! wp_verify_nonce( $_POST['_wpnonce'], $action ) )
+				wp_die( __( 'Security check error', INCSUB_SUPPORT_LANG_DOMAIN ) );
+
+			if ( empty( $_POST['close-ticket'] ) )
+				incsub_support_restore_ticket_previous_status( $ticket_id );
+			else
+				incsub_support_close_ticket( $ticket_id );
+
+			$url = add_query_arg( 'ticket-closed-updated', 'true' );
+			wp_redirect( $url );
+			exit;
+		}
+
 		if ( isset( $_POST['support-system-submit-reply'] ) && incsub_support_current_user_can( 'insert_reply' ) ) {
 
 			// Submitting a new reply from the front

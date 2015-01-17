@@ -119,6 +119,21 @@ function incsub_support_user_can( $user_id, $cap = '' ) {
 
 }
 
+function incsub_support_is_staff( $user_id = false ) {
+	if ( $user_id === false )
+		$user_id = get_current_user_id();
+
+	$is_staff = false;
+	
+	if ( incsub_support_user_can( $user_id, 'manage_options' ) )		
+		$is_staff = true;
+
+	$is_staff = apply_filters( 'support_system_is_staff', $is_staff, $user_id );
+
+	return $is_staff;
+
+}
+
 function incsub_support_get_capabilities() {
 	return array(
 		'insert_ticket',
