@@ -51,6 +51,11 @@ class Incsub_Support_Welcome_Menu extends Incsub_Support_Admin_Menu {
 			return;
 	    }
 
+	    if ( is_multisite() && ! is_super_admin() )
+	    	return;
+	    elseif ( ! is_multisite() && ! current_user_can( 'manage_options' ) )
+	    	return;
+
 		delete_transient( 'incsub_support_welcome' );
 
 		$url = is_multisite() ? network_admin_url( 'index.php?page=' . $this->slug ) : admin_url( 'index.php?page=' . $this->slug );

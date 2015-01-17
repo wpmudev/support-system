@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 Foundation 5 License: See license-foundation.txt
 */
 
+
 define( 'INCSUB_SUPPORT_PLUGIN_VERSION', '2.1' );
 
 if ( ! defined( 'INCSUB_SUPPORT_LANG_DOMAIN' ) )
