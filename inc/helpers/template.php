@@ -446,3 +446,17 @@ function incsub_support_the_open_close_box( $args = array() ) {
 	</div>
 	<?php
 }
+
+function incsub_support_new_ticket_form_link( $class = '' ) {
+	$new_ticket_page = incsub_support_get_setting( 'incsub_support_create_new_ticket_page' );
+
+	if ( ! $new_ticket_page )
+		return '';
+
+	$permalink = get_permalink( $new_ticket_page );
+	if ( $permalink ) {
+		return '<a class="' . esc_attr( $class ) . '" href="' . esc_url( $permalink ) . '" title="' . esc_attr__( 'Submit new ticket', INCSUB_SUPPORT_LANG_DOMAIN ) . '">' . __( 'Submit new ticket', INCSUB_SUPPORT_LANG_DOMAIN ) . '</a>';
+	}
+
+	return '';
+}

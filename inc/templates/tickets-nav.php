@@ -2,6 +2,9 @@
 	<div class="large-12 columns">
 		<form method="get" class="support-system-filter">
 			<div class="row">
+				<div class="large-12 columns"><?php echo incsub_support_new_ticket_form_link( 'button tiny secondary'); ?></div>
+			</div>
+			<div class="row">
 				<div class="large-5 columns">
 					<?php incsub_support_the_category_filter(); ?>
 				</div>
@@ -15,6 +18,7 @@
 					<h5 class="support-system-tickets-count text-right"><?php printf( __( '%d tickets', INCSUB_SUPPORT_LANG_DOMAIN ), support_system_the_tickets_number() ); ?></h5>
 				</div>
 			</div>
+			
 		</form>
 		
 	</div>
