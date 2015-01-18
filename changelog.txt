@@ -3,13 +3,18 @@ Author: WPMU DEV
 Tags: support, ticket, faq
 Requires at least: 3.9
 Tested up to: 4.1
-Stable tag: 2.0.3
+Stable tag: 2.0.4
 
 
 Change Log:
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
 
+2.0.4 - 2015-01-13
+----------------------------------------------------------------------
+- Fixed: Warnings in WP Title
+- Fixed: Mail contents were not translating due to newlines format
+ 
 2.0.3 - 2015-01-13
 ----------------------------------------------------------------------
 - Enhancement: Badge changed in Welcome screen
