@@ -7,6 +7,20 @@ class Incsub_Support_Query {
 	private $args = array();
 
 	public $is_support_system = false;
+	public $is_tickets_index = false;
+	public $is_single_ticket = false;
+	public $is_search = false;
+	public $is_ticket_category_index = false;
+	public $is_submit_ticket_page = false;
+
+	public $found_tickets = 0;
+	public $found_replies = 0;
+
+	public $page = 1;
+	public $current_ticket = -1;
+	public $ticket_category_id = 0;
+	public $remaining_tickets = 0; 
+	public $search = false;
 
 	public function __construct() {
 		add_filter( 'wp_title', array( $this, 'set_wp_title' ), 10, 2 );
