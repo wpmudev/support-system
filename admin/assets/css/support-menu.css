@@ -26,6 +26,14 @@
 .ticket-priority-4:before {
 	color:#D00000;
 }
+
+.row-actions .open-ticket {
+	color:#006505;
+}
+.row-actions .close-ticket {
+	color:#d98500;
+}
+
 #support-tickets .dashicons-before:before {
 	font-size: 16px;
 	line-height: 1.2;
