@@ -50,6 +50,7 @@ class Incsub_Support_Settings {
 			'incsub_support_main_super_admin' => key( $super_admins ), //First of the Super Admins
 			'incsub_support_support_page' => 0,
 			'incsub_support_create_new_ticket_page' => 0,
+			'incsub_support_faqs_page' => 0,
 			'incsub_support_blog_id' => false,
 			'incsub_support_activate_front' => false,
 			'incsub_support_use_default_settings' => true			
@@ -145,7 +146,7 @@ class Incsub_Support_Settings {
 	} 
 
 	function set_front_stylesheet( $stylesheet ) {
-		if ( ! incsub_support_is_support_page() && ! incsub_support_is_new_ticket_page() )
+		if ( ! is_support_system() )
 			return false;
 
 		if ( $this->get( 'incsub_support_use_default_settings' ) )

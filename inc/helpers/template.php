@@ -49,7 +49,7 @@ function support_system_get_template_locations() {
 }
 
 function incsub_support_get_the_ticket_attachments() {
-	$ticket_id = incsub_support()->query->ticket->ticket_id;
+	$ticket_id = incsub_support()->query->item->ticket_id;
 	$ticket = incsub_support_get_ticket( $ticket_id );
 
 	if ( ! $ticket )
@@ -61,12 +61,16 @@ function incsub_support_get_the_ticket_attachments() {
 }
 
 function incsub_support_ticket_replies() {
-	$ticket_id = incsub_support()->query->ticket->ticket_id;
+	$ticket_id = incsub_support()->query->item->ticket_id;
 	incsub_support_get_template( 'ticket-replies', $ticket_id );
 }
 
 function incsub_support_tickets_list_nav() {
 	incsub_support_get_template( 'tickets-nav' );
+}
+
+function incsub_support_faqs_nav() {
+	incsub_support_get_template( 'faqs-nav' );
 }
 
 function incsub_support_reply_form() {
@@ -86,7 +90,7 @@ function incsub_support_reply_form() {
 }
 
 function incsub_support_list_replies( $args = array() ) {
-	$replies = incsub_support()->query->ticket->get_replies();
+	$replies = incsub_support()->query->item->get_replies();
 
 	// Remove the main reply
 	unset( $replies[0] );
@@ -166,23 +170,46 @@ function incsub_support_get_the_reply_attachments() {
 	return $ticket_reply->attachments;
 }
 
-function incsub_support_the_category_filter( $class = '' ) {
+function incsub_support_the_ticket_category_filter( $class = '' ) {
 	$selected = '';
-	if ( ! empty( $_REQUEST['ticket-cat'] ) && incsub_support_get_ticket_category( absint(  $_REQUEST['ticket-cat'] ) ) ) 
-		$selected = absint( $_REQUEST['ticket-cat'] );
+	if ( ! empty( $_REQUEST['cat-id'] ) && incsub_support_get_ticket_category( absint(  $_REQUEST['cat-id'] ) ) ) 
+		$selected = absint( $_REQUEST['cat-id'] );
 
 	$args = array(
 		'class' => $class,
-		'selected' => $selected
+		'selected' => $selected,
+		'name' => 'cat-id'
 	);
 
 	incsub_support_ticket_categories_dropdown( $args );
 }
 
-function incsub_support_the_search_input( $class = '' ) {
+function incsub_support_the_faq_category_filter( $class = '' ) {
+	$selected = '';
+	if ( ! empty( $_REQUEST['cat-id'] ) && incsub_support_get_faq_category( absint( $_REQUEST['cat-id'] ) ) ) 
+		$selected = absint( $_REQUEST['cat-id'] );
+
+	$args = array(
+		'class' => $class,
+		'selected' => $selected,
+		'name' => 'cat-id'
+	);
+
+	incsub_support_faq_categories_dropdown( $args );
+}
+
+function incsub_support_the_search_input( $args = array() ) {
+	$defaults = array(
+		'class' => '',
+		'placeholder' => __( 'Search', INCSUB_SUPPORT_LANG_DOMAIN )
+	);
+
+	$args = wp_parse_args( $args, $defaults );
+	extract( $args );
+
 	$search = ! empty( $_REQUEST['support-system-s'] ) ? stripslashes( $_REQUEST['support-system-s'] ) : '';
 	?>
-		<input type="text" placeholder="<?php esc_attr_e( 'Search tickets', INCSUB_SUPPORT_LANG_DOMAIN ); ?>" name="support-system-s" class="<?php echo esc_attr( $class ); ?>" value="<?php echo esc_attr( $search ); ?>"/>
+		<input type="text" placeholder="<?php esc_attr_e( $placeholder ); ?>" name="support-system-s" class="<?php echo esc_attr( $class ); ?>" value="<?php echo esc_attr( $search ); ?>"/>
 	<?php
 }
 
@@ -278,7 +305,7 @@ function incsub_support_paginate_links( $args = '' ) {
 }
 
 function incsub_support_the_ticket_badges( $args = array() ) {
-	$ticket = incsub_support()->query->ticket;
+	$ticket = incsub_support()->query->item;
 
 	$defaults = array(
 		'badge_base_class' => 'support-system-badge',
@@ -318,7 +345,7 @@ function incsub_support_editor( $type ) {
 }
 
 function incsub_support_reply_form_fields() {
-	$ticket = incsub_support()->query->ticket;
+	$ticket = incsub_support()->query->item;
 	wp_nonce_field( 'support-system-submit-reply-' . $ticket->ticket_id . '-' . get_current_user_id() . '-' . get_current_blog_id() );
 	?>
 		<input type="hidden" name="support-system-reply-fields[user]" value="<?php echo get_current_user_id(); ?>" />
@@ -430,7 +457,7 @@ function incsub_support_the_open_close_box( $args = array() ) {
 
 	extract( $args );
 
-	$ticket = incsub_support()->query->ticket;
+	$ticket = incsub_support()->query->item;
 
 	?>
 	<div class="<?php echo esc_attr( $class ); ?>">

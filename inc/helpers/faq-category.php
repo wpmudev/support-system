@@ -112,7 +112,7 @@ function incsub_support_get_faq_categories_count( $args = array() ) {
 function incsub_support_faq_categories_dropdown( $args = array() ) {
 	$defaults = array(
 		'name' => 'faq-cat',
-		'id' => 'faq-cat',
+		'id' => false,
 		'show_empty' => __( 'Select a category', INCSUB_SUPPORT_LANG_DOMAIN ),
 		'selected' => '',
 		'class' => '',
@@ -122,6 +122,9 @@ function incsub_support_faq_categories_dropdown( $args = array() ) {
 
 	extract( $args );
 
+	if ( ! $id )
+		$id = $name;
+	
 	if ( ! $echo )
 		ob_start();
 

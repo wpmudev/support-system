@@ -31,6 +31,7 @@
 			<?php if ( $pages_dropdowns ): ?>
 				<?php $this->render_row( __( 'Support Page', INCSUB_SUPPORT_LANG_DOMAIN ), $support_pages_dropdown ); ?>
 				<?php $this->render_row( __( 'Submit new ticket Page', INCSUB_SUPPORT_LANG_DOMAIN ), $submit_ticket_pages_dropdown ); ?>
+				<?php $this->render_row( __( 'FAQs Page', INCSUB_SUPPORT_LANG_DOMAIN ), $faqs_pages_dropdown ); ?>
 			<?php endif; ?>
 		</table>
 		
@@ -61,18 +62,20 @@
 		incsub_support_toggle_buttons();
 
 		function incsub_support_toggle_buttons() {
-			var support_page_selector = $('#support_page_id');
+			var selectors = $('.support-page-selector-wrap');
 
-			if ( ! support_page_selector.val() ) {
-				$( '.support-create-page' )
-					.css( 'display', 'inline-block' );
-				$( '.support-view-page' ).hide();
-			}
-			else {
-				$( '.support-view-page' )
-					.css( 'display', 'inline-block' );
-				$( '.support-create-page' ).hide();
-			}
+			selectors.each(function( index ) {
+				 var $this = $(this);
+				 var select_box = $this.find('select').first();
+				 var create_button = $this.find('.support-create-page');
+				 var view_button = $this.find('.support-view-page');
+
+				 if ( ! select_box.val() )
+				 	create_button.css( 'display', 'inline-block' );
+				 else
+				 	view_button.css( 'display', 'inline-block' );
+
+			});
 		}
 
 

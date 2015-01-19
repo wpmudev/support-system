@@ -80,16 +80,29 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 		);
 
 
+
+		$faqs_pages_dropdown_args = array(
+			'selected' => $settings['incsub_support_faqs_page'], 
+			'show_option_none' => __( '-- Select a page --', INCSUB_SUPPORT_LANG_DOMAIN ),
+			'name' => 'faqs_page_id',
+			'echo' => false
+		);
+
+
 		$pages_dropdowns = false;
 		if ( ! is_multisite() ) {
 			$support_pages_dropdown = wp_dropdown_pages( $support_pages_dropdown_args );
 			$submit_ticket_pages_dropdown = wp_dropdown_pages( $submit_ticket_pages_dropdown_args );
+			$faqs_pages_dropdown = wp_dropdown_pages( $faqs_pages_dropdown_args );
 
 			$create_list_page_url = admin_url( 'post-new.php?post_type=page' );
 			$view_list_page_url = get_permalink( $support_pages_dropdown_args['selected'] );
 
 			$create_ticket_form_page_url = admin_url( 'post-new.php?post_type=page' );
 			$view_ticket_form_page_url = get_permalink( $submit_ticket_pages_dropdown_args['selected'] );
+
+			$create_faqs_page_url = admin_url( 'post-new.php?post_type=page' );
+			$view_faqs_page_url = get_permalink( $faqs_pages_dropdown_args['selected'] );
 
 			$pages_dropdowns = true;
 		}
@@ -100,12 +113,16 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 				switch_to_blog( $blog_id );
 				$support_pages_dropdown = wp_dropdown_pages( $support_pages_dropdown_args );
 				$submit_ticket_pages_dropdown = wp_dropdown_pages( $submit_ticket_pages_dropdown_args );
+				$faqs_pages_dropdown = wp_dropdown_pages( $faqs_pages_dropdown_args );
 
 				$create_list_page_url = admin_url( 'post-new.php?post_type=page' );
 				$view_list_page_url = get_permalink( $support_pages_dropdown_args['selected'] );
 
 				$create_ticket_form_page_url = admin_url( 'post-new.php?post_type=page' );
 				$view_ticket_form_page_url = get_permalink( $submit_ticket_pages_dropdown_args['selected'] );
+
+				$create_faqs_page_url = admin_url( 'post-new.php?post_type=page' );
+				$view_faqs_page_url = get_permalink( $faqs_pages_dropdown_args['selected'] );
 				restore_current_blog();	
 
 				$pages_dropdowns = true;
@@ -124,6 +141,14 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 			$submit_ticket_pages_dropdown .= '<a href="' . esc_url( $create_ticket_form_page_url ) . '" target="_blank" class="button-primary support-create-page">' . esc_html__( 'Create new page', INCSUB_SUPPORT_LANG_DOMAIN ) . '</a>';
 			$submit_ticket_pages_dropdown .= '<a href="' . esc_url( $view_ticket_form_page_url ) . '" target="_blank" class="button-secondary support-view-page">' . esc_html__( 'View page', INCSUB_SUPPORT_LANG_DOMAIN ) . '</a>';
 			$submit_ticket_pages_dropdown .= '<br/><span class="description">' . __( 'Remember to insert <code>[support-system-submit-ticket-form]</code> shortcode in this page', INCSUB_SUPPORT_LANG_DOMAIN ) . '</span>';
+
+			$faqs_pages_dropdown .= '<a href="' . esc_url( $create_faqs_page_url ) . '" target="_blank" class="button-primary support-create-page">' . esc_html__( 'Create new page', INCSUB_SUPPORT_LANG_DOMAIN ) . '</a>';
+			$faqs_pages_dropdown .= '<a href="' . esc_url( $view_faqs_page_url ) . '" target="_blank" class="button-secondary support-view-page">' . esc_html__( 'View page', INCSUB_SUPPORT_LANG_DOMAIN ) . '</a>';
+			$faqs_pages_dropdown .= '<br/><span class="description">' . __( 'Remember to insert <code>[support-system-faqs]</code> shortcode in this page', INCSUB_SUPPORT_LANG_DOMAIN ) . '</span>';
+
+			$support_pages_dropdown = '<div class="support-page-selector-wrap">' . $support_pages_dropdown . '</div>';
+			$submit_ticket_pages_dropdown = '<div class="support-page-selector-wrap">' . $submit_ticket_pages_dropdown . '</div>';
+			$faqs_pages_dropdown = '<div class="support-page-selector-wrap">' . $faqs_pages_dropdown . '</div>';
 		}
 
 		$use_default_styles = $settings['incsub_support_use_default_settings'];
@@ -268,6 +293,7 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 			$settings['incsub_support_blog_id'] = false;
 			$settings['incsub_support_support_page'] = 0;
 			$settings['incsub_support_create_new_ticket_page'] = 0;
+			$settings['incsub_support_faqs_ticket_page'] = 0;
 			$settings['incsub_support_use_default_settings'] = true;
 		}
 
@@ -291,6 +317,7 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 					// The blog ID has changed, let's reset the pages
 					$settings['incsub_support_support_page'] = 0;
 					$settings['incsub_support_create_new_ticket_page'] = 0;
+					$settings['incsub_support_faqs_ticket_page'] = 0;
 				}
 			}
 			else {
@@ -308,6 +335,11 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 			$settings['incsub_support_create_new_ticket_page'] = absint( $input['create_new_ticket_page_id'] );
 		else
 			$settings['incsub_support_create_new_ticket_page'] = false;
+
+		if ( ! empty( $input['faqs_page_id'] ) )
+			$settings['incsub_support_faqs_page'] = absint( $input['faqs_page_id'] );
+		else
+			$settings['incsub_support_faqs_page'] = false;
 
 		
 		return $settings;

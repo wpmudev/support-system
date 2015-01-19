@@ -58,9 +58,11 @@
 		version: '2.0',
 		init: function() {
 			var filter_button = $( 'input[name="support-system-submit-filter"]' );
-			var categories_dropdown = $( '#ticket-cat' );
+			var categories_dropdown = $( '#cat-id' );
 			var filter_form = $( '#support-system-filter' );
-
+console.log(filter_button.length);
+console.log(categories_dropdown.length);
+console.log(filter_form.length);
 			if ( ! filter_form.length || ! categories_dropdown.length || ! filter_button.length )
 				return function() {};
 			
