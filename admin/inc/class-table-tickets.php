@@ -108,14 +108,15 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
         );
 
         $actions = array(
+            'edit'    => sprintf( __( '<a href="%s">Edit</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $link ),
             'delete'    => sprintf( __( '<a href="%s">Delete ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $delete_link )
         );
 
         if ( incsub_support_current_user_can( 'open_ticket', $item->ticket_id ) )
-            $actions['open'] = sprintf( __( '<a href="%s">Open ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $open_link );
+            $actions['open'] = sprintf( __( '<a href="%s" class="open-ticket">Open ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $open_link );
 
         if ( incsub_support_current_user_can( 'close_ticket', $item->ticket_id ) )
-            $actions['close'] = sprintf( __( '<a href="%s">Close ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $close_link );
+            $actions['close'] = sprintf( __( '<a href="%s" class="close-ticket">Close ticket</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $close_link );
 
         $status = $this->_args['status'];
 
@@ -132,6 +133,9 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
             }
 
         }
+
+        if ( ! incsub_support_current_user_can( 'delete_ticket' ) && isset( $actions['delete'] ) )
+            unset( $actions['delete'] );
 
         $actions = apply_filters( 'support_system_tickets_actions', $actions, $item );        
 

@@ -16,6 +16,7 @@ function incsub_support_get_email_headers() {
 	return $headers;
 }
 
+
 /**
  * Send a mail to the user that opened a new ticket
  * 
