@@ -155,7 +155,7 @@ class Incsub_Support_Query {
 		return $this->ticket;
 	}
 
-	public function set_wp_title( $title, $sep ) {
+	public function set_wp_title( $title, $sep = '' ) {
 		if ( $this->is_single_ticket ) {
 			$title .= ' ' . $sep . ' ' . $this->ticket->title ;
 		}
