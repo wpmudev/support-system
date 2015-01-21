@@ -10,7 +10,6 @@ class Incsub_Support_Query {
 	public $is_tickets_index = false;
 	public $is_single_ticket = false;
 	public $is_search = false;
-	public $is_ticket_category_index = false;
 	public $is_submit_ticket_page = false;
 	public $is_faqs_page = false;
 
@@ -117,7 +116,6 @@ class Incsub_Support_Query {
 		elseif ( is_page( $settings['incsub_support_support_page'] ) ) {
 			$this->is_tickets_index = true;
 			if ( $cat_id =$this->get_query_var( 'cat-id' ) ) {
-				$this->is_ticket_category_index = true;	
 				$this->category_id = absint( $cat_id );
 			}
 			
@@ -134,6 +132,14 @@ class Incsub_Support_Query {
 		elseif( is_page( $settings['incsub_support_faqs_page'] ) ) {
 			$this->is_faqs_page = true;
 			$this->is_support_system = true;
+			if ( $cat_id =$this->get_query_var( 'cat-id' ) ) {
+				$this->category_id = absint( $cat_id );
+			}
+
+			if ( $s = $this->get_query_var( 'support-system-s' ) ) {
+				$this->is_search = true;
+				$this->search = $s;
+			}
 		}
 
 		$page = $this->get_query_var( 'support-system-page' );

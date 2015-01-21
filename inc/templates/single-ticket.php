@@ -45,22 +45,37 @@
 				<?php incsub_support_ticket_replies(); ?>
 			</div>
 			
-			<?php if ( ! incsub_support_is_staff() ): ?>
-				<div class="panel support-system-ticket-details large-4 columns">
-					<h2><?php _e( 'Ticket details', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h2>
-					<ul>
-						<li><?php echo '<strong>' . __( 'Category:', INCSUB_SUPPORT_LANG_DOMAIN ) . '</strong> ' . incsub_support_get_the_ticket_category(); ?></li>
-						<li><?php echo '<strong>' . __( 'Priority:', INCSUB_SUPPORT_LANG_DOMAIN ) . '</strong> ' . incsub_support_get_the_ticket_priority(); ?></li>
-						<li><?php echo '<strong>' . __( 'Status:', INCSUB_SUPPORT_LANG_DOMAIN ) . '</strong> ' . incsub_support_get_the_ticket_status(); ?></li>
-					</ul>
-				</div>
-			<?php else: ?>
-				<?php incsub_support_the_staff_box( array( 'class' => 'panel support-system-ticket-details large-4 columns', 'submit_class' => 'button tiny' ) ); ?>
-			<?php endif; ?>
+			<div class="large-4 columns">
+				<div class="row">
+					<?php if ( ! incsub_support_is_staff() ): ?>
+						
+						<?php 
+							echo incsub_support_widget( 
+								array( 'class' => 'panel support-system-ticket-details large-12 columns', 'title' => __( 'Ticket Details', INCSUB_SUPPORT_LANG_DOMAIN ) ),
+								'incsub_support_the_ticket_details_box'
+							); 
+						?>
+					<?php else: ?>
+						<?php 
+							echo incsub_support_widget( 
+								array( 'class' => 'panel support-system-ticket-details support-system-staff-box large-12 columns', 'title' => __( 'Edit Ticket Details', INCSUB_SUPPORT_LANG_DOMAIN ) ),
+								'incsub_support_the_staff_box',
+								array( 'submit_class' => 'button expand' ) 
+							); 
+						?>
+					<?php endif; ?>
 
-			<?php if ( incsub_support_current_user_can( 'close_ticket', incsub_support_get_the_ticket_id() ) ): ?>
-				<?php incsub_support_the_open_close_box( array( 'class' => 'panel support-system-close-ticket large-4 columns', 'submit_class' => 'button tiny' ) ); ?>
-			<?php endif; ?>
+					<?php if ( incsub_support_current_user_can( 'close_ticket', incsub_support_get_the_ticket_id() ) ): ?>
+						<?php 
+							echo incsub_support_widget( 
+								array( 'class' => 'panel support-system-close-ticket large-12 columns' ),
+								'incsub_support_the_open_close_box',
+								array( 'submit_class' => 'button tiny' ) 
+							); 
+						?>
+					<?php endif; ?>
+				</div>
+			</div>
 		</div>
 	<?php endif; ?>
 </div>

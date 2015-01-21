@@ -400,6 +400,31 @@ function incsub_support_reply_form_errors() {
 	incsub_support_get_errors( 'support-system-reply-form' );
 }
 
+function incsub_support_widget( $widget_args, $callback, $callback_args = array() ) {
+	if ( ! function_exists( $callback ) )
+		return '';
+
+	$defaults = array(
+		'title' => '',
+		'class' => 'panel'
+	);
+
+	$widget_args = wp_parse_args( $widget_args, $defaults );
+	extract( $widget_args );
+
+	$class .= ' support-system-widget';
+	ob_start();
+	?>
+		<div class="<?php echo esc_attr( $class ); ?>">
+			<?php if ( $title ): ?>
+				<h2><?php echo esc_html( $title ); ?></h2>
+			<?php endif; ?>
+			<?php call_user_func( $callback, $callback_args ); ?>
+		</div>
+	<?php
+
+	return ob_get_clean();
+}
 
 
 function incsub_support_the_staff_box( $args = array() ) {
@@ -414,38 +439,51 @@ function incsub_support_the_staff_box( $args = array() ) {
 
 	extract( $args );
 
-	?>
-	<div class="<?php echo esc_attr( $class ); ?>">
-		<h3><?php _e( 'Edit ticket details', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h3>
+	?>		
 		<form action="" method="post">
-			<label>
-				<?php _e( 'Category', INCSUB_SUPPORT_LANG_DOMAIN ); ?>
-				<?php incsub_support_ticket_categories_dropdown( array( 'show_empty' => false, 'selected' => incsub_support_get_the_ticket_category_id() ) ); ?>
-			</label>
-			<label>
-				<?php _e( 'Priority', INCSUB_SUPPORT_LANG_DOMAIN ); ?>
-				<?php incsub_support_priority_dropdown( array( 'show_empty' => false, 'selected' => incsub_support_get_the_ticket_priority_id() ) ); ?>
-			</label>
-			<label>
-				<?php _e( 'Assign to', INCSUB_SUPPORT_LANG_DOMAIN ); ?>
-				<?php incsub_support_super_admins_dropdown( 
-					array( 
-						'show_empty' => __( 'Not yet assigned', INCSUB_SUPPORT_LANG_DOMAIN ), 
-						'name' => 'ticket-staff' ,
-						'selected' => incsub_support_the_ticket_staff_name()
-					) 
-				); ?>
-			</label>
-			<p><?php echo '<strong>' . __( 'Status:', INCSUB_SUPPORT_LANG_DOMAIN ) . '</strong> ' . incsub_support_get_the_ticket_status(); ?></p>
-			
-			<?php wp_nonce_field( 'submit-ticket-details-' . incsub_support_get_the_ticket_id() ); ?>
-			<input type="hidden" name="ticket_id" value="<?php echo incsub_support_get_the_ticket_id(); ?>" />
-			<input type="submit" class="<?php echo esc_attr( $submit_class ); ?>" name="submit-ticket-details" value="<?php esc_attr_e( 'Update', INCSUB_SUPPORT_LANG_DOMAIN ); ?>" />
+			<ul>
+				<li>
+					<label>
+						<?php _e( 'Category', INCSUB_SUPPORT_LANG_DOMAIN ); ?>
+						<?php incsub_support_ticket_categories_dropdown( array( 'show_empty' => false, 'selected' => incsub_support_get_the_ticket_category_id() ) ); ?>
+					</label>
+					<label>
+						<?php _e( 'Priority', INCSUB_SUPPORT_LANG_DOMAIN ); ?>
+						<?php incsub_support_priority_dropdown( array( 'show_empty' => false, 'selected' => incsub_support_get_the_ticket_priority_id() ) ); ?>
+					</label>
+					<label>
+						<?php _e( 'Assign to', INCSUB_SUPPORT_LANG_DOMAIN ); ?>
+						<?php incsub_support_super_admins_dropdown( 
+							array( 
+								'show_empty' => __( 'Not yet assigned', INCSUB_SUPPORT_LANG_DOMAIN ), 
+								'name' => 'ticket-staff' ,
+								'selected' => incsub_support_the_ticket_staff_name()
+							) 
+						); ?>
+					</label>
+				</li>
+				<li>
+					<?php echo '<strong>' . __( 'Status:', INCSUB_SUPPORT_LANG_DOMAIN ) . '</strong> ' . incsub_support_get_the_ticket_status(); ?>
+				</li>
+			</ul>
+			<p class="support-system-staff-box-submit-wrap">
+				<?php wp_nonce_field( 'submit-ticket-details-' . incsub_support_get_the_ticket_id() ); ?>
+				<input type="hidden" name="ticket_id" value="<?php echo incsub_support_get_the_ticket_id(); ?>" />
+				<input type="submit" class="<?php echo esc_attr( $submit_class ); ?>" name="submit-ticket-details" value="<?php esc_attr_e( 'Update', INCSUB_SUPPORT_LANG_DOMAIN ); ?>" />
+			</p>
 		</form>
-	</div>
 	<?php
 }
 
+function incsub_support_the_ticket_details_box( $args = array() ) {
+	?>
+		<ul>
+			<li><?php echo '<strong>' . __( 'Category:', INCSUB_SUPPORT_LANG_DOMAIN ) . '</strong> ' . incsub_support_get_the_ticket_category(); ?></li>
+			<li><?php echo '<strong>' . __( 'Priority:', INCSUB_SUPPORT_LANG_DOMAIN ) . '</strong> ' . incsub_support_get_the_ticket_priority(); ?></li>
+			<li><?php echo '<strong>' . __( 'Status:', INCSUB_SUPPORT_LANG_DOMAIN ) . '</strong> ' . incsub_support_get_the_ticket_status(); ?></li>
+		</ul>
+	<?php
+}
 
 function incsub_support_the_open_close_box( $args = array() ) {
 
@@ -460,17 +498,16 @@ function incsub_support_the_open_close_box( $args = array() ) {
 	$ticket = incsub_support()->query->item;
 
 	?>
-	<div class="<?php echo esc_attr( $class ); ?>">
-		<form action="" method="post">
-			
+	<form action="" method="post">
+		<p>
 			<input type="checkbox" id="close-ticket" name="close-ticket" <?php checked( incsub_support_is_ticket_closed( $ticket->ticket_id ) ); ?> />
 			<label for="close-ticket"><strong><?php _e( 'Close ticket', INCSUB_SUPPORT_LANG_DOMAIN ); ?></strong></label>
 			
 			<?php wp_nonce_field( 'submit-close-ticket-' . incsub_support_get_the_ticket_id() ); ?>
 			<input type="hidden" name="ticket_id" value="<?php echo incsub_support_get_the_ticket_id(); ?>" />
 			<input type="submit" class="<?php echo esc_attr( $submit_class ); ?>" name="submit-close-ticket" value="<?php esc_attr_e( 'Update', INCSUB_SUPPORT_LANG_DOMAIN ); ?>" />
-		</form>
-	</div>
+		</p>
+	</form>
 	<?php
 }
 

@@ -8,7 +8,8 @@ $namespace: "support-system";
 @import "compass/utilities";
 @import "settings";
   
-$reply_background:#f7f7f7;
+$reply-background:#f7f7f7;
+$reply-staff-background: darken( $reply-background, 1.5 );
 
 // Make sure the charset is set appropriately
  
@@ -108,7 +109,8 @@ body #support-system {
   color:$steel;
 }
 
-#support-system-tickets ul.support-system-ticket {
+#support-system-tickets ul.support-system-ticket,
+#support-system-tickets ul.support-system-faq {
   margin-bottom:35px;
   border-bottom:1px solid $iron;
   list-style:none;
@@ -144,7 +146,8 @@ body #support-system {
 
 
 #support-system-single-ticket .support-system-ticket-reply-wrap {
-  background:$reply_background;
+  background:$reply-background;
+  border: 1px solid darken( $reply-background, 10% );
   margin-bottom:2rem;
   padding-top:1rem;
   padding-left:1rem;
@@ -200,8 +203,8 @@ body #support-system {
 
 #support-system .support-system-reply-attachments,
 #support-system .support-system-ticket-attachments {
-  background:darken( $reply_background, 3% );
-  border: 1px solid darken( $reply_background, 10% );
+  background:darken( $reply-background, 3% );
+  border: 1px solid darken( $reply-background, 10% );
   padding:15px 20px;
   margin-bottom:15px;
 
@@ -243,4 +246,56 @@ body #support-system {
 
 #support-system {
   @import "forms";
+}
+
+#support-system .support-system-reply-staff .support-system-ticket-reply-wrap {
+  background:$reply-staff-background;
+  border-color:darken( $reply-staff-background, 20% );
+}
+
+#support-system .support-system-reply-poster .label {
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+#support-system .support-system-widget {
+  padding-left:0;
+  padding-right:0;
+  padding-bottom:0;
+
+
+  ul {
+    margin-left:0;
+    margin-bottom:0;
+    li {
+      list-style:none;
+      border-top:1px solid $panel-border-color;
+    }
+    li:last-child {
+      border-bottom:none;
+    }
+  }
+
+  h2, li {
+    padding: $panel-padding;
+  }
+
+  p {
+    padding-left: $panel-padding;
+    padding-right: $panel-padding;
+    margin-bottom:0;
+  }
+
+  #close-ticket {
+    margin-bottom: 0;
+  }
+
+  form {
+    margin-bottom:0;
+  }
+}
+
+/** FAQS */
+#support-system .support-system-faq-answer {
+  margin-top:30px;
 }
