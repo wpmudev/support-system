@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Support System\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-16 19:23+0100\n"
-"PO-Revision-Date: 2015-01-16 19:23+0100\n"
+"POT-Creation-Date: 2015-01-23 13:11+0100\n"
+"PO-Revision-Date: 2015-01-23 13:11+0100\n"
 "Last-Translator: Ignacio <igmoweb@gmail.com>\n"
 "Language-Team: WPMU DEV\n"
 "Language: English\n"
@@ -78,37 +78,37 @@ msgstr ""
 msgid "You are not allowed to view this page."
 msgstr ""
 
-#: ../inc/mail-contents.php:63
+#: ../inc/mail-contents.php:64
 msgid "Ticket submitted: "
 msgstr ""
 
-#: ../inc/mail-contents.php:116 ../inc/classes/class-query.php:262
+#: ../inc/mail-contents.php:117 ../inc/classes/class-query.php:276
 #: ../inc/helpers/template.php:135
 #: ../admin/inc/class-table-tickets-history.php:52
 msgid "Unknown user"
 msgstr ""
 
-#: ../inc/mail-contents.php:133
+#: ../inc/mail-contents.php:134
 msgid "New Support Ticket: "
 msgstr ""
 
-#: ../inc/mail-contents.php:236 ../inc/mail-contents.php:283
+#: ../inc/mail-contents.php:237 ../inc/mail-contents.php:284
 msgid "Ticket response notification: "
 msgstr ""
 
-#: ../inc/mail-contents.php:328
+#: ../inc/mail-contents.php:329
 msgid "Ticket closed notification: "
 msgstr ""
 
-#: ../inc/mail-contents.php:334
+#: ../inc/mail-contents.php:335
 msgid "***  DO NOT WRITE BELLOW THIS LINE  ***"
 msgstr ""
 
-#: ../inc/mail-contents.php:336
+#: ../inc/mail-contents.php:337
 msgid "***  DO NOT REPLY TO THIS EMAIL  ***"
 msgstr ""
 
-#: ../inc/mail-contents.php:342
+#: ../inc/mail-contents.php:343
 msgid ""
 "\n"
 "SUPPORT_FETCH_IMAP\n"
@@ -127,7 +127,7 @@ msgid ""
 "SUPPORT_SITE_NAME"
 msgstr ""
 
-#: ../inc/mail-contents.php:369
+#: ../inc/mail-contents.php:370
 msgid ""
 "\n"
 "SUPPORT_FETCH_IMAP\n"
@@ -155,7 +155,7 @@ msgid ""
 "=============================================================="
 msgstr ""
 
-#: ../inc/mail-contents.php:407
+#: ../inc/mail-contents.php:408
 msgid ""
 "\n"
 "\n"
@@ -186,7 +186,7 @@ msgid ""
 "SUPPORT_SITE_NAME"
 msgstr ""
 
-#: ../inc/mail-contents.php:448
+#: ../inc/mail-contents.php:449
 msgid ""
 "\n"
 "\n"
@@ -216,7 +216,7 @@ msgid ""
 "Thanks"
 msgstr ""
 
-#: ../inc/mail-contents.php:488
+#: ../inc/mail-contents.php:489
 msgid ""
 "\n"
 "\n"
@@ -362,7 +362,7 @@ msgid "Submit a new ticket"
 msgstr ""
 
 #: ../inc/classes/class-shortcodes.php:283
-#: ../admin/inc/class-table-tickets.php:174
+#: ../admin/inc/class-table-tickets.php:178
 #: ../admin/views/add-new-ticket.php:9
 msgid "Subject"
 msgstr ""
@@ -603,7 +603,7 @@ msgid "Message cannot be empty"
 msgstr ""
 
 #: ../admin/class-parent-support-menu.php:262
-#: ../admin/inc/class-table-tickets.php:144
+#: ../admin/inc/class-table-tickets.php:148
 msgid "Unknown"
 msgstr ""
 
@@ -736,7 +736,7 @@ msgid "Display priority selectbox"
 msgstr ""
 
 #: ../admin/inc/class-table-faq-categories.php:12
-#: ../admin/inc/class-table-tickets.php:177
+#: ../admin/inc/class-table-tickets.php:181
 #: ../admin/inc/class-table-ticket-categories.php:12
 #: ../admin/inc/class-table-faqs.php:142 ../admin/views/add-new-ticket.php:11
 #: ../admin/views/edit-ticket-history.php:12
@@ -760,6 +760,7 @@ msgid "Name"
 msgstr ""
 
 #: ../admin/inc/class-table-faq-categories.php:90
+#: ../admin/inc/class-table-tickets.php:111
 #: ../admin/inc/class-table-ticket-categories.php:87
 #, php-format
 msgid "<a href=\"%s\">Edit</a>"
@@ -788,7 +789,7 @@ msgid "<a href=\"%s\">Set as default</a>"
 msgstr ""
 
 #: ../admin/inc/class-table-faq-categories.php:109
-#: ../admin/inc/class-table-tickets.php:233
+#: ../admin/inc/class-table-tickets.php:237
 #: ../admin/inc/class-table-ticket-categories.php:118
 #: ../admin/inc/class-table-faqs.php:172
 msgid "Delete"
@@ -830,66 +831,66 @@ msgstr ""
 msgid "Ticket"
 msgstr ""
 
-#: ../admin/inc/class-table-tickets.php:111
+#: ../admin/inc/class-table-tickets.php:112
 #, php-format
 msgid "<a href=\"%s\">Delete ticket</a>"
 msgstr ""
 
-#: ../admin/inc/class-table-tickets.php:115
+#: ../admin/inc/class-table-tickets.php:116
 #, php-format
-msgid "<a href=\"%s\">Open ticket</a>"
+msgid "<a href=\"%s\" class=\"open-ticket\">Open ticket</a>"
 msgstr ""
 
-#: ../admin/inc/class-table-tickets.php:118
+#: ../admin/inc/class-table-tickets.php:119
 #, php-format
-msgid "<a href=\"%s\">Close ticket</a>"
+msgid "<a href=\"%s\" class=\"close-ticket\">Close ticket</a>"
 msgstr ""
 
-#: ../admin/inc/class-table-tickets.php:173
+#: ../admin/inc/class-table-tickets.php:177
 msgid "Ticket ID"
 msgstr ""
 
-#: ../admin/inc/class-table-tickets.php:175
+#: ../admin/inc/class-table-tickets.php:179
 msgid "Status"
 msgstr ""
 
-#: ../admin/inc/class-table-tickets.php:176
+#: ../admin/inc/class-table-tickets.php:180
 #: ../admin/views/add-new-ticket.php:12
 #: ../admin/views/edit-ticket-history.php:13
 #: ../admin/views/edit-ticket-details.php:18
 msgid "Priority"
 msgstr ""
 
-#: ../admin/inc/class-table-tickets.php:178
+#: ../admin/inc/class-table-tickets.php:182
 msgid "Staff Member"
 msgstr ""
 
-#: ../admin/inc/class-table-tickets.php:179
+#: ../admin/inc/class-table-tickets.php:183
 msgid "Submitted From"
 msgstr ""
 
-#: ../admin/inc/class-table-tickets.php:180
+#: ../admin/inc/class-table-tickets.php:184
 msgid "Replies no."
 msgstr ""
 
-#: ../admin/inc/class-table-tickets.php:181
+#: ../admin/inc/class-table-tickets.php:185
 msgid "Last updated (GMT)"
 msgstr ""
 
-#: ../admin/inc/class-table-tickets.php:207
+#: ../admin/inc/class-table-tickets.php:211
 #: ../admin/inc/class-table-faqs.php:153
 msgid "View all categories"
 msgstr ""
 
-#: ../admin/inc/class-table-tickets.php:212
+#: ../admin/inc/class-table-tickets.php:216
 msgid "All priorities"
 msgstr ""
 
-#: ../admin/inc/class-table-tickets.php:236
+#: ../admin/inc/class-table-tickets.php:240
 msgid "Open"
 msgstr ""
 
-#: ../admin/inc/class-table-tickets.php:239
+#: ../admin/inc/class-table-tickets.php:243
 msgid "Close"
 msgstr ""
 
