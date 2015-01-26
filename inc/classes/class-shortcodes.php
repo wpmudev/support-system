@@ -79,6 +79,8 @@ class Incsub_Support_Shortcodes {
 		}
 	}
 
+	protected function enqueue_custom_scripts() {}
+
 	public function register_shortcodes() {
 		foreach ( $this->shortcodes as $shortcode => $classname ) {
 			if ( class_exists( $classname ) ) {

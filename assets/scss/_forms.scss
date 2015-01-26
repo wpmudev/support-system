@@ -121,7 +121,7 @@ $select-hover-bg-color: scale-color($select-bg-color, $lightness: -3%) !default;
   display: block;
   font-size: $input-font-size;
   margin: 0 0 $form-spacing 0;
-  padding: $form-spacing / 2;
+  padding: $form-spacing / 3;
   height: ($input-font-size + ($form-spacing * 1.5) - $rem-base);
   width: 100%;
   @include box-sizing(border-box);

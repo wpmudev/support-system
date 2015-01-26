@@ -153,3 +153,11 @@ function incsub_support_enqueue_main_script() {
 	wp_enqueue_script( 'support-system' );
 }
 
+function incsub_support_enqueue_foundation_scripts( $in_footer = true ) {
+	$suffix = '.min';
+	if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG )
+		$suffix = '';
+
+	wp_enqueue_script( 'support-system-foundation-js', INCSUB_SUPPORT_PLUGIN_URL . 'assets/js/foundation' . $suffix . '.js', array( 'jquery' ), incsub_support_get_version(), $in_footer );
+}
+

@@ -28,9 +28,15 @@ function the_compass( mode ) {
 		    sass: 'assets/scss'
 		}));
 }
-gulp.task('compass', function() {
-  return the_compass();
-});
+
+function support_uglify() {
+	gulp.src('assets/js/support-system.js')
+    	.pipe( uglify() )
+    	.pipe(rename({suffix: '.min'}))
+    	.pipe( gulp.dest('assets/js') );
+
+}
+
 
 gulp.task( 'watch', function() {
 	console.log("Processing the file");
@@ -40,15 +46,35 @@ gulp.task( 'watch', function() {
 });
 
 
+/**
+ * Install
+ */
 gulp.task('install', function() {
-  bower({ cmd: 'update'});
+	// Update dependencies with Bower
+	return bower({ cmd: 'update'});
 });
 
+/**
+ * Init the plugin. Execute right after installation
+ */
+gulp.task( 'init', function() {
+	// Get Foundation Javascript
+	gulp.src('bower_components/foundation/js/foundation.js')
+		.pipe( gulp.dest( 'assets/js' ) );
+
+	gulp.src('bower_components/foundation/js/foundation.min.js')
+		.pipe( gulp.dest( 'assets/js' ) );
+
+	support_uglify();
+
+	the_compass();
+});
+
+
+/**
+ * Release a new version
+ */
 gulp.task('release', function() {
 	the_compass('release');
-
-	gulp.src('assets/js/support-system.js')
-    	.pipe( uglify() )
-    	.pipe(rename({suffix: '.min'}))
-    	.pipe( gulp.dest('assets/js') )
+	support_uglify();
 });

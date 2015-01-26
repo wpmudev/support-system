@@ -25,6 +25,13 @@ class Incsub_Support_FAQs_Shortcode extends Incsub_Support_Shortcode {
 
 		incsub_support_get_template( 'index', 'faqs' );
 
+		add_action( 'wp_footer', array( &$this, 'enqueue_custom_scripts' ) );
+
 		return $this->end();
+	}
+
+	public function enqueue_custom_scripts() {
+		incsub_support_enqueue_foundation_scripts();
+		wp_enqueue_script( 'support-system-foundation-init', INCSUB_SUPPORT_PLUGIN_URL . 'assets/js/foundation-init.js', array( 'support-system-foundation-js' ), incsub_support_get_version(), true );
 	}
 }

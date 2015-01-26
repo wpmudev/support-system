@@ -8,19 +8,16 @@
 
 	<?php if ( incsub_support_has_items() ): ?>
 
-		<ul class="support-system-faqs-list">
+		<ul class="accordion support-system-faqs-list" data-accordion>
 			<?php while ( incsub_support_has_items() ): incsub_support_the_item(); ?>
-				<ul class="support-system-faq row <?php echo esc_attr( incsub_support_get_the_faq_class() ); ?>" id="support-faq-<?php echo incsub_support_get_the_faq_id(); ?>">
-					<li class="small-10 large-11 columns support-system-faq-content">
-						<h2 class="support-system-faq-question"><?php echo incsub_support_get_the_faq_question(); ?></h2>
-						<div class="support-system-faq-answer"><?php echo incsub_support_get_the_faq_answer(); ?></div>
-						<ul class="inline-list support-system-faq-meta">
-							<li class="support-system-category"><span class="support-system-tag"><?php echo incsub_support_get_the_faq_category_link(); ?></span></li>
-						</ul>
-						
-					</li>
-				</ul>
+				<li class="accordion-navigation support-system-faq <?php echo esc_attr( incsub_support_get_the_faq_class() ); ?>" id="support-faq-<?php echo incsub_support_get_the_faq_id(); ?>">
+					<a href="#panel-<?php echo incsub_support_get_the_faq_id(); ?>"><h3><?php echo incsub_support_get_the_faq_question(); ?></h3></a>
+					<div id="panel-<?php echo incsub_support_get_the_faq_id(); ?>" class="content">
+				    	<?php echo incsub_support_get_the_faq_answer(); ?>
+				    </div>
+				</li>
 			<?php endwhile; ?>
 		</ul>
+
 	<?php endif; ?>
 </div>

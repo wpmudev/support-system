@@ -9,4 +9,5 @@ jQuery(document).ready(function($) {
 			remove_link_text: support_system_i18n.remove_link_text,
 		}
 	});
+
 });

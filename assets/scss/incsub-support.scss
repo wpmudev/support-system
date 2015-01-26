@@ -12,11 +12,11 @@ $reply-background:#f7f7f7;
 $reply-staff-background: darken( $reply-background, 1.5 );
 
 // Make sure the charset is set appropriately
- 
+  
 // Behold, here are all the Foundation components.
 #support-system {
   @import "foundation/components/grid";
-  //@import "foundation/components/accordion";
+  @import "foundation/components/accordion";
   @import "foundation/components/alert-boxes";
   @import "foundation/components/block-grid";
   @import "foundation/components/breadcrumbs";
@@ -109,8 +109,7 @@ body #support-system {
   color:$steel;
 }
 
-#support-system-tickets ul.support-system-ticket,
-#support-system-tickets ul.support-system-faq {
+#support-system-tickets ul.support-system-ticket {
   margin-bottom:35px;
   border-bottom:1px solid $iron;
   list-style:none;
@@ -298,4 +297,17 @@ body #support-system {
 /** FAQS */
 #support-system .support-system-faq-answer {
   margin-top:30px;
+}
+
+meta.foundation-data-attribute-namespace {
+  font-family: false; 
+}
+
+#support-system .accordion .accordion-navigation {
+  border:1px solid darken( $accordion-navigation-bg-color, 10% );
+  margin-top:7px;
+}
+
+#support-system .content {
+  background: lighten( $accordion-navigation-bg-color, 0% );
 }
