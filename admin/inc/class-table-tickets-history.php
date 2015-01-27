@@ -36,7 +36,6 @@ class Incsub_Support_Tickets_History_Table extends WP_List_Table {
         $columns = array(
             'poster'        => __( 'Author', INCSUB_SUPPORT_LANG_DOMAIN ),
             'message'       => __( 'Ticket Message/Reply', INCSUB_SUPPORT_LANG_DOMAIN ),
-            'date'          => __( 'Date/Time', INCSUB_SUPPORT_LANG_DOMAIN )
         );
 
         if ( incsub_support_current_user_can( 'insert_faq' ) ) {
@@ -44,6 +43,27 @@ class Incsub_Support_Tickets_History_Table extends WP_List_Table {
         }
 
         return $columns;
+    }
+
+        public function display() {
+
+        ?>
+            <table class="<?php echo implode( ' ', $this->get_table_classes() ); ?>">
+
+                <tbody id="ticket-replies-list">
+                    <?php $this->display_rows_or_placeholder(); ?>
+                </tbody>
+
+            </table>
+
+
+            <style>
+                #ticket-replies-list td {
+                    border-bottom:1px solid #E5E5E5;
+                }
+            </style>
+        <?php
+
     }
 
     function column_poster( $item ) {
@@ -71,13 +91,10 @@ class Incsub_Support_Tickets_History_Table extends WP_List_Table {
         return ob_get_clean();
     }
 
-    function column_date( $item ) {
-        return incsub_support_get_translated_date( $item->message_date ); 
-    }
-
     function column_message( $item ) {
         ob_start();
         ?>
+            <div class="submitted-on"><?php printf( _x( 'Sent on %s', 'Reply sent on date', INCSUB_SUPPORT_LANG_DOMAIN ), incsub_support_get_translated_date( $item->message_date ) ); ?></div>
             <?php if ( $item->is_main_reply ): ?>
                 <h3 class="support-system-reply-subject"><?php echo $item->subject; ?></h3>
             <?php endif; ?>

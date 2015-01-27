@@ -12,14 +12,21 @@ function incsub_support_get_ticket_replies( $ticket_id ) {
 	$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 	$tickets_replies_table = incsub_support()->model->tickets_messages_table;
 
-	$results = $wpdb->get_results( 
-		$wpdb->prepare( 
-			"SELECT * FROM $tickets_replies_table
-			WHERE ticket_id = %d
-			ORDER BY message_id ASC",
-			$ticket_id
-		)
-	);	
+	$query = $wpdb->prepare(
+		"SELECT * FROM $tickets_replies_table
+		WHERE ticket_id = %d
+		ORDER BY message_id ASC",
+		$ticket_id
+	);
+	
+	$key = md5( $query );
+	$cache_key = "incsub_support_get_ticket_replies:$key";
+	$results = wp_cache_get( $cache_key, 'support_system_ticket_replies' );
+
+	if ( $results === false ){
+		$results = $wpdb->get_results( $query );
+		wp_cache_set( $cache_key, $results, 'support_system_ticket_replies' );
+	}
 
 	if ( $results )
 		$_replies = $results;
@@ -107,6 +114,12 @@ function incsub_support_insert_ticket_reply( $ticket_id, $args = array() ) {
 
 	$reply = incsub_support_get_ticket_reply( $reply_id );
 	incsub_support_recount_ticket_replies( $reply->ticket_id );
+
+	$users_tagged = incsub_support_get_ticket_meta( $ticket_id, 'tagged_users', array() );
+	if ( ! in_array( $poster_id, $users_tagged ) ) {
+		$users_tagged[] = $poster_id;
+		incsub_support_update_ticket_meta( $ticket_id, 'tagged_users', $users_tagged );
+	}
 
 	do_action( 'support_system_insert_ticket_reply', $reply_id, $send_emails );
 

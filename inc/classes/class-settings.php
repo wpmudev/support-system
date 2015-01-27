@@ -37,7 +37,7 @@ class Incsub_Support_Settings {
 
 	public function get_default_settings() {
 		$plugin = incsub_support();
-		$super_admins = $plugin::get_super_admins();
+		$super_admins = call_user_func( array( $plugin, 'get_super_admins' ) );
 		return apply_filters( 'support_system_default_settings', array(
 			'incsub_support_menu_name' => __( 'Support', INCSUB_SUPPORT_LANG_DOMAIN ),
 			'incsub_support_from_name' => get_bloginfo( 'blogname' ),

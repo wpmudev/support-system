@@ -48,13 +48,9 @@ class Incsub_Support_Admin_Support_Menu extends Incsub_Support_Parent_Support_Me
 	public function render_inner_page() {
 
 		$action = isset( $_GET['action'] ) ? $_GET['action'] : false;
-		$current_tab = $this->get_current_edit_ticket_tab();
 
-		if ( 'edit' == $action && isset( $_GET['tid'] ) && 'details' === $current_tab ) {
-			$this->render_inner_page_edit_details();
-		}
-		elseif ( 'edit' == $action && isset( $_GET['tid'] ) && 'history' === $current_tab ) {
-			$this->render_inner_page_history();
+		if ( 'edit' == $action && isset( $_GET['tid'] ) ) {
+			$this->render_inner_page_details();
 		}
 		elseif ( 'add' == $action && incsub_support_current_user_can( 'insert_ticket' ) ) {
 
@@ -97,7 +93,7 @@ class Incsub_Support_Admin_Support_Menu extends Incsub_Support_Parent_Support_Me
 				$subject = strip_tags( stripslashes_deep( $_POST['subject'] ) );
 			
 			include( 'views/add-new-ticket.php' );
-		}
+		}		
 		else {
 
 			$this->render_inner_page_tickets_table();
@@ -153,7 +149,6 @@ class Incsub_Support_Admin_Support_Menu extends Incsub_Support_Parent_Support_Me
 						array(
 							'action' => 'edit',
 							'tid' => $result,
-							'tab' => 'history'
 						),
 						$this->get_menu_url()
 					);

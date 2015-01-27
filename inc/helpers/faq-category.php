@@ -93,7 +93,11 @@ function incsub_support_get_faq_categories( $args = array() ) {
 		}
 		
 		if ( empty( $cats ) )
-			return array();
+			$cats = array();
+
+		foreach ( $cats as $cat ) {
+			wp_cache_set( $cat->cat_id, $cat, 'support_system_faq_category' );
+		}
 
 		return $cats;
 	}

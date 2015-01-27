@@ -149,7 +149,7 @@ function incsub_support_send_emails_on_ticket_reply( $reply_id, $send_emails ) {
 
 	if ( empty( $ticket->admin_id ) ) {
 		$plugin = incsub_support();
-		$super_admin = $plugin::get_main_admin_details();
+		$super_admin = call_user_func( array( $plugin, 'get_main_admin_details' ) );
 		incsub_support_send_user_reply_mail( $ticket, $reply );
 		incsub_support_send_admin_reply_mail( $super_admin, $ticket, $reply );
 

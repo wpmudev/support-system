@@ -240,7 +240,7 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 		// MAIN SUPER ADMIN
 		if ( isset( $input['super_admin'] ) ) {
 			$plugin = incsub_support();
-			$possible_values = $plugin::get_super_admins();
+			$possible_values = call_user_func( array( $plugin, 'get_super_admins' ) );
 			
 			$selected = absint( $input['super_admin'] );
 			if ( array_key_exists( $selected, $possible_values ) )

@@ -1,14 +1,27 @@
-<?php if ( $errors ): ?>
-	<div style="padding-top:30px;" id="edit-ticket-form-errors">
-		<?php foreach ( $errors as $error ): ?>
-			<div class="support-system-error"><p><?php echo esc_html( $error['message'] ); ?></p></div>
-		<?php endforeach; ?>
-	</div>
-<?php endif; ?>
+
 
 <form id="edit-ticket-form" action="#edit-ticket-form-errors" method="post" enctype="multipart/form-data">
+	<?php if ( $errors ): ?>
+		<div id="edit-ticket-form-errors">
+			<?php foreach ( $errors as $error ): ?>
+				<div class="support-system-error"><p><?php echo esc_html( $error['message'] ); ?></p></div>
+			<?php endforeach; ?>
+		</div>
+	<?php endif; ?>
 	<h2><?php esc_html_e( 'Insert new Reply', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h2>
+
+	<h4 class="support-system-add-reply-subtitle"><?php _e("Please provide as much information as possible, so that the user can understand the solution/request.", INCSUB_SUPPORT_LANG_DOMAIN); ?></h4>
+	<?php remove_all_filters( 'mce_buttons' ); ?>
+	<?php remove_all_filters( 'mce_external_plugins' ); ?>
+	<?php remove_all_filters( 'mce_buttons_1' ); ?>
+	<?php remove_all_filters( 'mce_buttons_2' ); ?>
+	<?php remove_all_filters( 'mce_buttons_3' ); ?>
+	<?php wp_editor( '', 'message-text', array( 'media_buttons' => true, 'quicktags' => array() ) ); ?>
+
 	<table class="form-table">
+		<?php ob_start(); ?>
+			<div class="support-attachments"></div>
+		<?php $this->render_row( __( 'Attachments', INCSUB_SUPPORT_LANG_DOMAIN ),  ob_get_clean() ); ?>
 		<?php $this->render_row(__( 'Category', INCSUB_SUPPORT_LANG_DOMAIN ), $categories_dropdown ); ?>
 		<?php $this->render_row(__( 'Priority', INCSUB_SUPPORT_LANG_DOMAIN ), $priorities_dropdown ); ?>
 
@@ -30,10 +43,7 @@
 			<?php $this->render_row(__( 'Ticket Responsibility', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); ?>
 		<?php endif; ?>
 		
-		<?php ob_start(); ?>
-			<h4 class="support-system-add-reply-subtitle"><?php _e("Please provide as much information as possible, so that the user can understand the solution/request.", INCSUB_SUPPORT_LANG_DOMAIN); ?></h4>
-			<?php wp_editor( '', 'message-text', array( 'media_buttons' => true ) ); ?>
-		<?php $this->render_row(__( 'Add a reply', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); ?>
+
 
 		<?php if ( incsub_support_current_user_can( 'close_ticket', $ticket->ticket_id ) ): ?>
 			<?php ob_start(); ?>
@@ -43,16 +53,15 @@
 				<span class="description"><?php _e("Once a ticket is closed, users can no longer reply to (or update) it.", INCSUB_SUPPORT_LANG_DOMAIN); ?></span>
 			<?php $this->render_row(__( "Close Ticket?", INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); ?>
 		<?php endif; ?>
-
-		<?php ob_start(); ?>
-			<div class="support-attachments"></div>
-		<?php $this->render_row( __( 'Attachments', INCSUB_SUPPORT_LANG_DOMAIN ),  ob_get_clean() ); ?>
 		
 		<input type="hidden" name="ticket_id" value="<?php echo $ticket->ticket_id; ?>" />
 		<?php wp_nonce_field( 'add-ticket-reply-' . $ticket->ticket_id ); ?>
 	</table>
+	<p>
+		<?php submit_button( __( 'Add reply', INCSUB_SUPPORT_LANG_DOMAIN ), 'primary button-hero', 'submit-ticket-reply', false ); ?>
+	</p>
 
-	<?php submit_button( __( 'Update ticket', INCSUB_SUPPORT_LANG_DOMAIN ), 'primary', 'submit-ticket-reply' ); ?>
+	<div class="clear"></div>
 
 </form>
 

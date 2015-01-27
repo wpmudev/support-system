@@ -7,9 +7,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 		add_filter( 'set-screen-option', array( $this, 'save_screen_options' ), 10, 3 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_styles' ) );
 
-		$action = isset( $_GET['action'] ) ? $_GET['action'] : false;
-		if ( $this->get_current_edit_ticket_tab() === 'history' || $action === 'add' )
-			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		
 		// Tickets table filters
 		add_filter( 'support_system_tickets_table_menu_url', array( $this, 'get_menu_url' ) );
@@ -23,6 +21,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 	public function enqueue_scripts( $page_id ) {
 		if ( $page_id === $this->page_id ) {
 			incsub_support_enqueue_main_script();
+
 		}
 	}
 
@@ -39,7 +38,10 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 	public function on_load() {
 
 		// Add screen options
-		add_screen_option( 'per_page', array( 'label' => __( 'Tickets per page', INCSUB_SUPPORT_PLUGIN_URL ), 'default' => 20, 'option' => 'incsub_support_tickets_per_page' ) );
+		$action = isset( $_GET['action'] ) ? $_GET['action'] : '';
+
+		if ( $action !== 'edit' )
+			add_screen_option( 'per_page', array( 'label' => __( 'Tickets per page', INCSUB_SUPPORT_PLUGIN_URL ), 'default' => 20, 'option' => 'incsub_support_tickets_per_page' ) );
 
 		// Check filtering
 		if ( isset( $_POST['filter_action'] ) || ! empty( $_POST['s'] ) ) {
@@ -76,7 +78,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 		}
 
 		// Are we updating a ticket?
-		if ( ! empty( $_POST['submit-ticket-details'] ) && 'details' === $this->get_current_edit_ticket_tab() ) {
+		if ( ! empty( $_POST['submit-ticket-details'] ) ) {
 			$ticket_id = absint( $_POST['ticket_id'] );
 			check_admin_referer( 'update-ticket-details-' . $ticket_id );
 
@@ -89,7 +91,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 
 			// Update Super Admin
 			if ( isset( $_POST['super-admins'] ) ) {
-				$possible_users = array_merge( $plugin::get_super_admins() );
+				$possible_users = array_merge( call_user_func( array( $plugin, 'get_super_admins' ) ) );
 				if ( in_array( $_POST['super-admins'], $possible_users ) ) {
 					$user = get_user_by( 'login', $_POST['super-admins'] );
 					if ( $user )
@@ -220,6 +222,9 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 
 			check_admin_referer( 'create-faq-from-ticket-' . $ticket_id . '-' . $reply_id );
 
+			if ( ! incsub_support_current_user_can( 'insert_faq' ) )
+				return;
+
 			$ticket = incsub_support_get_ticket( $ticket_id );
 			if ( ! $ticket )
 				return;
@@ -228,8 +233,21 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 			if ( ! $reply )
 				return;
 
-			
-			$redirect_to = incsub_support()->admin->menus['network_faqs_menu']->get_menu_url();
+			if ( is_multisite() ) {
+				$redirect_to = add_query_arg(
+					'page',
+					'support-faq-manager',
+					trailingslashit( network_admin_url() ) . '/admin.php'
+				);
+			}
+			else {
+				$redirect_to = add_query_arg(
+					'page',
+					'support-faq-manager',
+					trailingslashit( admin_url() ) . '/admin.php'
+				);
+			}
+
 			$redirect_to = add_query_arg(
 				array(
 					'action' => 'add',
@@ -245,13 +263,46 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 		}
 	}
 
-	protected function render_inner_page_edit_details() {
+	protected function render_inner_page_details() {
 		$ticket = incsub_support_get_ticket( absint( $_GET['tid'] ) );
 		if ( ! $ticket )
 			wp_die( __( 'The ticket does not exist', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
 		if ( ! $ticket->view_by_super_admin && incsub_support_current_user_can( 'update_ticket' ) )
 			incsub_support_update_ticket( $ticket->ticket_id, array( 'view_by_superadmin' => 1 ) );
+
+
+		$user_can_update_ticket = incsub_support_current_user_can( 'update_ticket' );
+		$user_can_close_ticket = incsub_support_current_user_can( 'close_ticket', $ticket->ticket_id );
+
+		$screen = get_current_screen();
+		add_meta_box( 'support-system-ticket-details', __( 'Ticket Details', INCSUB_SUPPORT_LANG_DOMAIN ), array( $this, 'render_details_metabox' ), $screen->id, 'normal' );
+		add_meta_box( 'support-system-ticket-history', __( 'Ticket History', INCSUB_SUPPORT_LANG_DOMAIN ), array( $this, 'render_history_metabox' ), $screen->id, 'normal' );
+		
+		if ( $user_can_update_ticket || $user_can_close_ticket )
+			add_meta_box( 'support-system-ticket-update', __( 'Update ticket', INCSUB_SUPPORT_LANG_DOMAIN ), array( $this, 'render_update_metabox' ), $screen->id, 'side' );
+
+		$columns = ( $user_can_update_ticket || $user_can_close_ticket ) ? 2 : 1;
+		?>
+			<h2><?php echo stripslashes_deep( $ticket->title ); ?></h2>
+			<?php if ( $ticket->is_closed() ): ?>
+				<div class="error"><p><?php _e( 'This ticket has been closed', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p></div>
+			<?php endif; ?>
+			<div id="poststuff">
+				<div id="post-body" class="metabox-holder columns-<?php echo $columns; ?>">
+					<div id="postbox-container-1" class="postbox-container">
+						<?php do_meta_boxes( $screen->id, 'side', $ticket->ticket_id ); ?>
+					</div>
+					<div id="postbox-container-2" class="postbox-container">
+						<?php do_meta_boxes( $screen->id, 'normal', $ticket->ticket_id ); ?>
+					</div>
+				</div>
+			</div>
+		<?php
+	}
+
+	public function render_details_metabox( $ticket_id ) {
+		$ticket = incsub_support_get_ticket( $ticket_id );
 
 		// Last reply user
 		$last_reply_user_name = '';
@@ -273,6 +324,42 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
             if ( ! empty( $user ) )
                 $submitted_blog_link = '<a href="' . admin_url( 'user-edit.php?user_id=' . $user->ID ) . '">' . $user->user_nicename . '</a>';
         }
+
+
+		$fields = array(
+			'ticket-status' => array( 
+				'label' => __( 'Current Status', INCSUB_SUPPORT_LANG_DOMAIN ),
+				'content' => incsub_support_get_ticket_status_name( $ticket->ticket_status )
+			),
+			'ticket-created' => array( 
+				'label' => __( 'Created On (GMT)', INCSUB_SUPPORT_LANG_DOMAIN ),
+				'content' => incsub_support_get_translated_date( $ticket->ticket_opened )
+			),
+			'ticket-user' => array( 
+				'label' => __( 'Reporting User', INCSUB_SUPPORT_LANG_DOMAIN ),
+				'content' => $ticket->get_user_name()
+			),
+			'ticket-last-reply-from' => array( 
+				'label' => __( 'Last Reply From', INCSUB_SUPPORT_LANG_DOMAIN ),
+				'content' => $last_reply_user_name
+			),
+			'ticket-updated' => array( 
+				'label' => __( 'Last Updated (GMT)', INCSUB_SUPPORT_LANG_DOMAIN ),
+				'content' => incsub_support_get_translated_date( $ticket->ticket_updated )
+			),
+			'ticket-submitted-from' => array( 
+				'label' => __( 'Submitted from', INCSUB_SUPPORT_LANG_DOMAIN ),
+				'content' =>  $submitted_blog_link
+			)
+		);
+
+		$fields = apply_filters( 'support_network_ticket_details_fields', $fields, $ticket );
+
+		include_once( 'views/edit-ticket-details-metabox.php' );
+	}
+
+	public function render_update_metabox( $ticket_id ) {
+		$ticket = incsub_support_get_ticket( $ticket_id );
 
         if ( incsub_support_current_user_can( 'update_ticket' ) ) {
 	        // Super admins dropdown
@@ -309,12 +396,34 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 			$categories_dropdown = $ticket_category->cat_name;
 		}
 
-		$this->render_edit_ticket_tabs( $ticket );
-		
-		include( 'views/edit-ticket-details.php' );
+		$fields = array(
+ 			'ticket-staff' => array( 
+ 				'label' => '<label for="super-admins">' . __( 'Staff Representative', INCSUB_SUPPORT_LANG_DOMAIN ) . '</label>',
+ 				'content' => $super_admins_dropdown
+ 			),
+ 			'ticket-priority' => array( 
+ 				'label' => '<label for="ticket-priority">' . __( 'Priority', INCSUB_SUPPORT_LANG_DOMAIN ) . '</label>',
+ 				'content' => $priorities_dropdown
+ 			),
+			'ticket-category' => array( 
+				'label' => '<label for="ticket-cat">' . __( 'Category', INCSUB_SUPPORT_LANG_DOMAIN ) . '</label>',
+				'content' => $categories_dropdown
+			)
+		);
+
+		if ( incsub_support_current_user_can( 'close_ticket', $ticket->ticket_id ) ) {
+			$fields['ticket-closed'] = array(
+				'label' => '<label for="close-ticket-checkbox">' . __( 'Ticket closed', INCSUB_SUPPORT_LANG_DOMAIN ) . '</label>',
+				'content' => '<input name="close-ticket" id="close-ticket-checkbox" type="checkbox" ' . checked( $ticket->is_closed(), true, false ) . ' />'
+			);
+		}
+
+		$fields = apply_filters( 'support_network_ticket_update_fields', $fields, $ticket );
+		include_once( 'views/edit-ticket-update-metabox.php' );
 	}
 
-	protected function render_inner_page_history() {
+
+	public function render_history_metabox() {
 		$ticket = incsub_support_get_ticket( absint( $_GET['tid'] ) );
 		if ( ! $ticket )
 			wp_die( __( 'The ticket does not exist', INCSUB_SUPPORT_LANG_DOMAIN ) );
@@ -322,7 +431,6 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 		if ( ! $ticket->view_by_super_admin && incsub_support_current_user_can( 'update_ticket' ) )
 			incsub_support_update_ticket( $ticket->ticket_id, array( 'view_by_superadmin' => 1 ) );
 
-		$this->render_edit_ticket_tabs( $ticket );
 
 		include_once( 'inc/class-table-tickets-history.php' );
 		$ticket_history_table = new Incsub_Support_Tickets_History_Table();
@@ -378,6 +486,8 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 
 		$errors = get_settings_errors( 'support_system_submit_reply' );
 
+		include_once( 'views/edit-ticket-history-metabox.php' );
+
 		if ( incsub_support_current_user_can( 'insert_reply' ) && ! $ticket->is_closed() )
 			include( 'views/edit-ticket-history.php' );
 	}
@@ -420,23 +530,6 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 	public function render_inner_page() {}
 	
 
-
-	protected function render_edit_ticket_tabs( $ticket ) {
-		$updated = isset( $_GET['updated'] );
-		$tabs = $this->get_edit_ticket_tabs();
-		$menu_slug = $this->slug;
-		$edit_menu_url = add_query_arg( 
-			array(
-				'action' => 'edit',
-				'tid' => absint( $_GET['tid'] )
-			),
-			$this->get_menu_url()
-		);
-		$menu_url = $this->get_menu_url();
-		$current_tab = $this->get_current_edit_ticket_tab();
-		include( 'views/edit-ticket-tabs.php' );
-	}
-
 	protected function get_status_filter() {
 		if ( ! isset( $_GET['status'] ) )
 			return 'all';
@@ -451,21 +544,4 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 		return $_REQUEST[ $slug ];
 	}
 
-	protected function get_edit_ticket_tabs() {
-		return array(
-			'details' => __( 'Ticket details', INCSUB_SUPPORT_LANG_DOMAIN ),
-			'history' => __( 'Update ticket', INCSUB_SUPPORT_LANG_DOMAIN )
-		);
-	}
-
-	protected function get_current_edit_ticket_tab() {
-		$tabs = $this->get_edit_ticket_tabs();
-		if ( empty( $_GET['tab'] ) )
-			return key( $tabs );
-
-		if ( ! in_array( $_GET['tab'], array_keys( $tabs ) ) )
-			return key( $tabs );
-
-		return $_GET['tab'];
-	}
 }

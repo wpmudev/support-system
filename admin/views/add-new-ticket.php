@@ -12,6 +12,11 @@
 		<?php $this->render_row( __( 'Priority', INCSUB_SUPPORT_LANG_DOMAIN ), $priorities_dropdown ); ?>
 
 		<?php ob_start(); ?>
+			<?php remove_all_filters( 'mce_buttons' ); ?>
+			<?php remove_all_filters( 'mce_external_plugins' ); ?>
+			<?php remove_all_filters( 'mce_buttons_1' ); ?>
+			<?php remove_all_filters( 'mce_buttons_2' ); ?>
+			<?php remove_all_filters( 'mce_buttons_3' ); ?>
 			<?php wp_editor( $message, 'message-text', array( 'media_buttons' => true ) ); ?>
 		<?php $this->render_row( __( 'Problem description', INCSUB_SUPPORT_LANG_DOMAIN ), ob_get_clean() ); ?>
 

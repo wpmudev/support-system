@@ -33,13 +33,9 @@ class Incsub_Support_Network_Support_Menu extends Incsub_Support_Parent_Support_
 
 	public function render_inner_page() {
 		$action = isset( $_GET['action'] ) ? $_GET['action'] : false;
-		$current_tab = $this->get_current_edit_ticket_tab();
 
-		if ( 'edit' == $action && isset( $_GET['tid'] ) && 'details' === $current_tab ) {
-			$this->render_inner_page_edit_details();
-		}
-		elseif ( 'edit' == $action && isset( $_GET['tid'] ) && 'history' === $current_tab ) {
-			$this->render_inner_page_history();
+		if ( 'edit' == $action && isset( $_GET['tid'] ) ) {
+			$this->render_inner_page_details();
 		}
 		else {
 			$this->render_inner_page_tickets_table();

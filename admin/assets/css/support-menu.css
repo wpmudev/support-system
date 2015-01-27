@@ -134,3 +134,66 @@ table.ticketshistory .ticket-acttachments-wrap {
 	border-color: #5E1717;
 	color: white;
 }
+
+
+ul.ticket-fields li {
+	float:left;
+	width:30%;
+	margin-right:25px;
+	margin-bottom:15px;
+}
+
+#poststuff ul.ticket-fields h3.ticket-field-label {
+	padding-left:0;
+	padding-bottom:0;
+}
+
+ul.ticket-fields .ticket-field-value {
+	margin-left:10px;
+}
+#support-system-ticket-update .inside {
+	padding:0;
+}
+#support-system-ticket-update .inside .ticket-update-fields {
+	padding:0 12px 12px;
+}
+
+#support-system-ticket-update .inside .ticket-update-fields .ticket-field-label {
+	font-weight: bold;
+}
+#support-system-ticket-update .inside .ticket-update-fields .ticket-field-value {
+	margin-top:0;
+	margin-bottom:20px;	
+}
+#support-system-ticket-update #ticket-closed .ticket-field-label,
+#support-system-ticket-update #ticket-closed .ticket-field-value {
+	display:inline-block;
+	margin-bottom:15px;
+}
+#support-system-ticket-update #ticket-closed .ticket-field-value input {
+	margin-top:15px;
+}
+#support-system-ticket-update #ticket-closed .ticket-field-label {
+	width:88%;
+	float:right;
+}
+#support-system-ticket-update #ticket-closed .ticket-field-value {
+	width:10%;
+	float:left;
+}
+#submit-ticket-details {
+	float:right;
+}
+#support-system-ticket-history .inside {
+	padding:0;
+	margin:0;
+}
+#support-system-ticket-history td.poster {
+	width:10%;
+}
+#support-system-ticket-history td.message {
+	width:70%;
+}
+#edit-ticket-form {
+	padding:17px;
+}
