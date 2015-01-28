@@ -3,6 +3,7 @@
   "version": "2.0",
   "private": "true",
   "dependencies": {
-    "foundation": "zurb/bower-foundation#5.5"
+    "foundation": "zurb/bower-foundation#5.5",
+    "foundation-icons": "zurb/foundation-icon-fonts"
   }
 }

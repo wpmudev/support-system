@@ -311,3 +311,23 @@ meta.foundation-data-attribute-namespace {
 #support-system .content {
   background: lighten( $accordion-navigation-bg-color, 0% );
 }
+
+#support-system .accordion .support-system-faq-title {
+  float:left;
+  width:80%;
+}
+
+#support-system .accordion .support-system-handldiv {
+  float:right;
+  background: url( "../images/fi-plus.svg" ) no-repeat center center transparent;
+  width:19%;
+  height:26px;
+  background-size: 18px 18px;
+  margin-top:$header-top-margin;
+}
+
+#support-system .accordion .active .support-system-handldiv {
+  background: url( "../images/fi-minus.svg" ) no-repeat center center transparent;
+  background-size: 18px 18px;
+}
+

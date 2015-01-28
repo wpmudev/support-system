@@ -65,6 +65,12 @@ gulp.task( 'init', function() {
 	gulp.src('bower_components/foundation/js/foundation.min.js')
 		.pipe( gulp.dest( 'assets/js' ) );
 
+	gulp.src( 'bower_components/foundation-icons/svgs/fi-plus.svg' )
+		.pipe( gulp.dest( 'assets/images' ) );
+
+	gulp.src( 'bower_components/foundation-icons/svgs/fi-minus.svg' )
+		.pipe( gulp.dest( 'assets/images' ) );
+
 	support_uglify();
 
 	the_compass();

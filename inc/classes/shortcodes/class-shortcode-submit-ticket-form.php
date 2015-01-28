@@ -79,7 +79,7 @@ class Incsub_Support_Submit_Ticket_Form_Shortcode extends Incsub_Support_Shortco
 			else
 				$message = __( 'You don\'t have enough permissions to submit a new ticket', INCSUB_SUPPORT_LANG_DOMAIN );
 			
-			$message = apply_filters( 'support_system_not_allowed_submit_ticket_form_message', $message );
+			$message = apply_filters( 'support_system_not_allowed_submit_ticket_form_message', $message, 'ticket-form' );
 			?>
 				<div class="support-system-alert warning">
 					<?php echo $message; ?>

@@ -18,8 +18,9 @@ class Support_System_Pro_Sites_Integration {
 		add_filter( 'support_system_validate_front_settings', array( $this, 'validate_front_settings' ) );
 		add_filter( 'support_system_user_can', array( $this, 'set_capabilities' ), 10, 3 );
 		
-		add_filter( 'support_system_not_allowed_tickets_list_message', array( $this, 'maybe_add_link_to_admin' ) );
-		add_filter( 'support_system_not_allowed_submit_ticket_form_message', array( $this, 'maybe_add_link_to_admin' ) );
+		add_filter( 'support_system_not_allowed_tickets_list_message', array( $this, 'maybe_add_link_to_admin' ), 10, 2 );
+		add_filter( 'support_system_not_allowed_submit_ticket_form_message', array( $this, 'maybe_add_link_to_admin' ), 10, 2 );
+		add_filter( 'support_system_not_allowed_faqs_list_message', array( $this, 'maybe_add_link_to_admin' ), 10, 2 );
 	}
 
 	/**
@@ -31,7 +32,7 @@ class Support_System_Pro_Sites_Integration {
 	 * @param  String $message Current message
 	 * @return String          New message
 	 */
-	public function maybe_add_link_to_admin( $message ) {
+	public function maybe_add_link_to_admin( $message, $type ) {
 		if ( ! is_user_logged_in() )
 			return $message;
 
@@ -81,7 +82,11 @@ class Support_System_Pro_Sites_Integration {
 			}
 
 			if ( $blog_id ) {
-				$admin_url = add_query_arg( 'page', 'ticket-manager', get_admin_url( $blog_id, 'admin.php' ) );
+				if ( $type == 'faq-list' )
+					$admin_url = add_query_arg( 'page', 'support-faq', get_admin_url( $blog_id, 'admin.php' ) );
+				else	
+					$admin_url = add_query_arg( 'page', 'ticket-manager', get_admin_url( $blog_id, 'admin.php' ) );
+
 				$message = sprintf( __( 'Need support? <a href="%s" title="%s">Click here to go to your dashboard</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $admin_url, esc_attr( __( 'Go to support in your site dashboard', INCSUB_SUPPORT_LANG_DOMAIN ) ) );
 			}
 			
@@ -149,9 +154,9 @@ class Support_System_Pro_Sites_Integration {
 		$settings = incsub_support_get_settings();
 
 		$pro_users_level = $settings['incsub_pro_users_level'];
+		$pro_users_faqs_level = $settings['incsub_pro_users_faqs_level'];
 		$allow_only_pro_users_tickets = $settings['incsub_allow_only_pro_users_tickets'];
-		$pro_users_faqs_level = $settings['incsub_pro_users_faq_level'];
-		$allow_only_pro_users_faq = $settings['incsub_allow_only_pro_users_faq'];
+		$allow_only_pro_users_faqs = $settings['incsub_allow_only_pro_users_faqs'];
 
 		?>
 
@@ -176,6 +181,24 @@ class Support_System_Pro_Sites_Integration {
 				    	</p>
 					</td>
 				</tr>
+
+				<tr valign="top">
+					<th scope="row"><?php _e( 'FAQs', INCSUB_SUPPORT_LANG_DOMAIN ); ?></th>
+				    <td>
+				    	<p>
+				    		<label for="pro_users_faqs">
+				    			<input type="checkbox" id="pro_users_faqs" name="pro_users_faqs" <?php checked( $allow_only_pro_users_faqs ); ?>>
+				    			<span> <?php _e( 'Allow <strong>Support FAQs</strong> only for Pro Users', INCSUB_SUPPORT_LANG_DOMAIN); ?></span>
+				    		</label>
+				    	</p>
+				    	<p>
+				    		<label for="pro_users_faq_levels">
+				    			<?php psts_levels_select( 'pro_users_faqs_levels', $pro_users_faqs_level ); ?> 
+				    			<span class="description"><?php _e( 'Minimum Pro Site Level', INCSUB_SUPPORT_LANG_DOMAIN ); ?></span>
+				    		</label>
+				    	</p>
+					</td>
+				</tr>
 				
 		    </table>
 	    <?php
@@ -188,7 +211,9 @@ class Support_System_Pro_Sites_Integration {
 			'incsub_allow_only_pro_sites_faq' => false,
 			'incsub_pro_sites_faq_level' => '',
 			'incsub_allow_only_pro_users_tickets' => false,
-			'incsub_pro_users_level' => ''
+			'incsub_allow_only_pro_users_faqs' => false,
+			'incsub_pro_users_level' => '',
+			'incsub_pro_users_faqs_level' => ''
 		);
 
 		return array_merge( $defaults, $pro_sites_defaults );
@@ -230,6 +255,15 @@ class Support_System_Pro_Sites_Integration {
 			$settings['incsub_pro_users_level'] = '';
 		}
 
+		if ( isset( $input['pro_users_faqs'] ) ) {
+			$settings['incsub_allow_only_pro_users_faqs'] = true;
+			$settings['incsub_pro_users_faqs_level'] = absint( $input['pro_users_faqs_levels'] );
+		}
+		else {
+			$settings['incsub_allow_only_pro_users_faqs'] = false;
+			$settings['incsub_pro_users_faqs_level'] = '';
+		}
+
 
 		return $settings;
 	}
@@ -269,6 +303,15 @@ class Support_System_Pro_Sites_Integration {
 			&& in_array( $cap, $tickets_caps )
 		) {
 			return $this->_is_pro_user( $user_id, $settings['incsub_pro_users_level'] );
+		}
+
+		if ( 
+			is_multisite() 
+			&& ! is_admin()
+			&& $settings['incsub_allow_only_pro_users_faqs'] 
+			&& in_array( $cap, $faqs_caps )
+		) {
+			return $this->_is_pro_user( $user_id, $settings['incsub_pro_users_faqs_level'] );
 		}
 
 		return $user_can;

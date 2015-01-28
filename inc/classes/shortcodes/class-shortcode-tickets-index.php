@@ -141,7 +141,7 @@ class Incsub_Support_Tickets_Index_Shortcode extends Incsub_Support_Shortcode {
 			else
 				$message = __( 'You don\'t have enough permissions to get support', INCSUB_SUPPORT_LANG_DOMAIN );
 			
-			$message = apply_filters( 'support_system_not_allowed_tickets_list_message', $message );
+			$message = apply_filters( 'support_system_not_allowed_tickets_list_message', $message, 'ticket-index' );
 			?>
 				<div class="support-system-alert warning">
 					<?php echo $message; ?>
