@@ -19,13 +19,11 @@ function incsub_support_get_ticket_replies( $ticket_id ) {
 		$ticket_id
 	);
 	
-	$key = md5( $query );
-	$cache_key = "incsub_support_get_ticket_replies:$key";
-	$results = wp_cache_get( $cache_key, 'support_system_ticket_replies' );
+	$results = wp_cache_get( 'support-ticket-' . $ticket_id, 'support_system_ticket_replies' );
 
 	if ( $results === false ){
 		$results = $wpdb->get_results( $query );
-		wp_cache_set( $cache_key, $results, 'support_system_ticket_replies' );
+		wp_cache_set( 'support-ticket-' . $ticket_id, $results, 'support_system_ticket_replies' );
 	}
 
 	if ( $results )
@@ -70,6 +68,9 @@ function incsub_support_insert_ticket_reply( $ticket_id, $args = array() ) {
 
 	if ( ! $ticket )
 		return false;
+
+	wp_cache_delete( 'support-ticket-' . $ticket_id, 'support_system_ticket_replies' );
+	wp_cache_delete( $ticket_id, 'support_system_tickets' );
 
 	$defaults = array(
 		'site_id' => $current_site_id,
@@ -138,6 +139,9 @@ function incsub_support_delete_ticket_reply( $reply_id ) {
 	$ticket = incsub_support_get_ticket( $ticket_reply->ticket_id );
 	if ( ! $ticket )
 		return false;
+
+	wp_cache_delete( 'support-ticket-' . $ticket->ticket_id, 'support_system_ticket_replies' );
+	wp_cache_delete( $ticket->ticket_id, 'support_system_tickets' );
 
 	$replies = $ticket->get_replies();
 

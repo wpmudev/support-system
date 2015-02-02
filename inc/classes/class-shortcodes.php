@@ -66,8 +66,9 @@ class Incsub_Support_Shortcodes {
 		$l10n = array(
 			'button_text' => __( 'Add files...', INCSUB_SUPPORT_LANG_DOMAIN ),
 			'remove_file_title' => __( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN ),
-			'remove_link_text' => __( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN )
+			'remove_link_text' => __( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN ),
 		);
+		
 		wp_localize_script( 'support-system-init', 'support_system_i18n', $l10n );
 	}
 

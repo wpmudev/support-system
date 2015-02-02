@@ -17,6 +17,10 @@
 					</a>
 					<div id="panel-<?php echo incsub_support_get_the_faq_id(); ?>" class="content">
 				    	<?php echo incsub_support_get_the_faq_answer(); ?>
+				    	<?php 
+				    		if ( is_user_logged_in() )
+				    			echo incsub_support_the_faq_vote_box(); 
+				    	?>
 				    </div>
 				</li>
 			<?php endwhile; ?>

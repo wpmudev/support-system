@@ -97,7 +97,6 @@ class Support_Ticket extends WP_UnitTestCase {
         );
 
         $ticket_id = incsub_support_insert_ticket( $args );
-        var_dump(incsub_support_get_ticket( $ticket_id ));
     }
 
 

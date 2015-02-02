@@ -75,7 +75,7 @@
 							<p class="submit" data-faq-id="<?php echo $faq->faq_id; ?>">
 								<h4><u><?php _e( 'Was this solution helpful?', INCSUB_SUPPORT_LANG_DOMAIN ); ?></u></h4>
 								<?php echo '<button class="button-primary vote-button" data-faq-id="' . $faq->faq_id . '" data-vote="yes"> ' . __( 'Yes', INCSUB_SUPPORT_LANG_DOMAIN ) . '</button> <button href="#" class="button vote-button" data-faq-id="' . $faq->faq_id . '" data-vote="no"> ' . __( 'No', INCSUB_SUPPORT_LANG_DOMAIN ) . '</button>'; ?>
-								<img style="display:none; margin-left:10px;vertical-align:middle" src="<?php echo INCSUB_SUPPORT_ASSETS_URL . 'images/ajax-loader.gif'; ?>">
+								<span class="spinner support-system-spinner"></span>
 							</p>
 						</div>						
 					</div>
@@ -90,3 +90,8 @@
 		$('.wrap').support_system();
 	});
 </script>
+<style>
+	.support-system-spinner {
+		float:none;
+	}
+</style>

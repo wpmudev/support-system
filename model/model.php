@@ -187,7 +187,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 			  meta_key varchar(255) default NULL,
 			  meta_value longtext,
 			  PRIMARY KEY  (meta_id),
-			  KEY ticket_id (ticket_id),
+			  KEY support_ticket_id (support_ticket_id),
 			  KEY meta_key (meta_key)
 			) $this->db_charset_collate;";
 

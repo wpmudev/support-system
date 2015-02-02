@@ -144,6 +144,11 @@ function incsub_support_register_main_script() {
 		$suffix = '';
 
 	wp_register_script( 'support-system', INCSUB_SUPPORT_PLUGIN_URL . '/assets/js/support-system' . $suffix . '.js', array( 'jquery' ), incsub_support_get_version(), true );
+
+	$l10n = array(
+		'ajaxurl' => admin_url( 'admin-ajax.php' )
+	);
+	wp_localize_script( 'support-system', 'support_system_strings', $l10n );
 }
 
 function incsub_support_enqueue_main_script() {
@@ -151,6 +156,7 @@ function incsub_support_enqueue_main_script() {
 		incsub_support_register_main_script();
 
 	wp_enqueue_script( 'support-system' );
+
 }
 
 function incsub_support_enqueue_foundation_scripts( $in_footer = true ) {

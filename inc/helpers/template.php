@@ -524,3 +524,20 @@ function incsub_support_new_ticket_form_link( $class = '' ) {
 
 	return '';
 }
+
+function incsub_support_the_faq_vote_box( $faq_id = false ) {
+	if ( ! $faq_id )
+		$faq_id = incsub_support_get_the_faq_id();
+
+	if ( ! incsub_support_get_faq( $faq_id ) )
+		return;
+ 
+	?>
+	<div class="support-system-faq-vote-wrap">
+		<h4><?php _e( 'Was this solution helpful?', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h4>
+		<button class="support-system-faq-vote vote-button button tiny success" data-faq-id="<?php echo incsub_support_get_the_faq_id(); ?>" data-vote="yes"><?php _e( 'Yes', INCSUB_SUPPORT_LANG_DOMAIN ); ?></button>
+		<button class="support-system-faq-vote vote-button button tiny alert" data-faq-id="<?php echo incsub_support_get_the_faq_id(); ?>" data-vote="no"><?php _e( 'No', INCSUB_SUPPORT_LANG_DOMAIN ); ?></button>
+		<span class="support-system-spinner"></span>
+	</div>
+	<?php
+}

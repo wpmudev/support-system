@@ -311,7 +311,7 @@ function incsub_support_delete_faq_category( $faq_category_id ) {
 
 	$wpdb->query( $wpdb->prepare( "DELETE FROM $faq_cats_table WHERE cat_id = %d", $faq_category_id ) );
 
-	wp_cache_delete( $faq_category_id, 'support_system_faq_categories' );
+	wp_cache_delete( $faq_category_id, 'support_system_faq_category' );
 
 	$old_faq_category = $faq_category;
 	do_action( 'support_system_delete_faq_category', $faq_category_id, $old_faq_category );

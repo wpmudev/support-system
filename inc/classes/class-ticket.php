@@ -15,7 +15,7 @@ class Incsub_Support_Ticket {
 
 	public $admin_id = 0;
 
-	public $last_reply_id = 0;
+	private $last_reply_id = 0;
 
 	public $ticket_type = 1;
 
@@ -59,6 +59,7 @@ class Incsub_Support_Ticket {
 		$_ticket = wp_cache_get( $ticket_id, 'support_system_tickets' );
 
 		if ( ! $_ticket ) {
+
 			$_ticket = $wpdb->get_row( 
 				$wpdb->prepare( 
 					"SELECT * FROM $tickets_table
@@ -120,6 +121,17 @@ class Incsub_Support_Ticket {
 
 			return $this->message;
 
+		}
+
+		if ( 'last_reply_id' === $name ) {
+			$replies = $this->get_replies();
+			unset( $replies[0] );
+			if ( ! empty( $replies ) ) {
+				$this->last_reply_id = end( $replies )->message_id;
+				reset( $this->replies );
+			}
+
+			return $this->last_reply_id;
 		}
 
 		return false;
