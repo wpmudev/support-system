@@ -107,13 +107,15 @@ class Incsub_Support_Query {
 		if ( is_multisite() && get_current_blog_id() != $settings['incsub_support_blog_id'] )
 			return;
 
+		$post_id = get_the_ID();
+		
 		$ticket_id = $this->get_query_var( 'tid' );
-		if ( $ticket_id && is_page( $settings['incsub_support_support_page'] ) ) {
+		if ( $ticket_id && $post_id == $settings['incsub_support_support_page'] ) {
 			$this->item_id = absint( $ticket_id );
 			$this->is_single_ticket = true;
 			$this->is_support_system = true;
 		}
-		elseif ( is_page( $settings['incsub_support_support_page'] ) ) {
+		elseif ( $post_id == $settings['incsub_support_support_page'] ) {
 			$this->is_tickets_index = true;
 			if ( $cat_id =$this->get_query_var( 'cat-id' ) ) {
 				$this->category_id = absint( $cat_id );
@@ -125,11 +127,11 @@ class Incsub_Support_Query {
 			}
 			$this->is_support_system = true;
 		}
-		elseif( is_page( $settings['incsub_support_create_new_ticket_page'] ) ) {
+		elseif( $post_id == $settings['incsub_support_create_new_ticket_page'] ) {
 			$this->is_submit_ticket_page = true;
 			$this->is_support_system = true;
 		}
-		elseif( is_page( $settings['incsub_support_faqs_page'] ) ) {
+		elseif( $post_id == $settings['incsub_support_faqs_page'] ) {
 			$this->is_faqs_page = true;
 			$this->is_support_system = true;
 			if ( $cat_id =$this->get_query_var( 'cat-id' ) ) {
