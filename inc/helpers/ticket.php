@@ -602,16 +602,7 @@ function incsub_support_upload_ticket_attachments( $attachments ) {
 	$upload_cap = $current_user->allcaps['unfiltered_upload'];
 	$current_user->allcaps['unfiltered_upload'] = true;
 
-	$allowed_file_types = apply_filters( 'incsub_support_allowed_mime_types', array(
-		'jpg' =>'image/jpg',
-		'jpeg' =>'image/jpeg', 
-		'gif' => 'image/gif', 
-		'png' => 'image/png',
-		'zip' => 'application/zip',
-		'gz|gzip' => 'application/x-gzip',
-		'rar' => 'application/rar',
-		'pdf' => 'application/pdf'
-	) );
+	$allowed_file_types = incsub_support_get_allowed_mime_types();
 
 	foreach ( $files_keys as $key ) {
 		$file = array(
@@ -633,6 +624,19 @@ function incsub_support_upload_ticket_attachments( $attachments ) {
 	return $files_uploaded;
 }
 
+function incsub_support_get_allowed_mime_types() {
+	return apply_filters( 'incsub_support_allowed_mime_types', array(
+		'jpg' =>'image/jpg',
+		'jpeg' =>'image/jpeg', 
+		'gif' => 'image/gif', 
+		'png' => 'image/png',
+		'zip' => 'application/zip',
+		'gz|gzip' => 'application/x-gzip',
+		'rar' => 'application/rar',
+		'pdf' => 'application/pdf',
+		'txt' => 'text/plain',
+	) );
+}
 
 
 function incsub_support_get_edit_ticket_admin_url( $ticket_id ) {

@@ -7,6 +7,7 @@ jQuery(document).ready(function($) {
 			remove_file_title: support_system_i18n.remove_file_title,
 			remove_link_class: "button tiny alert",
 			remove_link_text: support_system_i18n.remove_link_text,
+			description: support_system_i18n.desc
 		}
 	});
 

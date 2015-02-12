@@ -63,10 +63,20 @@ class Incsub_Support_Shortcodes {
 		incsub_support_register_main_script();
 		wp_register_script( 'support-system-init', INCSUB_SUPPORT_PLUGIN_URL . '/assets/js/support-system-init.js', array( 'support-system' ), INCSUB_SUPPORT_PLUGIN_VERSION, true );
 
+		$allowed_mimes = incsub_support_get_allowed_mime_types();
+		$allowed_mimes = array_keys( $allowed_mimes );
+		
+		$allowed_mimes = array_map( function( $element ) {
+			return str_replace( '|', ', *.', $element );
+		}, $allowed_mimes );
+
+		$allowed_mimes = '*.' . implode( ', *.', $allowed_mimes );
+
 		$l10n = array(
 			'button_text' => __( 'Add files...', INCSUB_SUPPORT_LANG_DOMAIN ),
 			'remove_file_title' => __( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN ),
 			'remove_link_text' => __( 'Remove file', INCSUB_SUPPORT_LANG_DOMAIN ),
+			'desc' => '<p>(' . sprintf( __( 'Allowed file types: %s', INCSUB_SUPPORT_LANG_DOMAIN ), $allowed_mimes ) . ')</p>'
 		);
 		
 		wp_localize_script( 'support-system-init', 'support_system_i18n', $l10n );

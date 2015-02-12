@@ -89,7 +89,8 @@
 			files_list_id: 'support-attachments-list',
 			remove_file_title: 'Remove file',
 			remove_link_class: '',
-			remove_link_text: '[x]'
+			remove_link_text: '[x]',
+			description: ''
 		},
 
 		init : function (scope, options) {
@@ -127,6 +128,7 @@
 				$(this)
 					.append( list )
 					.append( button )
+					.append( settings.description )
 					
 			});
 	      	
