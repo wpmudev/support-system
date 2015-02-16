@@ -52,8 +52,7 @@ class Incsub_Support_Query {
 		elseif ( $this->is_tickets_index ) {
 			$args = array(
 				'per_page' => $per_page,
-				'page' => $this->page,
-				'status' => 'open'
+				'page' => $this->page
 			);
 
 			if ( $this->category_id )
