@@ -13,7 +13,7 @@ Change Log:
 2.1 - 2015-02-03
 ----------------------------------------------------------------------
 - Enhancement: FAQs Frontend.
-- Enhancement: Added widget sin Frontend to update ticket details.
+- Enhancement: Added widgets in Frontend to update ticket details.
 - Enhancement: Cache system reviewed.
 - Enhancement: Edit Ticket Admin page revamped.
 - Enhancement: PHP <5.4 compatibility added.
