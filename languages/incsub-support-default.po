@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Support System\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-02 10:15+0100\n"
-"PO-Revision-Date: 2015-02-02 10:15+0100\n"
+"POT-Creation-Date: 2015-02-16 08:52+0100\n"
+"PO-Revision-Date: 2015-02-16 08:52+0100\n"
 "Last-Translator: Ignacio <igmoweb@gmail.com>\n"
 "Language-Team: WPMU DEV\n"
 "Language: English\n"
@@ -82,7 +82,7 @@ msgstr ""
 msgid "Ticket submitted: "
 msgstr ""
 
-#: ../inc/mail-contents.php:117 ../inc/classes/class-query.php:284
+#: ../inc/mail-contents.php:117 ../inc/classes/class-query.php:286
 #: ../inc/helpers/template.php:139
 #: ../admin/inc/class-table-tickets-history.php:72
 msgid "Unknown user"
@@ -309,17 +309,22 @@ msgstr ""
 msgid "Edit Ticket"
 msgstr ""
 
-#: ../inc/classes/class-shortcodes.php:67 ../admin/views/add-new-ticket.php:43
+#: ../inc/classes/class-shortcodes.php:76 ../admin/views/add-new-ticket.php:43
 #: ../admin/views/edit-ticket-history.php:73
 msgid "Add files..."
 msgstr ""
 
-#: ../inc/classes/class-shortcodes.php:68
-#: ../inc/classes/class-shortcodes.php:69 ../admin/views/add-new-ticket.php:45
+#: ../inc/classes/class-shortcodes.php:77
+#: ../inc/classes/class-shortcodes.php:78 ../admin/views/add-new-ticket.php:45
 #: ../admin/views/add-new-ticket.php:47
 #: ../admin/views/edit-ticket-history.php:75
 #: ../admin/views/edit-ticket-history.php:77
 msgid "Remove file"
+msgstr ""
+
+#: ../inc/classes/class-shortcodes.php:79
+#, php-format
+msgid "Allowed file types: %s"
 msgstr ""
 
 #: ../inc/classes/class-settings.php:42
