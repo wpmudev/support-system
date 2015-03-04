@@ -139,7 +139,7 @@ function incsub_support_get_the_poster_username() {
 		$username = __( 'Unknown user', INCSUB_SUPPORT_LANG_DOMAIN );
 	}
 	else {
-		$username = $user->data->user_nicename;
+		$username = $user->data->display_name;
 	}
 
 	return $username;

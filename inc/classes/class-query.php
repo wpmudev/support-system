@@ -284,7 +284,7 @@ function incsub_support_get_the_author() {
 	if ( ! $user )
 		return __( 'Unknown user', INCSUB_SUPPORT_LANG_DOMAIN );
 
-	return $user->data->user_nicename;
+	return $user->data->display_name;
 }
 
 function incsub_support_get_the_ticket_message() {
