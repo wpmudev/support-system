@@ -179,16 +179,6 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 					}
 				}
 
-				$status = isset( $_POST['closeticket'] ) ? 5 : 2;
-
-				if ( $ticket->admin_id && $ticket->user_id === get_current_user_id() ) {
-					$status = 3;
-				}
-				if ( isset( $_POST['closeticket'] ) && incsub_support_current_user_can( 'close_ticket', $ticket->ticket_id ) )
-					incsub_support_close_ticket( $ticket->ticket_id );
-				elseif ( incsub_support_current_user_can( 'open_ticket', $ticket->ticket_id ) )
-					incsub_support_ticket_transition_status( $ticket->ticket_id, $status );
-
 				// Attachments
 				if ( ! empty( $_FILES['support-attachment'] ) ) {
 					$files_uploaded = incsub_support_upload_ticket_attachments( $_FILES['support-attachment'] );					
@@ -204,6 +194,34 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 
 				if ( incsub_support_current_user_can( 'insert_reply' ) )
 					incsub_support_insert_ticket_reply( $ticket->ticket_id, $reply_args );
+
+				$ticket = incsub_support_get_ticket( $ticket->ticket_id );
+
+				if ( $ticket->admin_id && $ticket->admin_id === get_current_user_id() && $ticket->user_id != $ticket->admin_id ) {
+					$status = 2;
+				}
+				elseif ( ! $ticket->admin_id && $ticket->user_id === get_current_user_id() && $ticket->ticket_status != 0 ) {
+					$status = 1;
+				}
+				elseif ( ! $ticket->admin_id && $ticket->user_id === get_current_user_id() && $ticket->ticket_status == 0 ) {
+					$status = 0;
+				}
+				elseif ( $ticket->admin_id && $ticket->user_id === get_current_user_id() && $ticket->user_id != $ticket->admin_id ) {
+					$status = 3;
+				}
+				elseif ( $ticket->admin_id && $ticket->admin_id === get_current_user_id() ) {
+					$status = 1;
+				}
+				else {
+					$status = $ticket->ticket_status;
+				}
+
+				
+				if ( isset( $_POST['closeticket'] ) && incsub_support_current_user_can( 'close_ticket', $ticket->ticket_id ) )
+					incsub_support_close_ticket( $ticket->ticket_id );
+				elseif ( incsub_support_current_user_can( 'open_ticket', $ticket->ticket_id ) )
+					incsub_support_ticket_transition_status( $ticket->ticket_id, $status );
+
 
 				// Redirecting to ticket history
 				$link = add_query_arg( 'updated', 'true' );
