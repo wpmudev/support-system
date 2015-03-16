@@ -33,7 +33,7 @@ class Incsub_Support_Submit_Ticket_Form_Shortcode extends Incsub_Support_Shortco
 			$args = array(
 				'title' => $subject,
 				'message' => $message,
-				'priority' => $priority
+				'ticket_priority' => $priority
 			);
 
 			if ( ! empty( $_FILES['support-attachment'] ) ) {
