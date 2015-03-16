@@ -190,6 +190,13 @@ function incsub_support_the_ticket() {
 }
 
 function incsub_support_is_ticket_closed( $ticket_id = false ) {
+	if ( $ticket_id ) {
+		$ticket = incsub_support_get_ticket( $ticket_id );
+		if ( $ticket )
+			return $ticket->is_closed();
+		return false;
+	}
+
 	return incsub_support()->query->item->is_closed();
 }
 

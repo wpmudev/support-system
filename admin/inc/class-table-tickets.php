@@ -264,7 +264,9 @@ class Incsub_Support_Tickets_Table extends WP_List_Table {
 
             if ( isset( $_POST['ticket'] ) && is_array( $_POST['ticket'] ) ) {
                 foreach ( $_POST['ticket'] as $ticket_id ) {
-                    incsub_support_delete_ticket( absint( $ticket_id ) );
+                    if ( incsub_support_is_ticket_closed( $ticket_id ) ) {
+                        incsub_support_delete_ticket( absint( $ticket_id ) );
+                    }
                 }
             }
             elseif ( isset( $_GET['tid'] ) && is_numeric( $_GET['tid'] ) ) {
