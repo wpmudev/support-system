@@ -396,7 +396,7 @@ function incsub_support_get_the_faq_question() {
 }
 
 function incsub_support_get_the_faq_answer() {
-	return incsub_support()->query->item->answer;
+	return do_shortcode( incsub_support()->query->item->answer );
 }
 
 function incsub_support_get_the_faq_category_link() {

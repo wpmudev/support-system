@@ -12,6 +12,7 @@ Change Log:
 
 2.1.4 - 2015-03-16
 ----------------------------------------------------------------------
+- Fixed: Setting empty ticket in Query Class by default to avoid notices/warnings
 - Fixed:  New tickets were being set to low priority from Frontend
 - Enhancement: Added double confirmation before deleting a ticket
 

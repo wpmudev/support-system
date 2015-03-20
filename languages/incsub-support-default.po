@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Support System\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-16 08:52+0100\n"
-"PO-Revision-Date: 2015-02-16 08:52+0100\n"
+"POT-Creation-Date: 2015-03-16 11:35+0100\n"
+"PO-Revision-Date: 2015-03-16 11:36+0100\n"
 "Last-Translator: Ignacio <igmoweb@gmail.com>\n"
 "Language-Team: WPMU DEV\n"
 "Language: English\n"
@@ -82,7 +82,7 @@ msgstr ""
 msgid "Ticket submitted: "
 msgstr ""
 
-#: ../inc/mail-contents.php:117 ../inc/classes/class-query.php:286
+#: ../inc/mail-contents.php:117 ../inc/classes/class-query.php:294
 #: ../inc/helpers/template.php:139
 #: ../admin/inc/class-table-tickets-history.php:72
 msgid "Unknown user"
@@ -287,7 +287,7 @@ msgid "Download %s attachment"
 msgstr ""
 
 #: ../inc/templates/single-ticket.php:54
-#: ../admin/class-parent-support-menu.php:279
+#: ../admin/class-parent-support-menu.php:297
 msgid "Ticket Details"
 msgstr ""
 
@@ -333,8 +333,8 @@ msgid "Support"
 msgstr ""
 
 #: ../inc/classes/class-ticket.php:150 ../inc/helpers/template.php:458
-#: ../admin/class-parent-support-menu.php:368
-#: ../admin/class-parent-support-menu.php:393
+#: ../admin/class-parent-support-menu.php:386
+#: ../admin/class-parent-support-menu.php:411
 msgid "Not yet assigned"
 msgstr ""
 
@@ -343,13 +343,13 @@ msgid "User not found"
 msgstr ""
 
 #: ../inc/classes/shortcodes/class-shortcode-faqs.php:13
-#: ../inc/classes/shortcodes/class-shortcode-tickets-index.php:140
+#: ../inc/classes/shortcodes/class-shortcode-tickets-index.php:156
 #, php-format
 msgid "You must <a href=\"%s\">log in</a> to get support"
 msgstr ""
 
 #: ../inc/classes/shortcodes/class-shortcode-faqs.php:15
-#: ../inc/classes/shortcodes/class-shortcode-tickets-index.php:142
+#: ../inc/classes/shortcodes/class-shortcode-tickets-index.php:158
 msgid "You don't have enough permissions to get support"
 msgstr ""
 
@@ -403,8 +403,8 @@ msgstr ""
 #: ../inc/classes/shortcodes/class-shortcode-tickets-index.php:92
 #: ../admin/class-parent-support-menu.php:87
 #: ../admin/class-parent-support-menu.php:145
-#: ../admin/class-parent-support-menu.php:269
-#: ../admin/class-parent-support-menu.php:429
+#: ../admin/class-parent-support-menu.php:287
+#: ../admin/class-parent-support-menu.php:447
 msgid "The ticket does not exist"
 msgstr ""
 
@@ -461,7 +461,7 @@ msgstr ""
 msgid "-- Default site --"
 msgstr ""
 
-#: ../inc/helpers/template.php:447 ../admin/class-parent-support-menu.php:409
+#: ../inc/helpers/template.php:447 ../admin/class-parent-support-menu.php:427
 #: ../admin/inc/class-table-faq-categories.php:12
 #: ../admin/inc/class-table-tickets.php:181
 #: ../admin/inc/class-table-ticket-categories.php:12
@@ -470,7 +470,7 @@ msgstr ""
 msgid "Category"
 msgstr ""
 
-#: ../inc/helpers/template.php:451 ../admin/class-parent-support-menu.php:405
+#: ../inc/helpers/template.php:451 ../admin/class-parent-support-menu.php:423
 #: ../admin/inc/class-table-tickets.php:180
 #: ../admin/views/add-new-ticket.php:12
 #: ../admin/views/edit-ticket-history.php:26
@@ -693,53 +693,53 @@ msgstr ""
 msgid "Message cannot be empty"
 msgstr ""
 
-#: ../admin/class-parent-support-menu.php:280
+#: ../admin/class-parent-support-menu.php:298
 #: ../admin/inc/class-table-tickets-history.php:14
 msgid "Ticket History"
 msgstr ""
 
-#: ../admin/class-parent-support-menu.php:283
+#: ../admin/class-parent-support-menu.php:301
 msgid "Update ticket"
 msgstr ""
 
-#: ../admin/class-parent-support-menu.php:289
+#: ../admin/class-parent-support-menu.php:307
 msgid "This ticket has been closed"
 msgstr ""
 
-#: ../admin/class-parent-support-menu.php:314
+#: ../admin/class-parent-support-menu.php:332
 #: ../admin/inc/class-table-tickets.php:148
 msgid "Unknown"
 msgstr ""
 
-#: ../admin/class-parent-support-menu.php:331
+#: ../admin/class-parent-support-menu.php:349
 msgid "Current Status"
 msgstr ""
 
-#: ../admin/class-parent-support-menu.php:335
+#: ../admin/class-parent-support-menu.php:353
 msgid "Created On (GMT)"
 msgstr ""
 
-#: ../admin/class-parent-support-menu.php:339
+#: ../admin/class-parent-support-menu.php:357
 msgid "Reporting User"
 msgstr ""
 
-#: ../admin/class-parent-support-menu.php:343
+#: ../admin/class-parent-support-menu.php:361
 msgid "Last Reply From"
 msgstr ""
 
-#: ../admin/class-parent-support-menu.php:347
+#: ../admin/class-parent-support-menu.php:365
 msgid "Last Updated (GMT)"
 msgstr ""
 
-#: ../admin/class-parent-support-menu.php:351
+#: ../admin/class-parent-support-menu.php:369
 msgid "Submitted from"
 msgstr ""
 
-#: ../admin/class-parent-support-menu.php:401
+#: ../admin/class-parent-support-menu.php:419
 msgid "Staff Representative"
 msgstr ""
 
-#: ../admin/class-parent-support-menu.php:416
+#: ../admin/class-parent-support-menu.php:434
 msgid "Ticket closed"
 msgstr ""
 
@@ -1212,6 +1212,10 @@ msgstr ""
 
 #: ../admin/views/admin-faq.php:58
 msgid "Click to toggle"
+msgstr ""
+
+#: ../admin/views/network-tickets.php:10
+msgid "Are you sure you want to delete this ticket?"
 msgstr ""
 
 #: ../admin/views/edit-ticket-category.php:2
