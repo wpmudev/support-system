@@ -86,35 +86,13 @@ function incsub_support_get_faqs( $args = array() ) {
 	$faqs = array();
 	if ( $count ) {
 		$query = "SELECT COUNT(faq_id) FROM $faqs_table WHERE $where";
-
-		$key = md5( $query );
-		$cache_key = "incsub_support_get_faqs_count:$key";
-		$results = wp_cache_get( $cache_key, 'support_system_faqs' );
-
-		if ( $results === false ){
-			$results = $wpdb->get_var( $query );
-			wp_cache_set( $cache_key, $results, 'support_system_faqs' );
-		}
-
+		$results = $wpdb->get_var( $query );
 		$faqs = $results;
 	}
 	else {
 		$query = "SELECT * FROM $faqs_table WHERE $where $order_query $limit";
-
-		$key = md5( $query );
-		$cache_key = "incsub_support_get_faqs:$key";
-		$results = wp_cache_get( $cache_key, 'support_system_faqs' );
-
-		if ( $results === false ) {
-			$results = $wpdb->get_results( $query );
-			if ( empty( $results ) )
-				return array();
-			wp_cache_set( $cache_key, $results, 'support_system_faqs' );
-		}
-
+		$results = $wpdb->get_results( $query );
 		$faqs = array_map( 'incsub_support_get_faq', $results );
-
-		
 	}
 
 	$faqs = apply_filters( 'support_system_get_faqs', $faqs, $args );
@@ -206,9 +184,9 @@ function incsub_support_insert_faq( $args = array() ) {
 	if ( ! $faq_id )
 		return new WP_Error( 'insert_error', __( 'Error inserting the FAQ element, please try again later.', INCSUB_SUPPORT_LANG_DOMAIN ) );
 
+	incsub_support_clean_faq_category_cache( $category );
 
 	do_action( 'support_system_insert_faq', $faq_id, $args );
-
 
 	return $faq_id;
 
@@ -249,7 +227,12 @@ function incsub_support_update_faq( $faq_id, $args ) {
 	if ( ! $result )
 		return false;
 
-	wp_cache_delete( $faq_id, 'support_system_faqs' );
+	incsub_support_clean_faq_cache( $faq_id );
+	if ( array_key_exists( 'cat_id', $update ) ) {
+		// Clean the old and new ctaegories cache
+		incsub_support_clean_faq_category_cache( $update['cat_id'] );
+		incsub_support_clean_faq_category_cache( $faq->cat_id );
+	}
 
 	$old_faq = $faq;
 	do_action( 'support_system_update_faq', $faq_id, $args, $old_faq );
@@ -296,7 +279,20 @@ function incsub_support_delete_faq( $faq_id ) {
     $old_faq = $faq;
     do_action( 'support_system_delete_faq', $faq_id, $old_faq );
 
-    wp_cache_delete( $faq_id, 'support_system_faqs' );
+    incsub_support_clean_faq_cache( $faq_id );
+    incsub_support_clean_faq_category_cache( $faq->cat_id );
 
     return true;
+}
+
+
+function incsub_support_clean_faq_cache( $faq ) {
+
+	$faq = incsub_support_get_faq( $faq );
+	if ( empty( $faq ) )
+		return;
+
+	wp_cache_delete( $faq->faq_id, 'support_system_faqs' );
+
+	do_action( 'support_system_clean_faq_cache', $faq );
 }

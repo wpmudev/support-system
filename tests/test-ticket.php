@@ -1,37 +1,10 @@
 <?php
 
 
-if ( ! defined( 'WPMUDEV_DIR' ) )
-    define( 'WPMUDEV_DIR', '/vagrant/www/wordpress-wpmudev/wp-content' );
-
-
-$plugin_file = WPMUDEV_DIR . '/plugins/incsub-support/incsub-support.php';
-if ( is_file( $plugin_file ) )
-    include_once $plugin_file;
-
-class Support_Ticket extends WP_UnitTestCase {  
-	function setUp() {  
-
-        global $plugin_file;
-
-		parent::setUp(); 
-
-		if ( ! file_exists( $plugin_file ) ) {
-			$this->markTestSkipped( 'Support plugin is not installed.' );
-		}
-
-        $_SERVER['SERVER_NAME'] = 'example.com';
-        $_SERVER['REMOTE_ADDR'] = '';
-
-        incsub_support()->activate();
-        incsub_support()->init_plugin();
-
-
-    } // end setup  
-
-    function tearDown() {
-        parent::tearDown();
-    }
+/**
+ * @group ticket
+ */
+class Support_Ticket extends Incsub_Support_UnitTestCase {  
 
     function test_insert_ticket() {
 
@@ -41,7 +14,6 @@ class Support_Ticket extends WP_UnitTestCase {
         );
         wp_set_current_user( $user_id );
 
-        
         $args = array(
             'ticket_priority' => 2,
             'admin_id' => 1,
@@ -101,7 +73,6 @@ class Support_Ticket extends WP_UnitTestCase {
 
 
     function test_update_ticket() {
-
         $new_user_id = $this->factory->user->create_object(
             $this->factory->user->generate_args()
         );
@@ -181,9 +152,25 @@ class Support_Ticket extends WP_UnitTestCase {
         
         $ticket_id_1 = incsub_support_insert_ticket( $args );
         $ticket_id_2 = incsub_support_insert_ticket( $args );
+        $ticket_id_3 = incsub_support_insert_ticket( $args );
 
         $result = incsub_support_get_tickets_count();
-        $this->assertEquals( $result, 2 );
+        $this->assertEquals( $result, 3 );
+
+        incsub_support_delete_ticket( $ticket_id_2 );
+
+        $tickets = incsub_support_get_tickets();
+        $this->assertCount( 2, $tickets );
+
+        $args = array( 'title' => 'New title' );
+        incsub_support_update_ticket( $ticket_id_1, $args );
+
+        $tickets = incsub_support_get_tickets();
+        $this->assertCount( 2, $tickets );        
+        $tickets = wp_list_filter( $tickets, array( 'ticket_id' => $ticket_id_1 ) );
+        $new_ticket_1 = $tickets[0];
+
+        $this->assertEquals( $new_ticket_1->title, 'New title' );
     }
 
 

@@ -68,6 +68,13 @@ class Incsub_Support_Ticket_Category {
 
 		$table = incsub_support()->model->tickets_table;
 
-		return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT( ticket_id ) FROM $table WHERE cat_id = %d", $this->cat_id ) );
+		$counts = wp_cache_get( $this->cat_id, 'support_system_ticket_categories_counts' );
+		if ( false === $counts ) {
+			$counts = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT( ticket_id ) FROM $table WHERE cat_id = %d", $this->cat_id ) );
+			wp_cache_add( $this->cat_id, $counts, 'support_system_ticket_categories_counts' );
+		}
+
+		return absint( $counts );
+		
 	}
 }

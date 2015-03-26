@@ -1,40 +1,9 @@
 <?php
 
-
-if ( ! defined( 'WPMUDEV_DIR' ) )
-    define( 'WPMUDEV_DIR', '/vagrant/www/wordpress-wpmudev/wp-content' );
-
-
-$plugin_file = WPMUDEV_DIR . '/plugins/incsub-support/incsub-support.php';
-if ( is_file( $plugin_file ) )
-    include_once $plugin_file;
-
 /**
- * @group faq_category
+ * @group faq
  */
-class Support_faq extends WP_UnitTestCase {  
-	function setUp() {  
-
-        global $plugin_file;
-
-		parent::setUp(); 
-
-		if ( ! file_exists( $plugin_file ) ) {
-			$this->markTestSkipped( 'Support plugin is not installed.' );
-		}
-
-        $_SERVER['SERVER_NAME'] = 'example.com';
-        $_SERVER['REMOTE_ADDR'] = '';
-
-        incsub_support()->activate();
-        incsub_support()->init_plugin();
-
-
-    } // end setup  
-
-    function tearDown() {
-        parent::tearDown();
-    }
+class Support_Faq extends Incsub_Support_UnitTestCase {  	
 
     function test_insert_faq() {
         
@@ -44,9 +13,6 @@ class Support_faq extends WP_UnitTestCase {
         );
 
         $faq_id = incsub_support_insert_faq( $args );
-
-        $this->assertNotInstanceOf( 'WP_Error', $faq_id );
-
         $faq = incsub_support_get_faq( $faq_id );
 
         $this->assertEquals( $faq->question, $args['question'] );
@@ -70,6 +36,7 @@ class Support_faq extends WP_UnitTestCase {
         incsub_support_update_faq( $faq_id, array( 'answer' => $new_answer ) );
 
         $faq = incsub_support_get_faq( $faq_id );
+
         $this->assertEquals( $faq->answer, $new_answer );
     }
 
@@ -111,6 +78,36 @@ class Support_faq extends WP_UnitTestCase {
         incsub_support_delete_faq( $faq_id );
 
         $this->assertFalse( incsub_support_get_faq( $faq_id ) );
+    }
+
+    function test_get_faqs() {
+        $args = array(
+            'question' => 'The question',
+            'answer' => 'The answer',
+        );
+        $faq_id_1 = incsub_support_insert_faq( $args );
+        $faq_id_2 = incsub_support_insert_faq( $args );
+        $faq_id_3 = incsub_support_insert_faq( $args );
+
+        $faq_1 = incsub_support_get_faq( $faq_id_1 );
+
+        $faqs = incsub_support_get_faqs();
+        $this->assertCount( 3, $faqs );
+        
+        incsub_support_delete_faq( $faq_id_2 );
+
+        $faqs = incsub_support_get_faqs();
+        $this->assertCount( 2, $faqs );
+
+        $args = array( 'answer' => 'New answer' );
+        incsub_support_update_faq( $faq_id_1, $args );
+
+        $faqs = incsub_support_get_faqs();
+        $this->assertCount( 2, $faqs );        
+        $faqs = wp_list_filter( $faqs, array( 'faq_id' => $faq_id_1 ) );
+        $new_faq_1 = $faqs[0];
+
+        $this->assertEquals( $new_faq_1->answer, 'New answer' );
     }
 
 

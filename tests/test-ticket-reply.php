@@ -1,37 +1,10 @@
 <?php
 
 
-if ( ! defined( 'WPMUDEV_DIR' ) )
-    define( 'WPMUDEV_DIR', '/vagrant/www/wordpress-wpmudev/wp-content' );
-
-
-$plugin_file = WPMUDEV_DIR . '/plugins/incsub-support/incsub-support.php';
-if ( is_file( $plugin_file ) )
-    include_once $plugin_file;
-
-class Support_Ticket extends WP_UnitTestCase {  
-	function setUp() {  
-
-        global $plugin_file;
-
-		parent::setUp(); 
-
-		if ( ! file_exists( $plugin_file ) ) {
-			$this->markTestSkipped( 'Support plugin is not installed.' );
-		}
-
-        $_SERVER['SERVER_NAME'] = 'example.com';
-        $_SERVER['REMOTE_ADDR'] = '';
-
-        incsub_support()->activate();
-        incsub_support()->init_plugin();
-
-
-    } // end setup  
-
-    function tearDown() {
-        parent::tearDown();
-    }
+/**
+ * @group ticket_reply
+ */
+class Support_Ticket_Reply extends Incsub_Support_UnitTestCase {  
 
     function test_insert_ticket_reply() {
 
@@ -81,8 +54,8 @@ class Support_Ticket extends WP_UnitTestCase {
 
         $ticket = incsub_support_get_ticket( $ticket_id );
 
-        $this->assertEquals( $ticket->last_reply_id, 0 );
-        $this->assertEquals( $ticket->num_replies, 0 );
+        $this->assertEquals( $ticket->last_reply_id, $reply_id );
+        $this->assertEquals( $ticket->num_replies, 1 );
     }
     
 }

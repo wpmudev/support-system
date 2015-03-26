@@ -46,6 +46,10 @@ function incsub_support_check_for_upgrades() {
 
 	$saved_version = get_site_option( 'incsub_support_version', false );
 
+	if ( $saved_version === false ) {
+		incsub_support()->activate();
+	}
+
 	if ( ! $saved_version || version_compare( $saved_version, INCSUB_SUPPORT_PLUGIN_VERSION ) < 0 ) {
 
 		$model = MU_Support_System_Model::get_instance();

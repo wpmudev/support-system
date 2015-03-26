@@ -63,42 +63,20 @@ function incsub_support_get_ticket_categories( $args = array() ) {
 
 	if ( $count ) {
 		$query = "SELECT COUNT(cat_id) FROM $table $where";
+		$results = $wpdb->get_var( $query );
 
-		$key = md5( $query );
-		$cache_key = "incsub_support_get_ticket_categories_count:$key";
-		$results = wp_cache_get( $cache_key, 'support_system_ticket_categories' );
-
-		if ( $results === false ) {
-			$results = $wpdb->get_var( $query );
-			wp_cache_set( $cache_key, $results, 'support_system_ticket_categories' );
-		}
-
-		return $results;
+		$cats = apply_filters( 'support_system_get_ticket_categories_count', $results, $args );
 	}
 	else {
 		$query = "SELECT cat_id, cat_name, defcat, user_id FROM $table $where $order $limit";
-
-		$key = md5( $query );
-		$cache_key = "incsub_support_get_ticket_categories:$key";
-		$_cats = wp_cache_get( $cache_key, 'support_system_ticket_categories' );
-
-		if ( $_cats === false ) {
-			$_cats = $wpdb->get_results( $query );
-			wp_cache_set( $cache_key, $_cats, 'support_system_ticket_categories' );
-		}
-
-		$cats = array();
-		foreach ( $_cats as $cat ) {
-			$cats[] = incsub_support_get_ticket_category( $cat );
-		}
+		$_cats = $wpdb->get_results( $query );
+		$cats = array_map( 'incsub_support_get_ticket_category', $_cats );
 		
 		if ( empty( $cats ) )
-			return array();
+			$cats = array();
 
-		return $cats;
+		$cats = apply_filters( 'support_system_get_ticket_categories', $cats, $args );
 	}
-
-	$cats = apply_filters( 'support_system_get_ticket_categories', $cats, $args );
 
 	return $cats;
 }
@@ -215,8 +193,7 @@ function incsub_support_update_ticket_category( $ticket_category_id, $args = arr
 
 	if ( $defcat )
 		incsub_support_set_default_ticket_category( $ticket_category_id );
-
-	wp_cache_delete( $ticket_category_id, 'support_system_ticket_categories' );
+	
 
 	$result = $wpdb->update(
 		$tickets_cats_table,
@@ -228,6 +205,8 @@ function incsub_support_update_ticket_category( $ticket_category_id, $args = arr
 
 	if ( ! $result )
 		return false;
+
+	incsub_support_clean_ticket_category_cache( $ticket_category_id );
 
 	$old_ticket_category = $ticket_category;
 	do_action( 'support_system_update_ticket_category', $ticket_category_id, $args, $old_ticket_category );
@@ -275,7 +254,8 @@ function incsub_support_set_default_ticket_category( $ticket_category_id ) {
 	);
 
 	wp_cache_delete( 'support_system_default_ticket_category', 'support_system_ticket_categories' );
-	wp_cache_delete( $ticket_category_id, 'support_system_ticket_categories' );
+	incsub_support_clean_ticket_category_cache( $ticket_category_id );
+	incsub_support_clean_ticket_category_cache( $default_category->cat_id );
 
 	if ( ! $result )
 		return false;
@@ -312,10 +292,22 @@ function incsub_support_delete_ticket_category( $ticket_category_id ) {
 
 	$wpdb->query( $wpdb->prepare( "DELETE FROM $tickets_cats_table WHERE cat_id = %d", $ticket_category_id ) );
 
-	wp_cache_delete( $ticket_category_id, 'support_system_ticket_categories' );
+	incsub_support_clean_ticket_category_cache( $ticket_category_id );
 
 	$old_ticket_category = $ticket_category;
 	do_action( 'support_system_delete_ticket_category', $ticket_category_id, $old_ticket_category );
 
 	return true;
+}
+
+function incsub_support_clean_ticket_category_cache( $ticket_category ) {
+	$ticket_category = incsub_support_get_ticket_category( $ticket_category );
+
+	if ( empty( $ticket_category ) )
+		return;
+
+	wp_cache_delete( $ticket_category->cat_id, 'support_system_ticket_categories' );
+	wp_cache_delete( $ticket_category->cat_id, 'support_system_ticket_categories_counts' );
+
+	do_action( 'support_system_clean_ticket_category_cache', $ticket_category );
 }

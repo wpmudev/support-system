@@ -248,6 +248,18 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 
 		}
 
+		public function drop_tables() {
+			global $wpdb;
+			
+			$wpdb->query( "DROP TABLE $this->faq_table" );
+			$wpdb->query( "DROP TABLE $this->faq_cats_table" );
+			$wpdb->query( "DROP TABLE $this->tickets_table" );
+			$wpdb->query( "DROP TABLE $this->ticketmeta" );
+			$wpdb->query( "DROP TABLE $this->tickets_messages_table" );
+			$wpdb->query( "DROP TABLE $this->tickets_cats_table" );
+
+		}
+
 		public function upgrade_1981() {
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 			$this->create_faq_cats_table();

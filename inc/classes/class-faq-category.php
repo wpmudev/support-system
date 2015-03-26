@@ -29,7 +29,7 @@ class Incsub_Support_faq_Category {
 		$table = incsub_support()->model->faq_cats_table;
 		$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
 
-		$_cat = wp_cache_get( $faq_id, 'support_system_faq_category' );
+		$_cat = wp_cache_get( $faq_id, 'support_system_faq_categories' );
 
 		if ( ! $_cat ) {
 			$_cat = $wpdb->get_row( 
@@ -45,7 +45,7 @@ class Incsub_Support_faq_Category {
 			if ( ! $_cat )
 				return false;
 
-			wp_cache_set( $_cat->cat_id, $_cat, 'support_system_faq_category' );
+			wp_cache_add( $_cat->cat_id, $_cat, 'support_system_faq_categories' );
 		}
 
 		$_cat = new self( $_cat );
@@ -74,6 +74,13 @@ class Incsub_Support_faq_Category {
 
 		$table = incsub_support()->model->faq_table;
 
-		return $wpdb->get_var( $wpdb->prepare( "SELECT COUNT( faq_id ) FROM $table WHERE cat_id = %d", $this->cat_id ) );
+		$counts = wp_cache_get( $this->cat_id, 'support_system_faq_categories_counts' );
+		if ( false === $counts ) {
+			$counts = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT( faq_id ) FROM $table WHERE cat_id = %d", $this->cat_id ) );	
+			wp_cache_add( $this->cat_id, $counts, 'support_system_faq_categories_counts' );
+		}
+
+		return absint( $counts );
+		
 	}
 }

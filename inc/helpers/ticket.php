@@ -152,38 +152,13 @@ function incsub_support_get_tickets( $args = array() ) {
 	$tickets = array();
 	if ( $count ) {
 		$query = "SELECT COUNT(tickets.ticket_id) FROM (SELECT t.ticket_id FROM $tickets_table t $join $where $group) tickets";
-
-		$key = md5( $query );
-		$cache_key = "incsub_support_get_tickets_count:$key";
-		$results = wp_cache_get( $cache_key, 'support_system_tickets' );
-
-		if ( $results === false ){
-			$results = $wpdb->get_var( $query );
-			wp_cache_set( $cache_key, $results, 'support_system_tickets' );
-		}
-
+		$results = $wpdb->get_var( $query );
 		$tickets = $results;
 	}
 	else {
 		$query = "SELECT t.* FROM $tickets_table t $join $where $group $order_query $limit";
-
-		$key = md5( $query );
-		$cache_key = "incsub_support_get_tickets:$key";
-		$results = wp_cache_get( $cache_key, 'support_system_tickets' );
-
-		if ( $results === false ) {
-			$results = $wpdb->get_results( $query );
-			if ( empty( $results ) )
-				return array();
-			wp_cache_set( $cache_key, $results, 'support_system_tickets' );
-		}
-
-		$tickets = array();
-		foreach ( $results as $result ) {
-			$tickets[] = incsub_support_get_ticket( $result );
-		}
-
-		
+		$results = $wpdb->get_results( $query );
+		$tickets = array_map( 'incsub_support_get_ticket', $results );
 	}
 
 	$tickets = apply_filters( 'support_system_get_tickets', $tickets, $args );
@@ -341,7 +316,8 @@ function incsub_support_delete_ticket( $ticket_id ) {
 
 	do_action( 'support_system_delete_ticket', $ticket_id, $old_ticket );
 
-	wp_cache_delete( $ticket_id, 'support_system_tickets' );
+	incsub_support_clean_ticket_cache( $ticket_id );
+	incsub_support_clean_ticket_category_cache( $ticket->cat_id );
 
 	return true;
 }
@@ -388,7 +364,12 @@ function incsub_support_update_ticket( $ticket_id, $args ) {
 	if ( ! $result )
 		return false;
 
-	wp_cache_delete( $ticket_id, 'support_system_tickets' );
+	incsub_support_clean_ticket_cache( $ticket_id );
+	if ( array_key_exists( 'cat_id', $update ) ) {
+		// Clean the old and new ctaegories cache
+		incsub_support_clean_ticket_category_cache( $update['cat_id'] );
+		incsub_support_clean_ticket_category_cache( $ticket->cat_id );
+	}
 
 	$old_ticket = $ticket;
 	do_action( 'support_system_update_ticket', $ticket_id, $args, $old_ticket );
@@ -560,6 +541,8 @@ function incsub_support_insert_ticket( $args = array() ) {
 		return new WP_Error( 'insert_error', __( 'Error inserting the ticket, please try again later.', INCSUB_SUPPORT_LANG_DOMAIN ) );
 	}
 
+	incsub_support_clean_ticket_category_cache( $category );
+
 	do_action( 'support_system_insert_ticket', $ticket_id, $args );
 
 	return $ticket_id;
@@ -674,4 +657,14 @@ function incsub_support_update_ticket_meta( $ticket_id, $meta_key, $meta_value, 
 
 function incsub_support_delete_ticket_meta( $ticket_id, $meta_key, $meta_value = '' ) {
 	return delete_metadata( 'support_ticket', $ticket_id, $meta_key, $meta_value );
+}
+
+function incsub_support_clean_ticket_cache( $ticket ) {
+	$ticket = incsub_support_get_ticket( $ticket );
+	if ( ! $ticket )
+		return;
+
+	wp_cache_delete( $ticket->ticket_id, 'support_system_tickets' );
+
+	do_action( 'support_system_clean_ticket_cache', $ticket );
 }
