@@ -9,6 +9,9 @@ $plugin_file = WPMUDEV_DIR . '/plugins/incsub-support/incsub-support.php';
 if ( is_file( $plugin_file ) )
     include_once $plugin_file;
 
+/**
+ * @group faq_category
+ */
 class Support_faq extends WP_UnitTestCase {  
 	function setUp() {  
 
