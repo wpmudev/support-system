@@ -6,7 +6,6 @@ class Incsub_Support_FAQs_Shortcode extends Incsub_Support_Shortcode {
 	}
 
 	public function render( $atts ) {
-		var_dump(incsub_support()->query);
 		$this->start();
 
 		if ( ! incsub_support_current_user_can( 'read_faq' ) ) {
