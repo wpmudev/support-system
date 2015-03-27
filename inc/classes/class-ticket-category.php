@@ -16,28 +16,7 @@ class Incsub_Support_Ticket_Category {
 			return $cat;
 		}
 
-		if ( is_string( $ticket_category ) ) {
-			// Looking for name
-			
-			$table = incsub_support()->model->tickets_cats_table;
-			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
-			
-			$_cat = $wpdb->get_row( 
-				$wpdb->prepare(
-					"SELECT *
-					FROM $table 
-					WHERE cat_name = %s
-					AND site_id = %d
-					LIMIT 1", 
-					$ticket_category,
-					$current_site_id
-				) 
-			);
-
-			if ( ! $_cat )
-				return false;
-		}
-		else {
+		if ( is_numeric( $ticket_category ) ) {
 			$cat_id = absint( $ticket_category );
 			if ( ! $cat_id )
 				return false;
@@ -64,6 +43,28 @@ class Incsub_Support_Ticket_Category {
 					return false;
 
 			}	
+		}
+		else {
+			// Looking for name
+			
+			$table = incsub_support()->model->tickets_cats_table;
+			$current_site_id = ! empty ( $current_site ) ? $current_site->id : 1;
+			
+			$_cat = $wpdb->get_row( 
+				$wpdb->prepare(
+					"SELECT *
+					FROM $table 
+					WHERE cat_name = %s
+					AND site_id = %d
+					LIMIT 1", 
+					$ticket_category,
+					$current_site_id
+				) 
+			);
+
+			if ( ! $_cat )
+				return false;
+			
 		}
 	
 		wp_cache_add( $_cat->cat_id, $_cat, 'support_system_ticket_categories' );		
