@@ -153,13 +153,14 @@ class Incsub_Support_Ticket {
 	}
 
 	public function get_staff_login() {
-		$user = get_userdata( $this->admin_id );
+		$user = get_userdata( $this->admin_id );		
 
 		if ( ! $user )
-			return false;
+			return __( 'Not yet assigned', INCSUB_SUPPORT_LANG_DOMAIN );
 
 		return $user->user_login;
 	}
+
 
 	public function get_user_name() {
 		$user = get_userdata( $this->user_id );

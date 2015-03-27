@@ -352,6 +352,10 @@ function incsub_support_the_ticket_staff_name() {
 	return incsub_support()->query->item->get_staff_name();
 }
 
+function incsub_support_the_ticket_staff_login() {
+	return incsub_support()->query->item->get_staff_login();
+}
+
 /** GENERIC FUNCTIONS */
 function incsub_support_the_items_number() {
 	return incsub_support()->query->found_items;

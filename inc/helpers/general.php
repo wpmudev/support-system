@@ -94,9 +94,10 @@ function incsub_support_super_admins_dropdown( $args = array() ) {
 				<option value="" <?php selected( empty( $selected ) ); ?>><?php echo esc_html( $show_empty ); ?></option>
 			<?php endif; ?>
 			<?php foreach ( $super_admins as $key => $user_name ): ?>
+				<?php $user = get_user_by( 'login', $user_name ); ?>
 				<?php $option_value = $value === 'username' ? $user_name : $key; ?>
 				<?php $option_selected = selected( $selected, $option_value, false ); ?>
-				<option value="<?php echo esc_attr( $option_value ); ?>" <?php echo $option_selected; ?>><?php echo $user_name; ?></option>
+				<option value="<?php echo esc_attr( $option_value ); ?>" <?php echo $option_selected; ?>><?php echo $user->display_name; ?></option>
 			<?php endforeach; ?>
 		</select>
 	<?php

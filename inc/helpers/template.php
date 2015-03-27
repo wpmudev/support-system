@@ -457,7 +457,7 @@ function incsub_support_the_staff_box( $args = array() ) {
 							array( 
 								'show_empty' => __( 'Not yet assigned', INCSUB_SUPPORT_LANG_DOMAIN ), 
 								'name' => 'ticket-staff' ,
-								'selected' => incsub_support_the_ticket_staff_name()
+								'selected' => incsub_support_the_ticket_staff_login()
 							) 
 						); ?>
 					</label>
