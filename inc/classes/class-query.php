@@ -128,10 +128,6 @@ class Incsub_Support_Query {
 			}
 			$this->is_support_system = true;
 		}
-		elseif( $post_id == $settings['incsub_support_create_new_ticket_page'] ) {
-			$this->is_submit_ticket_page = true;
-			$this->is_support_system = true;
-		}
 		elseif( $post_id == $settings['incsub_support_faqs_page'] ) {
 			$this->is_faqs_page = true;
 			$this->is_support_system = true;
@@ -143,6 +139,11 @@ class Incsub_Support_Query {
 				$this->is_search = true;
 				$this->search = $s;
 			}
+		}
+
+		if( $post_id == $settings['incsub_support_create_new_ticket_page'] ) {
+			$this->is_submit_ticket_page = true;
+			$this->is_support_system = true;
 		}
 
 		$page = $this->get_query_var( 'support-system-page' );

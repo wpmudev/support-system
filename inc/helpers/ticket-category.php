@@ -133,12 +133,14 @@ function incsub_support_insert_ticket_category( $name, $user_id = false ) {
 	$tickets_cats_table = incsub_support()->model->tickets_cats_table;
 
 	$user_id = $user_id === false ? get_current_user_id() : absint( $user_id );
-
-	$name = trim( $name );
+	
+	$name = trim( wp_unslash( $name ) );
 	if ( empty( $name ) )
 		return false;
 
-	$name = wp_unslash( $name );
+	$ticket_category = incsub_support_get_ticket_category( $name );
+	if ( $ticket_category )
+		return false;
 
 	$res = $wpdb->insert(
 		$tickets_cats_table,

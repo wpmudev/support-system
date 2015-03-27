@@ -125,5 +125,12 @@ class Support_Faq_Category extends Incsub_Support_UnitTestCase {
         $this->assertEquals( 2, $default_category->get_faqs_count() );
     }
 
+    function test_insert_duplicated_faq_category() {
+        $cat_id = incsub_support_insert_faq_category( 'A category' );
+        $cat_id = incsub_support_insert_faq_category( 'A category' );
+
+        $this->assertFalse( $cat_id );
+    }
+
     
 }

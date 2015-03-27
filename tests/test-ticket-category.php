@@ -140,5 +140,12 @@ class Support_Ticket_Category extends Incsub_Support_UnitTestCase {
         $this->assertEquals( 2, $default_category->get_tickets_count() );
     }
 
+    function test_insert_duplicated_ticket_category() {
+        $cat_id = incsub_support_insert_ticket_category( 'A category' );
+        $cat_id = incsub_support_insert_ticket_category( 'A category' );
+
+        $this->assertFalse( $cat_id );
+    }
+
     
 }

@@ -140,11 +140,13 @@ function incsub_support_insert_faq_category( $name ) {
 
 	$faq_cats_table = incsub_support()->model->faq_cats_table;
 
-	$name = trim( $name );
+	$name = trim( wp_unslash( $name ) );
 	if ( empty( $name ) )
 		return false;
 
-	$name = wp_unslash( $name );
+	$faq_category = incsub_support_get_faq_category( $name );
+	if ( $faq_category )
+		return false;
 
 	$res = $wpdb->insert(
 		$faq_cats_table,
