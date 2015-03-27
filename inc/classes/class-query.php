@@ -131,7 +131,7 @@ class Incsub_Support_Query {
 		elseif( $post_id == $settings['incsub_support_faqs_page'] ) {
 			$this->is_faqs_page = true;
 			$this->is_support_system = true;
-			if ( $cat_id =$this->get_query_var( 'cat-id' ) ) {
+			if ( $cat_id = $this->get_query_var( 'cat-id' ) ) {
 				$this->category_id = absint( $cat_id );
 			}
 
@@ -149,6 +149,8 @@ class Incsub_Support_Query {
 		$page = $this->get_query_var( 'support-system-page' );
 		if ( ! empty( $page ) )
 			$this->page = absint( $page );
+
+		do_action_ref_array( 'support_system_parse_query', array( &$this ) );
 
 	}
 
