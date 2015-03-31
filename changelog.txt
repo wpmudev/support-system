@@ -3,12 +3,21 @@ Author: WPMU DEV
 Tags: support, ticket, faq
 Requires at least: 3.9
 Tested up to: 4.1
-Stable tag: 2.1.4
+Stable tag: 2.1.5
 
 
 Change Log:
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
+
+2.1.5 - 2015-03-30
+----------------------------------------------------------------------
+- Fixed: Staff dropdown was not selecting the right person
+- Fixed: Issue when getting a FAQ/Ticket Category using a numeric value inside
+- Enhancement: Added new filter to hook the Support System Query Parse function
+- Fixed: Issues when FAQs shortcode and Submit new ticket shortcode were in the same page
+- Fixed: MySQL Error when 2 ticket/FAQ categories were inserted with the same name
+- Fixed: Cache system for tickets/faqs and categories
 
 2.1.4 - 2015-03-16
 ----------------------------------------------------------------------
