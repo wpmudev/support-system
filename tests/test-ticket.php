@@ -173,6 +173,84 @@ class Support_Ticket extends Incsub_Support_UnitTestCase {
         $this->assertEquals( $new_ticket_1->title, 'New title' );
     }
 
+    function test_user_ticket_url() {
+        
+        // Create a page for the front end
+        $page_args = $this->factory->post->generate_args();
+        $page_args['post_type'] = 'page';
+        $tickets_page_id = $this->factory->post->create_object( $page_args );
+
+        // Create a subscriber
+        $subscriber_id = $this->factory->user->create_object( $this->factory->user->generate_args() );
+        $admin_args = $this->factory->user->generate_args();
+        $admin_args['role'] = 'administrator';
+        $admin_id = $this->factory->user->create_object( $admin_args );
+
+        $settings = incsub_support_get_settings();
+
+        $args = array(
+            'title' => 'Ticket title',
+            'message' => 'Ticket message',
+        );
+        $ticket_id = incsub_support_insert_ticket( $args );
+        $ticket = incsub_support_get_ticket( $ticket_id );
+
+        $url = incsub_support_get_user_ticket_url( $ticket_id );
+
+        // No frontend settings, user is not logged in
+        $this->assertFalse( $url );
+
+        // Let's login an administrator
+        wp_set_current_user( $admin_id );
+        $url = incsub_support_get_user_ticket_url( $ticket_id );
+        $expected = add_query_arg(
+            array( 
+                'tid' => $ticket->ticket_id,
+                'page' => 'ticket-manager',
+                'action' => 'edit'
+            ),
+            get_admin_url( $ticket->blog_id, 'admin.php' )
+        );
+
+        $this->assertEquals( $expected, $url );
+
+        // Let's login a subscriber. The URL should be the same
+        wp_set_current_user( $subscriber_id );
+        $url = incsub_support_get_user_ticket_url( $ticket_id );
+        $this->assertEquals( $expected, $url );
+
+        // Now remove the subscriber from Support roles
+        $settings['incsub_support_tickets_role'] = array(
+            "administrator",
+            "editor",
+            "author",
+            "contributor"
+        );
+        incsub_support_update_settings( $settings );
+
+        // URL should be false now
+        $url = incsub_support_get_user_ticket_url( $ticket_id );
+        $this->assertFalse( $url );
+
+
+        // Set the frontend page
+        $settings['incsub_support_blog_id'] = get_current_blog_id();
+        $settings['incsub_support_support_page'] = $tickets_page_id;
+        incsub_support_update_settings( $settings );
+
+        // Let's login an administrator
+        wp_set_current_user( $admin_id );
+        $url = incsub_support_get_user_ticket_url( $ticket_id );
+
+        $this->assertEquals( add_query_arg( 'tid', $ticket->ticket_id, get_permalink( $tickets_page_id ) ), $url );   
+
+        // Let's login a subscriber. The URL should be false now
+        wp_set_current_user( $subscriber_id );
+        $url = incsub_support_get_user_ticket_url( $ticket_id );
+        $this->assertFalse( $url );     
+
+    }
+
 
 
     

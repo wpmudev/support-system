@@ -39,16 +39,9 @@ function incsub_support_send_user_new_ticket_mail( $ticket_id ) {
 
 	$headers = incsub_support_get_email_headers();
 
-	$visit_link = get_admin_url( $ticket->blog_id, 'admin.php' );
-	$visit_link = add_query_arg(
-		array( 
-			'tid' => $ticket->ticket_id,
-			'page' => 'ticket-manager',
-			'action' => 'edit',
-			'tab' => 'history'
-		),
-		$visit_link
-	);
+	$visit_link = incsub_support_get_user_ticket_url( $ticket->ticket_id, $ticket->user_id );
+	if ( ! $visit_link )
+		return;
 
 	$plugin = incsub_support();
 	$args = array(
@@ -201,15 +194,9 @@ function incsub_support_send_user_reply_mail( $ticket, $reply ) {
 
 	$headers = incsub_support_get_email_headers();
 
-	$visit_link = get_admin_url( $ticket->blog_id, 'admin.php' );
-	$visit_link = add_query_arg(
-		array( 
-			'tid' => $ticket->ticket_id,
-			'page' => 'ticket-manager',
-			'action' => 'edit'
-		),
-		$visit_link
-	);
+	$visit_link = incsub_support_get_user_ticket_url( $ticket->ticket_id, $ticket->user_id );
+	if ( ! $visit_link )
+		return;
 
 	if ( is_multisite() ) {
 		switch_to_blog( $ticket->blog_id );
@@ -307,15 +294,9 @@ function incsub_support_send_user_closed_mail( $ticket_id ) {
 	
 	$headers = incsub_support_get_email_headers();
 
-	$visit_link = get_admin_url( $ticket->blog_id, 'admin.php' );
-	$visit_link = add_query_arg(
-		array( 
-			'tid' => $ticket->ticket_id,
-			'page' => 'ticket-manager',
-			'action' => 'edit'
-		),
-		$visit_link
-	);
+	$visit_link = incsub_support_get_user_ticket_url( $ticket->ticket_id, $ticket->user_id );
+	if ( ! $visit_link )
+		return;
 
 	// Email arguments
 	$args = array(

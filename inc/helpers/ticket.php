@@ -668,3 +668,89 @@ function incsub_support_clean_ticket_cache( $ticket ) {
 
 	do_action( 'support_system_clean_ticket_cache', $ticket );
 }
+
+/**
+ * Return a ticket URL based on a user ID
+ * 
+ * Tickets can be displayed on frontend or not and user may have permissions or not.
+ * This function tries to find a ticket URL depending on the user capabilities.
+ * 
+ * @param  Integer  $ticket_id Ticket ID
+ * @param  Mixed $user_id   User ID/default false
+ * @return String             Ticket URL
+ */
+function incsub_support_get_user_ticket_url( $ticket_id, $user_id = false ) {
+	if ( ! $user_id )
+		$user_id = get_current_user_id();
+
+	$ticket = incsub_support_get_ticket( $ticket_id );
+	if ( ! $ticket )
+		return false;
+
+	$settings = incsub_support_get_settings();
+
+	$support_blog_id = get_current_blog_id();
+	if ( is_multisite() ) {
+		$support_blog_id = $settings['incsub_support_blog_id'];
+		switch_to_blog( $support_blog_id );
+		$support_page = get_post( $settings['incsub_support_support_page'] );
+		restore_current_blog();
+	}
+	else {
+		$support_page = get_post( $settings['incsub_support_support_page'] );
+	}
+
+	// Check the user role
+	$user_can = incsub_support_user_can( $user_id, 'read_ticket' );
+	if ( ! $user_can )
+		return false;
+
+	$url  = false;
+
+	if ( $settings['incsub_support_support_page'] && $support_page ) {
+		// The tickets are in the frontend
+		$url = incsub_support_get_the_ticket_permalink( $ticket_id );
+	}
+	else {
+		// The tickets are in the admin side
+
+		$url = get_admin_url( $ticket->blog_id, 'admin.php' );
+		$url = add_query_arg(
+			array( 
+				'tid' => $ticket->ticket_id,
+				'page' => 'ticket-manager',
+				'action' => 'edit'
+			),
+			$url
+		);
+	}
+
+	return $url;
+}
+
+function incsub_support_get_the_ticket_permalink( $ticket_id = false ) {
+	if ( $ticket_id ) {
+		$ticket = incsub_support_get_ticket( $ticket_id );
+		if ( ! $ticket )
+			return '';
+
+		$blog_id = incsub_support_get_setting( 'incsub_support_blog_id' );
+		if ( is_multisite() )
+			switch_to_blog( $blog_id );
+
+		$support_page_id = incsub_support_get_setting( 'incsub_support_support_page' );
+		$url = get_permalink( $support_page_id );
+
+		if ( is_multisite() )
+			restore_current_blog();
+
+		if ( ! $url )
+			return '';
+
+		return add_query_arg( 'tid', $ticket->ticket_id, $url );
+	}
+	
+	$ticket = incsub_support()->query->item;	
+	$url = add_query_arg( 'tid', $ticket->ticket_id );
+	return $url;
+}

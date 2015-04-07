@@ -46,6 +46,7 @@ class Incsub_Support_Admin {
 
 		if ( is_multisite() ) {
 			if ( is_network_admin() && incsub_support_current_user_can( 'manage_options' ) ) {
+
 				/**
 				 * Filters the Support System Menus
 				 * 

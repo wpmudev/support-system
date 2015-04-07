@@ -230,11 +230,6 @@ function incsub_support_get_the_ticket_class() {
 	return apply_filters( 'support_system_the_ticket_class', implode( ' ', $class ) );
 }
 
-function incsub_support_get_the_ticket_permalink() {
-	$ticket = incsub_support()->query->item;
-	$url = add_query_arg( 'tid', $ticket->ticket_id );
-	return $url;
-}
 
 function incsub_support_get_the_ticket_title() {
 	return incsub_support()->query->item->title;
