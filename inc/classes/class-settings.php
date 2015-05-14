@@ -38,6 +38,7 @@ class Incsub_Support_Settings {
 	public function get_default_settings() {
 		$plugin = incsub_support();
 		$super_admins = call_user_func( array( $plugin, 'get_super_admins' ) );
+		$main_super_admin = ! empty( $super_admins ) ? key( $super_admins ) : false;
 		return apply_filters( 'support_system_default_settings', array(
 			'incsub_support_menu_name' => __( 'Support', INCSUB_SUPPORT_LANG_DOMAIN ),
 			'incsub_support_from_name' => get_bloginfo( 'blogname' ),
@@ -47,7 +48,7 @@ class Incsub_Support_Settings {
 			'incsub_ticket_privacy' => 'all',
 			'incsub_support_tickets_role' => array( 'administrator', 'editor', 'author', 'contributor', 'subscriber' ),
 			'incsub_support_faqs_role' => array( 'administrator', 'editor', 'author', 'contributor', 'subscriber' ),
-			'incsub_support_main_super_admin' => key( $super_admins ), //First of the Super Admins
+			'incsub_support_main_super_admin' => $main_super_admin, //First of the Super Admins
 			'incsub_support_support_page' => 0,
 			'incsub_support_create_new_ticket_page' => 0,
 			'incsub_support_faqs_page' => 0,

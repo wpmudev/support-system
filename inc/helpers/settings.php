@@ -28,25 +28,3 @@ function incsub_support_get_support_page_url() {
 	return false;
 }
 
-function incsub_support_is_support_page() {
-	if ( is_multisite() ) {
-		$blog_id = incsub_support()->settings->get( 'incsub_support_blog_id' );
-		if ( $blog_id != get_current_blog_id() )
-			return false;
-	}
-	
-	$page = incsub_support()->settings->get( 'incsub_support_support_page' );
-	return get_the_ID() == $page;
-}
-
-function incsub_support_is_new_ticket_page() {
-	if ( is_multisite() ) {
-		$blog_id = incsub_support()->settings->get( 'incsub_support_blog_id' );
-		if ( $blog_id != get_current_blog_id() )
-			return false;
-	}
-
-	$page = incsub_support()->settings->get( 'incsub_support_create_new_ticket_page' );
-	return get_the_ID() == $page;
-}
-

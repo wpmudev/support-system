@@ -12,7 +12,7 @@
 					<input type="submit" class="button small" name="support-system-submit-filter" value="<?php esc_attr_e( 'Filter' , INCSUB_SUPPORT_LANG_DOMAIN ); ?>"/>
 				</div>
 				<div class="large-3 columns">
-					<h5 class="support-system-items-count text-right"><?php printf( __( '%d FAQs', INCSUB_SUPPORT_LANG_DOMAIN ), incsub_support_the_items_number() ); ?></h5>
+					<h5 class="support-system-items-count text-right"><?php printf( __( '%d FAQs', INCSUB_SUPPORT_LANG_DOMAIN ), incsub_support_the_faqs_number() ); ?></h5>
 				</div>
 			</div>
 			

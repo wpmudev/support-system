@@ -6,10 +6,10 @@
 
 	<hr/>
 
-	<?php if ( incsub_support_has_items() ): ?>
+	<?php if ( incsub_support_has_faqs() ): ?>
 
 		<ul class="accordion support-system-faqs-list" data-accordion>
-			<?php while ( incsub_support_has_items() ): incsub_support_the_item(); ?>
+			<?php while ( incsub_support_has_faqs() ): incsub_support_the_faq(); ?>
 				<li class="accordion-navigation support-system-faq <?php echo esc_attr( incsub_support_get_the_faq_class() ); ?>" id="support-faq-<?php echo incsub_support_get_the_faq_id(); ?>">
 					<a class="clearfix" href="#panel-<?php echo incsub_support_get_the_faq_id(); ?>">
 						<h3 class="support-system-faq-title"><?php echo incsub_support_get_the_faq_question(); ?></h3>

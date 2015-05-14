@@ -72,7 +72,7 @@
 
 			filter_button.hide();
 		}
-	}
+	};
 }(jQuery, window, window.document));
 
 ;(function ($, window, document, undefined) {
@@ -128,7 +128,7 @@
 				$(this)
 					.append( list )
 					.append( button )
-					.append( settings.description )
+					.append( settings.description );
 					
 			});
 	      	
@@ -212,7 +212,7 @@
 					vote: vote,
 					faq_id: faq_id,
 					action: 'vote_faq_question'
-				}
+				};
 
 				$.post( support_system_strings.ajaxurl, data, function(response) {
 					loader.hide();

@@ -49,7 +49,7 @@ function support_system_get_template_locations() {
 }
 
 function incsub_support_get_the_ticket_attachments() {
-	$ticket_id = incsub_support()->query->item->ticket_id;
+	$ticket_id = incsub_support()->query->ticket->ticket_id;
 	$ticket = incsub_support_get_ticket( $ticket_id );
 
 	if ( ! $ticket )
@@ -61,7 +61,7 @@ function incsub_support_get_the_ticket_attachments() {
 }
 
 function incsub_support_ticket_replies() {
-	$ticket_id = incsub_support()->query->item->ticket_id;
+	$ticket_id = incsub_support()->query->ticket->ticket_id;
 	incsub_support_get_template( 'ticket-replies', $ticket_id );
 }
 
@@ -90,7 +90,7 @@ function incsub_support_reply_form() {
 }
 
 function incsub_support_list_replies( $args = array() ) {
-	$replies = incsub_support()->query->item->get_replies();
+	$replies = incsub_support()->query->ticket->get_replies();
 
 	// Remove the main reply
 	unset( $replies[0] );
@@ -171,28 +171,26 @@ function incsub_support_get_the_reply_attachments() {
 }
 
 function incsub_support_the_ticket_category_filter( $class = '' ) {
-	$selected = '';
-	if ( ! empty( $_REQUEST['cat-id'] ) && incsub_support_get_ticket_category( absint(  $_REQUEST['cat-id'] ) ) ) 
-		$selected = absint( $_REQUEST['cat-id'] );
+	$selected = incsub_support_get_queried_ticket_category_id();
 
 	$args = array(
 		'class' => $class,
 		'selected' => $selected,
-		'name' => 'cat-id'
+		'name' => 'ticket-cat-id',
+		'id' => 'cat-id'
 	);
 
 	incsub_support_ticket_categories_dropdown( $args );
 }
 
 function incsub_support_the_faq_category_filter( $class = '' ) {
-	$selected = '';
-	if ( ! empty( $_REQUEST['cat-id'] ) && incsub_support_get_faq_category( absint( $_REQUEST['cat-id'] ) ) ) 
-		$selected = absint( $_REQUEST['cat-id'] );
+	$selected = incsub_support_get_queried_faq_category_id();
 
 	$args = array(
 		'class' => $class,
 		'selected' => $selected,
-		'name' => 'cat-id'
+		'name' => 'faq-cat-id',
+		'id' => 'cat-id'
 	);
 
 	incsub_support_faq_categories_dropdown( $args );
@@ -207,9 +205,19 @@ function incsub_support_the_search_input( $args = array() ) {
 	$args = wp_parse_args( $args, $defaults );
 	extract( $args );
 
-	$search = ! empty( $_REQUEST['support-system-s'] ) ? stripslashes( $_REQUEST['support-system-s'] ) : '';
+	
+
+	if ( incsub_support_is_faqs_page() ) {
+		$search = incsub_support_get_the_faqs_search_query();
+		$name = 'support-system-faq-s';
+	}
+	else {
+		$search = incsub_support_get_the_tickets_search_query();
+		$name = 'support-system-ticket-s';
+	}
+
 	?>
-		<input type="text" placeholder="<?php esc_attr_e( $placeholder ); ?>" name="support-system-s" class="<?php echo esc_attr( $class ); ?>" value="<?php echo esc_attr( $search ); ?>"/>
+		<input type="text" placeholder="<?php esc_attr_e( $placeholder ); ?>" name="<?php echo $name; ?>" class="<?php echo esc_attr( $class ); ?>" value="<?php echo esc_attr( $search ); ?>"/>
 	<?php
 }
 
@@ -218,7 +226,7 @@ function incsub_support_paginate_links( $args = '' ) {
 	global $wp_query, $wp_rewrite;
 
 	$total = isset( incsub_support()->query->total_pages ) ? incsub_support()->query->total_pages : 0;
-	$current = isset( incsub_support()->query->page ) ? incsub_support()->query->page : 1;
+	$current = isset( incsub_support()->query->tickets_page ) ? incsub_support()->query->tickets_page : 1;
 
 	$current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
 	$pagenum_link = html_entity_decode( remove_query_arg( 'support-system-page', $current_url ) );
@@ -305,7 +313,7 @@ function incsub_support_paginate_links( $args = '' ) {
 }
 
 function incsub_support_the_ticket_badges( $args = array() ) {
-	$ticket = incsub_support()->query->item;
+	$ticket = incsub_support()->query->ticket;
 
 	$defaults = array(
 		'badge_base_class' => 'support-system-badge',
@@ -345,7 +353,7 @@ function incsub_support_editor( $type ) {
 }
 
 function incsub_support_reply_form_fields() {
-	$ticket = incsub_support()->query->item;
+	$ticket = incsub_support()->query->ticket;
 	wp_nonce_field( 'support-system-submit-reply-' . $ticket->ticket_id . '-' . get_current_user_id() . '-' . get_current_blog_id() );
 	?>
 		<input type="hidden" name="support-system-reply-fields[user]" value="<?php echo get_current_user_id(); ?>" />
@@ -495,7 +503,7 @@ function incsub_support_the_open_close_box( $args = array() ) {
 
 	extract( $args );
 
-	$ticket = incsub_support()->query->item;
+	$ticket = incsub_support()->query->ticket;
 
 	?>
 	<form action="" method="post">
