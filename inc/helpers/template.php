@@ -176,8 +176,7 @@ function incsub_support_the_ticket_category_filter( $class = '' ) {
 	$args = array(
 		'class' => $class,
 		'selected' => $selected,
-		'name' => 'ticket-cat-id',
-		'id' => 'cat-id'
+		'name' => 'ticket-cat-id'
 	);
 
 	incsub_support_ticket_categories_dropdown( $args );
@@ -189,8 +188,7 @@ function incsub_support_the_faq_category_filter( $class = '' ) {
 	$args = array(
 		'class' => $class,
 		'selected' => $selected,
-		'name' => 'faq-cat-id',
-		'id' => 'cat-id'
+		'name' => 'faq-cat-id'
 	);
 
 	incsub_support_faq_categories_dropdown( $args );

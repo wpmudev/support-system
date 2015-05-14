@@ -168,10 +168,11 @@ class Incsub_Support_Query {
 			
 		}
 		
-		if( $post_id == $settings['incsub_support_faqs_page'] ) {
+		if ( $post_id == $settings['incsub_support_faqs_page'] && ! $this->is_single_ticket() ) {
 			// FAQs Page
 			$this->is_faqs_index = true;
 			$this->is_support_system = true;
+
 			if ( $cat_id = $this->get_query_var( 'faq-cat-id' ) ) {
 				$this->faq_category_id = absint( $cat_id );
 			}
@@ -183,7 +184,7 @@ class Incsub_Support_Query {
 			
 		}
 
-		if( $post_id == $settings['incsub_support_create_new_ticket_page'] ) {
+		if ( $post_id == $settings['incsub_support_create_new_ticket_page'] ) {
 			// Ticket form Page
 			$this->is_submit_ticket_page = true;
 			$this->is_support_system = true;				

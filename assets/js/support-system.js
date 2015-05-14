@@ -58,7 +58,7 @@
 		version: '2.0',
 		init: function() {
 			var filter_button = $( 'input[name="support-system-submit-filter"]' );
-			var categories_dropdown = $( '#cat-id' );
+			var categories_dropdown = $( '.cat-id' );
 			var filter_form = $( '#support-system-filter' );
 
 			if ( ! filter_form.length || ! categories_dropdown.length || ! filter_button.length )

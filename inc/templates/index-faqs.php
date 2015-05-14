@@ -1,7 +1,9 @@
 <div id="support-system-faqs">
 
 	<div id="support-system-filter">
-		<?php incsub_support_faqs_nav(); ?>
+		<?php if ( incsub_support_is_faqs_page() ): ?>
+			<?php incsub_support_faqs_nav(); ?>
+		<?php endif; ?>
 	</div>
 
 	<hr/>
