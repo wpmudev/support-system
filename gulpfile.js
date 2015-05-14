@@ -11,12 +11,12 @@ gulp.task('default', function() {});
  * Executes compass to generate the CSS files
  */
 function the_compass( mode ) {
-
+	var file;
 	if ( mode ) {
-		var file = './config-' + mode + '.rb';
+		file = './config-' + mode + '.rb';
 	}
 	else {
-		var file = './config.rb';
+		file = './config.rb';
 	}
 
 	del(['assets/css/incsub-support.css']);
@@ -40,7 +40,7 @@ function support_uglify() {
 
 gulp.task( 'watch', function() {
 	console.log("Processing the file");
-	the_compass();
+	the_compass('release');
 	gulp.watch('./assets/scss/*.scss', ['compass']);
 		
 });

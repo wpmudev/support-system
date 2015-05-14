@@ -2,8 +2,8 @@ Plugin Name: Support System
 Author: WPMU DEV
 Tags: support, ticket, faq
 Requires at least: 3.9
-Tested up to: 4.1
-Stable tag: 2.1.5
+Tested up to: 4.2.2
+Stable tag: 2.1.6
 
 
 Change Log:
