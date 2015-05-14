@@ -58,7 +58,7 @@
 		version: '2.0',
 		init: function() {
 			var filter_button = $( 'input[name="support-system-submit-filter"]' );
-			var categories_dropdown = $( '#cat-id' );
+			var categories_dropdown = $( '.cat-id' );
 			var filter_form = $( '#support-system-filter' );
 
 			if ( ! filter_form.length || ! categories_dropdown.length || ! filter_button.length )
@@ -72,7 +72,7 @@
 
 			filter_button.hide();
 		}
-	}
+	};
 }(jQuery, window, window.document));
 
 ;(function ($, window, document, undefined) {
@@ -128,7 +128,7 @@
 				$(this)
 					.append( list )
 					.append( button )
-					.append( settings.description )
+					.append( settings.description );
 					
 			});
 	      	
@@ -212,7 +212,7 @@
 					vote: vote,
 					faq_id: faq_id,
 					action: 'vote_faq_question'
-				}
+				};
 
 				$.post( support_system_strings.ajaxurl, data, function(response) {
 					loader.hide();

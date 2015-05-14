@@ -166,7 +166,7 @@ class Incsub_Support_Tickets_Index_Shortcode extends Incsub_Support_Shortcode {
 			return $this->end();
 		}
 
-		if ( incsub_support_is_tickets_index() )
+		if ( incsub_support_is_tickets_page() )
 			incsub_support_get_template( 'index', 'tickets' );
 		elseif ( incsub_support_is_single_ticket() )
 			incsub_support_get_template( 'single', 'ticket' );

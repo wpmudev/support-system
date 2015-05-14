@@ -750,7 +750,7 @@ function incsub_support_get_the_ticket_permalink( $ticket_id = false ) {
 		return add_query_arg( 'tid', $ticket->ticket_id, $url );
 	}
 	
-	$ticket = incsub_support()->query->item;	
+	$ticket = incsub_support()->query->ticket;	
 	$url = add_query_arg( 'tid', $ticket->ticket_id );
 	return $url;
 }
