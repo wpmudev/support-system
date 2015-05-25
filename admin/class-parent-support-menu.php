@@ -154,6 +154,20 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 
 			$reply_args['poster_id'] = get_current_user_id();
 
+			// Attachments
+			if ( ! empty( $_FILES['support-attachment'] ) ) {
+				$files_uploaded = incsub_support_upload_ticket_attachments( $_FILES['support-attachment'] );					
+
+				if ( ! $files_uploaded['error'] && ! empty( $files_uploaded['result'] ) ) {
+					$args['attachments'] = wp_list_pluck( $files_uploaded['result'], 'url' );
+				}
+				elseif ( $files_uploaded['error'] && ! empty( $files_uploaded['result'] ) ) {
+					foreach ( $files_uploaded['result'] as $error ) {
+						add_settings_error( 'support_system_submit_reply', 'file_upload_error', $error );			
+					}
+				}
+			}
+
 
 			if ( ! get_settings_errors( 'support_system_submit_reply' ) ) {
 				$ticket_args = array();
@@ -179,14 +193,6 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 					}
 				}
 
-				// Attachments
-				if ( ! empty( $_FILES['support-attachment'] ) ) {
-					$files_uploaded = incsub_support_upload_ticket_attachments( $_FILES['support-attachment'] );					
-
-					if ( ! empty( $files_uploaded ) ) {
-						$reply_args['attachments'] = wp_list_pluck( $files_uploaded, 'url' );
-					}
-				}
 
 				// Order is important on this
 				if ( incsub_support_current_user_can( 'update_ticket' ) )
@@ -474,6 +480,10 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 
 		if ( isset( $_POST['closeticket'] ) )
 			$ticket->ticket_status = 5;
+
+		$ticket_message = '';
+		if ( ! empty( $_POST['message-text'] ) )
+			$ticket_message = wpautop( stripslashes_deep( $_POST['message-text'] ) );
 
 
 		if ( incsub_support_current_user_can( 'update_ticket' ) ) {

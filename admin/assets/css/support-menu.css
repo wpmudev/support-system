@@ -73,12 +73,13 @@ table.ticketshistory .ticket-acttachments-wrap {
 }
 
 .support-system-error {
-	margin-top:50px;
-	border-left: 4px solid #dd3d36;
-	background: #fff;
+	margin-top: 50px;
+	border-left: 4px solid #7C110C;
+	background: #dd3d36;
 	-webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
 	box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
 	padding: 1px 12px;
+	color: white;
 }
 
 .support-attachments button:before {
@@ -196,4 +197,8 @@ ul.ticket-fields .ticket-field-value {
 }
 #edit-ticket-form {
 	padding:17px;
+}
+
+#edit-ticket-form-errors {
+	padding-top: 40px;
 }

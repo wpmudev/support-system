@@ -39,8 +39,16 @@ class Incsub_Support_Submit_Ticket_Form_Shortcode extends Incsub_Support_Shortco
 			if ( ! empty( $_FILES['support-attachment'] ) ) {
 				$files_uploaded = incsub_support_upload_ticket_attachments( $_FILES['support-attachment'] );					
 
-				if ( ! empty( $files_uploaded ) ) {
-					$args['attachments'] = wp_list_pluck( $files_uploaded, 'url' );
+				if ( ! $files_uploaded['error'] && ! empty( $files_uploaded['result'] ) ) {
+					$args['attachments'] = wp_list_pluck( $files_uploaded['result'], 'url' );
+				}
+				elseif ( $files_uploaded['error'] && ! empty( $files_uploaded['result'] ) ) {
+					$error_message = '<ul>';
+					foreach ( $files_uploaded['result'] as $error ) {
+						$error_message .= '<li>' . $error . '</li>';			
+					}
+					$error_message .= '</ul>';
+					wp_die( $error_message );
 				}
 			}
 

@@ -587,6 +587,8 @@ function incsub_support_upload_ticket_attachments( $attachments ) {
 
 	$allowed_file_types = incsub_support_get_allowed_mime_types();
 
+	$errors = array();
+
 	foreach ( $files_keys as $key ) {
 		$file = array(
 			'name'		=> $attachments['name'][ $key ],
@@ -601,10 +603,25 @@ function incsub_support_upload_ticket_attachments( $attachments ) {
 		$uploaded = wp_handle_upload( $file, $overrides = array('test_form' => false, 'mimes' => $allowed_file_types) );
 		if ( ! isset( $uploaded['error'] ) )
 			$files_uploaded[] = $uploaded;
+		else
+			$errors[] = sprintf( __( 'Error uploading <strong>%s</strong> file: %s', INCSUB_SUPPORT_LANG_DOMAIN ), $attachments['name'][ $key ], $uploaded['error'] );
 	}
+
 	$current_user->allcaps['unfiltered_upload'] = $upload_cap;
 
-	return $files_uploaded;
+	if ( ! empty( $errors ) ) {
+		// There has been errors uploading one or more file
+		if ( ! empty( $files_uploaded ) ) {
+			// There have been files uploaded, let's delete them
+			foreach ( $files_uploaded as $file ) {
+				$delete_file = $file;
+			}
+		}
+
+		return array( 'error' => true, 'result' => $errors );
+	}
+
+	return array( 'error' => false, 'result' => $files_uploaded );
 }
 
 function incsub_support_get_allowed_mime_types() {

@@ -16,7 +16,7 @@
 	<?php remove_all_filters( 'mce_buttons_1' ); ?>
 	<?php remove_all_filters( 'mce_buttons_2' ); ?>
 	<?php remove_all_filters( 'mce_buttons_3' ); ?>
-	<?php wp_editor( '', 'message-text', array( 'media_buttons' => true, 'quicktags' => array() ) ); ?>
+	<?php wp_editor( $ticket_message, 'message-text', array( 'media_buttons' => true, 'quicktags' => array() ) ); ?>
 
 	<table class="form-table">
 		<?php ob_start(); ?>
