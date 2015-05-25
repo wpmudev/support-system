@@ -197,19 +197,20 @@ function incsub_support_the_faq_category_filter( $class = '' ) {
 function incsub_support_the_search_input( $args = array() ) {
 	$defaults = array(
 		'class' => '',
-		'placeholder' => __( 'Search', INCSUB_SUPPORT_LANG_DOMAIN )
+		'placeholder' => __( 'Search', INCSUB_SUPPORT_LANG_DOMAIN ),
+		'type' => 'ticket'
 	);
 
 	$args = wp_parse_args( $args, $defaults );
 	extract( $args );
 
-	
+	$search = '';
 
-	if ( incsub_support_is_faqs_page() ) {
+	if ( $type === 'faq' ) {
 		$search = incsub_support_get_the_faqs_search_query();
 		$name = 'support-system-faq-s';
 	}
-	else {
+	elseif ( $type === 'ticket' ) {
 		$search = incsub_support_get_the_tickets_search_query();
 		$name = 'support-system-ticket-s';
 	}
