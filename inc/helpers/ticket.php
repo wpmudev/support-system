@@ -614,7 +614,7 @@ function incsub_support_upload_ticket_attachments( $attachments ) {
 		if ( ! empty( $files_uploaded ) ) {
 			// There have been files uploaded, let's delete them
 			foreach ( $files_uploaded as $file ) {
-				$delete_file = $file;
+				@unlink( $file['file'] );
 			}
 		}
 
