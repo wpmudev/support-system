@@ -3,12 +3,17 @@ Author: WPMU DEV
 Tags: support, ticket, faq
 Requires at least: 3.9
 Tested up to: 4.2.2
-Stable tag: 2.1.6
+Stable tag: 2.1.8
 
 
 Change Log:
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
+
+2.1.8 - 2015-05-26
+----------------------------------------------------------------------
+- Fixed Unit tests
+- Fixed: FAQ Categories table was not created in some cases for single sites
 
 2.1.7 - 2015-05-25
 ----------------------------------------------------------------------
