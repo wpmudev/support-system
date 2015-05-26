@@ -105,7 +105,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				help_no int(12) unsigned NOT NULL default '0',
 				PRIMARY KEY  (faq_id),
 				KEY site_id (site_id,cat_id)
-			      ) ENGINE=MyISAM $this->db_charset_collate;";
+			      ) $this->db_charset_collate;";
 
 			dbDelta($sql);
 
@@ -129,9 +129,8 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				qcount smallint(3) unsigned NOT NULL,
 				defcat enum('0','1') NOT NULL default '0',
 				PRIMARY KEY  (cat_id),
-				KEY site_id (site_id),
-				UNIQUE KEY cat_name (cat_name)
-			      ) ENGINE=MyISAM $this->db_charset_collate;";
+				KEY site_id (site_id)
+			      ) $this->db_charset_collate;";
 
 			dbDelta($sql);
 
@@ -172,7 +171,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				KEY ticket_status (ticket_status),
 				KEY ticket_updated (ticket_updated),
 				KEY view_by_superadmin (view_by_superadmin)
-			      ) ENGINE=MyISAM $this->db_charset_collate;";
+			      ) $this->db_charset_collate;";
 
 			dbDelta($sql);
 
@@ -216,7 +215,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				attachments text DEFAULT '',
 				PRIMARY KEY  (message_id),
 				KEY ticket_id (ticket_id)
-			      ) ENGINE=MyISAM $this->db_charset_collate;";
+			      ) $this->db_charset_collate;";
 
 			dbDelta($sql);
 
@@ -240,7 +239,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				PRIMARY KEY  (cat_id),				
 				KEY site_id (site_id),
 				UNIQUE KEY cat_name (cat_name)
-			      ) ENGINE=MyISAM $this->db_charset_collate;";
+			      ) $this->db_charset_collate;";
 
 			dbDelta($sql);
 

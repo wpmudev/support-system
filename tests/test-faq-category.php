@@ -110,6 +110,7 @@ class Support_Faq_Category extends Incsub_Support_UnitTestCase {
         $cat = incsub_support_get_faq_category( $cat_id );
 
         $default_category = incsub_support_get_default_faq_category();
+
         $this->assertEquals( 0, $default_category->get_faqs_count() );
 
         $args = array(
