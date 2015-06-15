@@ -451,4 +451,10 @@ if ( ! class_exists( 'MU_Support_System') ) {
 function incsub_support() {
 	return MU_Support_System::get_instance();	
 }
-$mu_support_system = incsub_support();
+
+
+add_action( 'plugins_loaded', 'support_system_init' );
+function support_system_init() {
+	global $mu_support_system;
+	$mu_support_system = incsub_support();	
+}
