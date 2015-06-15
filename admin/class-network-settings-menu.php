@@ -82,7 +82,7 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 
 
 		$faqs_pages_dropdown_args = array(
-			'selected' => $settings['incsub_support_faqs_page'], 
+			'selected' => incsub_support_get_faqs_page_id(), 
 			'show_option_none' => __( '-- Select a page --', INCSUB_SUPPORT_LANG_DOMAIN ),
 			'name' => 'faqs_page_id',
 			'echo' => false

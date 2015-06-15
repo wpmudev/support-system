@@ -519,7 +519,7 @@ function incsub_support_the_open_close_box( $args = array() ) {
 }
 
 function incsub_support_new_ticket_form_link( $class = '' ) {
-	$new_ticket_page = incsub_support_get_setting( 'incsub_support_create_new_ticket_page' );
+	$new_ticket_page = incsub_support_get_new_ticket_page_id();
 
 	if ( ! $new_ticket_page )
 		return '';
