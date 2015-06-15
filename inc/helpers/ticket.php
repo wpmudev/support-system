@@ -710,11 +710,11 @@ function incsub_support_get_user_ticket_url( $ticket_id, $user_id = false ) {
 	if ( is_multisite() ) {
 		$support_blog_id = $settings['incsub_support_blog_id'];
 		switch_to_blog( $support_blog_id );
-		$support_page = get_post( $settings['incsub_support_support_page'] );
+		$support_page = get_post( incsub_support_get_support_page_id() );
 		restore_current_blog();
 	}
 	else {
-		$support_page = get_post( $settings['incsub_support_support_page'] );
+		$support_page = get_post( incsub_support_get_support_page_id() );
 	}
 
 	// Check the user role
@@ -724,7 +724,7 @@ function incsub_support_get_user_ticket_url( $ticket_id, $user_id = false ) {
 
 	$url  = false;
 
-	if ( $settings['incsub_support_support_page'] && $support_page ) {
+	if ( incsub_support_get_support_page_id() && $support_page ) {
 		// The tickets are in the frontend
 		$url = incsub_support_get_the_ticket_permalink( $ticket_id );
 	}
@@ -755,7 +755,7 @@ function incsub_support_get_the_ticket_permalink( $ticket_id = false ) {
 		if ( is_multisite() )
 			switch_to_blog( $blog_id );
 
-		$support_page_id = incsub_support_get_setting( 'incsub_support_support_page' );
+		$support_page_id = incsub_support_get_support_page_id();
 		$url = get_permalink( $support_page_id );
 
 		if ( is_multisite() )

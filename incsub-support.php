@@ -458,3 +458,4 @@ function support_system_init() {
 	global $mu_support_system;
 	$mu_support_system = incsub_support();	
 }
+

@@ -142,14 +142,14 @@ class Incsub_Support_Query {
 		
 		$ticket_id = $this->get_query_var( 'tid' );
 
-		if ( $ticket_id && $post_id == $settings['incsub_support_support_page'] ) {
+		if ( $ticket_id && incsub_support_get_support_page_id() ) {
 			// Single ticket page
 			$this->ticket_id = absint( $ticket_id );
 			$this->is_single_ticket = true;
 			$this->is_support_system = true;
 			
 		}
-		elseif ( $post_id == $settings['incsub_support_support_page'] ) {
+		elseif ( $post_id == incsub_support_get_support_page_id() ) {
 			// Tickets index page
 			$this->is_tickets_index = true;
 			$this->is_support_system = true;
@@ -168,7 +168,7 @@ class Incsub_Support_Query {
 			
 		}
 		
-		if ( $post_id == $settings['incsub_support_faqs_page'] && ! $this->is_single_ticket() ) {
+		if ( $post_id == incsub_support_get_faqs_page_id() && ! $this->is_single_ticket() ) {
 			// FAQs Page
 			$this->is_faqs_index = true;
 			$this->is_support_system = true;
@@ -184,7 +184,7 @@ class Incsub_Support_Query {
 			
 		}
 
-		if ( $post_id == $settings['incsub_support_create_new_ticket_page'] ) {
+		if ( $post_id == incsub_support_get_new_ticket_page_id() ) {
 			// Ticket form Page
 			$this->is_submit_ticket_page = true;
 			$this->is_support_system = true;				

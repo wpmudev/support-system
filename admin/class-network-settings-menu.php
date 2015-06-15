@@ -64,7 +64,7 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 		$blog_id = $settings['incsub_support_blog_id'];
 
 		$support_pages_dropdown_args = array(
-			'selected' => $settings['incsub_support_support_page'], 
+			'selected' => incsub_support_get_support_page_id(), 
 			'show_option_none' => __( '-- Select a page --', INCSUB_SUPPORT_LANG_DOMAIN ),
 			'name' => 'support_page_id',
 			'echo' => false
@@ -73,7 +73,7 @@ class Incsub_Support_Network_Settings_Menu extends Incsub_Support_Admin_Menu {
 
 
 		$submit_ticket_pages_dropdown_args = array(
-			'selected' => $settings['incsub_support_create_new_ticket_page'], 
+			'selected' => incsub_support_get_new_ticket_page_id(), 
 			'show_option_none' => __( '-- Select a page --', INCSUB_SUPPORT_LANG_DOMAIN ),
 			'name' => 'create_new_ticket_page_id',
 			'echo' => false
