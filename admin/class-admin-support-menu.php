@@ -16,6 +16,15 @@ class Incsub_Support_Admin_Support_Menu extends Incsub_Support_Parent_Support_Me
 		add_action( 'load-' . $this->page_id, array( $this, 'maybe_insert_new_ticket' ) );
 		add_action( 'load-' . $this->page_id, array( $this, 'set_filters' ) );
 
+		if ( incsub_support_current_user_can( 'insert_ticket' ) ) {
+			add_submenu_page( 
+				$this->slug, 
+				__( 'Add New Ticket', INCSUB_SUPPORT_LANG_DOMAIN ), 
+				__( 'Add New Ticket', INCSUB_SUPPORT_LANG_DOMAIN ), 
+				'read', 
+				"admin.php?page=$this->slug&action=add" 
+			);
+		}
 	}
 
 	public function set_filters() {
