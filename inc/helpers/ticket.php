@@ -481,8 +481,9 @@ function incsub_support_insert_ticket( $args = array() ) {
 	$insert['ticket_status'] = absint( $args['ticket_status'] ); 
 	$insert_wildcards[] = '%d'; 
 
-	// TICKET OPENED
+	// TICKET OPENED/UPDATED
 	$insert['ticket_opened'] = $args['ticket_opened']; 
+	$insert['ticket_updated'] = $args['ticket_opened']; 
 
 	// NUM REPLIES
 	$insert['num_replies'] = absint( $args['num_replies'] ); 

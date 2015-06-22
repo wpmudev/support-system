@@ -108,7 +108,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			// Is this an upgrade?
 			add_action( 'init', 'incsub_support_check_for_upgrades' );
 
-			add_action( 'plugins_loaded', array( &$this, 'load_text_domain' ) );
+			add_action( 'plugins_loaded', array( &$this, 'load_text_domain' ), 100 );
 
 			// Create Admin menus
 			//add_action( 'init', array( &$this, 'admin_menus' ) );
