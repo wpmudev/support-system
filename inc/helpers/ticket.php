@@ -353,6 +353,9 @@ function incsub_support_update_ticket( $ticket_id, $args ) {
 	
 	$tickets_table = incsub_support()->model->tickets_table;
 
+	$update['ticket_updated'] = current_time( 'mysql', true );
+	$update_wildcards[] = '%s';
+
 	$result = $wpdb->update(
 		$tickets_table,
 		$update,
