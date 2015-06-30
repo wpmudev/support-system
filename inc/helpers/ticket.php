@@ -145,9 +145,9 @@ function incsub_support_get_tickets( $args = array() ) {
 		$group = "GROUP BY t.ticket_id";
 	}
 
-	$join = apply_filters( 'support_system_get_tickets_join', $join, $count );
-	$where = apply_filters( 'support_system_get_tickets_where', $where, $count );
-	$group = apply_filters( 'support_system_get_tickets_where', $group, $count );
+	$join = apply_filters( 'support_system_get_tickets_join', $join, $count, $args );
+	$where = apply_filters( 'support_system_get_tickets_where', $where, $count, $args );
+	$group = apply_filters( 'support_system_get_tickets_group', $group, $count, $args );
 
 	$tickets = array();
 	if ( $count ) {
