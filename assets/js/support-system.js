@@ -228,6 +228,8 @@
 			$( '.faq-category' ).click( function( e ) {
 				e.preventDefault();
 
+                $( '.faq-category').attr( 'disabled', false );
+                $(this).attr( 'disabled', true );
 				var cat_id = $(this).data('cat-id');
 
 				$( '.faq-category-wrap' ).hide();
@@ -245,6 +247,10 @@
 				$( '#faq-answer-' + faq_id ).slideDown();
 
 			});
+
+
+            $( '.faq-category').first().trigger( 'click' );
+
 		}
 	};
 }(jQuery, window, window.document));

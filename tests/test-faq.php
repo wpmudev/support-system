@@ -110,10 +110,67 @@ class Support_Faq extends Incsub_Support_UnitTestCase {
         $this->assertEquals( $new_faq_1->answer, 'New answer' );
     }
 
+    function test_search_faqs() {
+        $args = array(
+            'question' => 'The question',
+            'answer' => 'The answer',
+        );
 
-    
+        $faq_id = incsub_support_insert_faq( $args );
 
+        $args = array(
+            's' => 'qqqqq'
+        );
+        $faqs = incsub_support_get_faqs( $args );
+        $this->assertEmpty( $faqs );
 
+        $args = array(
+            's' => 'an'
+        );
+        $faqs = incsub_support_get_faqs( $args );
+        $this->assertCount( 1, $faqs );
+    }
 
+    function test_get_faqs_by_category() {
+        $cat_id_1 = incsub_support_insert_faq_category( 'A category 1' );
+        $cat_id_2 = incsub_support_insert_faq_category( 'A category 2' );
+
+        $args = array(
+            'question' => 'The question',
+            'answer' => 'The answer',
+            'cat_id' => $cat_id_1
+        );
+
+        $faq_id_1 = incsub_support_insert_faq( $args );
+
+        $args = array(
+            'question' => 'The question 2',
+            'answer' => 'The answer 2',
+            'cat_id' => $cat_id_1
+        );
+
+        $faq_id_2 = incsub_support_insert_faq( $args );
+
+        $args = array(
+            'question' => 'The question 3',
+            'answer' => 'The answer 3',
+            'cat_id' => $cat_id_2
+        );
+
+        $faq_id_3= incsub_support_insert_faq( $args );
+
+        $args = array(
+            'question' => 'The question 4',
+            'answer' => 'The answer 4'
+        );
+
+        $faq_id_4= incsub_support_insert_faq( $args );
+
+        $faqs = incsub_support_get_faqs( array( 'category' => $cat_id_1 ) );
+        $this->assertCount( 2, $faqs );
+
+        $faqs = incsub_support_get_faqs( array( 'category' => $cat_id_2 ) );
+        $this->assertCount( 1, $faqs );
+    }
     
 }

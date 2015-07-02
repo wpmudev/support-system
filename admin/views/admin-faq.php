@@ -34,14 +34,14 @@
 			<div class="faq-categories-column">
 				<ul>
 					<?php for ( $i = 0; $i < $half_of_array ; $i++ ): ?>
-						<li><a href="#" class="faq-category" data-cat-id="<?php echo $faq_categories[ $i ]->cat_id; ?>"><?php echo $faq_categories[ $i ]->cat_name . ' (' . $faq_categories[ $i ]->faqs . ')'; ?></a></li>
+						<li><a href="#" class="button button-secondary faq-category" class="faq-category" data-cat-id="<?php echo $faq_categories[ $i ]->cat_id; ?>"><?php echo $faq_categories[ $i ]->cat_name . ' (' . $faq_categories[ $i ]->faqs . ')'; ?></a></li>
 					<?php endfor; ?>
 				</ul>
 			</div>
 			<div class="faq-categories-column">
 				<ul>
 					<?php for ( $i = $half_of_array; $i < count( $faq_categories ) ; $i++ ): ?>
-						<li><a href="#" class="faq-category" data-cat-id="<?php echo $faq_categories[ $i ]->cat_id; ?>"><?php echo $faq_categories[ $i ]->cat_name . ' (' . $faq_categories[ $i ]->faqs . ')'; ?></a></li>
+						<li><a href="#" class="faq-category button button-secondary" data-cat-id="<?php echo $faq_categories[ $i ]->cat_id; ?>"><?php echo $faq_categories[ $i ]->cat_name . ' (' . $faq_categories[ $i ]->faqs . ')'; ?></a></li>
 					<?php endfor; ?>
 				</ul>
 			</div>

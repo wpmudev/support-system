@@ -43,7 +43,8 @@ function incsub_support_get_faqs( $args = array() ) {
 		'orderby' => 'faq_id',
 		'order' => 'asc',
 		's' => false,
-		'count' => false
+		'count' => false,
+        'category' => false
 	);
 	$args = wp_parse_args( $args, $defaults );
 

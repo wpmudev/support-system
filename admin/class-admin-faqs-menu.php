@@ -59,7 +59,7 @@ class Incsub_Support_Admin_FAQ_Menu extends Incsub_Support_Admin_Menu {
 		if ( isset( $_POST['submit-faq-search'] ) && check_admin_referer( 'faq_search' ) ) {
 			$new_faq_categories = array();
 			foreach ( $faq_categories as $key => $item ) {
-				$answers = incsub_support_get_faqs( array( 's' => $_POST['faq-s'], 'per_page' => -1 ) );
+				$answers = incsub_support_get_faqs( array( 's' => $_POST['faq-s'], 'per_page' => -1, 'category' => $item->cat_id ) );
 				if ( count( $answers ) > 0 ) {
 					$the_faq = $item;
 	            	$the_faq->answers = $answers;
