@@ -10,6 +10,17 @@ Change Log:
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
 
+2.1.9 - 2015-07-03
+----------------------------------------------------------------------
+- Fixed: Searching for FAQS from Admin
+- Fixed: Ticket updated date was failing to set the right date when inserting/updating a ticket in some systems
+- Fixed: Attachments were not being processed when replying from admin
+- Added "Add New Ticket" submenu link
+- Added Pages IDs getters and filters to modify them
+- Enhancement: Loading plugin later to avoid issues with other plugins
+- Little improvements on admin styles
+- Added more unit tests
+
 2.1.8 - 2015-05-26
 ----------------------------------------------------------------------
 - Fixed Unit tests
