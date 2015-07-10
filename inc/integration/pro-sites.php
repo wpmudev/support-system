@@ -348,7 +348,7 @@ class Support_System_Pro_Sites_Integration {
 	}
 }
 
-add_action( 'plugins_loaded', 'support_system_init_pro_sites_integration' );
+add_action( 'plugins_loaded', 'support_system_init_pro_sites_integration', 100 );
 function support_system_init_pro_sites_integration() {
 	if ( class_exists( 'ProSites' ) ) {
 		new Support_System_Pro_Sites_Integration();
