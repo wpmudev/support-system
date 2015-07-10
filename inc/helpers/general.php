@@ -168,3 +168,17 @@ function incsub_support_enqueue_foundation_scripts( $in_footer = true ) {
 	wp_enqueue_script( 'support-system-foundation-js', INCSUB_SUPPORT_PLUGIN_URL . 'assets/js/foundation' . $suffix . '.js', array( 'jquery' ), incsub_support_get_version(), $in_footer );
 }
 
+
+/**
+ * Adds an integration class to Support System
+ *
+ * @param $classname The class name of the integrator
+ */
+function incsub_support_add_integrator( $classname ) {
+	if ( class_exists( $classname ) ) {
+		$plugin = incsub_support();
+		$r = new ReflectionClass( $classname );
+		$plugin->add_integrator( $r->newInstance() );
+	}
+}
+

@@ -78,6 +78,8 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		public $admin;
 		public $shortcodes = null;
 
+		public $integrators = array();
+
 		private static $instance = null;
 
 		public static function get_instance() {
@@ -442,6 +444,10 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			$admin_login = $super_admins[ $administrator ];
 			$admin_user = get_user_by( 'login', $admin_login );
 			return $admin_user;
+		}
+
+		public function add_integrator( $integrator ) {
+			$this->integrators[] = $integrator;
 		}
 
 	}
