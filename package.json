@@ -1,0 +1,25 @@
+{
+  "name": "incsub-support",
+  "version": "2.2.0",
+  "private": true,
+  "description": "Set up an awesome support ticket system on any WordPress site, complete with FAQ.",
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/incsub/incsub-support.git"
+  },
+  "author": "WPMU DEV",
+  "license": "GPL-2.0",
+  "homepage": "https://premium.wpmudev.org/project/support-system/",
+  "devDependencies": {
+    "bower": "*",
+    "del": "1.2.0",
+    "gulp": "3.9.0",
+    "gulp-bower": "0.0.10",
+    "gulp-compass": "2.1.0",
+    "gulp-rename": "1.2.2",
+    "gulp-uglify": "1.2.0"
+  }
+}

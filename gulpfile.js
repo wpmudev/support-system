@@ -5,7 +5,6 @@ var gulp = require('gulp'),
 	rename = require('gulp-rename'),
 	compass = require('gulp-compass');
 
-gulp.task('default', function() {});
 
 /**
  * Executes compass to generate the CSS files
@@ -38,27 +37,13 @@ function support_uglify() {
 }
 
 
-gulp.task( 'watch', function() {
-	console.log("Processing the file");
-	the_compass('release');
-	gulp.watch('./assets/scss/*.scss', ['compass']);
-		
-});
 
 
-/**
- * Install
- */
-gulp.task('install', function() {
-	// Update dependencies with Bower
+function bower_update() {
 	return bower({ cmd: 'update'});
-});
+}
 
-/**
- * Init the plugin. Execute right after installation
- */
-gulp.task( 'init', function() {
-	// Get Foundation Javascript
+function move_foundation_elements_to_assets() {
 	gulp.src('bower_components/foundation/js/foundation.js')
 		.pipe( gulp.dest( 'assets/js' ) );
 
@@ -70,12 +55,23 @@ gulp.task( 'init', function() {
 
 	gulp.src( 'bower_components/foundation-icons/svgs/fi-minus.svg' )
 		.pipe( gulp.dest( 'assets/images' ) );
+}
 
+
+/**
+ * Install
+ */
+gulp.task('install', function() {
+	// Update dependencies with Bower
+	console.log( "Updating Bower packages...");
+	bower_update();
+	console.log( "Moving Foundation files to assets...");
+	move_foundation_elements_to_assets();
+	console.log( "Uglifying JS...");
 	support_uglify();
-
+	console.log("Executing Compass...");
 	the_compass();
 });
-
 
 /**
  * Release a new version
