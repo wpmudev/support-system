@@ -395,7 +395,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 			foreach ( $just_roles as $key => $role ) {
 				$support_roles[ $key ] = translate_user_role( $role['name'] );
 			}
-			
+			$support_roles['support-guest'] = __( 'Visitor', INCSUB_SUPPORT_LANG_DOMAIN );
 			return $support_roles;
 
 		}
