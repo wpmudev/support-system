@@ -42,7 +42,7 @@
 	    
 	    <?php ob_start(); ?>
 		
-	    	<?php foreach ( $roles as $key => $value ):	?>
+	    	<?php foreach ( $roles as $key => $value ): if( $key == 'support-guest' ) continue;	?>
 	    		<label for="tickets_role_<?php echo $key; ?>">						    		
     				<input type="checkbox" value="<?php echo $key; ?>" id="tickets_role_<?php echo $key; ?>" name="tickets_role[]" <?php checked( in_array( $key, $tickets_role ) ); ?> /> <?php echo $value; ?><br/>
 	    		</label>
