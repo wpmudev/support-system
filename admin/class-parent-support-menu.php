@@ -15,7 +15,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 
 	public function enqueue_styles( $page_id ) {
 		if ( $page_id === $this->page_id )
-			wp_enqueue_style( 'support-menu-styles', INCSUB_SUPPORT_PLUGIN_URL . '/admin/assets/css/support-menu.css' );
+			wp_enqueue_style( 'support-menu-styles', INCSUB_SUPPORT_PLUGIN_URL . 'admin/assets/css/support-menu.css' );
 	}
 
 	public function enqueue_scripts( $page_id ) {
@@ -41,7 +41,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 		$action = isset( $_GET['action'] ) ? $_GET['action'] : '';
 
 		if ( $action !== 'edit' )
-			add_screen_option( 'per_page', array( 'label' => __( 'Tickets per page', INCSUB_SUPPORT_PLUGIN_URL ), 'default' => 20, 'option' => 'incsub_support_tickets_per_page' ) );
+			add_screen_option( 'per_page', array( 'label' => __( 'Tickets per page', 'incsub-support' ), 'default' => 20, 'option' => 'incsub_support_tickets_per_page' ) );
 
 		// Check filtering
 		if ( isset( $_POST['filter_action'] ) || ! empty( $_POST['s'] ) ) {

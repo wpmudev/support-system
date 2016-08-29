@@ -134,7 +134,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 					'support_page_mu-support-settings'
 				)
 			);
-			include_once( INCSUB_SUPPORT_PLUGIN_DIR . '/dash-notice/wpmudev-dash-notification.php' );
+			include_once( INCSUB_SUPPORT_PLUGIN_DIR . 'dash-notice/wpmudev-dash-notification.php' );
 
 		}
 
@@ -200,40 +200,40 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		 */
 		private function includes() {
 			// Model
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/model/model.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'model/model.php');
 
 			if ( is_admin() ) {
-				require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/admin/class-incsub-support-admin.php' );
+				require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'admin/class-incsub-support-admin.php' );
 			}
 
 			// Classes
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-ticket.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-ticket-category.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-ticket-reply.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-shortcodes.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-query.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-faq.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-faq-category.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/classes/class-settings.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/classes/class-ticket.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/classes/class-ticket-category.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/classes/class-ticket-reply.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/classes/class-shortcodes.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/classes/class-query.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/classes/class-faq.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/classes/class-faq-category.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/classes/class-settings.php');
 
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/general.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/ticket.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/ticket-category.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/ticket-reply.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/template.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/settings.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/capabilities.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/faq.php');
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/helpers/faq-category.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/helpers/general.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/helpers/ticket.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/helpers/ticket-category.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/helpers/ticket-reply.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/helpers/template.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/helpers/settings.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/helpers/capabilities.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/helpers/faq.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/helpers/faq-category.php');
 
 			// Integration
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/integration/pro-sites.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/integration/pro-sites.php');
 
 			// Mail templates
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/mail-contents.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/mail-contents.php');
 
 			// Upgrades
-			require_once( INCSUB_SUPPORT_PLUGIN_DIR . '/inc/upgrades.php');
+			require_once( INCSUB_SUPPORT_PLUGIN_DIR . 'inc/upgrades.php');
 		}
 
 		/**

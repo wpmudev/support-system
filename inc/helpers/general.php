@@ -144,7 +144,7 @@ function incsub_support_register_main_script() {
 	if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG )
 		$suffix = '';
 
-	wp_register_script( 'support-system', INCSUB_SUPPORT_PLUGIN_URL . '/assets/js/support-system' . $suffix . '.js', array( 'jquery' ), incsub_support_get_version(), true );
+	wp_register_script( 'support-system', INCSUB_SUPPORT_PLUGIN_URL . 'assets/js/support-system' . $suffix . '.js', array( 'jquery' ), incsub_support_get_version(), true );
 
 	$l10n = array(
 		'ajaxurl' => admin_url( 'admin-ajax.php' )

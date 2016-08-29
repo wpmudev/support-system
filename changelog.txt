@@ -9,6 +9,13 @@ Change Log:
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
 
+2.1.9.2 - 2016-08-29
+----------------------------------------------------------------------
+- Fix: PHP 5.2 support.
+- Fix: Malformed assets URLs
+- Fix: SQL error when tickets messsages table is created under certain environments
+- Fixed some translations
+
 2.1.9.1 - 2015-07-10
 ----------------------------------------------------------------------
 - Fixed: Pro Sites integration was not being loaded.

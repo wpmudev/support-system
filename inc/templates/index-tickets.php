@@ -33,9 +33,9 @@
 							<?php echo incsub_support_get_the_ticket_excerpt(); ?>
 						</div>
 						<ul class="inline-list support-system-ticket-meta">
-							<li class="support-system-byauthor"><span><?php echo sprintf( _x( 'by <strong>%s</strong>', 'ticket author', INCSUB_SUPPORT_LANG_DOMAIN ), incsub_support_get_the_author() ); ?></span></li>	
+							<li class="support-system-byauthor"><span><?php echo sprintf( __( 'by <strong>%s</strong>', INCSUB_SUPPORT_LANG_DOMAIN ), incsub_support_get_the_author() ); ?></span></li>
 							<li class="support-system-lastreply">
-								<span><?php echo sprintf( _x( 'Last reply: <a href="%s">%s ago</a>', 'ticket update date', INCSUB_SUPPORT_LANG_DOMAIN ), esc_url( incsub_support_get_the_last_ticket_reply_url() ), incsub_support_get_the_ticket_updated_date() ); ?></span>
+								<span><?php echo sprintf( __( 'Last reply: <a href="%s">%s ago</a>', INCSUB_SUPPORT_LANG_DOMAIN ), esc_url( incsub_support_get_the_last_ticket_reply_url() ), incsub_support_get_the_ticket_updated_date() ); ?></span>
 							</li>
 							<li class="support-system-category"><span class="support-system-tag"><?php echo incsub_support_get_the_ticket_category_link(); ?></span></li>
 						</ul>

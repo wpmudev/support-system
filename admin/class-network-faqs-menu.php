@@ -43,7 +43,7 @@ class Incsub_Support_Network_FAQ_Menu extends Incsub_Support_Admin_Menu {
 	}
 
 	public function enqueue_styles() {
-		wp_enqueue_style( 'mu-support-faq-css', INCSUB_SUPPORT_PLUGIN_URL . '/admin/assets/css/support-faqs-menu.css', array(), '20130402' );
+		wp_enqueue_style( 'mu-support-faq-css', INCSUB_SUPPORT_PLUGIN_URL . 'admin/assets/css/support-faqs-menu.css', array(), '20130402' );
 	}
 
 	public function add_new_faq_title( $title ) {

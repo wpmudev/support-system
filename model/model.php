@@ -212,7 +212,7 @@ if ( ! class_exists( 'MU_Support_System_Model' ) ) {
 				message_date timestamp NOT NULL default CURRENT_TIMESTAMP,
 				subject varchar(255) character set utf8 NOT NULL,
 				message mediumtext character set utf8 NOT NULL,
-				attachments text DEFAULT '',
+				attachments text NOT NULL,
 				PRIMARY KEY  (message_id),
 				KEY ticket_id (ticket_id)
 			      ) $this->db_charset_collate;";

@@ -61,14 +61,12 @@ class Incsub_Support_Shortcodes {
 
 	public function register_scripts() {
 		incsub_support_register_main_script();
-		wp_register_script( 'support-system-init', INCSUB_SUPPORT_PLUGIN_URL . '/assets/js/support-system-init.js', array( 'support-system' ), INCSUB_SUPPORT_PLUGIN_VERSION, true );
+		wp_register_script( 'support-system-init', INCSUB_SUPPORT_PLUGIN_URL . 'assets/js/support-system-init.js', array( 'support-system' ), INCSUB_SUPPORT_PLUGIN_VERSION, true );
 
 		$allowed_mimes = incsub_support_get_allowed_mime_types();
 		$allowed_mimes = array_keys( $allowed_mimes );
-		
-		$allowed_mimes = array_map( function( $element ) {
-			return str_replace( '|', ', *.', $element );
-		}, $allowed_mimes );
+
+		$allowed_mimes = array_map( array( $this, '_allowed_mimes' ), $allowed_mimes );
 
 		$allowed_mimes = '*.' . implode( ', *.', $allowed_mimes );
 
@@ -81,6 +79,11 @@ class Incsub_Support_Shortcodes {
 		
 		wp_localize_script( 'support-system-init', 'support_system_i18n', $l10n );
 	}
+
+	public function _allowed_mimes( $element ) {
+		return str_replace( '|', ', *.', $element );
+	}
+
 
 	public function enqueue_scripts() {
 		if ( is_support_system() ) {
@@ -119,7 +122,7 @@ class Incsub_Support_Shortcodes {
 	}
 
 	public function add_shortcode_tinymce_plugin( $plugins ) {
-		$plugins['incsub_support_shortcodes'] = INCSUB_SUPPORT_PLUGIN_URL . '/admin/assets/js/editor-shortcodes.js';
+		$plugins['incsub_support_shortcodes'] = INCSUB_SUPPORT_PLUGIN_URL . 'admin/assets/js/editor-shortcodes.js';
 		return $plugins;
 	}
 
@@ -129,7 +132,7 @@ class Incsub_Support_Shortcodes {
 	}
 
 	public function enqueue_editor_admin_scripts() {
-		wp_enqueue_style( 'incsub-support-shortcodes', INCSUB_SUPPORT_PLUGIN_URL . '/admin/assets/css/editor-shortcodes.css' );
+		wp_enqueue_style( 'incsub-support-shortcodes', INCSUB_SUPPORT_PLUGIN_URL . 'admin/assets/css/editor-shortcodes.css' );
 	}
 
 	public function add_tinymce_i18n( $i18n ) {
