@@ -44,6 +44,8 @@ function incsub_support_user_can( $user_id, $cap = '' ) {
 					}
 
 					switch_to_blog( $current_blog_id );
+					$GLOBALS['switched'] = false;
+					$GLOBALS['_wp_switched_stack'] = array();
 				}
 
 			}
