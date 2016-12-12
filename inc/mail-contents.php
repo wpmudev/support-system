@@ -378,7 +378,7 @@ SUPPORT_MESSAGE
 	$content = str_replace( 'SUPPORT_PRIORITY', $args['ticket_priority'], $content );
 	$content = str_replace( 'SUPPORT_LINK', $args['visit_link'], $content );
 	$content = str_replace( 'SUPPORT_USER_NAME', $args['user_nicename'], $content );
-	$content = str_replace( 'SUPPORT_MESSAGE', strip_tags( html_entity_decode( $args['ticket_message'] ) ), $content );
+	$content = str_replace( 'SUPPORT_MESSAGE', strip_tags( html_entity_decode( $args['ticket_message'], ENT_NOQUOTES, 'UTF-8' ) ), $content );
 
 	return $content;
 }
