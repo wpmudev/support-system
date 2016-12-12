@@ -91,7 +91,7 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 
 			// Update Super Admin
 			if ( isset( $_POST['super-admins'] ) ) {
-				$possible_users = array_merge( call_user_func( array( $plugin, 'get_super_admins' ) ) );
+				$possible_users = MU_Support_System::get_super_admins();
 				if ( in_array( $_POST['super-admins'], $possible_users ) ) {
 					$user = get_user_by( 'login', $_POST['super-admins'] );
 					if ( $user )

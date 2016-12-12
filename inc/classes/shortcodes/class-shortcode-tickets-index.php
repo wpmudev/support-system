@@ -26,8 +26,7 @@ class Incsub_Support_Tickets_Index_Shortcode extends Incsub_Support_Shortcode {
 			);
 
 			$staff_name = $_POST['ticket-staff'];
-			$plugin = incsub_support();
-			$possible_users = array_merge( call_user_func( array( $plugin, 'get_super_admins' ) ) );
+			$possible_users = MU_Support_System::get_super_admins();
 			if ( in_array( $staff_name, $possible_users ) ) {
 				$user = get_user_by( 'login', $staff_name );
 				if ( $user )

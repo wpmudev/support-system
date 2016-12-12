@@ -79,7 +79,7 @@ function incsub_support_super_admins_dropdown( $args = array() ) {
 	$args = wp_parse_args( $args, $defaults );
 
 	$plugin = incsub_support();
-	$super_admins = call_user_func( array( $plugin, 'get_super_admins' ) );
+	$super_admins = MU_Support_System::get_super_admins();
 
 	extract( $args );
 

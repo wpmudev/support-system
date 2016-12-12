@@ -98,7 +98,6 @@ if ( ! class_exists( 'MU_Support_Menu' ) ) {
 
 			?>
 				<div class="wrap">
-					<?php screen_icon( 'support' ); ?>
 					<?php if ( is_array( $this->tabs ) ): ?>
 						<h2 class="nav-tab-wrapper">
 							<?php foreach ( $this->tabs as $tab ): ?>
