@@ -59,9 +59,22 @@ class Support_System_Pro_Sites_Integration {
 			}
 
 			if ( $pro_blog_id ) {
-				$admin_url = add_query_arg( 'page', 'ticket-manager', get_admin_url( $pro_blog_id, 'admin.php' ) );
-				$message = sprintf( __( 'Need support? <a href="%s" title="%s">Click here to go to your dashboard</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $admin_url, esc_attr( __( 'Go to support in your site dashboard', INCSUB_SUPPORT_LANG_DOMAIN ) ) );
+			    $settings = incsub_support_get_settings();
+			    switch_to_blog( $pro_blog_id );
+                $user = get_userdata( $user_id );
+                if ( array_intersect( $settings['incsub_support_tickets_role'], $user->roles ) ) {
+                    // The role is allowed
+	                $admin_url = add_query_arg( 'page', 'ticket-manager', get_admin_url( $pro_blog_id, 'admin.php' ) );
+	                $message = sprintf( __( 'Need support? <a href="%s" title="%s">Click here to go to your dashboard</a>', INCSUB_SUPPORT_LANG_DOMAIN ), $admin_url, esc_attr( __( 'Go to support in your site dashboard', INCSUB_SUPPORT_LANG_DOMAIN ) ) );
+                }
+			    restore_current_blog();
 			}
+			else {
+				$levels = (array) get_site_option( 'psts_levels' );
+				if ( isset( $levels[ $settings['incsub_pro_sites_level'] ] ) ) {
+                    $message = sprintf( __( 'If you need support, please upgrade to %s.', INCSUB_SUPPORT_LANG_DOMAIN ), $levels[ $settings['incsub_pro_sites_level'] ]['name'] );
+				}
+            }
 
 			
 		}
@@ -103,7 +116,7 @@ class Support_System_Pro_Sites_Integration {
 		$allow_only_pro_sites_faq = $settings['incsub_allow_only_pro_sites_faq'];
 		$pro_sites_faq_level = $settings['incsub_pro_sites_faq_level'];
 		$allow_only_pro_users_tickets = $settings['incsub_allow_only_pro_users_tickets'];
-		$allow_only_pro_users_faq = $settings['incsub_allow_only_pro_users_faq'];
+		$allow_only_pro_users_faq = $settings['incsub_allow_only_pro_users_faqs'];
 
 		?>
 
