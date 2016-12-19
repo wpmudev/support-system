@@ -9,6 +9,14 @@ Change Log:
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
 
+2.1.9.3 - 2016-12-19
+----------------------------------------------------------------------
+- Fix: Emails formatting issues
+- Fix: Pro Sites integration
+- Fix: Yoast incompatibility
+- Removed unsafe/deprecated functions
+- Updated WPMU DEV Dashboard notification
+
 2.1.9.2 - 2016-08-29
 ----------------------------------------------------------------------
 - Fix: PHP 5.2 support.

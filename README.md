@@ -22,7 +22,8 @@ To avoid this while developing set `define('SCRIPT_DEBUG', true);` in your wp-co
 
 
 # Before releasing
-`gulp release` will minify the CSS and JS. There's no packaging method for the moment.
+1. `gulp release` will minify the CSS and JS.
+2. `npm run build` will create a package in build folder. Make sure that your package.json `pluginVersion` matches with the plugin version in main file.
 
 
 

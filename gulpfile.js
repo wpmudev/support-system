@@ -3,7 +3,8 @@ var gulp = require('gulp'),
 	del = require( 'del' ),
 	uglify = require('gulp-uglify'),
 	rename = require('gulp-rename'),
-	compass = require('gulp-compass');
+	compass = require('gulp-compass'),
+	clean = require('gulp-clean');
 
 
 /**

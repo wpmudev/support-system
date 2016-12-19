@@ -1,8 +1,11 @@
 {
   "name": "incsub-support",
-  "version": "2.2.0",
+  "main": "incsub-support.php",
+  "version": "1.0.0",
+  "pluginVersion": "2.1.9.3",
   "private": true,
   "description": "Set up an awesome support ticket system on any WordPress site, complete with FAQ.",
+  "projectEditUrl": "https://premium.wpmudev.org/wp-admin/edit.php?post_type=project&page=projects-manage&manage_files=36",
   "directories": {
     "test": "tests"
   },
@@ -10,16 +13,36 @@
     "type": "git",
     "url": "git+ssh://git@bitbucket.org/incsub/incsub-support.git"
   },
+  "scripts": {
+    "build": "grunt build"
+  },
   "author": "WPMU DEV",
   "license": "GPL-2.0",
   "homepage": "https://premium.wpmudev.org/project/support-system/",
   "devDependencies": {
     "bower": "*",
     "del": "1.2.0",
+    "grunt": "~0.4.5",
+    "grunt-checktextdomain": "^0.1.1",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-compress": "~0.8.0",
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-uglify": "^1.0.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-exec": "~0.4.5",
+    "grunt-open": "^0.2.3",
+    "grunt-phpunit": "^0.3.6",
+    "grunt-potomo": "~2.1.0",
+    "grunt-search": "^0.1.8",
+    "grunt-wp-i18n": "~0.5.0",
     "gulp": "3.9.0",
     "gulp-bower": "0.0.10",
+    "gulp-clean": "^0.3.2",
     "gulp-compass": "2.1.0",
     "gulp-rename": "1.2.2",
-    "gulp-uglify": "1.2.0"
+    "gulp-rm": "^1.0.2",
+    "gulp-uglify": "1.2.0",
+    "load-grunt-tasks": "~0.2.0"
   }
 }
