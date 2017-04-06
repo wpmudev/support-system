@@ -23,9 +23,9 @@
 	<div class="changelog">
 		<div class="feature-section col two-col">
 			<div class="col-1">
-				<p><?php printf( __( 'Support System comes now with options to display a FAQ in your site. As we did with tickets, FAQs are rendered using <a href="%s">Foundation 5</a>.', INCSUB_SUPPORT_LANG_DOMAIN ), 'http://foundation.zurb.com/' ); ?></p>
-				<p><?php _e( 'You can manage your FAQs from admin, as usual. Users will still have access to FAQs through an admin menu unless you want to deactivate that menu in Settings', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
-				<p><?php _e( 'FAQs system comes with <strong>Pro Sites</strong> integration. Allow any kind of Pro User with any level assigned to see your FAQs!', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
+				<p><?php printf( __( 'Support System now comes with options to display an FAQ on your site. As we did with tickets, FAQs are rendered using <a href="%s">Foundation 5</a>.', INCSUB_SUPPORT_LANG_DOMAIN ), 'http://foundation.zurb.com/' ); ?></p>
+				<p><?php _e( 'You can manage your FAQs from the admin, as usual. Users will still have access to FAQs through an admin menu unless you want to deactivate that menu in the Settings.', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
+				<p><?php _e( 'The FAQ system comes with <strong>Pro Sites</strong> integration, which allows any kind of Pro user with any assigned level to see your FAQs!', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
 			</div>
 			<div class="col-2 last-feature">
 				<img src="<?php echo INCSUB_SUPPORT_PLUGIN_URL . 'admin/assets/images/support-welcome-1.png'; ?>">
@@ -39,12 +39,12 @@
 			<div>
 				<h4><?php esc_html_e( 'Changes in admin styles', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h4>
 				<img src="<?php echo INCSUB_SUPPORT_PLUGIN_URL . 'admin/assets/images/support-welcome-3.png'; ?>">
-				<p><?php _e( 'We did it again. Support System 2.1 comes with many little (and bigger) improvements in admin. We have remade the Edit Ticket Screen thinking on usability, now you will be able to manage your tickets in a single page.', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
+				<p><?php _e( 'We did it again! Support System 2.1 comes with many little (and bigger) improvements in the admin. We have remade the Edit Ticket screen with usability in mind. Now you will be able to manage your tickets on a single page.', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
 			</div>
 			<div>
 				<h4><?php esc_html_e( 'Widgets in Frontend Tickets', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h4>
 				<img src="<?php echo INCSUB_SUPPORT_PLUGIN_URL . 'admin/assets/images/support-welcome-2.png'; ?>">
-				<p><?php _e( 'Manage the ticket status, category, priority and staff assignment from the front. Support System Widgets (They are not WordPress Widgets yet but we are on the way), allows to manage tickets easily and makes everything beautiful.', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
+				<p><?php _e( 'Manage the ticket status, category, priority and staff assignment from the front end. Support System Widgets allow to manage tickets easily and makes everything beautiful. They’re not WordPress widgets yet, but that’s on the way.', INCSUB_SUPPORT_LANG_DOMAIN ); ?></p>
 			</div>
 			<div class="last-feature">
 				<h4><?php esc_html_e( 'More speed!', INCSUB_SUPPORT_LANG_DOMAIN ); ?></h4>
