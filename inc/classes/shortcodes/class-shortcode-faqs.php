@@ -2,7 +2,9 @@
 
 class Incsub_Support_FAQs_Shortcode extends Incsub_Support_Shortcode {
 	public function __construct() {
-		add_shortcode( 'support-system-faqs', array( $this, 'render' ) );
+		if ( !is_admin() ) {
+			add_shortcode( 'support-system-faqs', array( $this, 'render' ) );
+		}
 	}
 
 	public function render( $atts ) {
