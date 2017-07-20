@@ -3,7 +3,9 @@
 class Incsub_Support_Tickets_Index_Shortcode extends Incsub_Support_Shortcode {
 	public function __construct() {
 		add_action( 'template_redirect', array( $this, 'process_form' ) );
-		add_shortcode( 'support-system-tickets-index', array( $this, 'render' ) );
+		if ( !is_admin() ) {
+			add_shortcode( 'support-system-tickets-index', array( $this, 'render' ) );
+		}
 	}
 
 	public function process_form() {
