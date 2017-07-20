@@ -561,8 +561,11 @@ class Incsub_Support_Parent_Support_Menu extends Incsub_Support_Admin_Menu {
 	
 
 	protected function get_status_filter() {
-		if ( ! isset( $_GET['status'] ) )
-			return 'all';
+		if ( ! isset( $_GET['status'] ) ){
+			$accepted_statuses = array( 'all', 'active', 'archive' );
+			$default_status = apply_filters( 'support_system/support_list/default_status', 'all', $accepted_statuses );
+			return in_array( $default_status, $accepted_statuses ) ? $default_status : 'all';
+		}
 
 		return $_GET['status'];
 	}
