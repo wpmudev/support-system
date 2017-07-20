@@ -4,7 +4,9 @@ class Incsub_Support_Submit_Ticket_Form_Shortcode extends Incsub_Support_Shortco
 
 	public function __construct() {
 		add_action( 'template_redirect', array( $this, 'process_form' ) );
-		add_shortcode( 'support-system-submit-ticket-form', array( $this, 'render' ) );
+		if ( !is_admin() ) {
+			add_shortcode( 'support-system-submit-ticket-form', array( $this, 'render' ) );
+		}
 	}
 
 	public function process_form() {
