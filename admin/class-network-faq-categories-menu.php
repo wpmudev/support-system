@@ -59,7 +59,7 @@ class Incsub_Support_Network_FAQ_Categories extends Incsub_Support_Admin_Menu {
 
 			if ( ! get_settings_errors( 'support_system_submit_category' ) ) {
 				if ( $add ) {
-					incsub_support_insert_faq_category( $category_name, $user_id );
+					incsub_support_insert_faq_category( $category_name );
 					$redirect = add_query_arg( 'added', 'true', $this->get_menu_url() );
 					wp_redirect( $redirect );
 					exit();

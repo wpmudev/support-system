@@ -14,10 +14,10 @@ Text Domain: incsub-support
 
 /*
 Copyright 2007-2015 Incsub (http://incsub.com)
-Author â€“ Ignacio Cruz (igmoweb)
+Author – Ignacio Cruz (igmoweb)
 
 This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License (Version 2 â€“ GPLv2) as published by
+it under the terms of the GNU General Public License (Version 2 – GPLv2) as published by
 the Free Software Foundation.
 
 This program is distributed in the hope that it will be useful,
@@ -427,7 +427,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 			}
 
-			return $super_admins;
+			return apply_filters( 'incsub_support_get_super_admins', $super_admins );
 		}
 
 		public static function get_main_admin_email() {
