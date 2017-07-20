@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Support System 2.1.10\n"
 "Report-Msgid-Bugs-To: https://wpmudev.org\n"
-"POT-Creation-Date: 2017-07-20 09:41:17+00:00\n"
+"POT-Creation-Date: 2017-07-20 09:47:18+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -187,7 +187,7 @@ msgstr ""
 #: admin/class-parent-support-menu.php:145
 #: admin/class-parent-support-menu.php:295
 #: admin/class-parent-support-menu.php:455
-#: inc/classes/shortcodes/class-shortcode-tickets-index.php:91
+#: inc/classes/shortcodes/class-shortcode-tickets-index.php:93
 msgid "The ticket does not exist"
 msgstr ""
 
@@ -450,7 +450,7 @@ msgid "Ticket ID"
 msgstr ""
 
 #: admin/inc/class-table-tickets.php:178 admin/views/add-new-ticket.php:9
-#: inc/classes/shortcodes/class-shortcode-submit-ticket-form.php:115
+#: inc/classes/shortcodes/class-shortcode-submit-ticket-form.php:117
 msgid "Subject"
 msgstr ""
 
@@ -791,21 +791,21 @@ msgstr ""
 
 #: admin/views/welcome.php:26
 msgid ""
-"Support System comes now with options to display a FAQ in your site. As we "
+"Support System now comes with options to display an FAQ on your site. As we "
 "did with tickets, FAQs are rendered using <a href=\"%s\">Foundation 5</a>."
 msgstr ""
 
 #: admin/views/welcome.php:27
 msgid ""
-"You can manage your FAQs from admin, as usual. Users will still have access "
-"to FAQs through an admin menu unless you want to deactivate that menu in "
-"Settings"
+"You can manage your FAQs from the admin, as usual. Users will still have "
+"access to FAQs through an admin menu unless you want to deactivate that "
+"menu in the Settings."
 msgstr ""
 
 #: admin/views/welcome.php:28
 msgid ""
-"FAQs system comes with <strong>Pro Sites</strong> integration. Allow any "
-"kind of Pro User with any level assigned to see your FAQs!"
+"The FAQ system comes with <strong>Pro Sites</strong> integration, which "
+"allows any kind of Pro user with any assigned level to see your FAQs!"
 msgstr ""
 
 #: admin/views/welcome.php:40
@@ -814,9 +814,10 @@ msgstr ""
 
 #: admin/views/welcome.php:42
 msgid ""
-"We did it again. Support System 2.1 comes with many little (and bigger) "
-"improvements in admin. We have remade the Edit Ticket Screen thinking on "
-"usability, now you will be able to manage your tickets in a single page."
+"We did it again! Support System 2.1 comes with many little (and bigger) "
+"improvements in the admin. We have remade the Edit Ticket screen with "
+"usability in mind. Now you will be able to manage your tickets on a single "
+"page."
 msgstr ""
 
 #: admin/views/welcome.php:45
@@ -826,9 +827,9 @@ msgstr ""
 #: admin/views/welcome.php:47
 msgid ""
 "Manage the ticket status, category, priority and staff assignment from the "
-"front. Support System Widgets (They are not WordPress Widgets yet but we "
-"are on the way), allows to manage tickets easily and makes everything "
-"beautiful."
+"front end. Support System Widgets allow to manage tickets easily and makes "
+"everything beautiful. They’re not WordPress widgets yet, but that’s on the "
+"way."
 msgstr ""
 
 #: admin/views/welcome.php:50
@@ -857,57 +858,57 @@ msgstr ""
 msgid "User not found"
 msgstr ""
 
-#: inc/classes/shortcodes/class-shortcode-faqs.php:13
-#: inc/classes/shortcodes/class-shortcode-tickets-index.php:163
+#: inc/classes/shortcodes/class-shortcode-faqs.php:15
+#: inc/classes/shortcodes/class-shortcode-tickets-index.php:165
 msgid "You must <a href=\"%s\">log in</a> to get support"
 msgstr ""
 
-#: inc/classes/shortcodes/class-shortcode-faqs.php:15
-#: inc/classes/shortcodes/class-shortcode-tickets-index.php:165
+#: inc/classes/shortcodes/class-shortcode-faqs.php:17
+#: inc/classes/shortcodes/class-shortcode-tickets-index.php:167
 msgid "You don't have enough permissions to get support"
 msgstr ""
 
-#: inc/classes/shortcodes/class-shortcode-submit-ticket-form.php:18
-#: inc/classes/shortcodes/class-shortcode-tickets-index.php:18
-#: inc/classes/shortcodes/class-shortcode-tickets-index.php:58
-#: inc/classes/shortcodes/class-shortcode-tickets-index.php:81
-#: inc/classes/shortcodes/class-shortcode-tickets-index.php:94
+#: inc/classes/shortcodes/class-shortcode-submit-ticket-form.php:20
+#: inc/classes/shortcodes/class-shortcode-tickets-index.php:20
+#: inc/classes/shortcodes/class-shortcode-tickets-index.php:60
+#: inc/classes/shortcodes/class-shortcode-tickets-index.php:83
+#: inc/classes/shortcodes/class-shortcode-tickets-index.php:96
 msgid "Security check error"
 msgstr ""
 
-#: inc/classes/shortcodes/class-shortcode-submit-ticket-form.php:22
+#: inc/classes/shortcodes/class-shortcode-submit-ticket-form.php:24
 msgid "Please, insert a subject for the ticket"
 msgstr ""
 
-#: inc/classes/shortcodes/class-shortcode-submit-ticket-form.php:26
+#: inc/classes/shortcodes/class-shortcode-submit-ticket-form.php:28
 msgid "Please, insert a message for the ticket"
 msgstr ""
 
-#: inc/classes/shortcodes/class-shortcode-submit-ticket-form.php:86
+#: inc/classes/shortcodes/class-shortcode-submit-ticket-form.php:88
 msgid "You must <a href=\"%s\">log in</a> to submit a new ticket"
 msgstr ""
 
-#: inc/classes/shortcodes/class-shortcode-submit-ticket-form.php:88
+#: inc/classes/shortcodes/class-shortcode-submit-ticket-form.php:90
 msgid "You don't have enough permissions to submit a new ticket"
 msgstr ""
 
-#: inc/classes/shortcodes/class-shortcode-submit-ticket-form.php:112
+#: inc/classes/shortcodes/class-shortcode-submit-ticket-form.php:114
 msgid "Submit a new ticket"
 msgstr ""
 
-#: inc/classes/shortcodes/class-shortcode-submit-ticket-form.php:129
+#: inc/classes/shortcodes/class-shortcode-submit-ticket-form.php:131
 msgid "Are you reporting a ticket for a specific site?"
 msgstr ""
 
-#: inc/classes/shortcodes/class-shortcode-submit-ticket-form.php:140
+#: inc/classes/shortcodes/class-shortcode-submit-ticket-form.php:142
 msgid "Submit Ticket"
 msgstr ""
 
-#: inc/classes/shortcodes/class-shortcode-tickets-index.php:86
+#: inc/classes/shortcodes/class-shortcode-tickets-index.php:88
 msgid "The reply message cannot be empty"
 msgstr ""
 
-#: inc/classes/shortcodes/class-shortcode-tickets-index.php:120
+#: inc/classes/shortcodes/class-shortcode-tickets-index.php:122
 msgid "There was an error while processing the form, please try again later"
 msgstr ""
 

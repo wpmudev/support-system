@@ -14,10 +14,10 @@ Text Domain: incsub-support
 
 /*
 Copyright 2007-2015 Incsub (http://incsub.com)
-Author – Ignacio Cruz (igmoweb)
+Author ï¿½ Ignacio Cruz (igmoweb)
 
 This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License (Version 2 – GPLv2) as published by
+it under the terms of the GNU General Public License (Version 2 ï¿½ GPLv2) as published by
 the Free Software Foundation.
 
 This program is distributed in the hope that it will be useful,
