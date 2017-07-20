@@ -149,6 +149,22 @@ module.exports = function(grunt) {
         }
     });
 
+    grunt.registerTask( 'finish', function() {
+        var json = grunt.file.readJSON('package.json');
+        var file = './build/' + json.name + '-' + json.version + '.zip';
+        grunt.log.writeln( 'Process finished. Browse now to: ' + json.projectEditUrl['green'].bold );
+        grunt.log.writeln( 'And upload the zip file under: ' + file['green'].bold);
+        grunt.log.writeln('----------');
+        grunt.log.writeln('');
+        grunt.log.writeln( 'Remember to tag this new version:' );
+
+        var tagMessage = 'git tag -a ' + json.version + ' -m "$CHANGELOG"';
+        var pushMessage = 'git push -u origin ' + json.version;
+        grunt.log.writeln( tagMessage['green'] );
+        grunt.log.writeln( pushMessage['green'] );
+        grunt.log.writeln('----------');
+    });
+
     grunt.loadNpmTasks('grunt-search');
 
     grunt.registerTask('version-compare', [ 'search' ] );

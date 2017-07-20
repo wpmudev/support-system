@@ -22,8 +22,10 @@ To avoid this while developing set `define('SCRIPT_DEBUG', true);` in your wp-co
 
 
 # Before releasing
-1. `gulp release` will minify the CSS and JS.
-2. `npm run build` will create a package in build folder. Make sure that your package.json `pluginVersion` matches with the plugin version in main file.
+1. Make sure that the version in `incsub-support.php` matches with the version in `package.json`, otherwise the build will fail.
+2. Checkout `master` and merge `development` by using `git merge development`
+3. Now execute `npm run release`. A new folder called `build` will be created where you can grab the zip file for the new version. Follow instructions to generate a new Git tag and upload the file to WPMU DEV.
+4. Language files, JS Lint and text domains verification are done during the execution of this script so developer doesn't need to worry about these tasks.
 
 
 
