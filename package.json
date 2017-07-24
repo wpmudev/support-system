@@ -2,7 +2,7 @@
   "name": "incsub-support",
   "main": "incsub-support.php",
   "version": "1.0.0",
-  "pluginVersion": "2.2",
+  "pluginVersion": "2.1.9.4",
   "private": true,
   "description": "Set up an awesome support ticket system on any WordPress site, complete with FAQ.",
   "projectEditUrl": "https://premium.wpmudev.org/wp-admin/edit.php?post_type=project&page=projects-manage&manage_files=36",
@@ -15,7 +15,7 @@
   },
   "scripts": {
     "build": "grunt build",
-    "release": "git-branch-is master && git submodule update --remote && grunt build && grunt finish"
+    "release": "grunt version-compare && git-branch-is master && git submodule update --remote && grunt build && grunt finish"
   },
   "author": "WPMU DEV",
   "license": "GPL-2.0",

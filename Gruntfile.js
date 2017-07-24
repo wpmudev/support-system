@@ -170,7 +170,7 @@ module.exports = function(grunt) {
     grunt.registerTask('version-compare', [ 'search' ] );
 
     grunt.registerTask('build', [
-        // 'version-compare',
+        'version-compare',
         'clean',
         'checktextdomain',
         'makepot',
