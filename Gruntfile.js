@@ -151,7 +151,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask( 'finish', function() {
         var json = grunt.file.readJSON('package.json');
-        var file = './build/' + json.name + '-' + json.version + '.zip';
+        var file = './build/' + json.name + '-' + json.pluginVersion + '.zip';
         grunt.log.writeln( 'Process finished. Browse now to: ' + json.projectEditUrl['green'].bold );
         grunt.log.writeln( 'And upload the zip file under: ' + file['green'].bold);
         grunt.log.writeln('----------');
