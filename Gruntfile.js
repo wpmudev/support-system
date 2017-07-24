@@ -158,8 +158,8 @@ module.exports = function(grunt) {
         grunt.log.writeln('');
         grunt.log.writeln( 'Remember to tag this new version:' );
 
-        var tagMessage = 'git tag -a ' + json.version + ' -m "$CHANGELOG"';
-        var pushMessage = 'git push -u origin ' + json.version;
+        var tagMessage = 'git tag -a ' + json.pluginVersion + ' -m "$CHANGELOG"';
+        var pushMessage = 'git push -u origin ' + json.pluginVersion;
         grunt.log.writeln( tagMessage['green'] );
         grunt.log.writeln( pushMessage['green'] );
         grunt.log.writeln('----------');
