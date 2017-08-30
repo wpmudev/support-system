@@ -454,7 +454,7 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 		public function clear_user_caps_cache( $user_id, $role ){
             $cache_key = 'user_role_' . $user_id;
-            wp_cache_set( $cache_key, $role, 'support_system_user_role' );
+            wp_cache_set($cache_key, $role, 'support_system_user_role');
 
         }
 
