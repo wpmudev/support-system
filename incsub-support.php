@@ -112,6 +112,8 @@ if ( ! class_exists( 'MU_Support_System') ) {
 
 			add_action( 'plugins_loaded', array( &$this, 'load_text_domain' ), 100 );
 
+            add_action( 'set_user_role', array( $this, 'clear_user_caps_cache' ), 10, 2 );
+
 			// Create Admin menus
 			//add_action( 'init', array( &$this, 'admin_menus' ) );
 
@@ -449,6 +451,12 @@ if ( ! class_exists( 'MU_Support_System') ) {
 		public function add_integrator( $integrator ) {
 			$this->integrators[] = $integrator;
 		}
+
+		public function clear_user_caps_cache( $user_id, $role ){
+            $cache_key = 'user_role_' . $user_id;
+            wp_cache_set( $cache_key, $role, 'support_system_user_role' );
+
+        }
 
 	}
 
