@@ -28,7 +28,7 @@ function incsub_support_user_can( $user_id, $cap = '' ) {
 			}
 			else {
 				$user_role = isset( $user->roles[0] ) ? $user->roles[0] : '';
-				if ( is_multisite() ) {
+				if ( is_multisite() && $user_role == '' ) {
 					// The user has not enough role in the Support blog.
 					// Let's see if he has enough roles in other sites
 					// This needs to be improved though
