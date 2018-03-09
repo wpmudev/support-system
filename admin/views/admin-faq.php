@@ -59,15 +59,15 @@
 					<h3 class="hndle"><span><?php echo $faq->question; ?></span></h3>
 					<div class="inside">
 		    			<?php 
-		    				add_filter( 'the_content', 'wptexturize'        );
-							add_filter( 'the_content', 'convert_smilies'    );
-							add_filter( 'the_content', 'convert_chars'      );
-							add_filter( 'the_content', 'wpautop'            );
-							add_filter( 'the_content', 'shortcode_unautop'  );
-							add_filter( 'the_content', 'prepend_attachment' );
+		    				add_filter( 'the_faq_content', 'wptexturize'        );
+							add_filter( 'the_faq_content', 'convert_smilies'    );
+							add_filter( 'the_faq_content', 'convert_chars'      );
+							add_filter( 'the_faq_content', 'wpautop'            );
+							add_filter( 'the_faq_content', 'shortcode_unautop'  );
+							add_filter( 'the_faq_content', 'prepend_attachment' );
 
 							$answer = preg_replace_callback( '|^\s*(https?://[^\s"]+)\s*$|im', array( &$this, 'embed_media' ), $faq->answer );
-		    				$answer = apply_filters( 'the_content', $answer ); 
+		    				$answer = apply_filters( 'the_faq_content', $answer ); 
 						?>
 
 						<div id="faq-answer-<?php echo $faq->faq_id; ?>">

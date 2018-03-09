@@ -64,7 +64,7 @@ class Incsub_Support_Ticket_Reply {
 
 	public function __get( $name ) {
 		if ( $name == 'message' ) {
-			return apply_filters( 'the_content', $this->message, 0 );
+			return apply_filters( 'the_faq_content', $this->message, 0 );
 		}
 	}
 
