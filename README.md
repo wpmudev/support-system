@@ -12,7 +12,7 @@ Quickly set up a full-featured FAQ and reliable ticketing system for your use
 
 ![Beautiful front end support form integration.](http://premium.wpmudev.org/wp-content/uploads/2008/09/help-form-735x470.jpg)
 
-](http://premium.wpmudev.org/wp-content/uploads/2008/09/help-form-735x470.jpg)
+![i](http://premium.wpmudev.org/wp-content/uploads/2008/09/help-form-735x470.jpg)
 
  Beautiful front end support form integration.
 
@@ -26,7 +26,7 @@ Give users the tools they need to clearly articulate their needs. The included 
 
 ![Embed videos into your posts for easy troubleshooting and sharing tutorials.](http://premium.wpmudev.org/wp-content/uploads/2008/09/embed-video-1470x940.jpg)
 
-](http://premium.wpmudev.org/wp-content/uploads/2008/09/embed-video-1470x940.jpg)
+![i](http://premium.wpmudev.org/wp-content/uploads/2008/09/embed-video-1470x940.jpg)
 
  Embed videos into your posts for easy troubleshooting and sharing tutorials.
 
@@ -34,7 +34,7 @@ Give users the tools they need to clearly articulate their needs. The included 
 
 ![Help improve support with FAQ feedback.](http://premium.wpmudev.org/wp-content/uploads/2008/09/faq-feedback-735x470-700x447.jpg)
 
-](http://premium.wpmudev.org/wp-content/uploads/2008/09/faq-feedback-735x470.jpg)
+![i](http://premium.wpmudev.org/wp-content/uploads/2008/09/faq-feedback-735x470.jpg)
 
  Help improve support with FAQ feedback.
 
@@ -73,7 +73,7 @@ Once installed and activated, you will see a new menu item in your admin sidebar
 
 ![Support System Menu](https://premium.wpmudev.org/wp-content/uploads/2008/09/support-system-2000-menu-700x384.png)
 
-](https://premium.wpmudev.org/wp-content/uploads/2008/09/support-system-2000-menu.png)
+![i](https://premium.wpmudev.org/wp-content/uploads/2008/09/support-system-2000-menu.png)
 
 The menu is the same for both single sites, and multisite installs where it appears in the network admin. The first thing we need to do is configure the settings of the plugin. If you have installed Support System on a multisite, go to **Support > Settings** in your network admin. On a single site install, go to **Support > Settings** in your admin. The settings screen allows you to enter your basic information, set access permissions and privacy level. There is quite a bit going on here, so let's take it in sections starting with the options under the _General_ tab.
 
